@@ -17,6 +17,13 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            screens: {
+                'hmd': '500px',
+                'xxs': '370px'
+            },
+            width: {
+                '100': '600px',  // Custom width class 'w-100' with a value of '100%'
+            },
         },
     },
 

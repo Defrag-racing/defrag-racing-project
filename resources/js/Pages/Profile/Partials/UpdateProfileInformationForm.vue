@@ -1,13 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import ActionMessage from '@/Components/Laravel/ActionMessage.vue';
+import FormSection from '@/Components/Laravel/FormSection.vue';
+import InputError from '@/Components/Laravel/InputError.vue';
+import InputLabel from '@/Components/Laravel/InputLabel.vue';
+import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
+import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
+import TextInput from '@/Components/Laravel/TextInput.vue';
 
 const props = defineProps({
     user: Object,
@@ -101,7 +101,7 @@ const clearPhotoFileInput = () => {
 
                 <!-- Current Profile Photo -->
                 <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
+                    <img :src="user.profile_photo_path ?? '/images/null.jpg'" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -130,7 +130,7 @@ const clearPhotoFileInput = () => {
 
             <!-- Name -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
+                <InputLabel for="name" v-html="'Name: ' + q3tohtml(form.name)" />
                 <TextInput
                     id="name"
                     v-model="form.name"
@@ -140,6 +140,9 @@ const clearPhotoFileInput = () => {
                     autocomplete="name"
                 />
                 <InputError :message="form.errors.name" class="mt-2" />
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    You can use Quake3 color codes, such as: ^1Red^2Green
+                </div>
             </div>
 
             <!-- Email -->

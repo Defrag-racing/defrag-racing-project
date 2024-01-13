@@ -2,7 +2,7 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+use App\Http\Controllers\WebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,18 +42,5 @@ Route::get('/test', function () {
     return django_verify_password('eoltest', $oldhash) ? 'True' : 'False';
 });
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
-
-Route::get('/', function () {
-    session()->flash('flash.banner', 'Defrag Racing is under maintenance right now !');
-    session()->flash('flash.bannerStyle', 'danger');
-
-    return Inertia::render('Home');
-})->name('home');
+Route::get('/', [WebController::class, 'home'])->name('home');
+Route::get('/servers', [WebController::class, 'servers'])->name('servers');

@@ -9,6 +9,7 @@
     import ResponsiveNavLink from '@/Components/Laravel/ResponsiveNavLink.vue';
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
+    import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 
     defineProps({
         title: String,
@@ -123,18 +124,21 @@
                                 </Dropdown>
                             </div>
 
+                            <!-- Auth Buttons -->
                             <div v-else>
-                                <Link :href="route('login')">
-                                    <SecondaryButton type="button" class="mt-2">
-                                        Log in
-                                    </SecondaryButton>
-                                </Link>
+                                <div class="flex">
+                                    <Link :href="route('login')">
+                                        <PrimaryButton type="button" class="py-1">
+                                            Login
+                                        </PrimaryButton>
+                                    </Link>
 
-                                <Link :href="route('register')" class="ml-3">
-                                    <SecondaryButton type="button" class="mt-2">
-                                        Register
-                                    </SecondaryButton>
-                                </Link>
+                                    <Link :href="route('register')" class="ml-3">
+                                        <SecondaryButton type="button" class="py-1">
+                                            Register
+                                        </SecondaryButton>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>

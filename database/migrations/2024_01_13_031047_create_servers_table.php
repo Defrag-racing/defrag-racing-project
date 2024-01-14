@@ -19,13 +19,15 @@ return new class extends Migration
             $table->string('location');
             $table->string('type');
             $table->string('admin_name');
-            $table->string('admin_contact');
-            $table->string('ping_url');
+            $table->string('admin_contact')->nullable()->default(null);
+            $table->string('ping_url')->nullable()->default(null);
             $table->boolean('offline')->default(true);
             $table->boolean('visible')->default(true);
             $table->string('map');
+            $table->mediumText('players');
             $table->string('defrag');
-            $table->string('rconpassword');
+            $table->string('defrag_gametype')->default('5');
+            $table->string('rconpassword')->nullable()->default(null);
             $table->timestamps();
         });
     }

@@ -13,6 +13,20 @@ return new class extends Migration
     {
         Schema::create('maps', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('description');
+            $table->string('author');
+            $table->string('pk3');
+            $table->integer('pk3_size');
+            $table->string('thumbnail');
+            $table->string('physics');
+            $table->string('gametype');
+            $table->string('mod');
+            $table->string('weapons');
+            $table->string('items');
+            $table->string('functions');
+            $table->boolean('visible');
+            $table->datetime('date_added');
             $table->timestamps();
         });
     }

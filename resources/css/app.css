@@ -6,16 +6,20 @@
     display: none;
 }
 
-.background {
-    
+.main-background {
+    background: url('/images/bg-image.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    justify-content: center;
 }
-
 .q3c-0 {
     color: black;
 }
 
 .q3c-1 {
-    color: rgb(189, 0, 0);
+    color: rgb(255, 41, 41);
 }
 
 .q3c-2 {
@@ -27,7 +31,7 @@
 }
 
 .q3c-4 {
-    color: blue;
+    color: rgb(37, 106, 255);
 }
 
 .q3c-5 {

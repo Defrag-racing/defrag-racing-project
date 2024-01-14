@@ -1,0 +1,61 @@
+.sprite-items {
+    background-image: url(/images/sprite-items.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+}
+
+.test {
+    background-color: red !important;
+}
+
+.sprite-rl { background-position: 0.0% 0;  }
+.sprite-cg { background-position: 2.0% 0;  }
+.sprite-mg { background-position: 4.0% 0;  }
+.sprite-hook { background-position: 6.0% 0;  }
+.sprite-lg { background-position: 8.0% 0;  }
+.sprite-gl { background-position: 10.0% 0;  }
+.sprite-pml { background-position: 12.0% 0;  }
+.sprite-gauntlet { background-position: 14.0% 0;  }
+.sprite-ng { background-position: 16.0% 0;  }
+.sprite-bfg { background-position: 18.0% 0;  }
+.sprite-sg { background-position: 20.0% 0;  }
+.sprite-pg { background-position: 22.0% 0;  }
+.sprite-rg { background-position: 24.0% 0;  }
+.sprite-health { background-position: 26.0% 0;  }
+.sprite-ptele { background-position: 28.0% 0;  }
+.sprite-haste { background-position: 30.0% 0;  }
+.sprite-ya { background-position: 32.0% 0;  }
+.sprite-invis { background-position: 34.0% 0;  }
+.sprite-ra { background-position: 36.0% 0;  }
+.sprite-quad { background-position: 38.0% 0;  }
+.sprite-regen { background-position: 40.0% 0;  }
+.sprite-shard { background-position: 42.0% 0;  }
+.sprite-mega { background-position: 44.0% 0;  }
+.sprite-medkit { background-position: 46.0% 0;  }
+.sprite-enviro { background-position: 48.0% 0;  }
+.sprite-flight { background-position: 50.0% 0;  }
+.sprite-smallhealth { background-position: 52.0% 0;  }
+.sprite-bighealth { background-position: 54.0% 0;  }
+.sprite-fog { background-position: 56.0% 0;  }
+.sprite-break { background-position: 58.0% 0;  }
+.sprite-kami { background-position: 60.0% 0;  }
+.sprite-shootrocket { background-position: 62.0% 0;  }
+.sprite-tele { background-position: 64.0% 0;  }
+.sprite-sound { background-position: 66.0% 0;  }
+.sprite-guard { background-position: 68.0% 0;  }
+.sprite-ga { background-position: 70.0% 0;  }
+.sprite-lava { background-position: 72.0% 0;  }
+.sprite-slick { background-position: 74.0% 0;  }
+.sprite-ammoregen { background-position: 76.0% 0;  }
+.sprite-water { background-position: 78.0% 0;  }
+.sprite-shootplasma { background-position: 80.0% 0;  }
+.sprite-button { background-position: 82.0% 0;  }
+.sprite-invu { background-position: 84.0% 0;  }
+.sprite-doubler { background-position: 86.0% 0;  }
+.sprite-door { background-position: 88.0% 0;  }
+.sprite-jumppad { background-position: 90.0% 0;  }
+.sprite-scout { background-position: 92.0% 0;  }
+.sprite-timer { background-position: 94.0% 0;  }
+.sprite-shootgren { background-position: 96.0% 0;  }
+.sprite-slime { background-position: 98.0% 0;  }
+.sprite-moving { background-position: 100.0% 0;  }

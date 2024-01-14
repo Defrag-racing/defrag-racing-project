@@ -32,7 +32,7 @@ const submit = () => {
 <template>
     <MainLayout title="Register">
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <AuthenticationCard>
                     <div v-if="status" class="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
                         {{ status }}

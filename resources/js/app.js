@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/items.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -8,6 +9,35 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
+const formatTime = (milliseconds) => {
+    milliseconds = Math.max(0, milliseconds);
+
+    const hours = Math.floor(milliseconds / 3600000);
+    milliseconds %= 3600000;
+    const minutes = Math.floor(milliseconds / 60000);
+    milliseconds %= 60000;
+    const seconds = Math.floor(milliseconds / 1000);
+    milliseconds %= 1000;
+  
+    let formattedTime = '';
+  
+    if (hours > 0) {
+      formattedTime += `${hours}:`;
+    }
+  
+    if (minutes > 0 || hours > 0) {
+      formattedTime += `${padZero(minutes)}:`;
+    }
+  
+    formattedTime += `${padZero(seconds)}:${padZero(milliseconds)}`;
+  
+    return formattedTime;
+}
+
+const padZero = (num) => {
+    return num.toString().padStart(2, '0');
+}
+
 createInertiaApp({
     title: (title) => `${title} - Defrag Racing`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
@@ -15,6 +45,8 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue);
+
+        app.config.globalProperties.formatTime = formatTime
 
         app.config.globalProperties.q3tohtml = (name) => {
             let colored_name = '';

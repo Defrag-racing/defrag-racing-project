@@ -101,7 +101,7 @@ const clearPhotoFileInput = () => {
 
                 <!-- Current Profile Photo -->
                 <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_path ?? '/images/null.jpg'" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
+                    <img :src="user.profile_photo_path ? '/storage/' + user.profile_photo_path : '/images/null.jpg'" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -126,6 +126,18 @@ const clearPhotoFileInput = () => {
                 </SecondaryButton>
 
                 <InputError :message="form.errors.photo" class="mt-2" />
+            </div>
+
+            <!-- Username -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="username" value="Username" />
+                <TextInput
+                    id="username"
+                    type="text"
+                    :value="user.username"
+                    class="mt-1 block w-full"
+                    disabled
+                />
             </div>
 
             <!-- Name -->

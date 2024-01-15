@@ -18,9 +18,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('oldhash')->nullable();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('oldhash')->nullable()->default(NULL);
+            $table->string('country')->default('_404');
+            $table->string('mdd_id')->nullable()->default(NULL);
+            $table->boolean('admin')->default(false);
             $table->timestamps();
         });
     }

@@ -17,17 +17,16 @@ class WebController extends Controller
     }
 
     function servers() {
-        $servers = Server::where('offline', false)->where('visible', true)->with('mapdata')->with('onlinePlayers')->get();
-
+        $servers = Server::where('offline', false)->where('visible', true)
+            ->with(['mapdata', 'onlinePlayers' => function ($query) {
+                $query->with('spectators');
+            }])->get();
 
         $sortedServers = $servers->sortByDesc(function ($server) {
             return $server->onlinePlayers->count();
         });
 
         $sortedServersArray = $sortedServers->values()->all();
-
-        \Log::debug($sortedServersArray);
-
 
         return Inertia::render('Servers')->with('servers', $sortedServersArray);
     }

@@ -2,12 +2,16 @@
 
 namespace App\External;
 
+use Illuminate\Support\Str;
+
 class DefragServer
 {
     private $ip;
     private $port;
     private $socket;
     private $connected;
+
+    private $previousData;
 
     public function __construct ($ip, $port) {
         $this->ip = $ip;
@@ -28,40 +32,30 @@ class DefragServer
         $this->connected = true;
     }
 
-    public function getRconData ($rconpass) {
+    public function getRconData($rconpass) {
         socket_sendto($this->socket, "\xff\xff\xff\xffrcon " . $rconpass . " score\x00", strlen("\xff\xff\xff\xffrcon " . $rconpass . " score\x00"), 0, $this->ip, $this->port);
         $data = socket_read($this->socket, 8192);
-
+    
         if (strpos($data, 'Bad rconpassword') !== false) {
             return 'Bad rconpassword';
         }
-
+    
         $data = substr($data, 10);
         $data = explode("\n", $data);
-
+    
         $scores = [];
         $players = [];
-
-
+    
         foreach ($data as $line) {
-            if (strpos($line, '<player>') === 0) {
+            if (Str::startsWith($line, '<player>')) {
                 $player = $this->parseScorePlayer($line);
                 $players[$player['clientId']] = $player;
-            } elseif (strpos($line, 'scores') === 0) {
-                $scores = $this->parseScores($line);
-            }
-        }
 
-        foreach ($players as $player) {
-            list($playerInfo, $scores) = $this->getPlayerInfo($player, $rconpass, $scores);
-
-            if ($playerInfo === false) {
+                // Associating player info with scores directly from $data array
                 list($playerInfo, $scores) = $this->getPlayerInfo($player, $rconpass, $scores);
-            }
-
-            if ($playerInfo !== false) {
-                $players[$player['clientId']]['country'] = isset($playerInfo['tld']) ? $playerInfo['tld'] : 'NOCOUNTRY';
-
+    
+                $players[$player['clientId']]['country'] = isset($playerInfo['tld']) ? $playerInfo['tld'] : '_404';
+    
                 if (isset($playerInfo['color1'])) {
                     $players[$player['clientId']]['nospec'] = ($playerInfo['color1'] == 'nospec' || $playerInfo['color1'] == 'nospecpm');
                 } else {
@@ -70,11 +64,13 @@ class DefragServer
 
                 $players[$player['clientId']]['model'] = isset($playerInfo['model']) ? $playerInfo['model'] : 'sarge';
                 $players[$player['clientId']]['headmodel'] = isset($playerInfo['headmodel']) ? $playerInfo['headmodel'] : 'sarge';
+    
+                usleep(200000); // sleep for 0.2 seconds
+            } elseif (strpos($line, 'scores') === 0) {
+                $scores = $this->parseScores($line);
             }
-
-            usleep(200000); // sleep for 0.2 seconds
         }
-
+    
         $result = [
             'players' => $players,
             'map' => explode(':', $data[0])[1],
@@ -82,11 +78,12 @@ class DefragServer
             'defrag' => explode(':', $data[2])[1],
             'scores' => $scores,
         ];
-
+    
         return $result;
-    }
+    }    
 
     public function getData() {
+        dump("here");
         socket_sendto($this->socket, "\xff\xff\xff\xffgetstatus\x00", strlen("\xff\xff\xff\xffgetstatus\x00"), 0, $this->ip, $this->port);
         $data = socket_read($this->socket, 4096);
 
@@ -167,8 +164,14 @@ class DefragServer
         }
 
         if (strpos($data, "print\nscores") !== false || strpos($data, "print\n<player>") !== false) {
-            return [false, $scores];
+            return $this->getPlayerInfo($player, $rconpass, $scores);
         }
+
+        if ($data == $this->previousData) {
+            return $this->getPlayerInfo($player, $rconpass, $scores);
+        }
+
+        $this->previousData = $data;
 
         $data = explode("\n", substr($data, 28));
 
@@ -178,7 +181,6 @@ class DefragServer
             list($key, $value) = $this->extractKeyValuePair($line);
             $result[$key] = $value;
         }
-
         return [$result, $scores];
     }
 

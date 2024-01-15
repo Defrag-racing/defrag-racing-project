@@ -9,6 +9,8 @@ class OnlinePlayer extends Model
 {
     use HasFactory;
 
+    protected $with = ['profile'];
+
     protected $fillable = [
         'name',
         'time',
@@ -21,4 +23,12 @@ class OnlinePlayer extends Model
         'model',
         'headmodel'
     ];
+
+    public function spectators() {
+        return $this->hasMany(OnlinePlayer::class, 'follow_num', 'client_id');
+    }
+
+    public function profile() {
+        return $this->belongsTo(User::class, 'mdd_id', 'mdd_id');
+    }
 }

@@ -36,6 +36,13 @@ class UpdateServersCommand extends Command
         foreach($servers as $server) {
             $data = $this->getServerData($server);
 
+            if ($data == null) {
+                // $server->offline = true;
+                // $server->save();
+
+                continue;
+            }
+
             $this->updateServer($server, $data);
         }
     }
@@ -104,6 +111,8 @@ class UpdateServersCommand extends Command
 
             DB::commit();
         } catch (\Exception $e) {
+            dump($e);
+            dump($data);
             DB::rollBack();
         }
     }
@@ -114,8 +123,12 @@ class UpdateServersCommand extends Command
                 return [-1, 0];
             }
 
-            return [$player['follow_num'], $player['time']];
+            if ($player['player_num'] == $clientId) {
+                return [$player['follow_num'], $player['time']];
+            }
         }
+
+        return [-1, 0];
     }
 
     public function cleanName($name) {

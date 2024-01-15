@@ -1,27 +1,34 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/Laravel/AuthenticationCard.vue';
-import Checkbox from '@/Components/Laravel/Checkbox.vue';
-import InputError from '@/Components/Laravel/InputError.vue';
-import InputLabel from '@/Components/Laravel/InputLabel.vue';
-import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
-import TextInput from '@/Components/Laravel/TextInput.vue';
-import MainLayout from '@/Layouts/MainLayout.vue';
+    import { Link, useForm } from '@inertiajs/vue3';
+    import AuthenticationCard from '@/Components/Laravel/AuthenticationCard.vue';
+    import Checkbox from '@/Components/Laravel/Checkbox.vue';
+    import InputError from '@/Components/Laravel/InputError.vue';
+    import InputLabel from '@/Components/Laravel/InputLabel.vue';
+    import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
+    import TextInput from '@/Components/Laravel/TextInput.vue';
+    import CountrySelect from '@/Components/Laravel/CountrySelect.vue';
+    import MainLayout from '@/Layouts/MainLayout.vue';
 
-const form = useForm({
-    username: '',
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    terms: false,
-});
-
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+    const form = useForm({
+        username: '',
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+        terms: false,
+        country: "_404",
     });
-};
+
+    const submit = () => {
+        form.post(route('register'), {
+            onFinish: () => form.reset('password', 'password_confirmation'),
+        });
+    };
+
+    const setCountry = (country) => {
+        console.log(country)
+        form.country = country
+    };
 </script>
 
 <template>
@@ -72,6 +79,17 @@ const submit = () => {
                                 autocomplete="username"
                             />
                             <InputError class="mt-2" :message="form.errors.email" />
+                        </div>
+            
+                        <div class="mt-4">
+                            <InputLabel for="country" value="Country" />
+                            <CountrySelect
+                                id="country"
+                                :setCountry="setCountry"
+                                class="mt-1 block w-full"
+                                required
+                            />
+                            <InputError class="mt-2" :message="form.errors.country" />
                         </div>
             
                         <div class="mt-4">

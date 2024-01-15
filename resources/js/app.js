@@ -6,6 +6,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import Popper from "vue3-popper";
 
 const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
@@ -45,6 +46,8 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue);
+
+        app.component("Popper", Popper);
 
         app.config.globalProperties.formatTime = formatTime
 

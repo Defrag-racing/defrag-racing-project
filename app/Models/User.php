@@ -10,7 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
@@ -27,7 +27,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'username'
+        'username',
+        'country',
+        'admin',
+        'oldhash',
+        'mdd_id'
     ];
 
     /**
@@ -38,6 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'oldhash',
         'two_factor_recovery_codes',
         'two_factor_secret',
     ];

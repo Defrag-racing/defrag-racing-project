@@ -18,6 +18,7 @@ const form = useForm({
     name: props.user.name,
     email: props.user.email,
     photo: null,
+    country: props.user.country
 });
 
 const verificationLinkSent = ref(null);
@@ -72,6 +73,11 @@ const clearPhotoFileInput = () => {
     if (photoInput.value?.value) {
         photoInput.value.value = null;
     }
+};
+
+
+const setCountry = (country) => {
+    form.country = country.code
 };
 </script>
 

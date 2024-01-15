@@ -37,8 +37,8 @@ class UpdateServersCommand extends Command
             $data = $this->getServerData($server);
 
             if ($data == null) {
-                // $server->offline = true;
-                // $server->save();
+                $server->offline = true;
+                $server->save();
 
                 continue;
             }

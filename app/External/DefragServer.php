@@ -83,7 +83,6 @@ class DefragServer
     }    
 
     public function getData() {
-        dump("here");
         socket_sendto($this->socket, "\xff\xff\xff\xffgetstatus\x00", strlen("\xff\xff\xff\xffgetstatus\x00"), 0, $this->ip, $this->port);
         $data = socket_read($this->socket, 4096);
 

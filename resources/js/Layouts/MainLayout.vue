@@ -156,7 +156,7 @@
                             Servers
                         </NavLink>
 
-                        <NavLink :href="route('login')" :active="route().current('login')">
+                        <NavLink :href="route('maps')" :active="route().current('maps')">
                             Maps
                         </NavLink>
 
@@ -185,7 +185,7 @@
                             Servers
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('home')" :active="route().current('login')">
+                        <ResponsiveNavLink :href="route('maps')" :active="route().current('maps')">
                             Maps
                         </ResponsiveNavLink>
 

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebController;
+use App\Http\Controllers\MapsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,3 +45,5 @@ Route::get('/test', function () {
 
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::get('/servers', [WebController::class, 'servers'])->name('servers');
+Route::get('/maps', [MapsController::class, 'index'])->name('maps');
+Route::get('/maps/{map}', [MapsController::class, 'map'])->name('maps.map');

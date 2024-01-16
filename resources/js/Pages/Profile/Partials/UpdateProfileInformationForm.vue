@@ -8,7 +8,7 @@ import InputLabel from '@/Components/Laravel/InputLabel.vue';
 import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
 import TextInput from '@/Components/Laravel/TextInput.vue';
-import CountrySelect from '@/Components/Laravel/CountrySelect.vue';
+import CountrySelect from '@/Components/Basic/CountrySelect.vue';
 import countries from '@/Components/stubs/countries'
 
 const props = defineProps({

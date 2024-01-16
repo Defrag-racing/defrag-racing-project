@@ -6,7 +6,7 @@
     import InputLabel from '@/Components/Laravel/InputLabel.vue';
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
     import TextInput from '@/Components/Laravel/TextInput.vue';
-    import CountrySelect from '@/Components/Laravel/CountrySelect.vue';
+    import CountrySelect from '@/Components/Basic/CountrySelect.vue';
     import MainLayout from '@/Layouts/MainLayout.vue';
 
     const form = useForm({

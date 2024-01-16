@@ -24,7 +24,6 @@ return new class extends Migration
             $table->boolean('offline')->default(true);
             $table->boolean('visible')->default(true);
             $table->string('map');
-            $table->mediumText('players');
             $table->string('defrag');
             $table->string('defrag_gametype')->default('5');
             $table->string('rconpassword')->nullable()->default(null);

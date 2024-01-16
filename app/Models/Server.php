@@ -27,9 +27,7 @@ class Server extends Model
         'visible',
         'map',
         'defrag',
-        'rconpassword',
-        'state',
-        'players'
+        'rconpassword'
     ];
 
     public function mapdata () {

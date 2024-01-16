@@ -25,6 +25,7 @@ class CreateNewUser implements CreatesNewUsers
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
+            'country'   =>  ['required', 'string', 'max:3']
         ])->validate();
 
         return User::create([
@@ -33,7 +34,7 @@ class CreateNewUser implements CreatesNewUsers
             'email'     => $input['email'],
             'oldhash'   => NULL,
             'password'  => Hash::make($input['password']),
-            'country'   => isset($input['country']) ? $input['country'] : '_404'
+            'country'   => $input['country']
         ]);
     }
 }

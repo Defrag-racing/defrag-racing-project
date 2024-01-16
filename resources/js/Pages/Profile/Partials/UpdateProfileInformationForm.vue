@@ -8,6 +8,8 @@ import InputLabel from '@/Components/Laravel/InputLabel.vue';
 import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
 import TextInput from '@/Components/Laravel/TextInput.vue';
+import CountrySelect from '@/Components/Laravel/CountrySelect.vue';
+import countries from '@/Components/stubs/countries'
 
 const props = defineProps({
     user: Object,
@@ -77,7 +79,7 @@ const clearPhotoFileInput = () => {
 
 
 const setCountry = (country) => {
-    form.country = country.code
+    form.country = country
 };
 </script>
 
@@ -161,6 +163,20 @@ const setCountry = (country) => {
                 <div class="text-sm text-gray-600 dark:text-gray-400">
                     You can use Quake3 color codes, such as: ^1Red^2Green
                 </div>
+            </div>
+
+            <!-- Country -->
+            <div class="col-span-6 sm:col-span-4">
+                <div class="flex justify-between items-center mb-2">
+                    <InputLabel for="name" value="Country" />
+
+                    <div class="flex items-center text-gray-400">
+                        {{ countries[user.country] }}
+                        <img :src="`/images/flags/${user.country}.png`" class="w-6 ml-3">
+                    </div>
+                </div>
+                <CountrySelect :setCountry="setCountry" />
+                <InputError :message="form.errors.country" class="mt-2" />
             </div>
 
             <!-- Email -->

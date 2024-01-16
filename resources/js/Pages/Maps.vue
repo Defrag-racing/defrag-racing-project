@@ -5,8 +5,6 @@
     const props = defineProps({
         maps: Object,
     });
-
-    console.log(props.maps)
 </script>
 
 <template>
@@ -30,7 +28,7 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4 flex justify-center flex-wrap">
-                    <Pagination :current_page="maps.current_page" :last_page="maps.last_page" />
+                    <Pagination :current_page="maps.current_page" :last_page="maps.last_page" :link="maps.first_page_url" />
                 </div>
             </div>
         </div>

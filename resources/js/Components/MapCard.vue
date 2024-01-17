@@ -105,8 +105,8 @@
         </div>
 
         <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
-            <div class="text-gray-500">
-                By <span class="text-gray-400 font-bold hover:underline cursor-pointer"> {{ map.author }} </span>
+            <div class="text-gray-500 overflow-hidden truncate" style="width: 200px;">
+                By <span class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;"> {{ map.author }} </span>
             </div>
 
             <div class="text-gray-500">

@@ -10,6 +10,30 @@
     });
 
     const players = ref(0);
+    const interval = ref(null);
+    const isRotating = ref(false);
+
+    const startInterval = () => {
+        interval.value = setInterval(updatePage, 30000);
+    }
+
+    const stopInterval = () => {
+        clearInterval(interval.value);
+    }
+
+    const updatePage = () => {
+        if (isRotating.value) {
+            return;
+        }
+
+        isRotating.value = true;
+
+        router.reload()
+
+        setTimeout(() => {
+            isRotating.value = false;
+        }, 1500);
+    }
 
     const countPlayers = () => {
         players.value = 0
@@ -20,18 +44,38 @@
 
     onMounted(() => {
         countPlayers()
+
+        startInterval()
     })
 </script>
 
 <template>
     <MainLayout title="Servers">
         <template #header>
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-3xl text-gray-800 dark:text-gray-200 leading-tight">
                     Servers
                 </h2>
 
-                
+                <div class="flex">
+                    <div>
+                        <div @click="updatePage" title="Auto Update Servers every 30 seconds" class="flex items-center text-white bg-gray-700 py-2 px-5 rounded-md font-bold cursor-pointer bg-gray-700 hover:bg-gray-600 mr-3">
+                            <div class="w-8 h-8 mr-2">
+                                <svg :class="{ 'rotate-animation': isRotating }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                            </div>
+        
+                            <div>
+                                <div>
+                                    <span class="text-center">Auto Update</span>
+                                </div>
+            
+                                <div class="text-xs text-gray-500 text-center">Every 30 seconds</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="text-sm text-blue-400 flex items-center mt-3">

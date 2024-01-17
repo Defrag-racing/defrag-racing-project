@@ -6,6 +6,22 @@
     display: none;
 }
 
+.rotate-animation {
+    animation: rotateOnce 1.5s ease-in-out;
+}
+
+@keyframes rotateOnce {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        color: rgb(77, 160, 255);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .main-background {
     background: url('/images/bg-image.png');
     background-repeat: no-repeat;

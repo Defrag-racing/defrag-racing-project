@@ -1,6 +1,6 @@
 <script setup>
     import MainLayout from '@/Layouts/MainLayout.vue';
-    import Server from '@/Components/Server.vue';
+    import ServerCard from '@/Components/ServerCard.vue';
 
     import { router } from '@inertiajs/vue3';
     import { onMounted, ref } from 'vue';
@@ -54,7 +54,7 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4 flex justify-center flex-wrap">
-                    <Server v-for="server in servers" :server="server" />
+                    <ServerCard v-for="server in servers" :server="server" />
                 </div>
             </div>
         </div>

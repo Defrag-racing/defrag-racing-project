@@ -1,6 +1,7 @@
 <script setup>
     import MainLayout from '@/Layouts/MainLayout.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
+    import MapCard from '@/Components/MapCard.vue';
 
     const props = defineProps({
         maps: Object,
@@ -27,8 +28,14 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4 flex justify-center flex-wrap">
-                    <Pagination :current_page="maps.current_page" :last_page="maps.last_page" :link="maps.first_page_url" />
+                <div class="bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
+                    <div class="flex flex-wrap">
+                        <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" />
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <Pagination :current_page="maps.current_page" :last_page="maps.last_page" :link="maps.first_page_url" />
+                    </div>
                 </div>
             </div>
         </div>

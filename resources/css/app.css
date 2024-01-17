@@ -27,38 +27,6 @@
     );
 }
 
-.shape-container-vq3 {
-    clip-path: polygon(
-        0% 0%,
-        calc(100% - 20px) 0%,
-        100% 20px,
-        100% 100%,
-        20px 100%,
-        0% calc(100% - 20px),
-        0% 0%
-    );
-
-    background: linear-gradient(90deg, #3347ff, #5dccff);
-    background-size: 400% 400%;
-    animation: gradient-animation 7s ease infinite;
-}
-
-.shape-container-cpm {
-    clip-path: polygon(
-        0% 0%,
-        calc(100% - 20px) 0%,
-        100% 20px,
-        100% 100%,
-        20px 100%,
-        0% calc(100% - 20px),
-        0% 0%
-    );
-
-    background: linear-gradient(90deg, #ff3333, #ff835d);
-    background-size: 400% 400%;
-    animation: gradient-animation 7s ease infinite;
-}
-
 .map-container-vq3 {
     background: linear-gradient(90deg, #3347ff, #5dccff);
     background-size: 400% 400%;
@@ -67,6 +35,18 @@
 
 .map-container-cpm {
     background: linear-gradient(90deg, #ff3333, #ff835d);
+    background-size: 400% 400%;
+    animation: gradient-animation 7s ease infinite;
+}
+
+.vq3-badge {
+    background: linear-gradient(90deg, #3347ff90, #5dccff90);
+    background-size: 400% 400%;
+    animation: gradient-animation 7s ease infinite;
+}
+
+.cpm-badge {
+    background: linear-gradient(90deg, #ff333390, #ff835d90);
     background-size: 400% 400%;
     animation: gradient-animation 7s ease infinite;
 }

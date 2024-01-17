@@ -26,7 +26,6 @@
     };
 
     const setCountry = (country) => {
-        console.log(country)
         form.country = country
     };
 </script>

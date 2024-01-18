@@ -12,14 +12,14 @@
 <template>
     <MainLayout title="Maps">
         <template #header>
-            <div class="flex justify-between">
+            <div class="flex justify-between flex-wrap">
                 <h2 class="font-semibold text-3xl text-gray-800 dark:text-gray-200 leading-tight">
                     Maps
                 </h2>
 
                 <Dropdown align="center" width="48">
                     <template #trigger>
-                        <button class="flex items-center text-white bg-gray-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-gray-700 hover:bg-gray-600 mr-3">
+                        <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                             <div class="w-8 h-8 mr-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
@@ -37,7 +37,7 @@
                     </template>
 
                     <template #content>
-                        <div class="cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                        <div class="cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
                             Popularity
                         </div>
                     </template>
@@ -55,8 +55,8 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
-                    <div class="flex flex-wrap">
+                <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
+                    <div class="flex flex-wrap justify-center">
                         <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" />
                     </div>
                     

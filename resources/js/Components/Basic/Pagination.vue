@@ -68,7 +68,7 @@
         <SmallButton v-for="page in before" :url="page.url" :label="page.label" />
 
         <div class="ml-2 font-bold">
-            <input class="py-2 px-4 border-0 border-gray-700 bg-blackop-50 text-gray-300 focus:border-gray-700 focus:ring-transparent rounded-md shadow-sm w-20 text-center" v-model="newPage" @change="changePage" />
+            <input class="py-2 px-4 border-0 border-grayop-700 bg-blackop-50 text-gray-300 focus:border-grayop-700 focus:ring-transparent rounded-md shadow-sm w-20 text-center" v-model="newPage" @change="changePage" />
         </div>
 
         <SmallButton v-for="page in after" :url="page.url" :label="page.label" />

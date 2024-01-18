@@ -1,6 +1,7 @@
 <script setup>
     import moment from 'moment';
     import { computed } from 'vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         map: Object
@@ -63,7 +64,7 @@
 
 <template>
     <div class="rounded bg-blackop-30 p-2 mx-2 mb-4 group">
-        <div class="rounded-md w-full h-48 bg-cover flex flex-col items-end justify-between" :style="`width: 400px; max-width: 100%; height: 280px; background-image: url('https://defrag.racing/uploads/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
+        <div class="rounded-md w-full h-48 bg-cover flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('https://defrag.racing/uploads/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
             <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
                 {{ map.physics }}
             </div>
@@ -88,7 +89,7 @@
 
         <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
             <div class="flex items-center">
-                <a class="text-lg text-blue-400 hover:text-blue-300 font-bold" href="#"> {{ map.name }} </a>
+                <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)"> {{ map.name }} </Link>
             
                 <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

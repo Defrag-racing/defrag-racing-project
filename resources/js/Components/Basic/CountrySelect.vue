@@ -1,6 +1,6 @@
 <template>
     <div class="relative" >
-        <input @focus="isOpen = true" @blur="onBlur" class="w-full border-2 border-gray-700 bg-gray-900 text-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm" v-model="country" @input="filterOptions" placeholder="Select Country" autocomplete="off" />
+        <input @focus="isOpen = true" @blur="onBlur" class="w-full border-2 border-grayop-700 bg-grayop-900 text-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm" v-model="country" @input="filterOptions" placeholder="Select Country" autocomplete="off" />
         
         <div class="options p-2 m-1 rounded-md" v-show="isOpen">
             <div class="p-2 cursor-pointer option rounded-md mb-2 text-white flex items-center" v-for="(name, code) in filteredOptions" :key="code" @click="selectOption(code)">

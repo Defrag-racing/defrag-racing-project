@@ -24,6 +24,7 @@
 
 .main-background {
     background: url('/images/bg-image.png');
+    background-color: #111827;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;

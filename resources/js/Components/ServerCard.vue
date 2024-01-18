@@ -18,7 +18,7 @@
 
 <template>
     <div>
-        <div class="mt-5 mb-10 mx-4 group bg-gray-700 text-gray-300 rounded-md shadow-sm" style="width: 400px; max-width: 100%;">
+        <div class="mt-5 mb-10 mx-4 group bg-grayop-700 text-gray-300 rounded-md shadow-sm" style="width: 400px; max-width: 100%;">
             <div class="p-3">
                 <!-- Top Bar -->
                 <div class="rounded-md p-2 bg-blackop-30">

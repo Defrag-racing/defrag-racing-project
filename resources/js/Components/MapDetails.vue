@@ -1,5 +1,6 @@
 <script setup>
     import { computed } from 'vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         map: Object,
@@ -55,7 +56,7 @@
         <div class="ml-4">
             <!-- Mapname -->
             <div class="flex items-center">
-                <a :class="(mapName.length > 13) ? 'text-sm text-blue-400 hover:text-blue-300 font-bold' : 'text-md text-blue-400 hover:text-blue-300 font-bold'" href="#"> {{ map?.name ?? mapname }} </a>
+                <Link :class="(mapName.length > 13) ? 'text-sm text-blue-400 hover:text-blue-300 font-bold' : 'text-md text-blue-400 hover:text-blue-300 font-bold'" :href="route('maps.map', (mapName))"> {{ mapName }} </Link>
             
                 <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

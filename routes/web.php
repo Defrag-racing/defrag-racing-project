@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebController;
 use App\Http\Controllers\MapsController;
+use App\Http\Controllers\BundlesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,10 @@ Route::get('/test', function () {
 });
 
 Route::get('/', [WebController::class, 'home'])->name('home');
+
 Route::get('/servers', [WebController::class, 'servers'])->name('servers');
+
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
-Route::get('/maps/{map}', [MapsController::class, 'map'])->name('maps.map');
+Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');
+
+Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');

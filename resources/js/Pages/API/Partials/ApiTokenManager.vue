@@ -181,7 +181,7 @@ const deleteApiToken = () => {
                     Please copy your new API token. For your security, it won't be shown again.
                 </div>
 
-                <div v-if="$page.props.jetstream.flash.token" class="mt-4 bg-gray-100 dark:bg-gray-900 px-4 py-2 rounded font-mono text-sm text-gray-500 break-all">
+                <div v-if="$page.props.jetstream.flash.token" class="mt-4 bg-gray-100 dark:bg-grayop-900 px-4 py-2 rounded font-mono text-sm text-gray-500 break-all">
                     {{ $page.props.jetstream.flash.token }}
                 </div>
             </template>

@@ -18,7 +18,9 @@ class MapsController extends Controller
         return Inertia::render('Maps')->with('maps', $maps);
     }
 
-    public function map($map) {
+    public function map($mapname) {
+        $map = Map::where('name', $mapname)->firstOrFail();
 
+        return Inertia::render('MapView')->with('map', $map);
     }
 }

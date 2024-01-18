@@ -13,6 +13,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('update-servers')->everyMinute();
+
+        $schedule->command('update-servers 1')->everyFiveMinutes();
     }
 
     /**

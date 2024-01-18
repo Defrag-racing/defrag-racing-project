@@ -17,7 +17,7 @@ class UpdateServersCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update-servers';
+    protected $signature = 'update-servers {all=0}';
 
     /**
      * The console command description.
@@ -31,7 +31,15 @@ class UpdateServersCommand extends Command
      */
     public function handle()
     {
-        $servers = Server::where('offline', false)->where('visible', true)->get();
+        $all = ($this->argument('all') == 1) ? true : false;
+
+        $servers = Server::where('visible', true);
+
+        if (! $all) {
+            $servers = $servers->where('offline', false);
+        }
+
+        $servers = $servers->get();
 
         foreach($servers as $server) {
             $data = $this->getServerData($server);

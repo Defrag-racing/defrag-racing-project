@@ -24,6 +24,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
@@ -31,7 +32,11 @@ class User extends Authenticatable
         'country',
         'admin',
         'oldhash',
-        'mdd_id'
+        'mdd_id',
+        'twitter_name',
+        'twitch_name',
+        'discord_name',
+        'model'
     ];
 
     /**

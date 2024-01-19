@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Server;
 use App\Models\Map;
+use App\Models\User;
 
 class ImportDataCommand extends Command
 {
@@ -89,6 +90,29 @@ class ImportDataCommand extends Command
 
             $map = new Map($newElement);
             $map->save();
+        }
+    }
+
+    public function users($data) {
+        foreach($data as $element) {
+            $newElement = [
+                'id'        =>      $element['id'],
+                'oldhash'        =>      $element['password'],
+                'admin'        =>      $element['admin'],
+                'username'        =>      $element['username'],
+                'email'        =>      $element['email'],
+                'password'        =>      'NOPASS',
+                'name'        =>      $element['profile']['display_name'],
+                'country'        =>      $element['profile']['country'],
+                'twitch_name'        =>      $element['profile']['twitch_name'],
+                'twitter_name'        =>      $element['profile']['twitter_name'],
+                'discord_name'        =>      $element['profile']['discord_name'],
+                'model'        =>      $element['profile']['model'],
+                'mdd_id'        =>      $element['profile']['mdd_id']
+            ];
+
+            $user = new User($newElement);
+            $user->save();
         }
     }
 }

@@ -24,6 +24,13 @@ return new class extends Migration
             $table->string('country')->default('_404');
             $table->string('mdd_id')->nullable()->default(NULL);
             $table->boolean('admin')->default(false);
+
+            $table->string('twitter_name')->nullable()->default(NULL);
+            $table->string('twitch_name')->nullable()->default(NULL);
+            $table->string('discord_name')->nullable()->default(NULL);
+
+            $table->string('model')->default('sarge');
+
             $table->timestamps();
         });
     }

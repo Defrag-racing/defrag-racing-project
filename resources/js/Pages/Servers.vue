@@ -32,6 +32,7 @@
         isRotating.value = true;
 
         router.reload()
+        sort()
 
         setTimeout(() => {
             isRotating.value = false;
@@ -59,11 +60,20 @@
         return cleanedString;
     }
 
-    const sortByPopularity = () => {
+    const sort = () => {
         if (sorting.value == 'popularity') {
+            sortByPopularity();
             return;
         }
 
+        if (sorting.value == 'alphabetically') {
+            sortByAlphabets();
+            return;
+        }
+
+    }
+
+    const sortByPopularity = () => {
         listedServers.value = props.servers.sort((a, b) => {
             const playersA = a.online_players.length;
             const playersB = b.online_players.length;
@@ -83,10 +93,6 @@
     }
 
     const sortByAlphabets = () => {
-        if (sorting.value == 'alphabetically') {
-            return;
-        }
-
         listedServers.value = props.servers.sort((a, b) => {
             const playersA = getServerName(a.name).toLowerCase();
             const playersB = getServerName(b.name).toLowerCase();

@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('records', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('country');
+            $table->string('physics');
+            $table->string('mode');
+            $table->string('gametype');
+            $table->integer('time');
+            $table->datetime('date_set');
+            $table->integer('mdd_id');
+            $table->integer('user_id')->nullable()->default(NULL);
+            $table->string('mapname')->index();
             $table->timestamps();
         });
     }

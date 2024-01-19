@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Server;
 use App\Models\Map;
 use App\Models\User;
+use App\Models\Record;
+use Illuminate\Support\Facades\DB;
 
 class ImportDataCommand extends Command
 {
@@ -114,5 +116,30 @@ class ImportDataCommand extends Command
             $user = new User($newElement);
             $user->save();
         }
+    }
+
+    public function records($data) {
+        DB::beginTransaction();
+
+        foreach($data as $element) {
+            $newElement = [
+                'name'        =>      $element['player_name'],
+                'country'        =>      $element['player_country'],
+                'physics'        =>      $element['physics'],
+                'mode'        =>      $element['mode'],
+                'gametype'        =>      $element['gametype'],
+                'time'        =>      $element['time'],
+                'date_set'        =>      $element['date_set'],
+                'user_id'        =>      $element['player_id'],
+                'mdd_id'        =>      $element['player_mdd_id'],
+                'date_set'        =>      $element['date_set'],
+                'mapname'        =>      $element['mapname'],
+            ];
+
+            $record = new Record($newElement);
+            $record->save();
+        }
+
+        DB::commit();
     }
 }

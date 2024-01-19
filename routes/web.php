@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\BundlesController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,7 @@ Route::get('/test', function () {
 });
 
 Route::get('/', [WebController::class, 'home'])->name('home');
+Route::post('/search', [SearchController::class, 'search'])->name('search');
 
 Route::get('/servers', [WebController::class, 'servers'])->name('servers');
 

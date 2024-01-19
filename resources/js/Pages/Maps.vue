@@ -57,7 +57,7 @@
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div class="flex flex-wrap justify-center">
-                        <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" />
+                        <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" :key="map.id" />
                     </div>
                     
                     <div class="flex justify-center">

@@ -183,7 +183,7 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4 flex justify-center flex-wrap">
-                    <ServerCard v-for="server in listedServers" :server="server" />
+                    <ServerCard v-for="server in listedServers" :server="server" :key="server.id" />
                 </div>
             </div>
         </div>

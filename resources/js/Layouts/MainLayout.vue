@@ -11,21 +11,58 @@
     import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 
+    import MapSearchItem from '@/Components/MapSearchItem.vue';
+
     defineProps({
         title: String,
     });
 
     const showingNavigationDropdown = ref(false);
 
+    const search = ref('');
+
+    const maps = ref([]);
+    const players = ref([]);
+
+    const resultsSection = ref(false);
+    const searchSection = ref(null);
+
     const logout = () => {
         router.post(route('logout'));
     };
 
-    const search = ref('');
+    const onSearchFocus = () => {
+        resultsSection.value = true;
+    }
+
+    const onSearchBlur = (event) => {
+        if (! resultsSection.value) {
+            return;
+        }
+        
+        if (! searchSection.value.contains(event.target)) {
+            resultsSection.value = false;
+        }
+
+    }
+
+    const performSearch = () => {
+        if (search.value.length == 0) {
+            maps.value = [];
+            players.value = [];
+            return;
+        }
+
+        axios.post(route('search'), {
+            search: search.value
+        }).then(response => {
+            maps.value = response.data?.maps
+        });
+    }
 </script>
 
 <template>
-    <div>
+    <div @click="onSearchBlur">
         <Head :title="title" />
 
         <Banner />
@@ -44,12 +81,37 @@
                             </div>
                         </div>
 
-                        <TextInput
-                            v-model="search"
-                            type="text"
-                            class="mt-1 h-10 hidden sm:block md:w-80 lg:w-100"
-                            placeholder="Search..."
-                        />
+                        <div id="search-section" ref="searchSection">
+                            <TextInput
+                                v-model="search"
+                                @focus="onSearchFocus"
+                                type="text"
+                                class="mt-1 h-10 hidden sm:block md:w-80 lg:w-100"
+                                placeholder="Search..."
+                                @input="performSearch"
+                            />
+
+                            <div v-if="resultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute z-10 bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500">
+                                <div v-if="search.length == 0">
+                                    Type a search query...
+                                </div>
+
+                                <!-- <div v-if="search.length > 0 && maps.length == 0 && players.length == 0">
+                                    <svg width="24" height="24" stroke="#CCC" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g class="spinner_V8m1">
+                                            <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"></circle>
+                                        </g>
+                                    </svg>
+                                </div> -->
+
+                                <div v-if="maps.data?.length > 0">
+                                    <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                        Maps
+                                    </div>
+                                    <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="flex md:items-center md:ms-6">
                             <div class="w-full flex justify-between px-5">
@@ -247,3 +309,37 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+    .spinner_V8m1 {
+        transform-origin: center;
+        animation: spinner_zKoa 2s linear infinite;
+    }
+
+    .spinner_V8m1 circle {
+        stroke-linecap: round;
+        animation: spinner_YpZS 1.5s ease-in-out infinite;
+    }
+
+    @keyframes spinner_zKoa {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spinner_YpZS {
+        0% {
+            stroke-dasharray: 0 150;
+            stroke-dashoffset: 0;
+        }
+        47.5% {
+            stroke-dasharray: 42 150;
+            stroke-dashoffset: -16;
+        }
+        95%,
+        100% {
+            stroke-dasharray: 42 150;
+            stroke-dashoffset: -59;
+        }
+    }
+</style>

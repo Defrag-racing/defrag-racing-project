@@ -32,7 +32,7 @@
         <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="md:flex justify-center">
                 <div class="md:mr-5 flex-2">
-                    <div v-for="category in categories">
+                    <div v-for="category in categories" :key="category.id">
                         <div @click="selectCategory(category)" class="cursor-pointer rounded-md py-2 px-5 w-400 text-gray-400 mb-3 flex justify-between" :class="{'bg-grayop-800 hover:bg-grayop-700': currentCategory != category, 'bg-grayop-600 font-bold': currentCategory == category}">
                             <div class="mr-5">
                                 {{ category.name }}
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="md:ml-5 rounded-md bg-grayop-800 p-3 w-full flex-1" v-if="currentCategory && currentCategory.bundles.length > 0">
-                    <div v-for="bundle in currentCategory?.bundles">
+                    <div v-for="bundle in currentCategory?.bundles" :key="bundle.id">
                         <Bundle :bundle="bundle" />
                     </div>
                 </div>

@@ -68,21 +68,21 @@
     animation: gradient-animation 7s ease infinite;
 }
 
-.players-scrollbar {
+.defrag-scrollbar {
     max-height: 300px;
     overflow-y: auto;
 }
 
-.players-scrollbar::-webkit-scrollbar {
+.defrag-scrollbar::-webkit-scrollbar {
     width: 10px;
 }
 
-.players-scrollbar::-webkit-scrollbar-thumb {
+.defrag-scrollbar::-webkit-scrollbar-thumb {
     background-color: #6d6d6d;
     border-radius: 5px;
 }
 
-.players-scrollbar::-webkit-scrollbar-track {
+.defrag-scrollbar::-webkit-scrollbar-track {
     background-color: #00000000;
 }
 

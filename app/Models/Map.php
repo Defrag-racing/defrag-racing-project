@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Map extends Model
 {
     use HasFactory;
+    use Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -31,4 +33,12 @@ class Map extends Model
         'visible',
         'date_added'
     ];
+
+    public function toSearchableArray () {
+        return [
+            'id' => (string) $this->id,
+            'name' => $this->name,
+            'created_at' => $this->created_at->timestamp,
+        ];
+    }
 }

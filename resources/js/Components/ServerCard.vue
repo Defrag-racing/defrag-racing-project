@@ -101,8 +101,8 @@
                 <hr class="mt-4 text-gray-600 border-gray-600 bg-gray-600">
 
                 <!-- Online Players -->
-                <div class="mt-4 players-scrollbar">
-                    <OnlinePlayer v-for="player in server.online_players" :player="player" />
+                <div class="mt-4 defrag-scrollbar">
+                    <OnlinePlayer v-for="player in server.online_players" :player="player" :key="player.id" />
                 </div>
             </div>
         </div>

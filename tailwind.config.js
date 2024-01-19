@@ -50,5 +50,17 @@ export default {
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [
+        forms,
+        typography,
+        function ({ addUtilities }) {
+            const newUtilities = {
+                '.bg-fit': {
+                    'background-repeat': 'no-repeat',
+                    'background-size': '100% 100%',
+                },
+            };
+            addUtilities(newUtilities, ['responsive', 'hover']);
+        }
+    ],
 };

@@ -14,7 +14,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
 const formatTime = (milliseconds) => {
     milliseconds = Math.max(0, milliseconds);
-
+  
     const hours = Math.floor(milliseconds / 3600000);
     milliseconds %= 3600000;
     const minutes = Math.floor(milliseconds / 60000);
@@ -32,14 +32,14 @@ const formatTime = (milliseconds) => {
       formattedTime += `${padZero(minutes)}:`;
     }
   
-    formattedTime += `${padZero(seconds)}:${padZero(milliseconds)}`;
+    formattedTime += `${padZero(seconds)}:${milliseconds.toString().padStart(3, '0')}`;
   
     return formattedTime;
-}
+};
 
 const padZero = (num) => {
     return num.toString().padStart(2, '0');
-}
+};
 
 const q3tohtml = (name) => {
     let colored_name = '';
@@ -60,7 +60,7 @@ const q3tohtml = (name) => {
     }
 
     return colored_name;
-}
+};
 
 createInertiaApp({
     title: (title) => `${title} - Defrag Racing`,

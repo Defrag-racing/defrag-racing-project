@@ -41,4 +41,8 @@ class Map extends Model
             'created_at' => $this->created_at->timestamp,
         ];
     }
+
+    public function records () {
+        return $this->hasMany(Record::class, 'mapname', 'name')->orderBy('date_set', 'DESC');
+    }
 }

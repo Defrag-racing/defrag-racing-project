@@ -8,7 +8,7 @@
 
 <template>
     <div>
-        <Popper arrow hover :disabled="player.profile == null">
+        <Popper arrow hover :disabled="player.profile == null" style="z-index: 100;">
             <div>
                 <img :src="`/images/flags/${player.country}.png`" class="w-5 inline mr-2 mb-0.5">
     
@@ -42,7 +42,7 @@
 
 <style>
     :root {
-        --popper-theme-background-color: #272e3bee;
+        --popper-theme-background-color: #272e3bf8;
         --popper-theme-background-color-hover: #272e3bee;
         --popper-theme-text-color: #ffffff;
         --popper-theme-border-width: 0px;

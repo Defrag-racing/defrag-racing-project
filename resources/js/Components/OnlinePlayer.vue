@@ -1,5 +1,4 @@
 <script setup>
-    import Popper from "vue3-popper";
     import OnlinePlayerData from '@/Components/OnlinePlayerData.vue';
 
     const props = defineProps({

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Server;
-use App\Models\Map;
 
 class WebController extends Controller
 {
@@ -14,20 +12,5 @@ class WebController extends Controller
         // session()->flash('flash.bannerStyle', 'danger');
 
         return Inertia::render('Home');
-    }
-
-    function servers() {
-        $servers = Server::where('offline', false)->where('visible', true)
-            ->with(['mapdata', 'onlinePlayers' => function ($query) {
-                $query->with('spectators');
-            }])->get();
-
-        $sortedServers = $servers->sortByDesc(function ($server) {
-            return $server->onlinePlayers->count();
-        });
-
-        $sortedServersArray = $sortedServers->values()->all();
-
-        return Inertia::render('Servers')->with('servers', $sortedServersArray);
     }
 }

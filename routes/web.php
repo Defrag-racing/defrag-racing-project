@@ -6,6 +6,7 @@ use App\Http\Controllers\WebController;
 use App\Http\Controllers\MapsController;
 use App\Http\Controllers\BundlesController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ServersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ use App\Http\Controllers\SearchController;
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/servers', [WebController::class, 'servers'])->name('servers');
+Route::get('/servers', [ServersController::class, 'index'])->name('servers');
 
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
 Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');

@@ -1,6 +1,7 @@
 <script setup>
     import OnlinePlayer from '@/Components/OnlinePlayer.vue';
     import MapDetails from './MapDetails.vue';
+    import { computed } from 'vue';
 
     const props = defineProps({
         server: Object,
@@ -14,6 +15,12 @@
         document.execCommand('copy');
         document.body.removeChild(textarea);
     };
+
+    const bestrecordCountry = computed(() => {
+        let country = props.server.bestrecord.user?.country ?? props.server.bestrecord.country;
+
+        return (country == 'XX') ? '_404' : country;
+    });
 </script>
 
 <template>
@@ -81,13 +88,16 @@
                 </div>
 
                 <!-- Best Record -->
-                <div class="text-lg p-2 bg-blackop-30 rounded-md mt-3">
+                <div class="text-lg p-2 bg-blackop-30 rounded-md mt-3" v-if="server.bestrecord">
                     <div class="text-xs capitalize text-gray-400 font-bold">BEST TIME </div>
 
-                    <div class="flex justify-between">
-                        <a class="hover:underline text-gray-500" href="#" v-html="q3tohtml('^9Jan^8Hejazi')"></a>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2">
+                            <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.bestrecord.user?.name ?? server.bestrecord.name)"></a>
+                        </div>
                         <div class="font-bold">
-                            {{  formatTime('117032') }}
+                            {{  formatTime(server.bestrecord.time) }}
                         </div>
                     </div>
                 </div>

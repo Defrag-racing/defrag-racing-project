@@ -1,5 +1,5 @@
 <script setup>
-import MainLayout from '@/Layouts/MainLayout.vue';
+import { Head } from '@inertiajs/vue3';
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue';
 import SectionBorder from '@/Components/Laravel/SectionBorder.vue';
@@ -14,12 +14,14 @@ defineProps({
 </script>
 
 <template>
-    <MainLayout title="Profile">
-        <template #header>
+    <div>
+        <Head title="Profile" />
+
+        <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Profile
             </h2>
-        </template>
+        </div>
 
         <div>
             <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
@@ -53,5 +55,5 @@ defineProps({
                 </template>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

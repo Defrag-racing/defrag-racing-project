@@ -1,5 +1,5 @@
 <script setup>
-    import { Link, useForm } from '@inertiajs/vue3';
+    import { Head, Link, useForm } from '@inertiajs/vue3';
     import AuthenticationCard from '@/Components/Laravel/AuthenticationCard.vue';
     import Checkbox from '@/Components/Laravel/Checkbox.vue';
     import InputError from '@/Components/Laravel/InputError.vue';
@@ -7,7 +7,6 @@
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import CountrySelect from '@/Components/Basic/CountrySelect.vue';
-    import MainLayout from '@/Layouts/MainLayout.vue';
 
     const form = useForm({
         username: '',
@@ -31,7 +30,9 @@
 </script>
 
 <template>
-    <MainLayout title="Register">
+    <div>
+        <Head title="Register" />
+
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <AuthenticationCard>
@@ -143,5 +144,5 @@
                 </AuthenticationCard>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

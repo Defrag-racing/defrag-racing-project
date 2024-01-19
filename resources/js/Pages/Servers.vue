@@ -1,5 +1,5 @@
 <script setup>
-    import MainLayout from '@/Layouts/MainLayout.vue';
+    import { Head } from '@inertiajs/vue3';
     import ServerCard from '@/Components/ServerCard.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
 
@@ -107,8 +107,10 @@
 </script>
 
 <template>
-    <MainLayout title="Servers">
-        <template #header>
+    <div>
+        <Head title="Servers" />
+
+        <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <div class="flex justify-between items-center flex-wrap">
                 <h2 class="font-semibold text-3xl text-gray-800 dark:text-gray-200 leading-tight">
                     Servers
@@ -178,7 +180,7 @@
                     <div class="ml-2">{{ servers.length }} Online Servers</div>
                 </div>
             </div>
-        </template>
+        </div>
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
@@ -187,5 +189,5 @@
                 </div>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

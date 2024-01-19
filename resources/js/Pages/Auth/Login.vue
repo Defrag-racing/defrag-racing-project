@@ -6,7 +6,6 @@ import InputError from '@/Components/Laravel/InputError.vue';
 import InputLabel from '@/Components/Laravel/InputLabel.vue';
 import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 import TextInput from '@/Components/Laravel/TextInput.vue';
-import MainLayout from '@/Layouts/MainLayout.vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -30,7 +29,9 @@ const submit = () => {
 </script>
 
 <template>
-    <MainLayout title="Register">
+    <div>
+        <Head title="Login" />
+
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <AuthenticationCard>
@@ -86,5 +87,5 @@ const submit = () => {
                 </AuthenticationCard>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

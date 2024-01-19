@@ -1,5 +1,5 @@
 <script setup>
-    import MainLayout from '@/Layouts/MainLayout.vue';
+    import { Head } from '@inertiajs/vue3';
     import Bundle from '@/Components/Bundle.vue';
     import { onMounted, ref } from 'vue';
 
@@ -22,12 +22,14 @@
 </script>
 
 <template>
-    <MainLayout title="Bundles">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-200 leading-tight">
+    <div>
+        <Head title="Bundles" />
+
+        <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
+            <h2 class="font-semibold text-3xl text-gray-800 dark:text-gray-200 leading-tight">
                 Bundles
             </h2>
-        </template>
+        </div>
 
         <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="md:flex justify-center">
@@ -56,5 +58,5 @@
                 </div>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

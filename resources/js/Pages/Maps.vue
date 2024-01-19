@@ -1,5 +1,5 @@
 <script setup>
-    import MainLayout from '@/Layouts/MainLayout.vue';
+    import { Head } from '@inertiajs/vue3';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import MapCard from '@/Components/MapCard.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
@@ -10,8 +10,10 @@
 </script>
 
 <template>
-    <MainLayout title="Maps">
-        <template #header>
+    <div>
+        <Head title="Maps" />
+
+        <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <div class="flex justify-between flex-wrap">
                 <h2 class="font-semibold text-3xl text-gray-800 dark:text-gray-200 leading-tight">
                     Maps
@@ -51,7 +53,7 @@
 
                 <div class="ml-2 mr-5">{{ maps.total }} Maps Found</div>
             </div>
-        </template>
+        </div>
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
@@ -66,5 +68,5 @@
                 </div>
             </div>
         </div>
-    </MainLayout>
+    </div>
 </template>

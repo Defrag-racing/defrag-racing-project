@@ -8,6 +8,8 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Popper from "vue3-popper";
 
+import MainLayout from "@/Layouts/MainLayout.vue" 
+
 const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
 const formatTime = (milliseconds) => {
@@ -39,9 +41,36 @@ const padZero = (num) => {
     return num.toString().padStart(2, '0');
 }
 
+const q3tohtml = (name) => {
+    let colored_name = '';
+    let color = 'white';
+
+    for (let i = 0; i < name.length; i++) {
+        if (name[i] == '^') {
+            if (name[i + 1] == '^') {
+                colored_name += '^';
+                i++;
+            } else {
+                color = name[i + 1];
+                i++;
+            }
+        } else {
+            colored_name += `<span class="q3c-${color}">${name[i]}</span>`;
+        }
+    }
+
+    return colored_name;
+}
+
 createInertiaApp({
     title: (title) => `${title} - Defrag Racing`,
-    resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
+    resolve: async (name) => {
+        const page = await resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'))
+
+        page.default.layout = page.default.layout || MainLayout
+        
+        return page
+    },
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
@@ -51,26 +80,7 @@ createInertiaApp({
 
         app.config.globalProperties.formatTime = formatTime
 
-        app.config.globalProperties.q3tohtml = (name) => {
-            let colored_name = '';
-            let color = 'white';
-
-            for (let i = 0; i < name.length; i++) {
-                if (name[i] == '^') {
-                    if (name[i + 1] == '^') {
-                        colored_name += '^';
-                        i++;
-                    } else {
-                        color = name[i + 1];
-                        i++;
-                    }
-                } else {
-                    colored_name += `<span class="q3c-${color}">${name[i]}</span>`;
-                }
-            }
-    
-            return colored_name;
-        }
+        app.config.globalProperties.q3tohtml = q3tohtml
 
         app.mount(el);
 

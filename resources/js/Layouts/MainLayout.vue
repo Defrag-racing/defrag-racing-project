@@ -24,7 +24,9 @@
     const maps = ref([]);
     const players = ref([]);
 
-    const resultsSection = ref(false);
+    const showResultsSection = ref(false);
+
+    const resultsSection = ref(null);
     const searchSection = ref(null);
 
     const logout = () => {
@@ -32,16 +34,20 @@
     };
 
     const onSearchFocus = () => {
-        resultsSection.value = true;
+        showResultsSection.value = true;
     }
 
     const onSearchBlur = (event) => {
-        if (! resultsSection.value) {
+        if (! showResultsSection.value) {
             return;
         }
         
         if (! searchSection.value.contains(event.target)) {
-            resultsSection.value = false;
+            showResultsSection.value = false;
+        }
+
+        if (! searchSection.value.contains(event.target)) {
+            showResultsSection.value = false;
         }
 
     }
@@ -63,7 +69,9 @@
 
 <template>
     <div @click="onSearchBlur">
-        <Head :title="title" />
+        <Head :title="title">
+            
+        </Head>
 
         <Banner />
 
@@ -91,7 +99,7 @@
                                 @input="performSearch"
                             />
 
-                            <div v-if="resultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute z-10 bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500">
+                            <div v-if="showResultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute z-10 bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500">
                                 <div v-if="search.length == 0">
                                     Type a search query...
                                 </div>
@@ -104,7 +112,12 @@
                                     </svg>
                                 </div> -->
 
-                                <div v-if="maps.data?.length > 0">
+                                <div v-if="maps.data?.length > 0" ref="resultsSection">
+                                    <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                        Maps
+                                    </div>
+                                    <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
+
                                     <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                         Maps
                                     </div>
@@ -143,7 +156,7 @@
                             <div v-if="$page.props.auth.user"  class="hidden md:block ms-3 relative">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
-                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full  hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-grayop-700 active:bg-gray-50 dark:active:bg-grayop-700 transition ease-in-out duration-150">
+                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-grayop-700 active:bg-gray-50 dark:active:bg-grayop-700 transition ease-in-out duration-150">
                                             <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_path ? '/storage/' + $page.props.auth.user.profile_photo_path : '/images/null.jpg'" :alt="$page.props.auth.user.name">
                                             <div class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400">
                                                 <div v-html="q3tohtml($page.props.auth.user.name)"></div>

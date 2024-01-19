@@ -65,6 +65,10 @@
             maps.value = response.data?.maps
         });
     }
+
+    const isSmallScreen = () => {
+        return window.innerWidth <= 640
+    }
 </script>
 
 <template>
@@ -89,7 +93,7 @@
                             </div>
                         </div>
 
-                        <div id="search-section" ref="searchSection">
+                        <div ref="searchSection">
                             <TextInput
                                 v-model="search"
                                 @focus="onSearchFocus"
@@ -113,11 +117,6 @@
                                 </div> -->
 
                                 <div v-if="maps.data?.length > 0" ref="resultsSection">
-                                    <div class="font-bold text-gray-400 capitalized text-sm mb-1">
-                                        Maps
-                                    </div>
-                                    <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
-
                                     <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                         Maps
                                     </div>
@@ -307,6 +306,32 @@
                     </div>
                 </div>
             </nav>
+
+            <div class="max-w-8xl mx-auto pt-2 px-4 md:px-6 lg:px-8" v-if="isSmallScreen()">
+                <div ref="searchSection">
+                    <TextInput
+                        v-model="search"
+                        @focus="onSearchFocus"
+                        type="text"
+                        class="h-10 block sm:hidden w-full"
+                        placeholder="Search..."
+                        @input="performSearch"
+                    />
+
+                    <div v-if="showResultsSection" class="defrag-scrollbar search-results block p-3 sm:hidden mt-1 absolute z-10 bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500" style="left: 10px; right: 10px;">
+                        <div v-if="search.length == 0">
+                            Type a search query...
+                        </div>
+
+                        <div v-if="maps.data?.length > 0" ref="resultsSection">
+                            <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                Maps
+                            </div>
+                            <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="shadow">

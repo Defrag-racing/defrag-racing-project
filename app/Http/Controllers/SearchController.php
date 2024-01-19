@@ -14,6 +14,7 @@ class SearchController extends Controller
         ]);
 
         $maps = Map::search($request->search)->paginate(25);
+
         return [
             'maps'  =>  $maps
         ];

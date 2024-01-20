@@ -7,6 +7,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Popper from "vue3-popper";
+import moment from 'moment';
 
 import MainLayout from "@/Layouts/MainLayout.vue" 
 
@@ -62,6 +63,39 @@ const q3tohtml = (name) => {
     return colored_name;
 };
 
+const timeSince = (date) => {
+    const currentDate = moment();
+    const inputDate = moment(date);
+    const duration = moment.duration(currentDate.diff(inputDate));
+
+    if (duration.asDays() < 1) {
+        return `${duration.hours()} hours, ${duration.minutes()} minutes`;
+    } else if (duration.asDays() < 365) {
+        const months = duration.months();
+        const weeks = duration.weeks();
+        const days = duration.days() % 7;
+
+        let result = '';
+
+        if (months > 0) {
+            result += `${months} ${months === 1 ? 'month' : 'months'}, `;
+        }
+
+        if (weeks > 0) {
+            result += `${weeks} ${weeks === 1 ? 'week' : 'weeks'}, `;
+        }
+
+        if (days > 0) {
+            result += `${days} ${days === 1 ? 'day' : 'days'}`;
+        }
+
+        return result;
+    } else {
+        const years = duration.years();
+        return `${years} ${years === 1 ? 'year' : 'years'}`;
+    }
+}
+
 createInertiaApp({
     title: (title) => `${title} - Defrag Racing`,
     resolve: async (name) => {
@@ -82,11 +116,14 @@ createInertiaApp({
 
         app.config.globalProperties.q3tohtml = q3tohtml
 
+        app.config.globalProperties.timeSince = timeSince
+
         app.mount(el);
 
         return app;
     },
     progress: {
         color: '#2d85ff',
+        showSpinner: true
     },
 });

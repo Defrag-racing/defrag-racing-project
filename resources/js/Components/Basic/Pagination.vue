@@ -1,6 +1,6 @@
 
 <script setup>
-    import { ref } from 'vue';
+    import { ref, watchEffect } from 'vue';
     import { router } from '@inertiajs/vue3';
     import SmallButton from '@/Components/Basic/SmallButton.vue';
 
@@ -16,13 +16,16 @@
     const after = ref([]);
 
     const getLabel = () => {
+        after.value = []
+        before.value = []
+
         let surroundingPages = 2
 
         for(let i = 1; i <= surroundingPages; i++) {
             if (props.current_page + i <= props.last_page) {
                 after.value.push({
                     label: (props.current_page + i).toString(),
-                    url: props.link.replace('?page=1', '?page=' + (props.current_page + i))
+                    url: getUrl(props.current_page + i)
                 })
             }
         }
@@ -31,7 +34,7 @@
             if (props.current_page - i > 0) {
                 before.value.push({
                     label: (props.current_page - i).toString(),
-                    url: props.link.replace('?page=1', '?page=' + (props.current_page - i))
+                    url: getUrl(props.current_page - i)
                 })
             }
         }
@@ -42,10 +45,22 @@
     }
     
     const getUrl = (page) => {
-        return props.link.replace('?page=1', '?page=' + page).replace('&page=1', '&page=' + page)
+        const params = route().params;
+
+        let result = props.link.replace('?page=1', '?page=' + page).replace('&page=1', '&page=' + page)
+
+        for(let param in params) {
+            if (param !== 'page') {
+                result += `&${param}=${params[param]}`
+            }
+        }
+
+        return result
     }
 
-    getLabel()
+    watchEffect(() => {
+        getLabel()
+    })
 
 </script>
 

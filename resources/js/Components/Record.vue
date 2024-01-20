@@ -1,0 +1,75 @@
+<script setup>
+    import { Link } from '@inertiajs/vue3';
+    import { computed } from 'vue';
+
+    const props = defineProps({
+        record: Object,
+        cpmrecord: Object,
+        vq3record: Object
+    });
+
+
+    const bestrecordCountry = computed(() => {
+        let country = props.record.user?.country ?? props.record.country;
+
+        return (country == 'XX') ? '_404' : country;
+    });
+
+    const timeDiff =  computed(() => {
+        if (props.record.physics.startsWith('cpm')) {
+            if (! props.cpmrecord) {
+                return null;
+            }
+
+            return Math.abs(props.cpmrecord.time - props.record.time)
+        }
+
+        if (! props.vq3record) {
+            return null;
+        }
+
+        return Math.abs(props.vq3record.time - props.record.time)
+    });
+
+</script>
+
+<template>
+    <div>
+        <div class="flex justify-between rounded-md p-2 items-center">
+            <div class="mr-4 flex items-center">
+                <img class="h-10 w-10 rounded-full object-cover" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
+                
+                <div class="ml-4">
+                    <Link class="flex rounded-md" href="#">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'" :title="bestrecordCountry">
+                                <a class="font-bold text-white" href="#" v-html="q3tohtml(record.user?.name ?? record.name)"></a>
+                            </div>
+                        </div>
+                    </Link>
+    
+                    <div class="text-gray-400 text-xs mt-2"> {{ timeSince(record.date_set) }} ago</div>
+                </div>
+            </div>
+
+            <div class="flex items-center">
+                <div class="text-right">
+                    <div class="text-lg font-bold text-gray-300">{{  formatTime(record.time) }}</div>
+                    <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
+                </div>
+
+                <div class="ml-5">
+                    <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-red-600': record.physics.includes('cpm'), 'bg-blue-600': !record.physics.includes('cpm')}">
+                        <div>{{ record.physics }}</div>
+                    </div>
+                    <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black mt-1">
+                        <div>{{ record.mode }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <hr class="my-2 text-gray-700 border-gray-700 bg-gray-700">
+    </div>
+</template>

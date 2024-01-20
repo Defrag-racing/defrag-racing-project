@@ -63,7 +63,7 @@
 </script>
 
 <template>
-    <div class="rounded bg-blackop-30 p-2 mx-2 mb-4 group">
+    <div class="rounded bg-grayop-700 p-2 mx-2 mb-4 group">
         <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('https://defrag.racing/uploads/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
             <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
                 {{ map.physics }}

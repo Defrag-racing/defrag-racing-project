@@ -134,9 +134,14 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+            'users' => [
+                'filterableAttributes'=> ['plain_name'],
+                'sortableAttributes' => ['created_at']
+            ],
+            'maps' => [
+                'filterableAttributes'=> ['name'],
+                'sortableAttributes' => ['created_at']
+            ],
         ],
     ],
 
@@ -182,8 +187,8 @@ return [
                             'type' => 'string',
                         ],
                         [
-                            'name' => 'name',
-                            'type' => 'string',
+                            'name'  => 'name',
+                            'type'  => 'string[]'
                         ],
                         [
                             'name' => 'created_at',
@@ -191,9 +196,36 @@ return [
                         ],
                     ],
                     'default_sorting_field' => 'created_at',
+                    "token_separators"      => ["-", "_"]
                 ],
                 'search-parameters' => [
-                    'query_by' => 'name'
+                    'query_by' => 'name',
+                    'prefix'   => true
+                ],
+            ],
+
+            \App\Models\User::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        [
+                            'name' => 'id',
+                            'type' => 'string',
+                        ],
+                        [
+                            'name'  => 'plain_name',
+                            'type'  => 'string[]'
+                        ],
+                        [
+                            'name' => 'created_at',
+                            'type' => 'int64',
+                        ],
+                    ],
+                    'default_sorting_field' => 'created_at',
+                    "token_separators"      => ["-", "_"]
+                ],
+                'search-parameters' => [
+                    'query_by' => 'plain_name',
+                    'prefix'   => true
                 ],
             ],
         ],

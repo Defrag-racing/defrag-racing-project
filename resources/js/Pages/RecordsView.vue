@@ -1,16 +1,12 @@
 <script setup>
     import { Head, router } from '@inertiajs/vue3';
-    import MapCard from '@/Components/MapCard.vue';
-    import MapRecord from '@/Components/MapRecord.vue';
+    import Record from '@/Components/Record.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
     import { onMounted, ref } from 'vue';
 
     const props = defineProps({
-        map: Object,
-        records: Object,
-        cpmrecord: Object,
-        vq3record: Object
+        records: Object
     });
 
     const order = ref('DESC');
@@ -50,11 +46,6 @@
     }
 
     const sortByPhysics = (newPhysics) => {
-        if (newPhysics !== physics.value) {
-            order.value = 'ASC';
-            column.value = 'time';
-        }
-
         physics.value = newPhysics
 
         router.reload({
@@ -76,12 +67,12 @@
 
 <template>
     <div>
-        <Head :title="map.name" />
+        <Head title="Records" />
 
         <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <div class="flex justify-between items-center flex-wrap">
                 <h2 class="font-semibold text-xl text-gray-200 leading-tight">
-                    Map details
+                    Records
                 </h2>
 
 
@@ -195,13 +186,9 @@
 
         <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-wrap justify-center">
-                <div>
-                    <MapCard :map="map" />
-                </div>
-
                 <div class="rounded-md p-3 flex-grow bg-grayop-700 flex flex-col">
                     <div class="flex-grow">
-                        <MapRecord v-for="record in records.data" :key="record.id" :record="record" :cpmrecord="cpmrecord" :vq3record="vq3record" />
+                        <Record v-for="record in records.data" :key="record.id" :record="record" />
                     </div>
 
                     <div class="flex justify-center">

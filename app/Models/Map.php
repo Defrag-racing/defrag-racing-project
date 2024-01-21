@@ -34,10 +34,33 @@ class Map extends Model
         'date_added'
     ];
 
+
+    public function generateSubstrings($name) {
+        $inputString = mb_convert_encoding($name, 'Windows-1252', "auto");
+        $length = strlen($inputString);
+        $result = [];
+    
+        for ($i = 0; $i <= $length; $i++) {
+            $sub = substr($inputString, $i);
+
+            if (strlen($sub) < 3) {
+                break;
+            }
+
+            $result[] = $sub;
+        }
+
+        if (count($result) == 0) {
+            $result[] = $inputString;
+        }
+    
+        return $result;
+    }
+
     public function toSearchableArray () {
         return [
             'id' => (string) $this->id,
-            'name' => $this->name,
+            'name' => $this->generateSubstrings($this->name),
             'created_at' => $this->created_at->timestamp,
         ];
     }

@@ -76,12 +76,12 @@
                 </div>
 
                 <!-- Items -->
-                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="weaponsList.length > 0">
+                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="itemsList.length > 0">
                     <div v-for="item in itemsList" :title="item" :class="`sprite-items sprite-${item} w-4 h-4 flex-shrink-0 mx-1`"></div>
                 </div>
 
                 <!-- Functions -->
-                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="weaponsList.length > 0">
+                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="functionsList.length > 0">
                     <div v-for="func in functionsList" :title="func" :class="`sprite-items sprite-${func} w-4 h-4 flex-shrink-0 mx-1`"></div>
                 </div>
             </div>

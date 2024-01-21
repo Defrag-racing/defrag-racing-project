@@ -15,8 +15,11 @@ class SearchController extends Controller
 
         $maps = Map::search($request->search)->paginate(25);
 
+        $players = User::search($request->search)->paginate(10);
+
         return [
-            'maps'  =>  $maps
+            'maps'      =>  $maps,
+            'players'   => $players
         ];
     }
 }

@@ -3,7 +3,9 @@
     import { computed } from 'vue';
 
     const props = defineProps({
-        record: Object
+        record: Object,
+        cpmrecord: Object,
+        vq3record: Object
     });
 
 
@@ -13,11 +15,27 @@
         return (country == 'XX') ? '_404' : country;
     });
 
+    const timeDiff =  computed(() => {
+        if (props.record.physics.startsWith('cpm')) {
+            if (! props.cpmrecord) {
+                return null;
+            }
+
+            return Math.abs(props.cpmrecord.time - props.record.time)
+        }
+
+        if (! props.vq3record) {
+            return null;
+        }
+
+        return Math.abs(props.vq3record.time - props.record.time)
+    });
+
 </script>
 
 <template>
     <div>
-        <div class="flex justify-between rounded-md p-2 items-center">
+        <div class="flex justify-between rounded-md px-2 py-1 items-center">
             <div class="mr-4 flex items-center">
                 <img class="h-10 w-10 rounded-full object-cover" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
                 
@@ -36,27 +54,23 @@
             </div>
 
             <div class="flex items-center">
-                <div class="text-right mr-5">
-                    <Link class="font-bold text-blue-400 hover:underline hover:text-blue-300" style="width: 160px;" :href="route('maps.map', record.mapname)">
-                        {{  record.mapname }}
-                    </Link>
-                </div>
-
-                <div class="text-right ml-5">
-                    <div class="text-lg font-bold text-gray-300 text-right" style="width: 100px;">{{  formatTime(record.time) }}</div>
+                <div class="text-right">
+                    <div class="text-lg font-bold text-gray-300">{{  formatTime(record.time) }}</div>
+                    <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
                 </div>
 
                 <div class="ml-5">
                     <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-red-600': record.physics.includes('cpm'), 'bg-blue-600': !record.physics.includes('cpm')}">
                         <div>{{ record.physics }}</div>
                     </div>
-                    <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black mt-1">
+
+                    <!-- <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black mt-1">
                         <div>{{ record.mode }}</div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
     
-        <hr class="my-2 text-gray-700 border-gray-700 bg-gray-700">
+        <hr class="my-1 text-gray-700 border-gray-700 bg-gray-700">
     </div>
 </template>

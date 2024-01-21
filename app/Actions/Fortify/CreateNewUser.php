@@ -28,13 +28,18 @@ class CreateNewUser implements CreatesNewUsers
             'country'   =>  ['required', 'string', 'max:3']
         ])->validate();
 
+        $pattern = '/\^\w/';
+
+        $plainName = preg_replace($pattern, '', $input['name']);
+
         return User::create([
-            'username'  =>  $input['username'],
-            'name'      => $input['name'],
-            'email'     => $input['email'],
-            'oldhash'   => NULL,
-            'password'  => Hash::make($input['password']),
-            'country'   => $input['country']
+            'username'   =>  $input['username'],
+            'name'       => $input['name'],
+            'email'      => $input['email'],
+            'oldhash'    => NULL,
+            'password'   => Hash::make($input['password']),
+            'country'    => $input['country'],
+            'plain_name' => $plainName
         ]);
     }
 }

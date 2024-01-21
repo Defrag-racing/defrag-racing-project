@@ -7,6 +7,7 @@ use App\Http\Controllers\MapsController;
 use App\Http\Controllers\BundlesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServersController;
+use App\Http\Controllers\RecordsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,5 +27,7 @@ Route::get('/servers', [ServersController::class, 'index'])->name('servers');
 
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
 Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');
+
+Route::get('/records', [RecordsController::class, 'index'])->name('records');
 
 Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');

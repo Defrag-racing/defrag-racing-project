@@ -12,6 +12,7 @@
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 
     import MapSearchItem from '@/Components/MapSearchItem.vue';
+    import PlayerSearchItem from '@/Components/PlayerSearchItem.vue';
 
     defineProps({
         title: String,
@@ -63,6 +64,7 @@
             search: search.value
         }).then(response => {
             maps.value = response.data?.maps
+            players.value = response.data?.players
         });
     }
 
@@ -108,19 +110,20 @@
                                     Type a search query...
                                 </div>
 
-                                <!-- <div v-if="search.length > 0 && maps.length == 0 && players.length == 0">
-                                    <svg width="24" height="24" stroke="#CCC" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <g class="spinner_V8m1">
-                                            <circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3"></circle>
-                                        </g>
-                                    </svg>
-                                </div> -->
-
-                                <div v-if="maps.data?.length > 0" ref="resultsSection">
-                                    <div class="font-bold text-gray-400 capitalized text-sm mb-1">
-                                        Maps
+                                <div ref="resultsSection">
+                                    <div v-if="maps.data?.length > 0">
+                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                            Maps
+                                        </div>
+                                        <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                                     </div>
-                                    <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
+
+                                    <div v-if="players.data?.length > 0">
+                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                            Players
+                                        </div>
+                                        <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +241,7 @@
                             Players
                         </NavLink>
 
-                        <NavLink :href="route('login')" :active="route().current('login')">
+                        <NavLink :href="route('records')" :active="route().current('records')">
                             Records
                         </NavLink>
 
@@ -267,7 +270,7 @@
                             Players
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('home')" :active="route().current('login')">
+                        <ResponsiveNavLink :href="route('records')" :active="route().current('records')">
                             Records
                         </ResponsiveNavLink>
 
@@ -323,11 +326,20 @@
                             Type a search query...
                         </div>
 
-                        <div v-if="maps.data?.length > 0" ref="resultsSection">
-                            <div class="font-bold text-gray-400 capitalized text-sm mb-1">
-                                Maps
+                        <div ref="resultsSection">
+                            <div v-if="maps.data?.length > 0">
+                                <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                    Maps
+                                </div>
+                                <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                             </div>
-                            <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
+
+                            <div v-if="players.data?.length > 0">
+                                <div class="font-bold text-gray-400 capitalized text-sm mb-1">
+                                    Players
+                                </div>
+                                <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                            </div>
                         </div>
                     </div>
                 </div>

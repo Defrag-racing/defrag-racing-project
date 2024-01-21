@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -36,7 +38,8 @@ class User extends Authenticatable
         'twitter_name',
         'twitch_name',
         'discord_name',
-        'model'
+        'model',
+        'plain_name'
     ];
 
     /**
@@ -70,5 +73,35 @@ class User extends Authenticatable
 
     public function username () {
         return 'username';
+    }
+
+    public function generateSubstrings($name) {
+        $inputString = mb_convert_encoding($name, 'Windows-1252', "auto");
+        $length = strlen($inputString);
+        $result = [];
+    
+        for ($i = 0; $i <= $length; $i++) {
+            $sub = substr($inputString, $i);
+
+            if (strlen($sub) < 3) {
+                break;
+            }
+
+            $result[] = $sub;
+        }
+
+        if (count($result) == 0) {
+            $result[] = $inputString;
+        }
+    
+        return $result;
+    }
+
+    public function toSearchableArray () {
+        return [
+            'id' => (string) $this->id,
+            'plain_name' => $this->generateSubstrings($this->plain_name),
+            'created_at' => $this->created_at->timestamp,
+        ];
     }
 }

@@ -96,7 +96,11 @@ class ImportDataCommand extends Command
     }
 
     public function users($data) {
+        $pattern = '/\^\w/';
+
         foreach($data as $element) {
+            $plainName = preg_replace($pattern, '', $element['profile']['display_name']);
+
             $newElement = [
                 'id'        =>      $element['id'],
                 'oldhash'        =>      $element['password'],
@@ -110,7 +114,8 @@ class ImportDataCommand extends Command
                 'twitter_name'        =>      $element['profile']['twitter_name'],
                 'discord_name'        =>      $element['profile']['discord_name'],
                 'model'        =>      $element['profile']['model'],
-                'mdd_id'        =>      $element['profile']['mdd_id']
+                'mdd_id'        =>      $element['profile']['mdd_id'],
+                'plain_name'        =>  $plainName
             ];
 
             $user = new User($newElement);

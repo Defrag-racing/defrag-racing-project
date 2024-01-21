@@ -9,49 +9,13 @@
         records: Object
     });
 
-    const order = ref('DESC');
-    const column = ref('date_set');
     const physics = ref('all');
-
-    const sortByDate = () => {
-        if (column.value === 'date_set') {
-            order.value = (order.value == 'ASC') ? 'DESC' : 'ASC';
-        }
-
-        column.value = 'date_set';
-
-        router.reload({
-            data: {
-                sort: column.value,
-                order: order.value,
-                physics: physics.value
-            }
-        })
-    }
-
-    const sortByTime = () => {
-        if (column.value === 'time') {
-            order.value = (order.value == 'ASC') ? 'DESC' : 'ASC';
-        }
-
-        column.value = 'time';
-
-        router.reload({
-            data: {
-                sort: column.value,
-                order: order.value,
-                physics: physics.value
-            }
-        })
-    }
 
     const sortByPhysics = (newPhysics) => {
         physics.value = newPhysics
 
         router.reload({
             data: {
-                sort: column.value,
-                order: order.value,
                 physics: physics.value,
                 page: 1
             }
@@ -59,8 +23,6 @@
     }
 
     onMounted(() => {
-        order.value = route().params['order'] ?? 'DESC';
-        column.value = route().params['column'] ?? 'date_set';
         physics.value = route().params['physics'] ?? 'all';
     })
 </script>
@@ -77,64 +39,6 @@
 
 
                 <div class="flex">
-                    <Dropdown align="center" width="48">
-                        <template #trigger>
-                            <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
-                                <div class="w-8 h-8 mr-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-                                    </svg>
-                                </div>
-            
-                                <div>
-                                    <div class="text-left">
-                                        Filters
-                                    </div>
-            
-                                    <div class="text-xs text-gray-500 text-center flex">
-                                        <span>Currently:</span>
-                                        <span class="text-gray-400 capitalize ml-1"> {{ column.split('_')[0] }} </span>
-    
-                                        <span class="ml-0.5">
-                                            <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-    
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                </div>
-                            </button>
-                        </template>
-    
-                        <template #content>
-                            <div @click="sortByDate" class="flex justify-between cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
-                                <span>Date Set</span>
-                                <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-    
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                </svg>                             
-                            </div>
-    
-                            <div @click="sortByTime" class="flex justify-between cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
-                                <span>Time</span>
-                                <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-    
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                </svg>                           
-                            </div>
-                        </template>
-                    </Dropdown>
-    
-    
                     <Dropdown align="center" width="48">
                         <template #trigger>
                             <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">

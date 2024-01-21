@@ -4,7 +4,7 @@
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
 
     import { router } from '@inertiajs/vue3';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, onUnmounted, ref } from 'vue';
 
     const props = defineProps({
         servers: Array,
@@ -17,11 +17,14 @@
     const listedServers = ref(props.servers);
 
     const startInterval = () => {
-        interval.value = setInterval(updatePage, 30000);
+        if (interval.value == null) {
+            interval.value = setInterval(updatePage, 30000);
+        }
     }
 
     const stopInterval = () => {
         clearInterval(interval.value);
+        interval.value = null;
     }
 
     const updatePage = () => {
@@ -50,6 +53,10 @@
         countPlayers()
 
         startInterval()
+    })
+
+    onUnmounted(() => {
+        stopInterval()
     })
 
     const getServerName = (name) => {

@@ -25,4 +25,8 @@ class Record extends Model
     public function user () {
         return $this->belongsTo(User::class, 'mdd_id', 'mdd_id');
     }
+
+    public function map () {
+        return $this->belongsTo(Map::class, 'mapname', 'name');
+    }
 }

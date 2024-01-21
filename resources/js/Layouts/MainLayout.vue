@@ -110,7 +110,7 @@
                                     Type a search query...
                                 </div>
 
-                                <div ref="resultsSection">
+                                <div ref="resultsSection" v-else>
                                     <div v-if="maps.data?.length > 0">
                                         <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                             Maps
@@ -123,6 +123,10 @@
                                             Players
                                         </div>
                                         <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                                    </div>
+
+                                    <div v-if="players.data?.length == 0 && maps.data?.length == 0">
+                                        There are no results !
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +330,7 @@
                             Type a search query...
                         </div>
 
-                        <div ref="resultsSection">
+                        <div ref="resultsSection" v-else>
                             <div v-if="maps.data?.length > 0">
                                 <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                     Maps
@@ -339,6 +343,10 @@
                                     Players
                                 </div>
                                 <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                            </div>
+
+                            <div v-if="players.data?.length == 0 && maps.data?.length == 0">
+                                There are no results !
                             </div>
                         </div>
                     </div>

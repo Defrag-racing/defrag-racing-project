@@ -1,6 +1,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3';
     import { computed } from 'vue';
+import MapCard from './MapCard.vue';
 
     const props = defineProps({
         record: Object
@@ -38,7 +39,16 @@
             <div class="flex items-center">
                 <div class="text-right mr-5">
                     <Link class="font-bold text-blue-400 hover:underline hover:text-blue-300" style="width: 160px;" :href="route('maps.map', record.mapname)">
-                        {{  record.mapname }}
+                        
+
+                        <Popper arrow hover :disabled="record.map == null" style="z-index: 100;">
+                            <div> {{  record.mapname }} </div>
+                    
+                    
+                            <template #content>
+                                <MapCard :map="record.map" v-if="record.map !== null" />
+                            </template>
+                        </Popper>
                     </Link>
                 </div>
 

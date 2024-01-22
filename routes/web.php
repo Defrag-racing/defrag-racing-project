@@ -20,6 +20,12 @@ use App\Http\Controllers\RecordsController;
 |
 */
 
+Route::get('/test', function () {
+    $scrapper = new \App\External\Q3DFScrapper();
+
+    return $scrapper->scrape();
+});
+
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 

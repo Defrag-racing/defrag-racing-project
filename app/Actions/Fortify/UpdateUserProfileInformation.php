@@ -32,8 +32,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
+            $pattern = '/\^\w/';
+            $plainName = preg_replace($pattern, '', $input['name']);
+
             $user->forceFill([
                 'name' => $input['name'],
+                'plain_name' => $plainName,
                 'email' => $input['email'],
                 'country' => $input['country']
             ])->save();
@@ -47,9 +51,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     protected function updateVerifiedUser(User $user, array $input): void
     {
+        $pattern = '/\^\w/';
+        $plainName = preg_replace($pattern, '', $input['name']);
+
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
+            'plain_name' => $plainName,
             'email_verified_at' => null,
             'country' => $input['country']
         ])->save();

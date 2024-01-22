@@ -29,8 +29,7 @@ class UpdateServersCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
-    {
+    public function handle() {
         $all = ($this->argument('all') == 1) ? true : false;
 
         $servers = Server::where('visible', true);

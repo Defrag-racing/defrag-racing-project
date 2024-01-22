@@ -20,6 +20,11 @@ use App\Http\Controllers\RecordsController;
 |
 */
 
+Route::get('/test', function () {
+    $r = new \App\External\Q3DFRecords();
+    return $r->scrape(2);
+});
+
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 

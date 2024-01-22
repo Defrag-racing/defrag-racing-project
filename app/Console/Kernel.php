@@ -12,9 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('update-servers')->everyMinute();
+        $schedule->command('scrape:servers')->everyMinute();
 
-        $schedule->command('update-servers 1')->everyFiveMinutes();
+        $schedule->command('scrape:servers 1')->everyFiveMinutes()->runInBackground();
+
+
+        $schedule->command('scrape:records')->withoutOverlapping()->everyMinute();
     }
 
     /**

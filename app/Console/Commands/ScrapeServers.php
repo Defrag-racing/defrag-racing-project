@@ -5,27 +5,27 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\External\DefragServer;
-use App\External\Q3DFScrapper;
+use App\External\Q3DFServers;
 use App\Models\Server;
 use App\Models\OnlinePlayer;
 
 use Illuminate\Support\Facades\DB;
 
-class UpdateServersCommand extends Command
+class ScrapeServers extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update-servers {all=0}';
+    protected $signature = 'scrape:servers {all=0}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Updates all servers data';
+    protected $description = 'Scrape all servers data';
 
     /**
      * Execute the console command.
@@ -61,7 +61,7 @@ class UpdateServersCommand extends Command
     }
 
     public function handle_failed_servers($servers) {
-        $q3df_scrapper = new Q3DFScrapper();
+        $q3df_scrapper = new Q3DFServers();
 
         $q3df_servers = $q3df_scrapper->scrape();
 

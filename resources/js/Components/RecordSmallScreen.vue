@@ -53,7 +53,17 @@
             </div>
             
 
-            <div class="text-gray-400 text-xs mt-2 text-center"> {{ timeSince(record.date_set) }} ago</div>
+            <div class="flex items-center justify-between mt-2">
+                <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-red-600': record.physics.includes('cpm'), 'bg-blue-600': !record.physics.includes('cpm')}">
+                    <div>{{ record.physics }}</div>
+                </div>
+
+                <div class="text-gray-400 text-xs text-center"> {{ timeSince(record.date_set) }} ago</div>
+
+                <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black">
+                    <div>{{ record.mode }}</div>
+                </div>
+            </div>
         </div>
     
         <hr class="my-2 text-gray-700 border-gray-700 bg-gray-700">

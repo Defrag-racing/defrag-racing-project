@@ -5,7 +5,7 @@ namespace App\External;
 use \DOMDocument;
 use \DOMXPath;
 
-class Q3DFScrapper {
+class Q3DFServers {
     protected $url = "https://q3df.org/serverlist";
     protected $xpath;
 

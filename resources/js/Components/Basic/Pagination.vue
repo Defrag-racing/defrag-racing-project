@@ -1,6 +1,6 @@
 
 <script setup>
-    import { ref, watchEffect } from 'vue';
+    import { ref, watchEffect, onMounted, onUnmounted } from 'vue';
     import { router } from '@inertiajs/vue3';
     import SmallButton from '@/Components/Basic/SmallButton.vue';
 
@@ -14,6 +14,8 @@
 
     const before = ref([]);
     const after = ref([]);
+
+    const screenWidth = ref(window.innerWidth);
 
     const getLabel = () => {
         after.value = []
@@ -54,6 +56,19 @@
         getLabel()
     })
 
+
+    const resizeScreen = () => {
+        screenWidth.value = window.innerWidth
+    }
+
+
+    onMounted(() => {
+        window.addEventListener("resize", resizeScreen);
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", resizeScreen);
+    });
 </script>
 
 
@@ -72,13 +87,13 @@
             </svg>  
         </SmallButton>
 
-        <SmallButton v-for="page in before" :url="page.url" :label="page.label" :key="page.label" />
+        <SmallButton v-if="screenWidth >= 640" v-for="page in before" :url="page.url" :label="page.label" :key="page.label" />
 
         <div class="ml-2 font-bold">
             <input class="py-2 px-4 border-0 border-grayop-700 bg-blackop-50 text-gray-300 focus:border-grayop-700 focus:ring-transparent rounded-md shadow-sm w-20 text-center" v-model="newPage" @change="changePage" />
         </div>
 
-        <SmallButton v-for="page in after" :url="page.url" :label="page.label" :key="page.label" />
+        <SmallButton v-if="screenWidth >= 640" v-for="page in after" :url="page.url" :label="page.label" :key="page.label" />
 
         <SmallButton :url="getUrl(current_page + 1)" v-if="current_page < last_page">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

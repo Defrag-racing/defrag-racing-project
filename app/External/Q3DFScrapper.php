@@ -30,8 +30,12 @@ class Q3DFScrapper {
         $serverItems = $this->xpath->query('//div[contains(@class, "server-item")]');
 
         foreach ($serverItems as $serverItem) {
-            $servers[] = $this->get_server($serverItem);
+            $server = $this->get_server($serverItem);
+
+            $servers[$server['address']] = $this->get_server($serverItem);
         }
+
+        return $servers;
     }
 
     private function get_server($serverItem) {
@@ -46,32 +50,102 @@ class Q3DFScrapper {
             'map' => $li[1]->getElementsByTagName('a')[0]->textContent,
             'defrag' => $li[2]->textContent,
             'hostname' => $this->get_q3_string($hostname),
-            'players' => [],
-            'scores' => []
+            'players' => []
         ];
         
         $players_section = $this->xpath->query('.//div[@class="server-players"]', $serverItem)->item(0);
 
         $players_table = $players_section->childNodes->item(1);
-        $spectators_table = $players_section->childNodes->item(2);
+        $spectators_table = $players_section->childNodes->item(3);
 
-        $server_data['players'] = $this->get_players($players_table);
+        $players = $this->get_players($players_table);
 
         $spectators = $this->get_spectators($spectators_table);
 
-        dd($server_data);
+        $server_data['players'] = $this->process_spectators($players, $spectators);
+
+        return $server_data;
+    }
+
+    private function process_spectators($players, $spectators) {
+        $id = count($players);
+
+        foreach($spectators as $spectator) {
+            foreach($players as $player) {
+                if ($spectator['spectates'] === $player['name']) {
+                    $spectator['follow_num'] = $player['id'];
+                    break;
+                }
+            }
+
+            $spectator['id'] = $id++;
+            $players[] = $spectator;
+        }
+
+        return $players;
     }
 
     private function get_spectators($table) {
+        $result = [];
 
+        if ($table === null) {
+            return [];
+        }
+
+        $trs = $table->getElementsByTagName('tr');
+
+        $first = true;
+
+        foreach($trs as $tr) {
+            if ($first) {
+                $first = false;
+                continue;
+            }
+
+            $result[] = $this->get_spectator($tr);
+        }
+
+        return $result;
+    }
+
+    private function get_spectator($tr) {
+        $td = $tr->getElementsByTagName('td');
+
+        $player = $td->item(0);
+
+        $spectates = $td->item(1);
+
+        $flag = $this->xpath->query('.//img[@class="flag"]', $player)->item(0);
+
+        $country = explode('.', basename($flag->getAttribute('src')))[0];
+
+        if ($country === 'nocountry') {
+            $country = '_404';
+        }
+
+        $name = $this->xpath->query('.//span[@class="visname"]', $player)->item(0);
+
+        $spectates = $this->xpath->query('.//span[@class="visname"]', $spectates)->item(0);
+
+        return [
+            'name'          => $this->get_q3_string($name),
+            'spectates'     => $this->get_q3_string($spectates),
+            'country'       => strtoupper($country),
+            'follow_num'    => -1
+        ];
     }
 
     private function get_players($table) {
         $result = [];
 
+        if ($table === null) {
+            return [];
+        }
+
         $trs = $table->getElementsByTagName('tr');
 
         $first = true;
+
         $id = 1;
 
         foreach($trs as $tr) {
@@ -98,15 +172,18 @@ class Q3DFScrapper {
 
         $country = explode('.', basename($flag->getAttribute('src')))[0];
 
+        if ($country === 'nocountry') {
+            $country = '_404';
+        }
+
         $name = $this->xpath->query('.//span[@class="visname"]', $player)->item(0);
 
         return [
             'name'          => $this->get_q3_string($name),
             'time'          => $this->parse_time($time),
-            'id'            => $id,
-            'country'       => $country,
-            'clientId'      => $id,
-            'follow_num'    => -1
+            'country'       => strtoupper($country),
+            'follow_num'    => -1,
+            'id'            => $id
         ];
     }
 

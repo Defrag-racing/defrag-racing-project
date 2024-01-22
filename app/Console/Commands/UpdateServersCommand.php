@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\External\DefragServer;
+use App\External\Q3DFScrapper;
 use App\Models\Server;
 use App\Models\OnlinePlayer;
 
@@ -40,18 +41,47 @@ class UpdateServersCommand extends Command
 
         $servers = $servers->get();
 
+        $noDataServers = [];
+
         foreach($servers as $server) {
             $data = $this->getServerData($server);
 
-            if ($data == null) {
-                $server->offline = true;
-                $server->save();
-
+            if ($data == null || $data['rcon'] == false) {
+                $noDataServers[] = [
+                    'server'    =>      $server,
+                    'data'      =>      $data
+                ];
                 continue;
             }
 
             $this->updateServer($server, $data);
         }
+
+        $this->handle_failed_servers($noDataServers);
+    }
+
+    public function handle_failed_servers($servers) {
+        $q3df_scrapper = new Q3DFScrapper();
+
+        $q3df_servers = $q3df_scrapper->scrape();
+
+        foreach($servers as $server) {
+            $address = $server['server']->ip . ':' . $server['server']->port;
+            if (array_key_exists($address, $q3df_servers)) {
+                $this->updateServer2($server['server'], $q3df_servers[$address]);
+                
+                continue;
+            }
+            
+            if ($server['data'] === null) {
+                $server['server']->offline = true;
+                $server['server']->save();
+                continue;
+            }
+
+            $this->updateServer($server['server'], $server['data']);
+        }
+
     }
 
     public function getServerData($server) {
@@ -112,6 +142,51 @@ class UpdateServersCommand extends Command
                 $onlinePlayer->follow_num = $score[0];
     
                 $onlinePlayer->time = $score[1];
+    
+                $onlinePlayer->save();
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+    }
+
+
+    public function updateServer2($server, $data) {
+        $server->name = trim($data['hostname']);
+        $server->defrag = trim($data['defrag']);
+        $server->map = strtolower(trim($data['map']));
+        $server->offline = false;
+
+        $server->save();
+
+        DB::beginTransaction();
+
+        try {
+            OnlinePlayer::where('server_id', $server->id)->delete();
+
+            foreach($data['players'] as $player) {
+                $onlinePlayer = new OnlinePlayer();
+                $onlinePlayer->server_id = $server->id;
+    
+                $onlinePlayer->name = $player['name'];
+    
+                $onlinePlayer->client_id = $player['id'];
+    
+                $onlinePlayer->mdd_id = 0;
+    
+                $onlinePlayer->nospec = false;
+    
+                $onlinePlayer->model = 'sarge';
+    
+                $onlinePlayer->headmodel = 'sarge';
+    
+                $onlinePlayer->country = $player['country'];
+    
+                $onlinePlayer->follow_num = $player['follow_num'];
+    
+                $onlinePlayer->time = array_key_exists('time', $player) ? $player['time'] : 0;
     
                 $onlinePlayer->save();
             }

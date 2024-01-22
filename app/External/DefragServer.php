@@ -77,6 +77,7 @@ class DefragServer
             'hostname' => explode(':', $data[1])[1],
             'defrag' => explode(':', $data[2])[1],
             'scores' => $scores,
+            'rcon'   => true
         ];
     
         return $result;
@@ -110,6 +111,7 @@ class DefragServer
                 'speed_player_name' => "",
                 'players' => $serverData['players'],
             ],
+            'rcon'  =>  false
         ];
 
         return $result;

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Illuminate\Support\Facades\DB;
 
 class Map extends Model
 {
@@ -67,5 +68,50 @@ class Map extends Model
 
     public function records () {
         return $this->hasMany(Record::class, 'mapname', 'name')->orderBy('date_set', 'DESC');
+    }
+
+    public function processRanks () {
+        DB::beginTransaction();
+        $records = Record::where('mapname', $this->name)->orderBy('time')->get()->groupBy('physics');
+
+        foreach($records as $physics => $data) {
+            $i = 1;
+            $last_time = -1;
+            $besttime = -1;
+
+            if (count($data) > 0) {
+                $best_time = $data[0]->time;
+            }
+
+            foreach($data as $record) {
+                if ($last_time === -1) {
+                    $record->rank = $i;
+                    $record->besttime = $besttime;
+                    $last_time = $record->time;
+                    $i++;
+                    $record->save();
+                    continue;
+                }
+
+                if ($last_time === $record->time) {
+                    $i--;
+                    $record->rank = $i;
+                    $record->besttime = $besttime;
+                    $last_time = $record->time;
+                    $i++;
+                    $record->save();
+                    continue;
+                }
+
+                $record->rank = $i;
+                $record->besttime = $besttime;
+                $last_time = $record->time;
+
+                $i++;
+                $record->save();
+            }
+        }
+
+        DB::commit();
     }
 }

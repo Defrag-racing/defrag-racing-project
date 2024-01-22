@@ -1,7 +1,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3';
     import { computed } from 'vue';
-import MapCard from './MapCard.vue';
+    import MapCard from './MapCard.vue';
 
     const props = defineProps({
         record: Object
@@ -14,12 +14,22 @@ import MapCard from './MapCard.vue';
         return (country == 'XX') ? '_404' : country;
     });
 
+
+    const timeDiff =  computed(() => {
+        if (! props.record.besttime === -1) {
+            return null;
+        }
+
+        return Math.abs(props.record.besttime - props.record.time)
+    });
+
 </script>
 
 <template>
     <div>
         <div class="flex justify-between rounded-md p-2 items-center">
             <div class="mr-4 flex items-center">
+                <div class="font-bold mr-5 text-white text-lg">{{ record.rank }}</div>
                 <img class="h-10 w-10 rounded-full object-cover" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
                 
                 <div class="ml-4">
@@ -54,6 +64,7 @@ import MapCard from './MapCard.vue';
 
                 <div class="text-right ml-5">
                     <div class="text-lg font-bold text-gray-300 text-right" style="width: 100px;">{{  formatTime(record.time) }}</div>
+                    <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
                 </div>
 
                 <div class="ml-5">

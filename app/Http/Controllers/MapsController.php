@@ -11,7 +11,7 @@ use App\Models\Record;
 class MapsController extends Controller
 {
     public function index(Request $request) {
-        $maps = Map::orderBy('date_added', 'DESC')->paginate(21);
+        $maps = Map::orderBy('date_added', 'DESC')->paginate(21)->withQueryString();
 
         if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
             return redirect()->route('maps', ['page' => $maps->lastPage()]);
@@ -30,7 +30,7 @@ class MapsController extends Controller
         }
 
         if (! in_array($order, ['DESC', 'ASC'])) {
-            $sort = 'DESC';
+            $order = 'DESC';
         }
 
         $map = Map::where('name', $mapname)->firstOrFail();
@@ -41,15 +41,10 @@ class MapsController extends Controller
             $records = $records->where('physics', $physics);
         }
 
-        $records = $records->with('user')->orderBy($column, $order)->paginate(30);
-
-        $vq3record = Record::where('mapname', $map->name)->where('physics', 'vq3')->orderBy('time', 'ASC')->first();
-        $cpmrecord = Record::where('mapname', $map->name)->where('physics', 'cpm')->orderBy('time', 'ASC')->first();
+        $records = $records->with('user')->orderBy($column, $order)->paginate(30)->withQueryString();
 
         return Inertia::render('MapView')
             ->with('map', $map)
-            ->with('records', $records)
-            ->with('vq3record', $vq3record)
-            ->with('cpmrecord', $cpmrecord);
+            ->with('records', $records);
     }
 }

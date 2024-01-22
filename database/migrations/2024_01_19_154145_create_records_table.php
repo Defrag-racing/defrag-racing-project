@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('mdd_id');
             $table->integer('user_id')->nullable()->default(NULL);
             $table->string('mapname')->index();
+            $table->integer('rank')->default(1);
+            $table->integer('besttime')->default(1);
             $table->timestamps();
         });
     }

@@ -45,15 +45,7 @@
     }
     
     const getUrl = (page) => {
-        const params = route().params;
-
         let result = props.link.replace('?page=1', '?page=' + page).replace('&page=1', '&page=' + page)
-
-        for(let param in params) {
-            if (param !== 'page') {
-                result += `&${param}=${params[param]}`
-            }
-        }
 
         return result
     }

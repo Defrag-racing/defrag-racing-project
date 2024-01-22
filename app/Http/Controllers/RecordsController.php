@@ -19,7 +19,7 @@ class RecordsController extends Controller
             $records = $records->where('physics', $physics);
         }
 
-        $records = $records->with('user')->with('map')->orderBy('date_set', 'DESC')->paginate(30);
+        $records = $records->with('user')->with('map')->orderBy('date_set', 'DESC')->paginate(30)->withQueryString();
 
         return Inertia::render('RecordsView')
             ->with('records', $records);

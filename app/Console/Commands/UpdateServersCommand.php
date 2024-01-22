@@ -119,8 +119,6 @@ class UpdateServersCommand extends Command
 
             DB::commit();
         } catch (\Exception $e) {
-            dump($e);
-            dump($data);
             DB::rollBack();
         }
     }

@@ -16,19 +16,11 @@
     });
 
     const timeDiff =  computed(() => {
-        if (props.record.physics.startsWith('cpm')) {
-            if (! props.cpmrecord) {
-                return null;
-            }
-
-            return Math.abs(props.cpmrecord.time - props.record.time)
-        }
-
-        if (! props.vq3record) {
+        if (! props.record.besttime === -1) {
             return null;
         }
 
-        return Math.abs(props.vq3record.time - props.record.time)
+        return Math.abs(props.record.besttime - props.record.time)
     });
 
 </script>
@@ -37,6 +29,7 @@
     <div>
         <div class="flex justify-between rounded-md px-2 py-1 items-center">
             <div class="mr-4 flex items-center">
+                <div class="font-bold mr-5 text-white text-lg">{{ record.rank }}</div>
                 <img class="h-10 w-10 rounded-full object-cover" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
                 
                 <div class="ml-4">

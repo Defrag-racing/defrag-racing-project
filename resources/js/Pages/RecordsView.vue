@@ -3,7 +3,7 @@
     import Record from '@/Components/Record.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
-    import { onMounted, ref } from 'vue';
+    import { watchEffect, ref } from 'vue';
 
     const props = defineProps({
         records: Object
@@ -22,7 +22,7 @@
         })
     }
 
-    onMounted(() => {
+    watchEffect(() => {
         physics.value = route().params['physics'] ?? 'all';
     })
 </script>

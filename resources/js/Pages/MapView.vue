@@ -4,13 +4,11 @@
     import MapRecord from '@/Components/MapRecord.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
-    import { onMounted, ref } from 'vue';
+    import { watchEffect, ref } from 'vue';
 
     const props = defineProps({
         map: Object,
-        records: Object,
-        cpmrecord: Object,
-        vq3record: Object
+        records: Object
     });
 
     const order = ref('DESC');
@@ -36,6 +34,8 @@
     const sortByTime = () => {
         if (column.value === 'time') {
             order.value = (order.value == 'ASC') ? 'DESC' : 'ASC';
+        } else {
+            order.value = 'ASC';
         }
 
         column.value = 'time';
@@ -67,9 +67,9 @@
         })
     }
 
-    onMounted(() => {
+    watchEffect(() => {
         order.value = route().params['order'] ?? 'DESC';
-        column.value = route().params['column'] ?? 'date_set';
+        column.value = route().params['sort'] ?? 'date_set';
         physics.value = route().params['physics'] ?? 'all';
     })
 </script>
@@ -201,7 +201,7 @@
 
                 <div class="rounded-md p-3 flex-grow bg-grayop-700 flex flex-col">
                     <div class="flex-grow">
-                        <MapRecord v-for="record in records.data" :key="record.id" :record="record" :cpmrecord="cpmrecord" :vq3record="vq3record" />
+                        <MapRecord v-for="record in records.data" :key="record.id" :record="record" />
                     </div>
 
                     <div class="flex justify-center">

@@ -8,6 +8,7 @@ use App\Http\Controllers\BundlesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServersController;
 use App\Http\Controllers\RecordsController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,11 +21,6 @@ use App\Http\Controllers\RecordsController;
 |
 */
 
-Route::get('/test', function () {
-    $r = new \App\External\Q3DFRecords();
-    return $r->scrape(2);
-});
-
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
@@ -36,3 +32,6 @@ Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');
 Route::get('/records', [RecordsController::class, 'index'])->name('records');
 
 Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');
+
+
+Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])->name('settings.socialmedia');

@@ -22,7 +22,7 @@ export default {
                 'xxs': '370px'
             },
             width: {
-                '100': '600px',
+                '100': '600px'
             },
             maxWidth: {
                 '8xl': '90rem',

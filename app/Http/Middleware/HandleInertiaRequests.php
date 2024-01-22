@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
+use App\Models\Notification;
+
 class HandleInertiaRequests extends Middleware
 {
     /**
@@ -36,8 +38,18 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $notifications = [];
+
+        if ($request->user()) {
+            $notifications = Notification::where('read', false)
+                ->where('user_id', $request->user()->id)
+                ->where('type', 'record')
+                ->orderBy('created_at', 'DESC')
+                ->get();
+        }
+
         return array_merge(parent::share($request), [
-            //
+            'notifications'     =>      $notifications
         ]);
     }
 }

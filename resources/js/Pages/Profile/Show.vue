@@ -6,6 +6,7 @@ import SectionBorder from '@/Components/Laravel/SectionBorder.vue';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import UpdateSocialMediaForm from '@/Pages/Profile/Partials/UpdateSocialMediaForm.vue';
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -15,11 +16,11 @@ defineProps({
 
 <template>
     <div>
-        <Head title="Profile" />
+        <Head title="Settings" />
 
         <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Profile
+                Settings
             </h2>
         </div>
 
@@ -27,6 +28,12 @@ defineProps({
             <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
+
+                    <SectionBorder />
+                </div>
+
+                <div>
+                    <UpdateSocialMediaForm :user="$page.props.auth.user" />
 
                     <SectionBorder />
                 </div>

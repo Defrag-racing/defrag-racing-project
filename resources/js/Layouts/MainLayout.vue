@@ -13,6 +13,7 @@
 
     import MapSearchItem from '@/Components/MapSearchItem.vue';
     import PlayerSearchItem from '@/Components/PlayerSearchItem.vue';
+    import NotificationMenu from '@/Components/NotificationMenu.vue';
 
     defineProps({
         title: String,
@@ -167,6 +168,10 @@
                                         </svg>
                                     </button>
                                 </div>
+                            </div>
+
+                            <div v-if="$page.props.auth.user">
+                                <NotificationMenu />
                             </div>
 
                             <!-- Settings Dropdown -->

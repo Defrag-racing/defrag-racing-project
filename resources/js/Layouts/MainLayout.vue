@@ -1,5 +1,5 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, onMounted, onUnmounted } from 'vue';
     import { Head, Link, router } from '@inertiajs/vue3';
     import ApplicationMark from '@/Components/Laravel/ApplicationMark.vue';
     import Banner from '@/Components/Laravel/Banner.vue';
@@ -29,6 +29,8 @@
 
     const resultsSection = ref(null);
     const searchSection = ref(null);
+
+    const screenWidth = ref(window.innerWidth);
 
     const logout = () => {
         router.post(route('logout'));
@@ -68,9 +70,18 @@
         });
     }
 
-    const isSmallScreen = () => {
-        return window.innerWidth <= 640
+    const resizeScreen = () => {
+        screenWidth.value = window.innerWidth
     }
+
+
+    onMounted(() => {
+        window.addEventListener("resize", resizeScreen);
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", resizeScreen);
+    });
 </script>
 
 <template>
@@ -159,28 +170,20 @@
                             </div>
 
                             <!-- Settings Dropdown -->
-                            <div v-if="$page.props.auth.user"  class="hidden md:block ms-3 relative">
+                            <div v-if="$page.props.auth.user"  class="hidden md:block ms-3">
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
-                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-grayop-700 active:bg-gray-50 dark:active:bg-grayop-700 transition ease-in-out duration-150">
-                                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_path ? '/storage/' + $page.props.auth.user.profile_photo_path : '/images/null.jpg'" :alt="$page.props.auth.user.name">
-                                            <div class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400">
-                                                <div v-html="q3tohtml($page.props.auth.user.name)"></div>
-                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <button class="pr-10 pl-1 py-1 flex items-center text-sm rounded-full focus:bg-gray-50 dark:focus:bg-grayop-700 active:bg-gray-50 dark:active:bg-grayop-700 transition ease-in-out duration-150">
+                                            <img class="h-8 w-8 rounded-full object-cover mr-3" :src="$page.props.auth.user.profile_photo_path ? '/storage/' + $page.props.auth.user.profile_photo_path : '/images/null.jpg'" :alt="$page.props.auth.user.name">
+
+                                            <div class="mr-3" v-html="q3tohtml($page.props.auth.user.name)"></div>
+
+                                            <div class="text-gray-400">
+                                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                                 </svg>
                                             </div>
                                         </button>
-
-                                        <span v-else class="inline-flex rounded-md">
-                                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-grayop-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-grayop-700 active:bg-gray-50 dark:active:bg-grayop-700 transition ease-in-out duration-150">
-                                                {{ $page.props.auth.user.name }}
-
-                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                                </svg>
-                                            </button>
-                                        </span>
                                     </template>
 
                                     <template #content>
@@ -314,7 +317,7 @@
                 </div>
             </nav>
 
-            <div class="max-w-8xl mx-auto pt-2 px-4 md:px-6 lg:px-8" v-if="isSmallScreen()">
+            <div class="max-w-8xl mx-auto pt-2 px-4 md:px-6 lg:px-8" v-if="screenWidth <= 640">
                 <div ref="searchSection">
                     <TextInput
                         v-model="search"

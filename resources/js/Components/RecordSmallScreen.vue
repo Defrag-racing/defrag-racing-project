@@ -1,0 +1,61 @@
+<script setup>
+    import { Link } from '@inertiajs/vue3';
+    import { computed } from 'vue';
+    import MapCard from './MapCard.vue';
+
+    const props = defineProps({
+        record: Object
+    });
+
+
+    const bestrecordCountry = computed(() => {
+        let country = props.record.user?.country ?? props.record.country;
+
+        return (country == 'XX') ? '_404' : country;
+    });
+
+
+    const timeDiff =  computed(() => {
+        if (! props.record.besttime === -1) {
+            return null;
+        }
+
+        return Math.abs(props.record.besttime - props.record.time)
+    });
+
+</script>
+
+<template>
+    <div>
+        <div class="rounded-md p-1">
+            <div class="flex text-gray-400">
+                <span>Rank</span>
+                <div class="ml-2 font-bold mr-2 text-white">{{ record.rank }}</div>
+                <span>On</span>
+                <Link :class="{'text-xs': record.mapname.length > 16}" class="ml-4 text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', record.mapname)"> {{ record.mapname }} </Link>
+            </div>
+            <div class="mt-2 flex justify-between items-center">    
+                <img class="h-10 w-10 rounded-full object-cover mr-4" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
+                <Link class="flex rounded-md flex-grow" href="#">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'" :title="bestrecordCountry">
+                            <a class="font-bold text-white" href="#" v-html="q3tohtml(record.user?.name ?? record.name)"></a>
+                        </div>
+                    </div>
+                </Link>
+            </div>
+
+
+            <div class="flex justify-between items-center mt-2">
+                <div class="text-lg font-bold text-gray-300">{{  formatTime(record.time) }}</div>
+                <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
+            </div>
+            
+
+            <div class="text-gray-400 text-xs mt-2 text-center"> {{ timeSince(record.date_set) }} ago</div>
+        </div>
+    
+        <hr class="my-2 text-gray-700 border-gray-700 bg-gray-700">
+    </div>
+</template>

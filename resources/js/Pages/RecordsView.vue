@@ -1,15 +1,17 @@
 <script setup>
     import { Head, router } from '@inertiajs/vue3';
     import Record from '@/Components/Record.vue';
+    import RecordSmallScreen from '@/Components/RecordSmallScreen.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
-    import { watchEffect, ref } from 'vue';
+    import { watchEffect, ref, onMounted, onUnmounted } from 'vue';
 
     const props = defineProps({
         records: Object
     });
 
     const physics = ref('all');
+    const screenWidth = ref(window.innerWidth);
 
     const sortByPhysics = (newPhysics) => {
         physics.value = newPhysics
@@ -22,9 +24,21 @@
         })
     }
 
+    const resizeScreen = () => {
+        screenWidth.value = window.innerWidth
+    }
+
     watchEffect(() => {
         physics.value = route().params['physics'] ?? 'all';
-    })
+    });
+
+    onMounted(() => {
+        window.addEventListener("resize", resizeScreen);
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", resizeScreen);
+    });
 </script>
 
 <template>
@@ -91,8 +105,12 @@
         <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
             <div class="flex flex-wrap justify-center">
                 <div class="rounded-md p-3 flex-grow bg-grayop-700 flex flex-col">
-                    <div class="flex-grow">
+                    <div class="flex-grow" v-if="screenWidth > 640">
                         <Record v-for="record in records.data" :key="record.id" :record="record" />
+                    </div>
+
+                    <div class="flex-grow" v-else>
+                        <RecordSmallScreen v-for="record in records.data" :key="record.id" :record="record" />
                     </div>
 
                     <div class="flex justify-center">

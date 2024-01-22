@@ -98,12 +98,39 @@
                 <!-- Top Bar -->
                 <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8">
                     <div class="xxs:flex justify-between h-16 items-center">
-                        <div class="flex">
+                        <div class="flex flex-grow sm:flex-grow-0">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
+                            <div class="shrink-0 flex items-center mt-2 sm:mt-0">
                                 <Link :href="route('home')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
+                            </div>
+
+                            <div class="flex flex-grow items-center justify-end">
+                                <div v-if="$page.props.auth.user && screenWidth <= 640">
+                                    <NotificationMenu :ping="false" />
+                                </div>
+    
+                                <div class="flex items-center md:hidden">
+                                    <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-grayop-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
+                                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                            <path
+                                                :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M4 6h16M4 12h16M4 18h16"
+                                            />
+                                            <path
+                                                :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -145,33 +172,10 @@
                         </div>
 
                         <div class="flex md:items-center md:ms-6">
-                            <div class="w-full flex justify-between px-5">
-                                <div></div>
-                                <!-- Hamburger -->
-                                <div class="-me-2 flex items-center md:hidden">
-                                    <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-grayop-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
-                                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                            <path
-                                                :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M4 6h16M4 12h16M4 18h16"
-                                            />
-                                            <path
-                                                :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"
-                                            />
-                                        </svg>
-                                    </button>
+                            <div class="flex justify-end flex-grow" v-if="screenWidth > 640">
+                                <div v-if="$page.props.auth.user">
+                                    <NotificationMenu :ping="true" />
                                 </div>
-                            </div>
-
-                            <div v-if="$page.props.auth.user">
-                                <NotificationMenu />
                             </div>
 
                             <!-- Settings Dropdown -->

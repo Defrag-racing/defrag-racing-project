@@ -4,7 +4,11 @@
     import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
-        map: Object
+        map: Object,
+        transparent: {
+            type: Boolean,
+            default: true
+        }
     });
 
 
@@ -63,7 +67,7 @@
 </script>
 
 <template>
-    <div class="rounded bg-grayop-700 p-2 mx-2 mb-4 group">
+    <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
         <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('https://defrag.racing/uploads/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
             <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
                 {{ map.physics }}
@@ -106,11 +110,11 @@
         </div>
 
         <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
-            <div class="text-gray-500 overflow-hidden truncate" style="width: 200px;">
+            <div class="text-gray-400 overflow-hidden truncate text-left" style="width: 200px;">
                 By <span class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;"> {{ map.author }} </span>
             </div>
 
-            <div class="text-gray-500">
+            <div class="text-gray-400">
                 Added {{ date }}
             </div>
         </div>

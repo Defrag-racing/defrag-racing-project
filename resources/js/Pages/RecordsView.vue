@@ -81,8 +81,8 @@
                     Records
                 </h2>
 
-                <div class="flex">
-                    <div @click="updatePage" title="Auto Update Servers every 30 seconds" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
+                <div class="flex flex-wrap">
+                    <div @click="updatePage" title="Auto Update Servers every 30 seconds" class="mt-4 sm:mt-0 flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                         <div class="w-8 h-8 mr-2">
                             <svg :class="{ 'rotate-animation': isRotating }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -98,7 +98,7 @@
                         </div>
                     </div>
 
-                    <Dropdown align="right" width="48">
+                    <Dropdown class="mt-4 sm:mt-0" align="right" width="48">
                         <template #trigger>
                             <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                                 <div class="w-8 h-8 mr-2">

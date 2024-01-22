@@ -28,15 +28,14 @@
 <template>
     <div>
         <div class="rounded-md p-1">
-            <div class="flex text-gray-400">
-                <span>Rank</span>
+            <div class="flex text-gray-400 items-center">
+                <span>#</span>
                 <div class="ml-2 font-bold mr-2 text-white">{{ record.rank }}</div>
-                <span>On</span>
                 <Link :class="{'text-xs': record.mapname.length > 16}" class="ml-4 text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', record.mapname)"> {{ record.mapname }} </Link>
             </div>
-            <div class="mt-2 flex justify-between items-center">    
-                <img class="h-10 w-10 rounded-full object-cover mr-4" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
-                <Link class="flex rounded-md flex-grow" href="#">
+
+            <div class="flex justify-between items-center mt-2">
+                <Link class="flex rounded-md" href="#">
                     <div class="flex justify-between items-center">
                         <div>
                             <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'" :title="bestrecordCountry">
@@ -44,12 +43,7 @@
                         </div>
                     </div>
                 </Link>
-            </div>
-
-
-            <div class="flex justify-between items-center mt-2">
                 <div class="text-lg font-bold text-gray-300">{{  formatTime(record.time) }}</div>
-                <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
             </div>
             
 
@@ -58,7 +52,7 @@
                     <div>{{ record.physics }}</div>
                 </div>
 
-                <div class="text-gray-400 text-xs text-center"> {{ timeSince(record.date_set) }} ago</div>
+                <div class="text-gray-400 text-xs text-center"> {{ timeSince(record.date_set).replace('hours', 'h').replace('minutes', 'm') }} ago</div>
 
                 <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black">
                     <div>{{ record.mode }}</div>

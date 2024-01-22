@@ -1,16 +1,20 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+    import { onMounted, onUnmounted, ref } from 'vue';
 
-let open = ref(false);
+    let open = ref(false);
 
-const closeOnEscape = (e) => {
-    if (open.value && e.key === 'Escape') {
-        open.value = false;
-    }
-};
+    defineProps({
+            ping: Boolean
+        });
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+    const closeOnEscape = (e) => {
+        if (open.value && e.key === 'Escape') {
+            open.value = false;
+        }
+    };
+
+    onMounted(() => document.addEventListener('keydown', closeOnEscape));
+    onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
 
 </script>
 
@@ -24,7 +28,7 @@ onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
             </button>
 
             <button v-else class="text-yellow-500 rounded-full p-2 cursor-pointer bg-transparent hover:bg-blackop-30 transition ease-in-out duration-300">
-                <div class="noti-ping absolute top-0 left-0 w-full h-full rounded-full bg-yellow-500 z-0 animate-ping"></div>
+                <div v-if="ping" class="noti-ping absolute top-0 left-0 w-full h-full rounded-full bg-yellow-500 z-0 animate-ping"></div>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5" />
                 </svg>

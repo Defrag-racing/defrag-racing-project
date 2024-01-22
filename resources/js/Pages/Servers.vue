@@ -146,7 +146,7 @@
                         </div>
                     </div>
 
-                    <Dropdown align="center" width="48">
+                    <Dropdown align="right" width="48">
                         <template #trigger>
                             <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                                 <div class="w-8 h-8 mr-2">

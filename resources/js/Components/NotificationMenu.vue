@@ -79,7 +79,7 @@
 
                     <hr class="my-2 text-gray-600 border-gray-600 bg-gray-600">
 
-                    <div>
+                    <div style="max-height: 450px;" class="defrag-scrollbar">
                         <div v-for="recordNotification in notifications">
                             <div class="flex items-center text-gray-400 p-2 hover:bg-blackop-30 rounded-md">
                                 <div class="mr-5 text-orange-500">

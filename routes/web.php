@@ -36,6 +36,8 @@ Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');
 
 
 Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])->name('settings.socialmedia');
+Route::post('/settings/mdd/generate', [SettingsController::class, 'generate'])->name('settings.mdd.generate');
+Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name('settings.mdd.verify');
 
 
 Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');

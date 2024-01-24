@@ -29,6 +29,11 @@ return [
     */
 
     'disks' => [
+        'assets' => [
+            'driver' => 'local',
+            'root' => public_path(),
+            'throw' => false,
+        ],
 
         'local' => [
             'driver' => 'local',

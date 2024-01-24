@@ -112,7 +112,9 @@ class ScrapeRecords extends Command
 
         $newrecord->save();
 
-        $newrecord->map->processRanks();
+        if ($newrecord->map) {
+            $newrecord->map->processRanks();
+        }
 
         ProcessNotificationsJob::dispatch($newrecord);
     }

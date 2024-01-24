@@ -11,7 +11,11 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
+
+class User extends Authenticatable implements FilamentUser, HasName
 {
     use HasApiTokens;
     use HasFactory;
@@ -104,5 +108,21 @@ class User extends Authenticatable
             'plain_name' => $this->generateSubstrings($this->plain_name),
             'created_at' => $this->created_at->timestamp,
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool {
+        return $this->admin;
+    }
+
+    public function getFilamentAvatarUrl(): ?string {
+        return $this->profile_photo_path;
+    }
+
+    public function getFilamentName(): string {
+        $pattern = '/\^\w/';
+
+        $plainName = preg_replace($pattern, '', $this->name);
+
+        return $plainName;
     }
 }

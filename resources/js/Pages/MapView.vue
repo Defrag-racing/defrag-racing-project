@@ -2,9 +2,10 @@
     import { Head, router } from '@inertiajs/vue3';
     import MapCard from '@/Components/MapCard.vue';
     import MapRecord from '@/Components/MapRecord.vue';
+    import MapRecordSmall from '@/Components/MapRecordSmall.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
-    import { watchEffect, ref } from 'vue';
+    import { watchEffect, ref, onMounted, onUnmounted } from 'vue';
 
     const props = defineProps({
         map: Object,
@@ -14,6 +15,8 @@
     const order = ref('DESC');
     const column = ref('date_set');
     const physics = ref('all');
+
+    const screenWidth = ref(window.innerWidth);
 
     const sortByDate = () => {
         if (column.value === 'date_set') {
@@ -71,7 +74,21 @@
         order.value = route().params['order'] ?? 'DESC';
         column.value = route().params['sort'] ?? 'date_set';
         physics.value = route().params['physics'] ?? 'all';
-    })
+    });
+
+
+    const resizeScreen = () => {
+        screenWidth.value = window.innerWidth
+    }
+
+
+    onMounted(() => {
+        window.addEventListener("resize", resizeScreen);
+    });
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", resizeScreen);
+    });
 </script>
 
 <template>
@@ -200,8 +217,12 @@
                 </div>
 
                 <div class="rounded-md p-3 flex-grow bg-grayop-700 flex flex-col">
-                    <div class="flex-grow">
+                    <div class="flex-grow" v-if="screenWidth > 640">
                         <MapRecord v-for="record in records.data" :key="record.id" :record="record" />
+                    </div>
+
+                    <div class="flex-grow" v-else>
+                        <MapRecordSmall v-for="record in records.data" :key="record.id" :record="record" />
                     </div>
 
                     <div class="flex justify-center">

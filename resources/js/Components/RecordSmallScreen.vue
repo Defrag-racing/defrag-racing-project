@@ -52,7 +52,7 @@
                     <div>{{ record.physics }}</div>
                 </div>
 
-                <div class="text-gray-400 text-xs text-center"> {{ timeSince(record.date_set).replace('hours', 'h').replace('minutes', 'm') }} ago</div>
+                <div class="text-gray-400 text-xs text-center"> {{ timeSince(record.date_set) }} ago</div>
 
                 <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black">
                     <div>{{ record.mode }}</div>

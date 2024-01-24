@@ -8,7 +8,6 @@
         vq3record: Object
     });
 
-
     const bestrecordCountry = computed(() => {
         let country = props.record.user?.country ?? props.record.country;
 
@@ -57,7 +56,7 @@
                         <div>{{ record.physics }}</div>
                     </div>
 
-                    <!-- <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold bg-gray-300 text-black mt-1">
+                    <!-- <div class="rounded-full text-xs px-2 py-0.5 uppercase font-bold border-2 border-gray-500 text-gray-500 mt-1">
                         <div>{{ record.mode }}</div>
                     </div> -->
                 </div>

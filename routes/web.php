@@ -9,6 +9,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServersController;
 use App\Http\Controllers\RecordsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\NotificationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,3 +36,7 @@ Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');
 
 
 Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])->name('settings.socialmedia');
+
+
+Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+Route::post('/notifications', [NotificationsController::class, 'clear'])->name('notifications.clear');

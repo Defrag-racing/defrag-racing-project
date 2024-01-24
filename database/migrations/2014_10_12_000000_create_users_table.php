@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('twitch_name')->nullable()->default(NULL);
             $table->string('discord_name')->nullable()->default(NULL);
 
+            $table->string('notification_settings')->default('all');
+
             $table->string('model')->default('sarge');
 
             $table->timestamps();

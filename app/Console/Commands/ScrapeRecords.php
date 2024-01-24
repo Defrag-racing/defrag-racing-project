@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Record;
 use App\Models\RecordHistory;
 
+use App\Jobs\ProcessNotificationsJob;
+
 class ScrapeRecords extends Command
 {
     /**
@@ -111,6 +113,8 @@ class ScrapeRecords extends Command
         $newrecord->save();
 
         $newrecord->map->processRanks();
+
+        ProcessNotificationsJob::dispatch($newrecord);
     }
 
     private function get_int_parameter($name) {

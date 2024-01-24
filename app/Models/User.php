@@ -39,7 +39,8 @@ class User extends Authenticatable
         'twitch_name',
         'discord_name',
         'model',
-        'plain_name'
+        'plain_name',
+        'notification_settings'
     ];
 
     /**

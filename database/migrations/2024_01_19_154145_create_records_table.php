@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('mapname')->index();
             $table->integer('rank')->default(1);
             $table->integer('besttime')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

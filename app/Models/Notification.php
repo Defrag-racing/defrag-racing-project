@@ -17,6 +17,11 @@ class Notification extends Model
         'url',
         'read',
         'type',
-        'user_id'
+        'user_id',
+        'record_id'
     ];
+
+    public function record () {
+        return $this->belongsTo(Record::class);
+    }
 }

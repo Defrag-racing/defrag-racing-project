@@ -22,6 +22,12 @@ use App\Http\Controllers\NotificationsController;
 |
 */
 
+Route::get('/test', function () {
+    // $user = \App\Models\User::find(170);
+
+    // Mail::to($user)->queue(new App\Mail\TestMail());
+});
+
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\ServersController;
 use App\Http\Controllers\RecordsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\RankingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ Route::get('/servers', [ServersController::class, 'index'])->name('servers');
 
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
 Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');
+
+Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
 
 Route::get('/records', [RecordsController::class, 'index'])->name('records');
 

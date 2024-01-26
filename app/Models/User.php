@@ -44,7 +44,8 @@ class User extends Authenticatable implements FilamentUser, HasName
         'discord_name',
         'model',
         'plain_name',
-        'notification_settings'
+        'notification_settings',
+        'created_at'
     ];
 
     /**

@@ -115,7 +115,8 @@ class ImportDataCommand extends Command
                 'discord_name'        =>      $element['profile']['discord_name'],
                 'model'        =>      $element['profile']['model'],
                 'mdd_id'        =>      $element['profile']['mdd_id'],
-                'plain_name'        =>  $plainName
+                'plain_name'        =>  $plainName,
+                'created_at'        =>  $element['created_at']
             ];
 
             $user = new User($newElement);

@@ -253,9 +253,9 @@
                             Maps
                         </NavLink>
 
-                        <NavLink :href="route('login')" :active="route().current('login')">
-                            Players
-                        </NavLink>
+                        <!-- <NavLink :href="route('ranking')" :active="route().current('ranking')">
+                            Ranking
+                        </NavLink> -->
 
                         <NavLink :href="route('records')" :active="route().current('records')">
                             Records
@@ -282,9 +282,9 @@
                             Maps
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('home')" :active="route().current('login')">
-                            Players
-                        </ResponsiveNavLink>
+                        <!-- <ResponsiveNavLink :href="route('ranking')" :active="route().current('ranking')">
+                            Ranking
+                        </ResponsiveNavLink> -->
 
                         <ResponsiveNavLink :href="route('records')" :active="route().current('records')">
                             Records

@@ -46,6 +46,7 @@ def pipeline_cmds(name):
         f"ln -s {PROJECT_PATH}/deploy/.env {PROJECT_PATH}/releases/{name}/.env",
         f"rm -rdf {PROJECT_PATH}/releases/{name}/storage",
         f"ln -s {PROJECT_PATH}/deploy/storage {PROJECT_PATH}/releases/{name}/storage",
+        f"ln -s {PROJECT_PATH}/deploy/frankenphp {PROJECT_PATH}/releases/{name}/frankenphp",
         "php artisan storage:link",
         "php artisan filament:assets",
         "php artisan config:cache",
@@ -54,6 +55,7 @@ def pipeline_cmds(name):
         "php artisan icons:cache",
         f"rm {PROJECT_PATH}/current",
         f"ln -s {PROJECT_PATH}/releases/{name} {PROJECT_PATH}/current",
+        "php artisan octane:restart",
         "php artisan queue:restart"
     ]
 

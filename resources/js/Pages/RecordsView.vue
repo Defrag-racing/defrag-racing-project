@@ -77,7 +77,7 @@
 
         <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <div class="flex justify-between items-center flex-wrap">
-                <h2 class="font-semibold text-xl text-gray-200 leading-tight">
+                <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
                     Records
                 </h2>
 

@@ -44,7 +44,7 @@
     <div>
         <Link class="flex rounded-md hover:bg-grayop-800 p-2" :href="route('maps.map', (map.name))">
             <div class="p-0.5 rounded-md">
-                <img onerror="this.src='/images/unknown.jpg'" :src="`https://defrag.racing/uploads/${map?.thumbnail}`" class="rounded-md" style="width: 65px; height: 50px;">
+                <img onerror="this.src='/images/unknown.jpg'" :src="`/storage/${map?.thumbnail}`" class="rounded-md" style="width: 65px; height: 50px;">
             </div>
     
             <div class="ml-4 flex justify-between w-full">

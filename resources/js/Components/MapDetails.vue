@@ -50,7 +50,7 @@
 <template>
     <div class="flex">
         <div class="bg-gray-600 p-0.5 rounded-md">
-            <img onerror="this.src='/images/unknown.jpg'" :src="`https://defrag.racing/uploads/${map?.thumbnail}`" class="rounded-md" style="width: 200px; height: 150px;">
+            <img onerror="this.src='/images/unknown.jpg'" :src="`/storage/${map?.thumbnail}`" class="rounded-md" style="width: 200px; height: 150px;">
         </div>
 
         <div class="ml-4">

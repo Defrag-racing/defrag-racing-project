@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('scrape:servers 1')->everyFiveMinutes()->runInBackground();
 
         $schedule->command('scrape:records')->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
+
+        $schedule->command('scrape:maps')->everyTwoMinutes();
     }
 
     /**

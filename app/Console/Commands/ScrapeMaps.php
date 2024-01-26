@@ -47,6 +47,12 @@ class ScrapeMaps extends Command
     }
 
     public function insertNewMap($map) {
+        $exists = Map::where('name', $map['name'])->exists();
+
+        if ($exists) {
+            return;
+        }
+
         $newMap = new Map();
 
         $newMap->fill($map);

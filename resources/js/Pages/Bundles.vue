@@ -2,9 +2,11 @@
     import { Head } from '@inertiajs/vue3';
     import Bundle from '@/Components/Bundle.vue';
     import { onMounted, ref } from 'vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
-        categories: Array
+        categories: Array,
+        id: Number
     });
 
     const currentCategory = ref(null);
@@ -13,9 +15,39 @@
         currentCategory.value = category
     }
 
+    const getUrl = (category) => {
+        let slug = category.name.toLowerCase().trim();
+        slug = slug.replaceAll(' ', '-');
+
+        let url = `/bundles/${category.id}/${slug}`
+
+        return url
+    }
+
+    const findCategory = () => {
+        if (isNaN(props.id ) || props.id == 0 || props.id == -1) {
+            return -1;
+        }
+
+        for(let i = 0; i < props.categories.length; i++) {
+            if (props.categories[i].id == props.id) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     onMounted(() => {
         if (props.categories.length > 0) {
-            currentCategory.value = props.categories[0]
+            let category = findCategory();
+    
+            if (category == -1) {
+                currentCategory.value = props.categories[0]
+            } else {
+                currentCategory.value = props.categories[category]
+            }
+
         }
     })
 
@@ -35,7 +67,7 @@
             <div class="md:flex justify-center">
                 <div class="md:mr-5 flex-2">
                     <div v-for="category in categories" :key="category.id">
-                        <div @click="selectCategory(category)" class="cursor-pointer rounded-md py-2 px-5 w-400 text-gray-400 mb-3 flex justify-between" :class="{'bg-grayop-800 hover:bg-grayop-700': currentCategory != category, 'bg-grayop-600 font-bold': currentCategory == category}">
+                        <Link :href="getUrl(category)" @click="selectCategory(category)" class="cursor-pointer rounded-md py-2 px-5 w-400 text-gray-400 mb-3 flex justify-between" :class="{'bg-grayop-800 hover:bg-grayop-700': currentCategory != category, 'bg-grayop-600 font-bold': currentCategory == category}">
                             <div class="mr-5">
                                 {{ category.name }}
                             </div>
@@ -43,7 +75,7 @@
                             <div class="ml-5">
                                 {{ category.bundles.length }}
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
 

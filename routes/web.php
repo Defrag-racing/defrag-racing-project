@@ -24,9 +24,9 @@ use App\Http\Controllers\RankingController;
 */
 
 Route::get('/test', function () {
-    // $user = \App\Models\User::find(170);
+    $ws = new \App\External\WorldSpawn();
 
-    // Mail::to($user)->queue(new App\Mail\TestMail());
+    return $ws->scrape_until('vp-omnimine-s3-ultra');
 });
 
 Route::get('/', [WebController::class, 'home'])->name('home');
@@ -41,7 +41,7 @@ Route::get('/ranking', [RankingController::class, 'index'])->name('ranking');
 
 Route::get('/records', [RecordsController::class, 'index'])->name('records');
 
-Route::get('/bundles', [BundlesController::class, 'index'])->name('bundles');
+Route::get('/bundles/{id?}/{slug?}', [BundlesController::class, 'index'])->name('bundles');
 
 
 Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])->name('settings.socialmedia');

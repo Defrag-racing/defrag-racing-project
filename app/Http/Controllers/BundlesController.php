@@ -8,9 +8,11 @@ use App\Models\BundleCategory;
 
 class BundlesController extends Controller
 {
-    public function index () {
+    public function index (Request $request, $id = -1, $slug='') {
         $categories = BundleCategory::with('bundles')->get();
     
-        return Inertia::render('Bundles')->with('categories', $categories);
+        return Inertia::render('Bundles')
+            ->with('categories', $categories)
+            ->with('id', intval($id));
     }
 }

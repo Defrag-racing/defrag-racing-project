@@ -36,11 +36,6 @@ class ImportDataCommand extends Command
         // Your command logic here
         $this->info("Importing data using: $func");
 
-        if (! $this->confirm('Do you want to continue?')) {
-            $this->error("Importing aborted !!!");
-
-            
-        }
         
         $this->info("Importing Data using: $func");
         $data = $this->get_json_data($file);

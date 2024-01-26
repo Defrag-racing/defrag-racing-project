@@ -17,9 +17,9 @@
     };
 
     const bestrecordCountry = computed(() => {
-        let country = props.server.bestrecord.user?.country ?? props.server.bestrecord.country;
+        let country = props.server.besttime_country;
 
-        return (country == 'XX') ? '_404' : country;
+        return (country == 'XX' || country == '') ? '_404' : country;
     });
 </script>
 
@@ -88,16 +88,16 @@
                 </div>
 
                 <!-- Best Record -->
-                <div class="text-lg p-2 bg-blackop-30 rounded-md mt-3" v-if="server.bestrecord">
+                <div class="text-lg p-2 bg-blackop-30 rounded-md mt-3" v-if="server.besttime_name">
                     <div class="text-xs capitalize text-gray-400 font-bold">BEST TIME </div>
 
                     <div class="flex justify-between items-center">
                         <div>
                             <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2">
-                            <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.bestrecord.user?.name ?? server.bestrecord.name)"></a>
+                            <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.besttime_name)"></a>
                         </div>
                         <div class="font-bold">
-                            {{  formatTime(server.bestrecord.time) }}
+                            {{  formatTime(server.besttime_time) }}
                         </div>
                     </div>
                 </div>

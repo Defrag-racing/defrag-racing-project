@@ -8,6 +8,7 @@ use App\External\DefragServer;
 use App\External\Q3DFServers;
 use App\Models\Server;
 use App\Models\OnlinePlayer;
+use App\Models\Record;
 
 use Illuminate\Support\Facades\DB;
 
@@ -106,11 +107,42 @@ class ScrapeServers extends Command
         return $result;
     }
 
+
+    function get_gametype($physics) {
+        if ($physics == 'cpm' || $physics == 'vq3') {
+            return 'run_' . $physics;
+        }
+
+        if (strpos($physics, '.') !== false) {
+            $parts = explode('.', $physics);
+
+            return 'ctf' . $parts[1] . '_' . $parts[0];
+        }
+    }
+
     public function updateServer($server, $data) {
         $server->name = trim($data['hostname']);
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
         $server->offline = false;
+
+        $bestTime = Record::query()
+            ->where('mapname', $server->map)
+            ->where('gametype', $this->get_gametype($server->defrag))
+            ->orderBy('time', 'ASC')
+            ->first();
+
+        if ($bestTime) {
+            $server->besttime_name = $bestTime->name;
+            $server->besttime_country = $bestTime->country;
+            $server->besttime_time = $bestTime->time;
+            $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;
+        } else {
+            $server->besttime_name = NULL;
+            $server->besttime_country = '_404';
+            $server->besttime_time = 0;
+            $server->besttime_url = '';
+        }
 
         $server->save();
 
@@ -158,6 +190,24 @@ class ScrapeServers extends Command
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
         $server->offline = false;
+
+        $bestTime = Record::query()
+            ->where('mapname', $server->map)
+            ->where('gametype', $this->get_gametype($server->defrag))
+            ->orderBy('time', 'ASC')
+            ->first();
+
+        if ($bestTime) {
+            $server->besttime_name = $bestTime->name;
+            $server->besttime_country = $bestTime->country;
+            $server->besttime_time = $bestTime->time;
+            $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;
+        } else {
+            $server->besttime_name = NULL;
+            $server->besttime_country = '_404';
+            $server->besttime_time = 0;
+            $server->besttime_url = '';
+        }
 
         $server->save();
 

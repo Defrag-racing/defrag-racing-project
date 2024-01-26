@@ -27,7 +27,11 @@ class Server extends Model
         'visible',
         'map',
         'defrag',
-        'rconpassword'
+        'rconpassword',
+        'besttime_country',
+        'besttime_name',
+        'besttime_url',
+        'besttime_time'
     ];
 
     public function mapdata () {

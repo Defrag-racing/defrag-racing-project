@@ -36,8 +36,6 @@ class ImportDataCommand extends Command
         // Your command logic here
         $this->info("Importing data using: $func");
 
-        
-        $this->info("Importing Data using: $func");
         $data = $this->get_json_data($file);
 
         if ($data === null) {
@@ -70,6 +68,10 @@ class ImportDataCommand extends Command
 
             $newElement['map'] = $map;
             $newElement['defrag'] = $defrag;
+            $newElement['besttime_name'] = NULL;
+            $newElement['besttime_country'] = '_404';
+            $newElement['besttime_time'] = 0;
+            $newElement['besttime_url'] = '';
 
             $server = new Server($newElement);
             $server->save();

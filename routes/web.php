@@ -23,12 +23,6 @@ use App\Http\Controllers\RankingController;
 |
 */
 
-Route::get('/test', function () {
-    $ws = new \App\External\WorldSpawn();
-
-    return $ws->scrape_until('vp-omnimine-s3-ultra');
-});
-
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 

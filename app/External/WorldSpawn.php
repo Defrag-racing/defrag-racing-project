@@ -150,16 +150,22 @@ class WorldSpawn {
             $result['author'] = $data['Author']->textContent;
         }
 
+        $result['name'] = $map;
         $result['author'] = $this->getAuthor($data);
         $result['physics'] = $this->getPhysics($data);
         $result['description'] = $this->getDescription($data);
         $result['gametype'] = $this->getGameType($data);
         $result['date_added'] = $this->getDate($data);
+        $result['pk3'] = $this->getPk3($data);
         $result['pk3_size'] = $this->getPk3Size($data);
         $result['mod'] = 'df';
         $result['weapons'] = $this->getWeapons($data);
+        $result['items'] = $this->getItems($data);
+        $result['functions'] = $this->getFunctions($data);
 
-        dd($result);
+        $result['map_image'] = $mapImage;
+
+        return $result;
     }
 
     public function shouldGetMap($data) {
@@ -264,6 +270,16 @@ class WorldSpawn {
         return '';
     }
 
+    public function getPk3($data) {
+        if (isset($data['Pk3 file'])) {
+            $pk3 = $data['Pk3 file']->getElementsByTagName('a')->item(0)->textContent;
+
+            return $pk3 . ".pk3";
+        }
+
+        return 0;
+    }
+
     public function getPk3Size($data) {
         if (isset($data['File size'])) {
             $size = trim($data['File size']->textContent);
@@ -280,6 +296,41 @@ class WorldSpawn {
     public function getWeapons($data) {
         if (isset($data['Weapons'])) {
             $list = $this->getImageList($data['Weapons']);
+
+            return implode(',', $list);
+        }
+
+        return '';
+    }
+
+    public function getItems($data) {
+        if (isset($data['Items'])) {
+            $list = $this->getImageList($data['Items']);
+
+            return implode(',', $list);
+        }
+
+        return '';
+    }
+
+    public function getFunctions($data) {
+        $functions = [
+            'ice'   =>  'slick',
+            'w'     =>  'water',
+            't'     =>  'timer',
+            'push'  =>  'jumppad'
+        ];
+
+        if (isset($data['Functions'])) {
+            $list = $this->getImageList($data['Functions']);
+
+            $list = array_map(function ($item) use ($functions) {
+                if (isset($functions[$item])) {
+                    return $functions[$item];
+                }
+
+                return $item;
+            }, $list);
 
             return implode(',', $list);
         }

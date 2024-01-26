@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\External\WorldSpawn;
+use App\Models\Map;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ScrapeMaps extends Command
 {
@@ -27,8 +31,49 @@ class ScrapeMaps extends Command
      */
     public function handle()
     {
+        $lastMap = Map::orderBy('date_added', 'DESC')->first();
+
+        if (! $lastMap ) {
+            return;
+        }
+
         $ws = new WorldSpawn();
 
-        $ws->getMapDetails('vp-omnimine-s3-ultra');
+        $maps = $ws->scrape_until($lastMap->name);
+
+        foreach($maps as $map) {
+            $this->insertNewMap($map);
+        }
+    }
+
+    public function insertNewMap($map) {
+        $newMap = new Map();
+
+        $newMap->fill($map);
+
+        $newMap->thumbnail = $this->downloadImage($map['map_image']);
+        $newMap->visible = true;
+
+        $newMap->save();
+
+        $this->info("Added Map : " . $map['name']);
+    }
+
+    public function downloadImage($url) {
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        $data = curl_exec($ch);
+
+        curl_close($ch);
+
+        $extension = pathinfo($url, PATHINFO_EXTENSION);
+        $filename = "thumbs/" . Str::random(20) . '.' . $extension;
+
+        Storage::disk('public')->put($filename, $data);
+
+        return $filename;
     }
 }

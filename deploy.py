@@ -55,7 +55,7 @@ def pipeline_cmds(name):
         "php artisan icons:cache",
         f"rm {PROJECT_PATH}/current",
         f"ln -s {PROJECT_PATH}/releases/{name} {PROJECT_PATH}/current",
-        "php artisan octane:restart",
+        "php artisan octane:reload",
         "php artisan queue:restart"
     ]
 

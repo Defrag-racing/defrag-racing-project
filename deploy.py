@@ -47,6 +47,7 @@ def pipeline_cmds(name):
         f"rm -rdf {PROJECT_PATH}/releases/{name}/storage",
         f"ln -s {PROJECT_PATH}/deploy/storage {PROJECT_PATH}/releases/{name}/storage",
         f"ln -s {PROJECT_PATH}/deploy/rr {PROJECT_PATH}/releases/{name}/rr",
+        f"ln -s {PROJECT_PATH}/deploy/.rr.yaml {PROJECT_PATH}/releases/{name}/.rr.yaml",
         "php artisan storage:link",
         "php artisan filament:assets",
         "php artisan config:cache",

@@ -31,7 +31,8 @@ class BundleResource extends Resource
                     ->maxLength(65535)
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('url')
-                    ->disk('s3')
+                    ->disk('public')
+                    ->directory('bundles')
                     ->required(),
                 Forms\Components\TextInput::make('category_id')
                     ->required()

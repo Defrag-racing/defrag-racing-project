@@ -11,6 +11,7 @@ use App\Http\Controllers\RecordsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\EndpointController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
 Route::get('/servers', [ServersController::class, 'index'])->name('servers');
+Route::get('/servers/json', [EndpointController::class, 'index'])->name('servers.json');
 
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
 Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');

@@ -67,57 +67,59 @@
 </script>
 
 <template>
-    <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
-        <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
-            <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
-                {{ map.physics }}
-            </div>
-
-            <div>
-                <!-- Weapons -->
-                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="weaponsList.length > 0">
-                    <div v-for="weapon in weaponsList" :title="weapon" :class="`sprite-items sprite-${weapon} w-4 h-4 flex-shrink-0 mx-1`"></div>
+    <div>
+        <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
+            <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
+                <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
+                    {{ map.physics }}
                 </div>
-
-                <!-- Items -->
-                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="itemsList.length > 0">
-                    <div v-for="item in itemsList" :title="item" :class="`sprite-items sprite-${item} w-4 h-4 flex-shrink-0 mx-1`"></div>
-                </div>
-
-                <!-- Functions -->
-                <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="functionsList.length > 0">
-                    <div v-for="func in functionsList" :title="func" :class="`sprite-items sprite-${func} w-4 h-4 flex-shrink-0 mx-1`"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
-            <div class="flex items-center">
-                <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)"> {{ map.name }} </Link>
-            
-                <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                    </svg>                      
+    
+                <div>
+                    <!-- Weapons -->
+                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="weaponsList.length > 0">
+                        <div v-for="weapon in weaponsList" :title="weapon" :class="`sprite-items sprite-${weapon} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                    </div>
+    
+                    <!-- Items -->
+                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="itemsList.length > 0">
+                        <div v-for="item in itemsList" :title="item" :class="`sprite-items sprite-${item} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                    </div>
+    
+                    <!-- Functions -->
+                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="functionsList.length > 0">
+                        <div v-for="func in functionsList" :title="func" :class="`sprite-items sprite-${func} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                    </div>
                 </div>
             </div>
-
-            <a target="_blank" :href="'https://dl.defrag.racing/downloads/maps/' + map?.pk3?.split('/').pop()">
-                <div class="text-gray-400 bg-blackop-50 hover:bg-blackop-80 py-1 px-2 rounded-md cursor-pointer" title="Download">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
-                    </svg>
+    
+            <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
+                <div class="flex items-center">
+                    <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)"> {{ map.name }} </Link>
+                
+                    <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                        </svg>                      
+                    </div>
                 </div>
-            </a>
-        </div>
-
-        <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
-            <div class="text-gray-400 overflow-hidden truncate text-left" style="width: 200px;">
-                By <span class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;"> {{ map.author }} </span>
+    
+                <a target="_blank" :href="'https://dl.defrag.racing/downloads/maps/' + map?.pk3?.split('/').pop()">
+                    <div class="text-gray-400 bg-blackop-50 hover:bg-blackop-80 py-1 px-2 rounded-md cursor-pointer" title="Download">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
+                        </svg>
+                    </div>
+                </a>
             </div>
-
-            <div class="text-gray-400">
-                Added {{ date }}
+    
+            <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
+                <div class="text-gray-400 overflow-hidden truncate text-left" style="width: 200px;">
+                    By <span class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;"> {{ map.author }} </span>
+                </div>
+    
+                <div class="text-gray-400">
+                    Added {{ date }}
+                </div>
             </div>
         </div>
     </div>

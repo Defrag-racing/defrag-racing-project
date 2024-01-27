@@ -49,7 +49,7 @@
             <div class="flex items-center">
                 <div class="text-right mr-5">
                     <div style="width: 170px;">
-                        <Popper arrow hover :disabled="record.map == null" style="z-index: 100;">
+                        <Popper placement="left" arrow hover :disabled="record.map == null" style="z-index: 100;">
                             <div class="flex items-center">
                                 <div class="text-gray-400 mr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">

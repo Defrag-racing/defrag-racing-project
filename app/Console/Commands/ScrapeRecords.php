@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 
 use App\External\Q3DFRecords;
 use App\Models\User;
+use App\Models\Map;
 use App\Models\Record;
 use App\Models\RecordHistory;
 

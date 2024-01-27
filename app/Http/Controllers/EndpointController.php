@@ -53,7 +53,9 @@ class EndpointController extends Controller {
         $result['timestamp'] = now()->format('Y-m-d H:i:s');
 
         $result['players'] = [];
-        $result['scores'] = [];
+        $result['scores'] = [
+            'players'           =>      []
+        ];
 
         foreach($server->onlinePlayers as $player) {
             $playerData = [];
@@ -72,12 +74,16 @@ class EndpointController extends Controller {
             $score['follow_num'] = $player->follow_num;
             $score['time'] = $player->time;
 
-
             $result['players'][$player->client_id] = $playerData;
-            $result['scores'][] = $score;
-
+            $result['scores']['players'][] = $score;
         }
 
+        $result['scores']['num_players'] = count($server->onlinePlayers);
+
         return $result;
+    }
+
+    function getScoresData($server) {
+
     }
 }

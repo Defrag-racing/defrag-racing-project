@@ -113,7 +113,7 @@ class ImportDataCommand extends Command
                 'model'        =>      $element['profile']['model'],
                 'mdd_id'        =>      $element['profile']['mdd_id'],
                 'plain_name'        =>  $plainName,
-                'created_at'        =>  $element['created_at']
+                'created_at'        =>  $element['date_joined']
             ];
 
             $user = new User($newElement);

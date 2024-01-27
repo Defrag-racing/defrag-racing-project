@@ -94,7 +94,7 @@
 
                                     <span> broke your </span>
 
-                                    <div class="inline text-white rounded-full text-xs px-2 py-0.5 uppercase ml-0.5 font-bold" :class="{'bg-red-700': recordNotification.physics.includes('cpm'), 'bg-blue-600': !recordNotification.physics.includes('cpm')}">
+                                    <div class="inline text-white rounded-full text-xs px-2 py-0.5 uppercase ml-0.5 font-bold" :class="{'bg-green-700': recordNotification.physics.includes('cpm'), 'bg-blue-600': !recordNotification.physics.includes('cpm')}">
                                         <span>{{ recordNotification.physics }}</span>
                                     </div>
 

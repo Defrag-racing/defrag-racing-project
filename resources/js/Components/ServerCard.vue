@@ -75,7 +75,7 @@
                             <div class="bg-gray-300 text-black rounded-full text-xs px-2 py-0.5 uppercase font-bold">
                                 <div>{{ server.type }}</div>
                             </div>
-                            <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase ml-2 font-bold" :class="{'bg-red-600': server.defrag.includes('cpm'), 'bg-blue-600': !server.defrag.includes('cpm')}">
+                            <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase ml-2 font-bold" :class="{'bg-green-700': server.defrag.includes('cpm'), 'bg-blue-600': !server.defrag.includes('cpm')}">
                                 <div>{{ server.defrag }}</div>
                             </div>
                         </div>

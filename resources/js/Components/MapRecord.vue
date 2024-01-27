@@ -48,11 +48,11 @@
             <div class="flex items-center">
                 <div class="text-right">
                     <div class="text-lg font-bold text-gray-300">{{  formatTime(record.time) }}</div>
-                    <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>
+                    <div class="text-xs text-red-500" v-if="timeDiff">- {{  formatTime(timeDiff) }}</div>
                 </div>
 
                 <div class="ml-5">
-                    <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-red-600': record.physics.includes('cpm'), 'bg-blue-600': !record.physics.includes('cpm')}">
+                    <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-green-700': record.physics.includes('cpm'), 'bg-blue-600': !record.physics.includes('cpm')}">
                         <div>{{ record.physics }}</div>
                     </div>
 

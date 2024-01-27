@@ -96,7 +96,7 @@
 
         <Banner :show="true" styling="success" handle="dfracing2024-announcement">
             <span>
-                <span class="font-bold">Anouncement:</span> 2024 new begginings ... 
+                <span class="font-bold">Anouncement:</span> 2024 new beginnings ... 
                 <span class="font-bold italic hover:underline">
                     <Link :href="route('home')">
                         Read More

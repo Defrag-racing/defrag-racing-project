@@ -23,6 +23,7 @@ class User extends Authenticatable implements FilamentUser, HasName
     use Notifiable;
     use TwoFactorAuthenticatable;
     use Searchable;
+    use MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.

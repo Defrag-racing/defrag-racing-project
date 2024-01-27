@@ -94,7 +94,16 @@
             <link rel="manifest" href="/site.webmanifest">
         </Head>
 
-        <Banner />
+        <Banner :show="true" styling="success" handle="dfracing2024-announcement">
+            <span>
+                <span class="font-bold">Anouncement:</span> 2024 new begginings ... 
+                <span class="font-bold italic hover:underline">
+                    <Link :href="route('home')">
+                        Read More
+                    </Link>
+                </span>
+            </span>
+        </Banner>
 
         <div class="min-h-screen bg-gray-900 main-background">
             <nav class="border-b border-grayop-700">

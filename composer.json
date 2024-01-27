@@ -20,6 +20,8 @@
         "laravel/scout": "^10.8",
         "laravel/tinker": "^2.8",
         "php-http/curl-client": "^2.3",
+        "spiral/roadrunner-cli": "^2.5.0",
+        "spiral/roadrunner-http": "^3.0.1",
         "tightenco/ziggy": "^1.0",
         "typesense/typesense-php": "^4.9"
     },

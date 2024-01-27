@@ -15,7 +15,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 
-class User extends Authenticatable implements FilamentUser, HasName
+class User extends Authenticatable implements FilamentUser, HasName, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
@@ -23,7 +23,6 @@ class User extends Authenticatable implements FilamentUser, HasName
     use Notifiable;
     use TwoFactorAuthenticatable;
     use Searchable;
-    use MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.

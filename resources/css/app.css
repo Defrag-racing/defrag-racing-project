@@ -51,7 +51,7 @@
 }
 
 .map-container-cpm {
-    background: linear-gradient(90deg, #ff3333, #ff835d);
+    background: linear-gradient(90deg, #33ff55, #5dff5d);
     background-size: 400% 400%;
     animation: gradient-animation 7s ease infinite;
 }
@@ -63,7 +63,7 @@
 }
 
 .cpm-badge {
-    background: linear-gradient(90deg, #ff333390, #ff835d90);
+    background: linear-gradient(90deg, #33ff4490, #5dff5d90);
     background-size: 400% 400%;
     animation: gradient-animation 7s ease infinite;
 }

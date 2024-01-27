@@ -129,7 +129,7 @@
                     Servers
                 </h2>
 
-                <div class="flex">
+                <div class="sm:flex">
                     <div @click="updatePage" title="Auto Update Servers every 30 seconds" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                         <div class="w-8 h-8 mr-2">
                             <svg :class="{ 'rotate-animation': isRotating }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -146,7 +146,7 @@
                         </div>
                     </div>
 
-                    <Dropdown align="right" width="48">
+                    <Dropdown align="right" width="48" class="mt-4 sm:mt-0">
                         <template #trigger>
                             <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
                                 <div class="w-8 h-8 mr-2">

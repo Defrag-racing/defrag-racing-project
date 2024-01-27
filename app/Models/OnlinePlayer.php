@@ -29,6 +29,6 @@ class OnlinePlayer extends Model
     }
 
     public function profile() {
-        return $this->belongsTo(User::class, 'mdd_id', 'mdd_id');
+        return $this->belongsTo(User::class, 'mdd_id', 'mdd_id')->select('id', 'name', 'profile_photo_path', 'country', 'mdd_id', 'model');
     }
 }

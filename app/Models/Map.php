@@ -80,7 +80,7 @@ class Map extends Model
             $besttime = -1;
 
             if (count($data) > 0) {
-                $best_time = $data[0]->time;
+                $besttime = $data[0]->time;
             }
 
             foreach($data as $record) {

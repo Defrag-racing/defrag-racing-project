@@ -94,6 +94,8 @@ class ScrapeRecords extends Command
 
         $newrecord = new Record();
 
+        $record['map'] = strtolower($record['map']);
+
         $newrecord->name = $record['name'];
         $newrecord->mapname = $record['map'];
         $newrecord->mdd_id = $record['mdd_id'];
@@ -112,8 +114,10 @@ class ScrapeRecords extends Command
 
         $newrecord->save();
 
-        if ($newrecord->map) {
-            $newrecord->map->processRanks();
+        $serverMap = Map::where('name', $record['map'])->first();
+
+        if ($serverMap) {
+            $serverMap->processRanks();
         }
 
         ProcessNotificationsJob::dispatch($newrecord);

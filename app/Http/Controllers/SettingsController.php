@@ -17,7 +17,7 @@ use GuzzleHttp\Exception\RequestException;
 class SettingsController extends Controller
 {
     public function socialmedia(Request $request) {
-        $user = $user;
+        $user = $request->user();
 
         if ($request->has('twitter_name')) {
             $user->twitter_name = $request->twitter_name;

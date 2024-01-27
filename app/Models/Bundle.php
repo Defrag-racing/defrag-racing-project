@@ -19,6 +19,7 @@ class Bundle extends Model
         'name',
         'description',
         'url',
+        'file',
         'category_id'
     ];
 }

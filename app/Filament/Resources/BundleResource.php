@@ -30,10 +30,13 @@ class BundleResource extends Resource
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('url')
+                Forms\Components\FileUpload::make('file')
+                    ->preserveFilenames()
                     ->disk('public')
                     ->directory('bundles')
-                    ->required(),
+                    ->visibility('public'),
+                Forms\Components\TextInput::make('url')
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('category_id')
                     ->required()
                     ->numeric(),
@@ -46,8 +49,8 @@ class BundleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('url')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('url'),
+                Tables\Columns\TextColumn::make('file'),
                 Tables\Columns\TextColumn::make('category_id')
                     ->numeric()
                     ->sortable(),

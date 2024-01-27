@@ -34,8 +34,15 @@ class DefragServer
 
     public function getRconData($rconpass) {
         socket_sendto($this->socket, "\xff\xff\xff\xffrcon " . $rconpass . " score\x00", strlen("\xff\xff\xff\xffrcon " . $rconpass . " score\x00"), 0, $this->ip, $this->port);
-        $data = socket_read($this->socket, 8192);
-    
+        $data = "";
+
+        $read = socket_read($this->socket, 8192);
+
+        while($read) {
+            $data .= $read;
+            $read = socket_read($this->socket, 8192);
+        }
+
         if (strpos($data, 'Bad rconpassword') !== false) {
             return 'Bad rconpassword';
         }

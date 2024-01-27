@@ -26,57 +26,59 @@
 <template>
     <div>
         <div class="mt-5 mb-10 mx-4 group bg-grayop-700 text-gray-300 rounded-md shadow-sm" style="width: 400px; max-width: 100%;">
-            <div class="p-3">
-                <!-- Top Bar -->
-                <div class="rounded-md p-2 bg-blackop-30">
-                    <div class="flex justify-between">
-                        <div class="flex">
-                            <div class="flex items-center">
-                                <img :src="`/images/flags/${server.location}.png`" class="w-8 pt-1" :title="server.location">
-                                <div :class="(server.name.length > 35) ? 'text-sm font-bold ml-4' : 'text-lg font-bold ml-4'" v-html="q3tohtml(server.name)"></div>
-                            </div>
-                        </div>
-        
-                        <div class="flex items-center">
+            <div class="p-3 rounded-md" >
+                <div class="rounded-md" :class="{'cpm-gradiant-2': server.defrag.includes('cpm'), 'vq3-gradiant-2': !server.defrag.includes('cpm')}">
+                    <!-- Top Bar -->
+                    <div class="rounded-md p-2 bg-blackop-30">
+                        <div class="flex justify-between">
                             <div class="flex">
-                                <a :href="`defrag://${server.ip}:${server.port}`" class="mr-6 text-gray-400 hover:text-gray-100 transition-all">
-                                    <div class="flex text-sm rounded-md cursor-pointer items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                                        </svg>
-                                        <span class="ml-1">Play</span>
+                                <div class="flex items-center">
+                                    <img :src="`/images/flags/${server.location}.png`" class="w-8 pt-1" :title="server.location">
+                                    <div :class="(server.name.length > 35) ? 'text-sm font-bold ml-4' : 'text-lg font-bold ml-4'" v-html="q3tohtml(server.name)"></div>
+                                </div>
+                            </div>
+            
+                            <div class="flex items-center">
+                                <div class="flex">
+                                    <a :href="`defrag://${server.ip}:${server.port}`" class="transition-all">
+                                        <div class="flex rounded-md text-xs px-2 py-1 uppercase font-bold border-2 border-gray-400 text-white">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                                            </svg>
+                                            <span class="ml-1">Play</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Server Ip -->
+                        <div class="flex justify-between mt-2 items-center">
+                            <div class="flex ml-2 text-gray-400 mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Z" />
+                                </svg>
+        
+                                <div class="flex items-center text-sm ml-5">
+                                    <div>
+                                        {{  server.ip }}:{{ server.port }}
                                     </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Server Ip -->
-                    <div class="flex justify-between mt-2 items-center">
-                        <div class="flex ml-2 text-gray-400 mt-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 0 1-3-3m3 3a3 3 0 1 0 0 6h13.5a3 3 0 1 0 0-6m-16.5-3a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3m-19.5 0a4.5 4.5 0 0 1 .9-2.7L5.737 5.1a3.375 3.375 0 0 1 2.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 0 1 .9 2.7m0 0a3 3 0 0 1-3 3m0 3h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Zm-3 6h.008v.008h-.008v-.008Zm0-6h.008v.008h-.008v-.008Z" />
-                            </svg>
-    
-                            <div class="flex items-center text-sm ml-5">
-                                <div>
-                                    {{  server.ip }}:{{ server.port }}
-                                </div>
-                                
-                                <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-3" @click="copyServer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
-                                    </svg>     
+                                    
+                                    <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-3" @click="copyServer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                                        </svg>     
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="flex">
-                            <div class="bg-gray-300 text-black rounded-full text-xs px-2 py-0.5 uppercase font-bold">
-                                <div>{{ server.type }}</div>
-                            </div>
-                            <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase ml-2 font-bold" :class="{'bg-green-700': server.defrag.includes('cpm'), 'bg-blue-600': !server.defrag.includes('cpm')}">
-                                <div>{{ server.defrag }}</div>
+                            <div class="flex">
+                                <div class="bg-gray-700 rounded-full text-xs px-2 py-0.5 uppercase font-bold">
+                                    <div>{{ server.type }}</div>
+                                </div>
+                                <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase ml-2 font-bold" :class="{'bg-green-700': server.defrag.includes('cpm'), 'bg-blue-600': !server.defrag.includes('cpm')}">
+                                    <div>{{ server.defrag }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,16 +90,18 @@
                 </div>
 
                 <!-- Best Record -->
-                <div class="text-lg p-2 bg-blackop-30 rounded-md mt-3" v-if="server.besttime_name">
-                    <div class="text-xs capitalize text-gray-400 font-bold">BEST TIME </div>
-
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2">
-                            <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.besttime_name)"></a>
-                        </div>
-                        <div class="font-bold">
-                            {{  formatTime(server.besttime_time) }}
+                <div class="bg-blackop-30 rounded-md">
+                    <div class="text-lg p-2 rounded-md mt-3" v-if="server.besttime_name">
+                        <div class="text-xs capitalize text-gray-400 font-bold">BEST TIME </div>
+    
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2">
+                                <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.besttime_name)"></a>
+                            </div>
+                            <div class="font-bold">
+                                {{  formatTime(server.besttime_time) }}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -170,6 +170,7 @@ const countries = {
     "SR": "Suriname",
     "SZ": "Swaziland",
     "SE": "Sweden",
+    "SS": "South Sudan",
     "CH": "Switzerland",
     "SY": "Syrian Arab Republic",
     "TW": "Taiwan, Province of China",
@@ -196,7 +197,8 @@ const countries = {
     "VN": "Viet Nam",
     "YE": "Yemen",
     "ZM": "Zambia",
-    "ZW": "Zimbabwe"
+    "ZW": "Zimbabwe",
+    "X1": "Scotland"
 };
 
 export default countries

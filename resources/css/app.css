@@ -85,3 +85,19 @@
 .defrag-scrollbar::-webkit-scrollbar-track {
     background-color: #00000000;
 }
+
+.vq3-gradiant {
+    background: linear-gradient(180deg, rgba(14, 68, 245, 0.07) 0%, rgba(250, 13, 13, 0) 56%);
+}
+
+.cpm-gradiant {
+    background: linear-gradient(180deg, rgba(14, 245, 64, 0.03) 0%, rgba(250, 13, 13, 0) 56%);
+}
+
+.vq3-gradiant-2 {
+    background: linear-gradient(270deg, rgba(14, 68, 245, 0.15) 0%, rgba(250, 13, 13, 0) 100%);
+}
+
+.cpm-gradiant-2 {
+    background: linear-gradient(270deg, rgba(14, 245, 64, 0.08) 0%, rgba(250, 13, 13, 0) 100%);
+}

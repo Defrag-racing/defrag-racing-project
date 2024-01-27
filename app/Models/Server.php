@@ -39,6 +39,6 @@ class Server extends Model
     }
 
     public function onlinePlayers () {
-        return $this->hasMany(OnlinePlayer::class);
+        return $this->hasMany(OnlinePlayer::class)->orderBy('time', 'ASC');
     }
 }

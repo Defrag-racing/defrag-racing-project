@@ -42,7 +42,7 @@
     const form = useForm({
         search: props.queries?.search ?? '',
         author: props.queries?.author ?? '',
-        type: props.queries?.type ?? [],
+        gametype: props.queries?.gametype ?? [],
         physics: props.queries?.physics ?? []
     })
     
@@ -88,12 +88,12 @@
 
         <div class="flex mb-4">
             <div class="pr-2 w-1/2">
-                <div class="text-sm text-gray-400">Type</div>
+                <div class="text-sm text-gray-400">Gametype</div>
                 <SpecialRadio
                     :options="types"
-                    v-model="form.type"
+                    v-model="form.gametype"
                     :multi="true"
-                    :values="form.type"
+                    :values="form.gametype"
                 />
             </div>
 

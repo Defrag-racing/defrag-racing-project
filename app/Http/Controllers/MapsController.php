@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Models\Map;
 use App\Models\Record;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class MapsController extends Controller
 {
     public function index(Request $request) {
@@ -41,16 +43,19 @@ class MapsController extends Controller
 
         if ($request->filled('physics')) {
             if (count($request->physics) == 1) {
-                $maps = $maps->where('physics', trim($request->physics[0]))->orWhere('physics', 'all');
+                $maps = $maps->where(function (Builder $query) use($request) {
+                    $query->where('physics', trim($request->physics[0]))
+                        ->orWhere('physics', 'all');
+                });
             }
             $queries['physics'] = $request->physics;
         }
 
-        if ($request->filled('type')) {
-            if (count($request->type) > 0) {
-                $maps = $maps->whereIn('gametype', $request->type);
+        if ($request->filled('gametype')) {
+            if (count($request->gametype) > 0) {
+                $maps = $maps->whereIn('gametype', $request->gametype);
             }
-            $queries['type'] = $request->type;
+            $queries['gametype'] = $request->gametype;
         }
 
         $maps = $maps->paginate(21)->withQueryString();

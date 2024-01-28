@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     
-                    <div class="flex justify-center" v-if="notifications.length > 0">
+                    <div class="flex justify-center" v-if="notifications.total > notifications.per_page">
                         <Pagination :current_page="notifications.current_page" :last_page="notifications.last_page" :link="notifications.first_page_url" />
                     </div>
                 </div>

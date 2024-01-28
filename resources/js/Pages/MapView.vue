@@ -225,7 +225,7 @@
                         <MapRecordSmall v-for="record in records.data" :key="record.id" :record="record" />
                     </div>
 
-                    <div class="flex justify-center">
+                    <div class="flex justify-center" v-if="records.total > records.per_page">
                         <Pagination :last_page="records.last_page" :current_page="records.current_page" :link="records.first_page_url" />
                     </div>
                 </div>

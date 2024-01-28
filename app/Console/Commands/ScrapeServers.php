@@ -130,10 +130,11 @@ class ScrapeServers extends Command
             ->where('mapname', $server->map)
             ->where('gametype', $this->get_gametype($server->defrag))
             ->orderBy('time', 'ASC')
+            ->with('user')
             ->first();
 
         if ($bestTime) {
-            $server->besttime_name = $bestTime->name;
+            $server->besttime_name = $bestTime->user ? $bestTime->user->name : $bestTime->name;
             $server->besttime_country = $bestTime->country;
             $server->besttime_time = $bestTime->time;
             $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;
@@ -195,10 +196,11 @@ class ScrapeServers extends Command
             ->where('mapname', $server->map)
             ->where('gametype', $this->get_gametype($server->defrag))
             ->orderBy('time', 'ASC')
+            ->with('user')
             ->first();
 
         if ($bestTime) {
-            $server->besttime_name = $bestTime->name;
+            $server->besttime_name = $bestTime->user ? $bestTime->user->name : $bestTime->name;
             $server->besttime_country = $bestTime->country;
             $server->besttime_time = $bestTime->time;
             $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;

@@ -10,7 +10,7 @@
         queries: Object
     });
 
-    const showFilters = ref(false);
+    const showFilters = ref(Object.keys(props.queries ?? {}).length > 0);
 </script>
 
 <template>
@@ -57,8 +57,8 @@
                     <div class="flex flex-wrap justify-center">
                         <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" :key="map.id" />
                     </div>
-                    
-                    <div class="flex justify-center">
+
+                    <div class="flex justify-center" v-if="maps.total > maps.per_page">
                         <Pagination :current_page="maps.current_page" :last_page="maps.last_page" :link="maps.first_page_url" />
                     </div>
                 </div>

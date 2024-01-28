@@ -7,7 +7,7 @@ PROJECT_NAME = "defrag-racing-project"
 
 def get_github_token():
     data = ''
-    with open('github.txt', 'r') as file:
+    with open(PROJECT_PATH + '/deploy/github.txt', 'r') as file:
         data = file.read().replace('\n', '')
 
     return data

@@ -7,7 +7,8 @@
 
     const props = defineProps({
         maps: Object,
-        queries: Object
+        queries: Object,
+        users: Array
     });
 
     const showFilters = ref(Object.keys(props.queries ?? {}).length > 0);
@@ -51,11 +52,15 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <MapFilters :show="showFilters" :queries="queries ?? {}" />
+                <MapFilters :show="showFilters" :queries="queries ?? {}" :users="users" />
 
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div class="flex flex-wrap justify-center">
                         <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" :key="map.id" />
+                    </div>
+
+                    <div class="flex justify-center items-center my-10 text-gray-500">
+                        There are no results.
                     </div>
 
                     <div class="flex justify-center" v-if="maps.total > maps.per_page">

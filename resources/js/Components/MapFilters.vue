@@ -3,10 +3,12 @@
     import { Link, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import SpecialRadio from '@/Components/Basic/SpecialRadio.vue';
+    import PlayerSelect from '@/Components/Basic/PlayerSelect.vue';
 
     const props = defineProps({
         show: Boolean,
-        queries: Object
+        queries: Object,
+        users: Array
     });
 
     const types = {
@@ -43,7 +45,10 @@
         search: props.queries?.search ?? '',
         author: props.queries?.author ?? '',
         gametype: props.queries?.gametype ?? [],
-        physics: props.queries?.physics ?? []
+        physics: props.queries?.physics ?? [],
+        has_records: props.queries?.has_records ?? [],
+        have_no_records: props.queries?.have_no_records ?? [],
+        world_record: props.queries?.world_record ?? [],
     })
     
     const onFilterSubmit = () => {
@@ -54,8 +59,8 @@
 
 <template>
     <div v-if="show" class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4 mb-10 filter-container">
-        <div class="flex justify-between items-center">
-            <div class="text-white font-bold text-lg mb-4">
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-white font-bold text-lg">
                 Filters
             </div>
             <Link class="flex items-center text-blue-500 hover:text-blue-400 cursor-pointer" :href="route('maps')">
@@ -66,8 +71,8 @@
             </Link>
         </div>
 
-        <div class="flex mb-4">
-            <div class="pr-2 w-1/2">
+        <div class="sm:flex mb-4">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
                 <div class="text-sm text-gray-400">Search Keywords</div>
                 <TextInput
                     type="text"
@@ -76,7 +81,7 @@
                 />
             </div>
 
-            <div class="pl-2 w-1/2">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
                 <div class="text-sm text-gray-400">Author</div>
                 <TextInput
                     type="text"
@@ -86,8 +91,64 @@
             </div>
         </div>
 
-        <div class="flex mb-4">
-            <div class="pr-2 w-1/2">
+        <div class="sm:flex mb-4">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Player has record</div>
+                    <div class="text-sm text-blue-400">{{ form.has_records.length }} Selected</div>
+                </div>
+
+                <div>
+                    <PlayerSelect
+                    :options="users"
+                    :multi="true"
+                    v-model="form.has_records"
+                    :values="form.has_records"
+                />
+                </div>
+            </div>
+
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Player Doesn't have record</div>
+                    <div class="text-sm text-blue-400">{{ form.have_no_records.length }} Selected</div>
+                </div>
+
+                <div>
+                    <PlayerSelect
+                    :options="users"
+                    :multi="true"
+                    v-model="form.have_no_records"
+                    :values="form.have_no_records"
+                />
+                </div>
+            </div>
+        </div>
+
+        <div class="sm:flex mb-4">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Player has World Record</div>
+                    <div class="text-sm text-blue-400">{{ form.world_record.length }} Selected</div>
+                </div>
+
+                <div>
+                    <PlayerSelect
+                    :options="users"
+                    :multi="false"
+                    v-model="form.world_record"
+                    :values="form.world_record"
+                />
+                </div>
+            </div>
+
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                
+            </div>
+        </div>
+
+        <div class="sm:flex mb-4">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
                 <div class="text-sm text-gray-400">Gametype</div>
                 <SpecialRadio
                     :options="types"
@@ -97,7 +158,7 @@
                 />
             </div>
 
-            <div class="pr-2 w-1/2">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
                 <div class="text-sm text-gray-400">Physics</div>
                 <SpecialRadio
                     :options="physics"
@@ -108,7 +169,11 @@
             </div>
         </div>
 
-        <div class="flex justify-center mt-5">
+        <div class="flex items-center justify-center text-gray-600 my-10">
+            More features are Work In Progress
+        </div>
+
+        <div class="flex justify-center">
             <button :disabled="form.processing" style="width: 300px; max-width: 100%" @click="onFilterSubmit" class="flex justify-center items-center text-center cursor-pointer px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase hover:bg-blue-500 active:bg-blue-700 focus:outline-none transition ease-in-out duration-300">
                 <span class="mr-3" v-if="form.processing">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 animate-spin">

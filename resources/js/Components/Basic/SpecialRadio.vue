@@ -58,7 +58,7 @@
 </script>
 
 <template>
-    <div class="flex">
+    <div class="sm:flex">
         <div v-for="(option, key, index) in options" class="flex-grow text-center">
             <div
                 class="cursor-pointer border-l-2 px-5 py-2 border-y-2 border-grayop-700 text-gray-300 hover:text-gray-100 shadow-sm"

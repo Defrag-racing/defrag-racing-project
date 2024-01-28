@@ -7,22 +7,26 @@ use Inertia\Inertia;
 
 use App\Models\Map;
 use App\Models\Record;
+use App\Models\User;
 
 use Illuminate\Database\Eloquent\Builder;
 
 class MapsController extends Controller
 {
     public function index(Request $request) {
+        $users = User::get(['mdd_id', 'name', 'country', 'plain_name']);
+
         $maps = Map::orderBy('date_added', 'DESC')->paginate(21)->withQueryString();
 
         if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
             return redirect()->route('maps', ['page' => $maps->lastPage()]);
         }
 
-        return Inertia::render('Maps')->with('maps', $maps);
+        return Inertia::render('Maps')->with('maps', $maps)->with('users', $users);
     }
 
     public function filters(Request $request) {
+        $users = User::get(['mdd_id', 'name', 'country', 'plain_name']);
         $maps = Map::orderBy('date_added', 'DESC');
 
         $queries = [];
@@ -58,11 +62,61 @@ class MapsController extends Controller
             $queries['gametype'] = $request->gametype;
         }
 
+        if ($request->filled('has_records') && count($request->has_records) > 0) {
+            $maps = $maps->whereHas('records', function (Builder $query) use ($request) {
+                $query = $query->whereIn('mdd_id', $request->has_records)
+                    ->groupBy('mapname')
+                    ->havingRaw('COUNT(DISTINCT mdd_id) = ?', [count($request->has_records)]);
+            });
+
+            $queries['has_records'] = $request->has_records;
+        }
+
+        if ($request->filled('have_no_records') && count($request->have_no_records) > 0) {
+            $maps = $maps->whereDoesntHave('records', function (Builder $query) use ($request) {
+                $query->whereIn('mdd_id', $request->have_no_records);
+            });
+
+            $queries['have_no_records'] = $request->have_no_records;
+        }
+
+        if ($request->filled('world_record') && count($request->world_record) > 0) {
+            $maps = $maps->whereHas('records', function (Builder $query) use ($request) {
+                $mddId = $request->world_record[0];
+                
+                $query->where('mdd_id', $mddId)
+                    ->where('time', '>', 0)
+                    ->where(function ($subquery) {
+                        $subquery->where(function ($subsubquery) {
+                            $subsubquery->where('physics', 'cpm')
+                                         ->where('time', function ($minSubquery) {
+                                             $minSubquery->selectRaw('MIN(time)')
+                                                         ->from('records')
+                                                         ->whereColumn('mapname', 'maps.name')
+                                                         ->where('physics', 'cpm');
+                                         });
+                        })
+                        ->orWhere(function ($subsubquery) {
+                            $subsubquery->where('physics', 'vq3')
+                                         ->where('time', function ($minSubquery) {
+                                             $minSubquery->selectRaw('MIN(time)')
+                                                         ->from('records')
+                                                         ->whereColumn('mapname', 'maps.name')
+                                                         ->where('physics', 'vq3');
+                                         });
+                        });
+                    });
+            });
+
+            $queries['world_record'] = $request->world_record;
+        }
+
         $maps = $maps->paginate(21)->withQueryString();
 
         return Inertia::render('Maps')
             ->with('maps', $maps)
-            ->with('queries', $queries);
+            ->with('queries', $queries)
+            ->with('users', $users);
     }
 
     public function map(Request $request, $mapname) {

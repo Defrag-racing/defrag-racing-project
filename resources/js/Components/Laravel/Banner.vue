@@ -25,7 +25,6 @@
     });
 
     const closeBanner = () => {
-        console.log('here')
         localStorage.setItem(props.handle, JSON.stringify(true));
         shown.value = false;
     }

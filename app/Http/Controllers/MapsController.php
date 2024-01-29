@@ -36,6 +36,12 @@ class MapsController extends Controller
 
         $queries = $mapFilters['data'];
 
+        if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
+            $paging = ['page' => $maps->lastPage()];
+
+            return redirect()->route('maps.filters', array_merge($paging, $queries));
+        }
+
         return Inertia::render('Maps')
             ->with('maps', $maps)
             ->with('queries', $queries)

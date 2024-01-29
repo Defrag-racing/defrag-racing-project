@@ -37,14 +37,14 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('password')
+                //     ->password()
+                //     ->required()
+                //     ->maxLength(255),
                 Forms\Components\TextInput::make('profile_photo_path')
                     ->maxLength(2048),
-                Forms\Components\TextInput::make('oldhash')
-                    ->maxLength(255),
+                // Forms\Components\TextInput::make('oldhash')
+                //     ->maxLength(255),
                 Forms\Components\TextInput::make('country')
                     ->required()
                     ->maxLength(255)
@@ -104,11 +104,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('profile_photo_path')->circular(),
-                Tables\Columns\TextColumn::make('oldhash')
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('profile_photo_path')->defaultImageUrl(url('/images/null.jpg'))->circular(),
                 Tables\Columns\TextColumn::make('country')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('mdd_id')

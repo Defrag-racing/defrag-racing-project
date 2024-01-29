@@ -34,6 +34,10 @@ class MapFilters {
         $maps = $this->hasIncludeItems($request, $maps);
         $maps = $this->hasExcludeItems($request, $maps);
 
+        $maps = $this->recordsCount($request, $maps);
+
+        $maps = $this->averageLength($request, $maps);
+
         return [
             'query'     =>      $maps,
             'data'      =>      $this->queries
@@ -211,6 +215,48 @@ class MapFilters {
             }
 
             $this->queries['items']['exclude'] = $request->items['exclude'];
+        }
+
+        return $maps;
+    }
+
+    public function recordsCount(Request $request, $maps) {
+        if ($request->filled('records_count') && count($request->records_count) == 2) {
+            if (! is_numeric($request->records_count[0]) || ! is_numeric($request->records_count[1])) {
+                return $maps;
+            }
+
+            if ($request->records_count[0] > $request->records_count[1]) {
+                return $maps;
+            }
+
+            $maps = $maps->whereHas('records', function (Builder $query) use ($request) {
+                $query->groupBy('mapname')
+                    ->havingRaw('COUNT(DISTINCT mdd_id) BETWEEN ? AND ?', [$request->records_count[0], $request->records_count[1]]);
+            });
+
+            $this->queries['records_count'] = $request->records_count;
+        }
+
+        return $maps;
+    }
+
+    public function averageLength(Request $request, $maps) {
+        if ($request->filled('average_length') && count($request->average_length) == 2) {
+            if (! is_numeric($request->average_length[0]) || ! is_numeric($request->average_length[1])) {
+                return $maps;
+            }
+
+            if ($request->average_length[0] > $request->average_length[1]) {
+                return $maps;
+            }
+
+            $start = $request->average_length[0] * 1000;
+            $end = $request->average_length[1] * 1000;
+
+            $maps = $maps->whereRaw('(cpm_average + vq3_average) / 2 BETWEEN ? AND ?', [$start, $end]);
+
+            $this->queries['average_length'] = $request->average_length;
         }
 
         return $maps;

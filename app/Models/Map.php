@@ -32,9 +32,10 @@ class Map extends Model
         'items',
         'functions',
         'visible',
-        'date_added'
+        'date_added',
+        'cpm_average',
+        'vq3_average'
     ];
-
 
     public function generateSubstrings($name) {
         $inputString = mb_convert_encoding($name, 'Windows-1252', "auto");
@@ -113,5 +114,29 @@ class Map extends Model
         }
 
         DB::commit();
+    }
+
+    public function processAverageTime () {
+        $records = Record::where('mapname', $this->name)->orderBy('time')->get()->groupBy('physics');
+
+        foreach($records as $physics => $data) {
+            $i = 0;
+            $total = 0;
+
+            foreach($data as $record) {
+                $total += $record->time;
+                $i++;
+            }
+
+            $average = $total / $i;
+
+            if ($physics == 'vq3') {
+                $this->vq3_average = $average;
+            } else {
+                $this->cpm_average = $average;
+            }
+        }
+
+        $this->save();
     }
 }

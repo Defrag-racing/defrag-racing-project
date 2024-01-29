@@ -11,6 +11,11 @@ import moment from 'moment';
 
 import MainLayout from "@/Layouts/MainLayout.vue" 
 
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
 const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
 const formatTime = (milliseconds) => {
@@ -96,6 +101,11 @@ const timeSince = (date) => {
     }
 }
 
+const vuetify = createVuetify({
+    components,
+    directives,
+})
+
 createInertiaApp({
     title: (title) => `${title} - Defrag Racing`,
     resolve: async (name) => {
@@ -108,7 +118,8 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(ZiggyVue);
+            .use(ZiggyVue)
+            .use(vuetify);
 
         app.component("Popper", Popper);
 

@@ -119,6 +119,7 @@ class ScrapeRecords extends Command
 
         if ($serverMap) {
             $serverMap->processRanks();
+            $serverMap->processAverageTime();
         }
 
         ProcessNotificationsJob::dispatch($newrecord);

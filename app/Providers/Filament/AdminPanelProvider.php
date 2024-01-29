@@ -27,13 +27,12 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('egipt')
-            ->login()
             ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Blue,
             ])
             ->brandLogo(asset('images/logo.png'))
-            ->favicon(asset('images/favicon.png'))
+            ->favicon(asset('favicon.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

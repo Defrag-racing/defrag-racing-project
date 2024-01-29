@@ -165,20 +165,20 @@
 
                                 <div ref="resultsSection" v-else>
                                     <div class="flex justify-between items-center mb-3">
-                                        <div @click="searchCategory = 'all'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'all', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'all'}">All</div>
-                                        <div @click="searchCategory = 'maps'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'maps', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'maps'}">Maps</div>
-                                        <div @click="searchCategory = 'players'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'players', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'players'}">Players</div>
+                                        <div @click="searchCategory = 'all'" class="flex-1 text-center cursor-pointer px-4 py-1 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'all', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'all'}">All</div>
+                                        <div @click="searchCategory = 'maps'" class="flex-1 text-center cursor-pointer px-4 py-1 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'maps', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'maps'}">Maps</div>
+                                        <div @click="searchCategory = 'players'" class="flex-1 text-center cursor-pointer px-4 py-1 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'players', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'players'}">Players</div>
                                     </div>
 
                                     <div v-if="maps.data?.length > 0 && (searchCategory == 'all' || searchCategory == 'maps')">
-                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1" v-if="searchCategory == 'all'">
+                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                             Maps
                                         </div>
                                         <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                                     </div>
 
                                     <div v-if="players.data?.length > 0  && (searchCategory == 'all' || searchCategory == 'players')">
-                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1" v-if="searchCategory == 'all'">
+                                        <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                             Players
                                         </div>
                                         <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
@@ -363,14 +363,20 @@
                         </div>
 
                         <div ref="resultsSection" v-else>
-                            <div v-if="maps.data?.length > 0">
+                            <div class="flex justify-between items-center mb-3">
+                                <div @click="searchCategory = 'all'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'all', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'all'}">All</div>
+                                <div @click="searchCategory = 'maps'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'maps', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'maps'}">Maps</div>
+                                <div @click="searchCategory = 'players'" class="flex-1 text-center cursor-pointer px-4 py-0.5 rounded-full text-sm mx-0.5" :class="{'bg-gray-600 text-white': searchCategory == 'players', 'bg-gray-800 hover:bg-gray-800 text-gray-400 hover:text-gray-200': searchCategory != 'players'}">Players</div>
+                            </div>
+
+                            <div v-if="maps.data?.length > 0 && (searchCategory == 'all' || searchCategory == 'maps')">
                                 <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                     Maps
                                 </div>
                                 <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                             </div>
 
-                            <div v-if="players.data?.length > 0">
+                            <div v-if="players.data?.length > 0 && (searchCategory == 'all' || searchCategory == 'players')">
                                 <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                     Players
                                 </div>

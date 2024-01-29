@@ -35,6 +35,23 @@
 
     const screenWidth = ref(window.innerWidth);
 
+    let timer;
+
+    const debounce = () => {
+        let searchingString = search.value;
+
+        timer = setTimeout(() => {
+            if (searchingString == search.value) {
+                axios.post(route('search'), {
+                    search: search.value
+                }).then(response => {
+                    maps.value = response.data?.maps
+                    players.value = response.data?.players
+                });
+            }
+        }, 250);
+    }
+
     const logout = () => {
         router.post(route('logout'));
     };
@@ -65,12 +82,7 @@
             return;
         }
 
-        axios.post(route('search'), {
-            search: search.value
-        }).then(response => {
-            maps.value = response.data?.maps
-            players.value = response.data?.players
-        });
+        debounce()
     }
 
     const resizeScreen = () => {

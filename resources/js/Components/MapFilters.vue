@@ -1,9 +1,9 @@
 <script setup>
-    import { computed, ref, watchEffect } from 'vue';
     import { Link, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import SpecialRadio from '@/Components/Basic/SpecialRadio.vue';
     import PlayerSelect from '@/Components/Basic/PlayerSelect.vue';
+    import ItemsSelect from '@/Components/Basic/ItemsSelect.vue';
 
     const props = defineProps({
         show: Boolean,
@@ -41,6 +41,135 @@
         }
     }
 
+    const weapons = [
+        {
+            'code': 'gauntlet',
+            'name': 'Gauntlet'
+        },
+        {
+            'code': 'mg',
+            'name': 'Machine Gun'
+        },{
+            'code': 'sg',
+            'name': 'Shot Gun'
+        },{
+            'code': 'gl',
+            'name': 'Grenade Launcher'
+        },{
+            'code': 'rl',
+            'name': 'Rocket Launcher'
+        },{
+            'code': 'lg',
+            'name': 'Lightening Gun'
+        },{
+            'code': 'rg',
+            'name': 'Rail Gun'
+        },{
+            'code': 'pg',
+            'name': 'Plasma Gun'
+        },{
+            'code': 'bfg',
+            'name': 'BFG'
+        },{
+            'code': 'hook',
+            'name': 'Grappling Hook'
+        },{
+            'code': 'cg',
+            'name': 'Chain Gun'
+        },{
+            'code': 'ng',
+            'name': 'Nail Gun'
+        },{
+            'code': 'pml',
+            'name': 'Proximity Mine Launcher'
+        },
+    ];
+
+    const functions = [
+        {
+            'code': 'door',
+            'name': 'Door'
+        },
+        {
+            'code': 'button',
+            'name': 'Button'
+        },{
+            'code': 'tele',
+            'name': 'Teleporter'
+        },{
+            'code': 'jumppad',
+            'name': 'Jump Pad'
+        },{
+            'code': 'moving',
+            'name': 'Moving Object'
+        },{
+            'code': 'slick',
+            'name': 'Slick'
+        },{
+            'code': 'water',
+            'name': 'Water'
+        },{
+            'code': 'fog',
+            'name': 'Fog'
+        },{
+            'code': 'slime',
+            'name': 'Slime'
+        },{
+            'code': 'lava',
+            'name': 'Lava'
+        },{
+            'code': 'break',
+            'name': 'Breakable'
+        },{
+            'code': 'sound',
+            'name': 'Sound'
+        },{
+            'code': 'timer',
+            'name': 'Timer'
+        },
+    ];
+
+    const items = [
+        {
+            'code': 'ra',
+            'name': 'Red Armor'
+        },
+        {
+            'code': 'ya',
+            'name': 'Yellow Armor'
+        },{
+            'code': 'enviro',
+            'name': 'Battle Suit'
+        },{
+            'code': 'flight',
+            'name': 'Flight'
+        },{
+            'code': 'haste',
+            'name': 'Haste'
+        },{
+            'code': 'health',
+            'name': 'Health'
+        },{
+            'code': 'mega',
+            'name': 'Mega Health'
+        },{
+            'code': 'invis',
+            'name': 'Invisibility'
+        },{
+            'code': 'quad',
+            'name': 'Quad Damage'
+        },{
+            'code': 'regen',
+            'name': 'Regeneration'
+        },{
+            'code': 'medkit',
+            'name': 'Medi Kit / Double Jump'
+        },{
+            'code': 'ptele',
+            'name': 'Personal Teleporter'
+        }
+    ];
+
     const form = useForm({
         search: props.queries?.search ?? '',
         author: props.queries?.author ?? '',
@@ -49,6 +178,9 @@
         has_records: props.queries?.has_records ?? [],
         have_no_records: props.queries?.have_no_records ?? [],
         world_record: props.queries?.world_record ?? [],
+        items: props.queries?.items ?? {},
+        weapons: props.queries?.weapons ?? {},
+        functions: props.queries?.functions ?? {},
     })
     
     const onFilterSubmit = () => {
@@ -134,16 +266,62 @@
 
                 <div>
                     <PlayerSelect
-                    :options="users"
-                    :multi="false"
-                    v-model="form.world_record"
-                    :values="form.world_record"
-                />
+                        :options="users"
+                        :multi="false"
+                        v-model="form.world_record"
+                        :values="form.world_record"
+                    />
                 </div>
             </div>
 
             <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
-                
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Weapons</div>
+                </div>
+
+                <div>
+                    <ItemsSelect
+                        :options="weapons"
+                        :multi="false"
+                        v-model="form.weapons"
+                        :values="form.weapons"
+                        placeholder="Select Weapons"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="sm:flex mb-4">
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Functions</div>
+                </div>
+
+                <div>
+                    <ItemsSelect
+                        :options="functions"
+                        :multi="false"
+                        v-model="form.functions"
+                        :values="form.functions"
+                        placeholder="Select Functions"
+                    />
+                </div>
+            </div>
+
+            <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
+                <div class="flex justify-between">
+                    <div class="text-sm text-gray-400">Items</div>
+                </div>
+
+                <div>
+                    <ItemsSelect
+                        :options="items"
+                        :multi="false"
+                        v-model="form.items"
+                        :values="form.items"
+                        placeholder="Select Items"
+                    />
+                </div>
             </div>
         </div>
 

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use App\Models\Map;
 use App\Models\Record;
 use App\Models\User;
+use App\Models\Map;
 
-use Illuminate\Database\Eloquent\Builder;
+use App\Filters\MapFilters;
 
 class MapsController extends Controller
 {
@@ -27,91 +27,14 @@ class MapsController extends Controller
 
     public function filters(Request $request) {
         $users = User::get(['mdd_id', 'name', 'country', 'plain_name']);
-        $maps = Map::orderBy('date_added', 'DESC');
+        
+        $mapFilters = (new MapFilters())->filter($request);
 
-        $queries = [];
-
-        if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
-            return redirect()->route('maps', ['page' => $maps->lastPage()]);
-        }
-
-        if ($request->filled('search')) {
-            $maps = $maps->where('name', 'LIKE', '%' . $request->search . '%');
-            $queries['search'] = $request->search;
-        }
-
-        if ($request->filled('author')) {
-            $maps = $maps->where('author', 'LIKE', '%' . $request->author . '%');
-            $queries['author'] = $request->author;
-        }
-
-        if ($request->filled('physics')) {
-            if (count($request->physics) == 1) {
-                $maps = $maps->where(function (Builder $query) use($request) {
-                    $query->where('physics', trim($request->physics[0]))
-                        ->orWhere('physics', 'all');
-                });
-            }
-            $queries['physics'] = $request->physics;
-        }
-
-        if ($request->filled('gametype')) {
-            if (count($request->gametype) > 0) {
-                $maps = $maps->whereIn('gametype', $request->gametype);
-            }
-            $queries['gametype'] = $request->gametype;
-        }
-
-        if ($request->filled('has_records') && count($request->has_records) > 0) {
-            $maps = $maps->whereHas('records', function (Builder $query) use ($request) {
-                $query = $query->whereIn('mdd_id', $request->has_records)
-                    ->groupBy('mapname')
-                    ->havingRaw('COUNT(DISTINCT mdd_id) = ?', [count($request->has_records)]);
-            });
-
-            $queries['has_records'] = $request->has_records;
-        }
-
-        if ($request->filled('have_no_records') && count($request->have_no_records) > 0) {
-            $maps = $maps->whereDoesntHave('records', function (Builder $query) use ($request) {
-                $query->whereIn('mdd_id', $request->have_no_records);
-            });
-
-            $queries['have_no_records'] = $request->have_no_records;
-        }
-
-        if ($request->filled('world_record') && count($request->world_record) > 0) {
-            $maps = $maps->whereHas('records', function (Builder $query) use ($request) {
-                $mddId = $request->world_record[0];
-                
-                $query->where('mdd_id', $mddId)
-                    ->where('time', '>', 0)
-                    ->where(function ($subquery) {
-                        $subquery->where(function ($subsubquery) {
-                            $subsubquery->where('physics', 'cpm')
-                                         ->where('time', function ($minSubquery) {
-                                             $minSubquery->selectRaw('MIN(time)')
-                                                         ->from('records')
-                                                         ->whereColumn('mapname', 'maps.name')
-                                                         ->where('physics', 'cpm');
-                                         });
-                        })
-                        ->orWhere(function ($subsubquery) {
-                            $subsubquery->where('physics', 'vq3')
-                                         ->where('time', function ($minSubquery) {
-                                             $minSubquery->selectRaw('MIN(time)')
-                                                         ->from('records')
-                                                         ->whereColumn('mapname', 'maps.name')
-                                                         ->where('physics', 'vq3');
-                                         });
-                        });
-                    });
-            });
-
-            $queries['world_record'] = $request->world_record;
-        }
+        $maps = $mapFilters['query'];
 
         $maps = $maps->paginate(21)->withQueryString();
+
+        $queries = $mapFilters['data'];
 
         return Inertia::render('Maps')
             ->with('maps', $maps)

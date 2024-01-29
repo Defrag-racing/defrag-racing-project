@@ -7,7 +7,11 @@
     const props = defineProps({
         last_page: Number,
         current_page: Number,
-        link: String
+        link: String,
+        pageName: {
+            type: String,
+            default: 'page'
+        }
     });
 
     const newPage = ref(props.current_page);
@@ -43,11 +47,11 @@
     }
 
     const changePage = () => {
-        router.visit(getUrl(newPage.value))
+        router.visit(getUrl(newPage.value), { preserveScroll: true })
     }
     
     const getUrl = (page) => {
-        let result = props.link.replace('?page=1', '?page=' + page).replace('&page=1', '&page=' + page)
+        let result = props.link.replace('?' + props.pageName + '=1', '?' + props.pageName + '=' + page).replace('&' + props.pageName + '=1', '&' + props.pageName + '=' + page)
 
         return result
     }

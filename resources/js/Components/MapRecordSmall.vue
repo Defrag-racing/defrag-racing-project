@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="text-gray-400 text-xs mt-2"> {{ timeSince(record.date_set) }} ago</div>
+            <div class="text-gray-400 text-xs mt-2" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
 
             <div class="flex justify-between items-center text-right mt-3">
                 <div class="text-xs text-red-500" v-if="timeDiff !== null">- {{  formatTime(timeDiff) }}</div>

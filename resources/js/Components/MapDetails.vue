@@ -49,11 +49,13 @@
 
 <template>
     <div class="flex">
-        <div class="bg-gray-600 p-0.5 rounded-md">
-            <img onerror="this.src='/images/unknown.jpg'" :src="`/storage/${map?.thumbnail}`" class="rounded-md" style="width: 200px; height: 150px;">
+        <div class="flex-none">
+            <div class="bg-gray-600 p-0.5 rounded-md">
+                <img onerror="this.src='/images/unknown.jpg'" :src="`/storage/${map?.thumbnail}`" class="rounded-md" style="width: 170px; height: 130px;">
+            </div>
         </div>
 
-        <div class="ml-4">
+        <div class="ml-4 flex-1">
             <!-- Mapname -->
             <div class="flex items-center">
                 <Link :class="(mapName.length > 13) ? 'text-sm text-blue-400 hover:text-blue-300 font-bold' : 'text-md text-blue-400 hover:text-blue-300 font-bold'" :href="route('maps.map', (mapName))"> {{ mapName }} </Link>

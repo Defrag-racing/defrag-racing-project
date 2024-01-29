@@ -69,28 +69,30 @@
 <template>
     <div>
         <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
-            <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
-                <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
-                    {{ map.physics }}
+            <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)">
+                <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
+                    <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
+                        {{ map.physics }}
+                    </div>
+        
+                    <div>
+                        <!-- Weapons -->
+                        <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="weaponsList.length > 0">
+                            <div v-for="weapon in weaponsList" :title="weapon" :class="`sprite-items sprite-${weapon} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        </div>
+        
+                        <!-- Items -->
+                        <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="itemsList.length > 0">
+                            <div v-for="item in itemsList" :title="item" :class="`sprite-items sprite-${item} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        </div>
+        
+                        <!-- Functions -->
+                        <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="functionsList.length > 0">
+                            <div v-for="func in functionsList" :title="func" :class="`sprite-items sprite-${func} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        </div>
+                    </div>
                 </div>
-    
-                <div>
-                    <!-- Weapons -->
-                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="weaponsList.length > 0">
-                        <div v-for="weapon in weaponsList" :title="weapon" :class="`sprite-items sprite-${weapon} w-4 h-4 flex-shrink-0 mx-1`"></div>
-                    </div>
-    
-                    <!-- Items -->
-                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-1" v-if="itemsList.length > 0">
-                        <div v-for="item in itemsList" :title="item" :class="`sprite-items sprite-${item} w-4 h-4 flex-shrink-0 mx-1`"></div>
-                    </div>
-    
-                    <!-- Functions -->
-                    <div class="flex flex-wrap justify-end bg-blackop-80 rounded-md py-1 px-2 mr-3 mb-2" v-if="functionsList.length > 0">
-                        <div v-for="func in functionsList" :title="func" :class="`sprite-items sprite-${func} w-4 h-4 flex-shrink-0 mx-1`"></div>
-                    </div>
-                </div>
-            </div>
+            </Link>
     
             <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
                 <div class="flex items-center">

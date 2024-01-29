@@ -49,11 +49,12 @@ class MapsController extends Controller
     }
 
     public function map(Request $request, $mapname) {
-        $column = $request->input('sort', 'date_set');
-        $order = $request->input('order', 'DESC');
-        $physics = $request->input('physics', 'all');
+        $column = $request->input('sort', 'time');
+        $order = $request->input('order', 'ASC');
+        $cpmGametype = $request->input('cpmGametype', 'run_cpm');
+        $vq3Gametype = $request->input('vq3Gametype', 'run_vq3');
 
-        if (! in_array($column, ['date_set', 'time', 'physics'])) {
+        if (! in_array($column, ['date_set', 'time'])) {
             $column = 'date_set';
         }
 
@@ -63,16 +64,33 @@ class MapsController extends Controller
 
         $map = Map::where('name', $mapname)->firstOrFail();
 
-        $records = Record::where('mapname', $map->name);
+        $cpmRecords = Record::where('mapname', $map->name);
 
-        if ($physics == 'cpm' || $physics == 'vq3') {
-            $records = $records->where('physics', $physics);
+        $cpmRecords = $cpmRecords->where('gametype', $cpmGametype);
+
+        $cpmRecords = $cpmRecords->with('user')->orderBy($column, $order)->paginate(30, ['*'], 'cpmPage')->withQueryString();
+
+        $vq3Records = Record::where('mapname', $map->name);
+
+        $vq3Records = $vq3Records->where('gametype', $vq3Gametype);
+
+        $vq3Records = $vq3Records->with('user')->orderBy($column, $order)->paginate(30, ['*'], 'vq3Page')->withQueryString();
+
+        $cpmPage = ($request->has('cpmPage')) ? min($request->cpmPage, $cpmRecords->lastPage()) : 1;
+
+        $vq3Page = ($request->has('vq3Page')) ? min($request->vq3Page, $vq3Records->lastPage()) : 1;
+
+        if ($request->has('vq3Page') && $request->get('vq3Page') > $vq3Records->lastPage()) {
+            return redirect()->route('maps.map', ['vq3Page' => $vq3Records->lastPage(), 'mapname' => $mapname, 'cpmPage' => $cpmPage]);
         }
 
-        $records = $records->with('user')->orderBy($column, $order)->paginate(30)->withQueryString();
+        if ($request->has('cpmPage') && $request->get('cpmPage') > $cpmRecords->lastPage()) {
+            return redirect()->route('maps.map', ['cpmPage' => $cpmRecords->lastPage(), 'mapname' => $mapname, 'vq3Page' => $vq3Page]);
+        }
 
         return Inertia::render('MapView')
             ->with('map', $map)
-            ->with('records', $records);
+            ->with('cpmRecords', $cpmRecords)
+            ->with('vq3Records', $vq3Records);
     }
 }

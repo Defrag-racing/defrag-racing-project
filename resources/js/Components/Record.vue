@@ -42,7 +42,7 @@
                         </div>
                     </Link>
     
-                    <div class="text-gray-400 text-xs mt-2"> {{ timeSince(record.date_set) }} ago</div>
+                    <div class="text-gray-400 text-xs mt-2" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
                 </div>
             </div>
 

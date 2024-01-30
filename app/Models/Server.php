@@ -39,6 +39,6 @@ class Server extends Model
     }
 
     public function onlinePlayers () {
-        return $this->hasMany(OnlinePlayer::class)->orderBy('time', 'ASC');
+        return $this->hasMany(OnlinePlayer::class)->orderByRaw('CASE WHEN time = 0 THEN 1 ELSE 0 END, time ASC');
     }
 }

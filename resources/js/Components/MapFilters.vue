@@ -234,11 +234,11 @@
 
                 <div>
                     <PlayerSelect
-                    :options="users"
-                    :multi="true"
-                    v-model="form.has_records"
-                    :values="form.has_records"
-                />
+                        :options="users"
+                        :multi="true"
+                        v-model="form.has_records"
+                        :values="form.has_records"
+                    />
                 </div>
             </div>
 
@@ -356,7 +356,7 @@
                     <div class="w-8 mt-1 text-gray-400">
                         {{ form.records_count[0] }}
                     </div>
-                    <v-range-slider step="1" v-model="form.records_count" color="blue" :max="1000" :min="0" />
+                    <v-range-slider step="1" v-model="form.records_count" color="#007bff" :max="1000" :min="0" />
                     <div class="ml-4 w-8 mt-1 text-gray-400">
                         <img src="/images/infinity.svg" class="w-5 h-5 text-gray-400" alt="infinity" v-if="form.records_count[1] == 1000" />
                         <div v-else> {{ form.records_count[1] }}</div>
@@ -365,13 +365,12 @@
             </div>
 
             <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
-                <!-- average map records length -->
                 <div class="text-sm text-gray-400">Average Length (seconds)</div>
                 <div class="flex">
                     <div class="w-8 mt-1 text-gray-400">
                         {{ form.average_length[0] }}
                     </div>
-                    <v-range-slider step="1" v-model="form.average_length" color="blue" :max="1000" :min="0" />
+                    <v-range-slider step="1" v-model="form.average_length" color="#007bff" :max="1000" :min="0" />
                     <div class="ml-4 w-8 mt-1 text-gray-400">
                         <img src="/images/infinity.svg" class="w-5 h-5 text-gray-400" alt="infinity" v-if="form.average_length[1] == 1000" />
                         <div v-else> {{ form.average_length[1] }}</div>

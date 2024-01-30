@@ -14,7 +14,7 @@ use App\Filters\MapFilters;
 class MapsController extends Controller
 {
     public function index(Request $request) {
-        $users = User::get(['mdd_id', 'name', 'country', 'plain_name']);
+        $users = User::orderBy('plain_name', 'ASC')->whereNot('mdd_id', NULL)->get(['mdd_id', 'name', 'country', 'plain_name']);
 
         $maps = Map::orderBy('date_added', 'DESC')->paginate(21)->withQueryString();
 
@@ -26,7 +26,7 @@ class MapsController extends Controller
     }
 
     public function filters(Request $request) {
-        $users = User::get(['mdd_id', 'name', 'country', 'plain_name']);
+        $users = User::orderBy('plain_name', 'ASC')->whereNot('mdd_id', NULL)->get(['mdd_id', 'name', 'country', 'plain_name']);
         
         $mapFilters = (new MapFilters())->filter($request);
 

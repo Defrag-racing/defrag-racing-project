@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use App\Models\Record;
+use App\Models\User;
 use App\Models\RecordNotification;
 
 use Carbon\Carbon;
@@ -40,11 +41,13 @@ class ProcessNotificationsJob implements ShouldQueue
             ->get();
 
         foreach($records as $record) {
-            if ($record->user === null) {
+            $user = User::where('mdd_id', $record->mdd_id)->first();
+
+            if (!$user) {
                 continue;
             }
 
-            $settings = $record->user->notification_settings;
+            $settings = $user->notification_settings;
 
             if ($settings == 'all' || $settings == $this->record->physics) {
                 $this->sendNotification($record);

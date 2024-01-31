@@ -24,15 +24,11 @@ use App\Http\Controllers\EndpointController;
 |
 */
 
-// Route::get('/test', function () {
-//     $server = \App\Models\Server::where('ip', '20.199.123.9')->where('port', 27961)->first();
+Route::get('/test', function () {
+    $record = \App\Models\Record::where('id', 582949)->first();
 
-//     $connection = new \App\External\DefragServer($server->ip, $server->port);
-
-//     $result = $connection->getRconData($server->rconpassword);
-
-//     return $result;
-// });
+    \App\Jobs\ProcessNotificationsJob::dispatch($record);
+});
 
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');

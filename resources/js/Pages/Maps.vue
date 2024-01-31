@@ -59,7 +59,7 @@
                         <MapCard v-for="map in maps.data" :map="map" :mapname="map.name" :key="map.id" />
                     </div>
 
-                    <div class="flex justify-center items-center my-10 text-gray-500">
+                    <div class="flex justify-center items-center my-10 text-gray-500" v-if="maps.total == 0">
                         There are no results.
                     </div>
 

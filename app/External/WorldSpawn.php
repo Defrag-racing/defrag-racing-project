@@ -304,8 +304,21 @@ class WorldSpawn {
     }
 
     public function getItems($data) {
+        $items = [
+            'smallh'    =>  'smallhealth',
+            'largeh'    =>  'bighealth'
+        ];
+
         if (isset($data['Items'])) {
             $list = $this->getImageList($data['Items']);
+
+            $list = array_map(function ($item) use ($items) {
+                if (isset($items[$item])) {
+                    return $items[$item];
+                }
+
+                return $item;
+            }, $list);
 
             return implode(',', $list);
         }

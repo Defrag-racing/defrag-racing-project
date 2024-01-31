@@ -16,7 +16,7 @@ class MapsController extends Controller
     public function index(Request $request) {
         $users = User::orderBy('plain_name', 'ASC')->whereNot('mdd_id', NULL)->get(['mdd_id', 'name', 'country', 'plain_name']);
 
-        $maps = Map::orderBy('date_added', 'DESC')->paginate(21)->withQueryString();
+        $maps = Map::orderBy('id', 'DESC')->paginate(21)->withQueryString();
 
         if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
             return redirect()->route('maps', ['page' => $maps->lastPage()]);

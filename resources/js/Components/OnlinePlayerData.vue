@@ -11,7 +11,7 @@
     <div>
         <Popper arrow hover :disabled="player.profile == null" style="z-index: 100;">
             <div>
-                <img :class="{'opacity-70 group-hover:opacity-90': spectator}" onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${player.country}.png`" class="w-5 inline mr-2 mb-0.5">
+                <img :class="{'opacity-70 group-hover:opacity-90': spectator}" onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${player.country}.png`" :title="player.country" class="w-5 inline mr-2 mb-0.5">
     
                 <div :class="{'opacity-70 group-hover:opacity-90': spectator}" class="font-bold inline" v-html="q3tohtml(player.name)"></div>
     

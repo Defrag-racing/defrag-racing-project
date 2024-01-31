@@ -98,7 +98,7 @@
             <div class="w-full mt-1">
                 <!-- Author -->
                 <div class="flex items-center text-gray-400 text-sm">
-                    By <a class="ml-1 hover:text-gray-300 overflow-hidden truncate" style="max-width: 120px;" :title="map?.author" href="#">{{ map?.author ?? 'Unknown' }}</a>
+                    By <a class="ml-1 hover:text-gray-300 overflow-hidden truncate" :title="map?.author" href="#">{{ map?.author ?? 'Unknown' }}</a>
                 </div>
             </div>
 

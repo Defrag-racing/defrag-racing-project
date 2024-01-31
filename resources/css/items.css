@@ -35,7 +35,10 @@
 .sprite-enviro { background-position: 48.0% 0;  }
 .sprite-flight { background-position: 50.0% 0;  }
 .sprite-smallhealth { background-position: 52.0% 0;  }
+.sprite-smallh { background-position: 52.0% 0;  }
 .sprite-bighealth { background-position: 54.0% 0;  }
+.sprite-largeh { background-position: 54.0% 0;  }
+.sprite-largehealth { background-position: 54.0% 0;  }
 .sprite-fog { background-position: 56.0% 0;  }
 .sprite-break { background-position: 58.0% 0;  }
 .sprite-kami { background-position: 60.0% 0;  }

@@ -153,6 +153,12 @@
             'code': 'mega',
             'name': 'Mega Health'
         },{
+            'code': 'smallhealth',
+            'name': 'Small Health'
+        },{
+            'code': 'bighealth',
+            'name': 'Large Health'
+        },{
             'code': 'invis',
             'name': 'Invisibility'
         },{

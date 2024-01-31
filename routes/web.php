@@ -24,11 +24,11 @@ use App\Http\Controllers\EndpointController;
 |
 */
 
-Route::get('/test', function () {
-    $record = \App\Models\Record::where('id', 582949)->first();
+// Route::get('/test', function () {
+//     $record = \App\Models\Record::where('id', 582949)->first();
 
-    \App\Jobs\ProcessNotificationsJob::dispatch($record);
-});
+//     \App\Jobs\ProcessNotificationsJob::dispatch($record);
+// });
 
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');

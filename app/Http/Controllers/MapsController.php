@@ -51,8 +51,9 @@ class MapsController extends Controller
     public function map(Request $request, $mapname) {
         $column = $request->input('sort', 'time');
         $order = $request->input('order', 'ASC');
-        $cpmGametype = $request->input('cpmGametype', 'run_cpm');
-        $vq3Gametype = $request->input('vq3Gametype', 'run_vq3');
+        $gametype = $request->input('gametype', 'run');
+        $cpmGametype = $gametype . '_cpm';
+        $vq3Gametype = $gametype . '_vq3';
 
         if (! in_array($column, ['date_set', 'time'])) {
             $column = 'date_set';

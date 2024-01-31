@@ -16,6 +16,18 @@
 
     const order = ref('ASC');
     const column = ref('time');
+    const gametype = ref('run');
+
+    const gametypes = [
+        'run',
+        'ctf1',
+        'ctf2',
+        'ctf3',
+        'ctf4',
+        'ctf5',
+        'ctf6',
+        'ctf7'
+    ];
 
     const screenWidth = ref(window.innerWidth);
 
@@ -51,9 +63,22 @@
         })
     }
 
+    const sortByGametype = (gt) => {
+        gametype.value = gt;
+
+        router.reload({
+            data: {
+                gametype: gt,
+                sort: 'time',
+                order: 'ASC'
+            }
+        })
+    }
+
     watchEffect(() => {
         order.value = route().params['order'] ?? 'ASC';
         column.value = route().params['sort'] ?? 'time';
+        gametype.value = route().params['gametype'] ?? 'run';
     });
 
     const resizeScreen = () => {
@@ -89,21 +114,21 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
                                     </svg>
                                 </div>
-            
+
                                 <div>
                                     <div class="text-left">
                                         Filters
                                     </div>
-            
+
                                     <div class="text-xs text-gray-500 text-center flex">
                                         <span>Currently:</span>
                                         <span class="text-gray-400 capitalize ml-1"> {{ column.split('_')[0] }} </span>
-    
+
                                         <span class="ml-0.5">
                                             <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                             </svg>
-    
+
                                             <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                                             </svg>
@@ -112,28 +137,57 @@
                                 </div>
                             </button>
                         </template>
-    
+
                         <template #content>
                             <div @click="sortByDate" class="flex justify-between cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
                                 <span>Date Set</span>
                                 <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
-    
+
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                </svg>                             
+                                </svg>
                             </div>
-    
+
                             <div @click="sortByTime" class="flex justify-between cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
                                 <span>Time</span>
                                 <svg v-if="order === 'ASC'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
-    
+
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                </svg>                           
+                                </svg>
+                            </div>
+                        </template>
+                    </Dropdown>
+
+                    <Dropdown align="right" width="48" class="mt-2 sm:mt-0">
+                        <template #trigger>
+                            <button class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600 mr-3">
+                                <div class="w-8 h-8 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                                    </svg>
+                                </div>
+
+                                <div>
+                                    <div class="text-left">
+                                        Gametype
+                                    </div>
+
+                                    <div class="text-xs text-gray-500 text-center flex">
+                                        <span>Currently:</span>
+                                        <span class="text-gray-400 capitalize ml-1"> {{ gametype }} </span>
+                                    </div>
+                                </div>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <div v-for="gt in gametypes" @click="sortByGametype(gt)" class="flex justify-between cursor-pointer block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-grayop-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-grayop-800 transition duration-150 ease-in-out">
+                                <span class="uppercase"> {{ gt }} </span>
                             </div>
                         </template>
                     </Dropdown>
@@ -146,15 +200,15 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-    
+
                     <div class="ml-2 mr-5">{{ vq3Records.total }} VQ3 Records</div>
                 </div>
-    
+
                 <div class="text-sm text-blue-400 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-    
+
                     <div class="ml-2 mr-5">{{ cpmRecords.total }} CPM Records</div>
                 </div>
             </div>
@@ -176,7 +230,7 @@
                         <div class="flex-grow" v-if="screenWidth > 640">
                             <MapRecord v-for="record in vq3Records.data" :key="record.id" :record="record" />
                         </div>
-    
+
                         <div class="flex-grow" v-else>
                             <MapRecordSmall v-for="record in vq3Records.data" :key="record.id" :record="record" />
                         </div>
@@ -203,7 +257,7 @@
                         <div class="flex-grow" v-if="screenWidth > 640">
                             <MapRecord v-for="record in cpmRecords.data" :key="record.id" :record="record" />
                         </div>
-    
+
                         <div class="flex-grow" v-else>
                             <MapRecordSmall v-for="record in cpmRecords.data" :key="record.id" :record="record" />
                         </div>

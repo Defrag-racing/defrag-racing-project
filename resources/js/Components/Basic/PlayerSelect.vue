@@ -27,6 +27,14 @@
     const filterOptions = () => {
         filteredOptions.value = props.options.filter((item) => {
             return item.plain_name.toLowerCase().includes(search.value.toLowerCase())
+        }).sort((a, b) => {
+            if (selectedOptions.value.includes(a.mdd_id)) {
+                return -1
+            } else if (selectedOptions.value.includes(b.mdd_id)) {
+                return 1
+            } else {
+                return 0
+            }
         })
     };
 

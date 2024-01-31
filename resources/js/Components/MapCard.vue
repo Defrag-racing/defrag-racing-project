@@ -158,7 +158,7 @@
     
             <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
                 <div class="text-gray-400 overflow-hidden truncate text-left" style="width: 200px;">
-                    By <span class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;"> {{ map.author }} </span>
+                    By <Link class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;" :href="route('maps.filters', {author: map?.author ?? 'unknown'})"> {{ map.author }} </Link>
                 </div>
     
                 <div class="text-gray-400">

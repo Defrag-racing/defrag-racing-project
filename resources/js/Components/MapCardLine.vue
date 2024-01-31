@@ -142,7 +142,7 @@
             <div class="w-full mt-1">
                 <!-- Author -->
                 <div class="flex items-center text-gray-400 text-sm">
-                    By <a class="ml-1 hover:text-gray-300 overflow-hidden truncate" :title="map?.author" href="#">{{ map?.author ?? 'Unknown' }}</a>
+                    By <Link class="ml-1 hover:text-gray-300 overflow-hidden truncate" :title="map?.author" :href="route('maps.filters', {author: map?.author ?? 'unknown'})">{{ map?.author ?? 'Unknown' }}</Link>
                 </div>
             </div>
 

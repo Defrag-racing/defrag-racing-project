@@ -133,6 +133,7 @@ return [
     'include_files' => [
         '*.log',
         '**/*.log',
+        '/var/www/defrag-racing-project/production/deploy/storage/logs/*.log',
 
         // You can include paths to other log types as well, such as apache, nginx, and more.
         '/var/log/httpd/*',

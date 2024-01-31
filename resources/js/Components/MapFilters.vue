@@ -218,6 +218,7 @@
                     type="text"
                     v-model="form.search"
                     class="mt-1 block w-full"
+                    v-on:keyup.enter="onFilterSubmit"
                 />
             </div>
 
@@ -226,6 +227,7 @@
                 <TextInput
                     type="text"
                     v-model="form.author"
+                    v-on:keyup.enter="onFilterSubmit"
                     class="mt-1 block w-full"
                 />
             </div>

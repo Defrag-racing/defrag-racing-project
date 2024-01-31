@@ -22,7 +22,7 @@
     
     
             <template #content>
-                <div class="flex items-center" v-if="player.profile">
+                <div class="flex items-center px-5 py-2" v-if="player.profile">
                     <div class="mr-4">
                         <img class="h-10 w-10 rounded-full object-cover" :src="player.profile.profile_photo_path ? '/storage/' + player.profile.profile_photo_path : '/images/null.jpg'" :alt="player.profile.name">
                     </div>

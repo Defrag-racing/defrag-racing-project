@@ -63,7 +63,9 @@
                     
                     
                             <template #content>
-                                <MapCard :transparent="false" :map="record.map" v-if="record.map !== null" />
+                                <div class="p-1 pt-3">
+                                    <MapCard :transparent="false" :map="record.map" v-if="record.map !== null" />
+                                </div>
                             </template>
                         </Popper>
                     </div>

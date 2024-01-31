@@ -63,13 +63,35 @@
 
     const date = computed(() => {
         return moment(props.map.date_added).fromNow()
-    })
+    });
+
+    const getGametype = computed(() => {
+        let gametype = props.map?.gametype;
+
+        if (!gametype) {
+            return 'run'
+        }
+
+        return (gametype == 'fastcaps') ? 'ctf2' : 'run';
+    });
+
+    const getRouteData = computed(() => {
+        let data ={
+            mapname: props.map?.name
+        }
+
+        if (getGametype.value !== 'run') {
+            data.gametype = 'ctf2';
+        }
+
+        return data;
+    });
 </script>
 
 <template>
     <div>
         <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
-            <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)">
+            <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', getRouteData)">
                 <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
                     <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
                         {{ map.physics }}
@@ -96,7 +118,7 @@
     
             <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
                 <div class="flex items-center">
-                    <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', map.name)"> {{ map.name }} </Link>
+                    <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', getRouteData)"> {{ map.name }} </Link>
                 
                     <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

@@ -139,4 +139,19 @@ class Map extends Model
 
         $this->save();
     }
+
+    public function processRecordsNumber () {
+        $gametypes = [
+            'run',
+            'ctf1',
+            'ctf2',
+            'ctf3',
+            'ctf4',
+            'ctf5',
+            'ctf6',
+            'ctf7'
+        ];
+
+        
+    }
 }

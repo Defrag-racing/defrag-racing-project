@@ -48,6 +48,28 @@
     const mapName = computed(() => {
         return props.map?.name;
     });
+
+    const getGametype = computed(() => {
+        let gametype = props.map?.gametype;
+
+        if (!gametype) {
+            return 'run'
+        }
+
+        return (gametype == 'fastcaps') ? 'ctf2' : 'run';
+    });
+
+    const getRouteData = computed(() => {
+        let data ={
+            mapname: props.map?.name
+        }
+
+        if (getGametype.value !== 'run') {
+            data.gametype = 'ctf2';
+        }
+
+        return data;
+    });
 </script>
 
 <template>
@@ -60,7 +82,7 @@
             <!-- Mapname -->
             <div class="ml-2">
                 <div class="flex items-center">
-                    <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', (mapName))"> {{ mapName }} </Link>
+                    <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', getRouteData)"> {{ mapName }} </Link>
                 
                     <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copyMap">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">

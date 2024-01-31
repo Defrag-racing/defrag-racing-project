@@ -430,7 +430,11 @@
     </div>
 </template>
 
-<style scoped>
+<style>
+    .popper {
+        padding: 0 !important;
+    }
+
     .spinner_V8m1 {
         transform-origin: center;
         animation: spinner_zKoa 2s linear infinite;

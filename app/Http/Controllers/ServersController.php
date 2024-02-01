@@ -13,6 +13,7 @@ class ServersController extends Controller
         $servers = Server::where('offline', false)
             ->where('visible', true)
             ->with(['mapdata', 'onlinePlayers.spectators'])
+            ->orderBy('plain_name', 'asc')
             ->get();
 
         $servers = $this->sortServers($servers);

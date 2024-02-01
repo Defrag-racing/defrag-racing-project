@@ -122,6 +122,12 @@ class ScrapeServers extends Command
 
     public function updateServer($server, $data) {
         $server->name = trim($data['hostname']);
+
+        $pattern = '/\^\w/';
+        $plainName = preg_replace($pattern, '', trim($data['hostname']));
+
+        $server->plain_name = $plainName;
+
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
         $server->offline = false;
@@ -188,6 +194,12 @@ class ScrapeServers extends Command
 
     public function updateServer2($server, $data) {
         $server->name = trim($data['hostname']);
+
+        $pattern = '/\^\w/';
+        $plainName = preg_replace($pattern, '', trim($data['hostname']));
+
+        $server->plain_name = $plainName;
+
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
         $server->offline = false;

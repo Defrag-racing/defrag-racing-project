@@ -14,6 +14,10 @@ export default {
 
     theme: {
         extend: {
+            borderWidth: {
+                '1': '1px',
+            },
+
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },

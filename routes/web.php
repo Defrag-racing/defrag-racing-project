@@ -12,6 +12,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\EndpointController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,3 +56,5 @@ Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name
 
 Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
 Route::post('/notifications', [NotificationsController::class, 'clear'])->name('notifications.clear');
+
+// Route::get('/profile/{user}', [ProfileController::class, 'index'])->name('profile.index');

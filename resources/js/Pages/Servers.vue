@@ -198,19 +198,9 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
-                    <div class="text-xl font-bold text-gray-300 mx-4">Active Servers</div>
-                    
                     <div class="flex justify-center flex-wrap">
                         <div v-for="server in listedServers" :key="server.id">
-                            <ServerCard :server="server" v-if="server.online_players.length > 0" />
-                        </div>
-                    </div>
-
-                    <div class="text-xl font-bold text-gray-300 mx-4">Empty Servers</div>
-                    
-                    <div class="flex justify-center flex-wrap">
-                        <div v-for="server in listedServers" :key="server.id">
-                            <ServerCard :server="server" v-if="server.online_players.length == 0" />
+                            <ServerCard :server="server" />
                         </div>
                     </div>
                 </div>

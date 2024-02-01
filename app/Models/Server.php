@@ -31,7 +31,8 @@ class Server extends Model
         'besttime_country',
         'besttime_name',
         'besttime_url',
-        'besttime_time'
+        'besttime_time',
+        'plain_name'
     ];
 
     public function mapdata () {

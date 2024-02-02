@@ -57,4 +57,4 @@ Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name
 Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
 Route::post('/notifications', [NotificationsController::class, 'clear'])->name('notifications.clear');
 
-// Route::get('/profile/{user}', [ProfileController::class, 'index'])->name('profile.index');
+Route::get('/profile/{user}', [ProfileController::class, 'index'])->name('profile.index');

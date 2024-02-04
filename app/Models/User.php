@@ -126,4 +126,8 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
 
         return $plainName;
     }
+
+    public function mdd_profile() {
+        return $this->hasOne(MddProfile::class, 'id', 'mdd_id');
+    }
 }

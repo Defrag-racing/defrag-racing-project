@@ -7,6 +7,7 @@ use App\Models\Server;
 use App\Models\Map;
 use App\Models\User;
 use App\Models\Record;
+use App\Models\MddProfile;
 use Illuminate\Support\Facades\DB;
 
 class ImportDataCommand extends Command
@@ -144,5 +145,25 @@ class ImportDataCommand extends Command
         }
 
         DB::commit();
+    }
+
+    public function mdd($data) {
+        $pattern = '/\^\w/';
+
+        foreach($data as $element) {
+            $plainName = preg_replace($pattern, '', $element['display_name']);
+
+            $newElement = [
+                'id'        =>      $element['id'],
+                'name'        =>      $element['display_name'],
+                'plain_name'        =>      $plainName,
+                'country'        =>      $element['country'],
+                'model'        =>      $element['model'],
+                'headmodel'        =>      $element['headmodel']
+            ];
+
+            $mdd = new MddProfile($newElement);
+            $mdd->save();
+        }
     }
 }

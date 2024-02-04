@@ -7,7 +7,8 @@
     const props = defineProps({
         user: Object,
         records: Object,
-        type: String
+        type: String,
+        profile: Object
     });
 
     const options = ref({
@@ -52,6 +53,57 @@
             color: 'text-red-400'
         },
     });
+
+    const stats = [
+        {
+            label: 'Total Records',
+            value: 'total_records',
+            icon: 'infinity',
+            type: 'svg'
+        },
+        {
+            label: 'Fastcaps Records',
+            value: 'ctf_records',
+            icon: 'flag',
+            type: 'svg'
+        },
+        {
+            label: 'World Records',
+            value: 'world_records',
+            icon: 'trophy',
+            type: 'svg'
+        },
+        {
+            label: 'Strafe Records',
+            value: 'strafe_records',
+            icon: 'strafe',
+            type: 'imgsvg'
+        },
+        {
+            label: 'Rocket Records',
+            value: 'rocket_records',
+            icon: 'rl',
+            type: 'item'
+        },
+        {
+            label: 'Grenade Records',
+            value: 'grenade_records',
+            icon: 'gl',
+            type: 'item'
+        },
+        {
+            label: 'Plasma Records',
+            value: 'plasma_records',
+            icon: 'pg',
+            type: 'item'
+        },
+        {
+            label: 'BFG Records',
+            value: 'bfg_records',
+            icon: 'bfg',
+            type: 'item'
+        },
+    ];
 
     const selectedOption = ref(props.type || 'latest');
 
@@ -110,23 +162,18 @@
                     <div class="tech-line-cpm mb-4"></div>
 
                     <div class="text-gray-400 text-sm"> 
-                        <div class="flex justify-between">
-                            <span class="mr-1">Records Num</span>
-                            <span>22500</span>
-                        </div>
-
-                        <div class="hr-cpm w-full my-4"></div>
-
-                        <div class="flex justify-between">
-                            <span class="mr-1">Avg Rank</span>
-                            <span>500</span>
-                        </div>
-
-                        <div class="hr-cpm w-full my-4"></div>
-                        
-                        <div class="flex justify-between">
-                            <span class="mr-1">World Records</span>
-                            <span>250</span>
+                        <div v-for="stat in stats">
+                            <div class="flex justify-between">
+                                <div class="flex">
+                                    <svg v-if="stat.type == 'svg'" class="fill-current w-5 h-5 mr-2" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + stat.icon"></use></svg>
+                                    <img v-if="stat.type == 'imgsvg'" class="fill-current w-5 mr-2" src="/images/svg/strafe.svg">
+                                    <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
+                                    <span class="mr-1"> {{ stat.label }} </span>
+                                </div>
+                                <span>{{ profile['cpm_' + stat.value] }}</span>
+                            </div>
+    
+                            <div class="hr-cpm w-full my-4"></div>
                         </div>
                     </div>
                 </div>
@@ -175,23 +222,18 @@
                     <div class="tech-line-vq3 mb-4"></div>
 
                     <div class="text-gray-400 text-sm"> 
-                        <div class="flex justify-between">
-                            <span class="mr-1">Records Num</span>
-                            <span>22500</span>
-                        </div>
-
-                        <div class="hr-vq3 w-full my-4"></div>
-
-                        <div class="flex justify-between">
-                            <span class="mr-1">Avg Rank</span>
-                            <span>500</span>
-                        </div>
-
-                        <div class="hr-vq3 w-full my-4"></div>
-                        
-                        <div class="flex justify-between">
-                            <span class="mr-1">World Records</span>
-                            <span>250</span>
+                        <div v-for="stat in stats">
+                            <div class="flex justify-between">
+                                <div class="flex">
+                                    <svg v-if="stat.type == 'svg'" class="fill-current w-5 h-5 mr-2" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + stat.icon"></use></svg>
+                                    <img v-if="stat.type == 'imgsvg'" class="fill-current w-5 mr-2" src="/images/svg/strafe.svg">
+                                    <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
+                                    <span class="mr-1"> {{ stat.label }} </span>
+                                </div>
+                                <span>{{ profile['vq3_' + stat.value] }}</span>
+                            </div>
+    
+                            <div class="hr-vq3 w-full my-4"></div>
                         </div>
                     </div>
                 </div>

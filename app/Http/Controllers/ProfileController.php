@@ -8,8 +8,7 @@ use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Record;
 
-class ProfileController extends Controller
-{
+class ProfileController extends Controller {
     public function index(Request $request, User $user) {
         $type = $request->input('type', 'latest');
 
@@ -30,10 +29,12 @@ class ProfileController extends Controller
         };
 
         $records = $records->with('map')->paginate(10);
+
         return Inertia::render('Profile')
             ->with('records', $records)
             ->with('user', $user)
-            ->with('type', $type);
+            ->with('type', $type)
+            ->with('profile', $user->mdd_profile);
     }
 
     public function latestRecords(User $user) {

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Str;
+
 class Map extends Model
 {
     use HasFactory;
@@ -153,5 +155,17 @@ class Map extends Model
         ];
 
         
+    }
+
+    public function hasWeapon($weapon) {
+        if (Str::contains($this->weapons, $weapon)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isStrafe() {
+        return !$this->weapons || trim($this->weapons) === '';
     }
 }

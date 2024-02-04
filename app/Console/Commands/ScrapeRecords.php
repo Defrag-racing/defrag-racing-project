@@ -122,6 +122,12 @@ class ScrapeRecords extends Command
             $serverMap->processAverageTime();
         }
 
+        $mdd_profile = MddProfile::where('id', $newrecord->mdd_id)->first();
+
+        if ($mdd_profile) {
+            $mdd_profile->processStats();
+        }
+
         ProcessNotificationsJob::dispatch($newrecord);
     }
 

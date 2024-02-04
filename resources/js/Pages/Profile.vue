@@ -1,11 +1,73 @@
 <script setup>
-    import { Head } from '@inertiajs/vue3';
+    import { ref, watch } from 'vue';
+    import { Head, router } from '@inertiajs/vue3';
     import ProfileRecord from '@/Components/ProfileRecord.vue';
+    import Pagination from '@/Components/Basic/Pagination.vue';
 
     const props = defineProps({
         user: Object,
         records: Object,
+        type: String
     });
+
+    const options = ref({
+        'latest': {
+            label: 'Latest Records',
+            icon: 'backintime',
+            color: 'text-gray-400'
+        },
+        'recentlybeaten': {
+            label: 'Recently Beaten',
+            icon: 'retweet',
+            color: 'text-gray-400'
+        },
+        'tiedranks': {
+            label: 'Tied Ranks',
+            icon: 'circle-equal',
+            color: 'text-gray-400'
+        },
+        'activityhistory': {
+            label: 'Activity History',
+            icon: 'linegraph',
+            color: 'text-gray-400'
+        },
+        'bestranks': {
+            label: 'Best Ranks',
+            icon: 'trophy',
+            color: 'text-green-400'
+        },
+        'besttimes': {
+            label: 'Best Times',
+            icon: 'stopwatch',
+            color: 'text-green-400'
+        },
+        'worstranks': {
+            label: 'Worest Ranks',
+            icon: 'trash',
+            color: 'text-red-400'
+        },
+        'worsttimes': {
+            label: 'Worst Times',
+            icon: 'hourglass',
+            color: 'text-red-400'
+        },
+    });
+
+    const selectedOption = ref(props.type || 'latest');
+
+    const selectOption = (option) => {
+        console.log(option);
+        router.reload({ data: { type: option } })
+    }
+
+    watch(() => props.type, (newVal) => {
+        if (options.value[newVal]) {
+            selectedOption.value = newVal;
+        } else {
+            selectedOption.value = 'latest';
+        }
+    });
+
 </script>
 
 <template>
@@ -15,14 +77,6 @@
         <div class="max-w-8xl mx-auto py-5 sm:px-6 lg:px-8">
             <div class="mt-10">
                 <div class="flex justify-center">
-                    <!-- <div class="mr-10">
-                        <div class="text-sm w-16 h-16 flex flex-col items-center justify-center border-green-500 text-white rounded-full p-1 relative">
-                            <span class="font-bold">19555</span>
-                            <span>Records</span>
-                            <div class="effect-cpm"></div>
-                        </div>
-                    </div> -->
-
                     <div>
                         <div class="flex flex-col items-center p-4 relative">
                             <div class="profile-effect"></div>
@@ -47,19 +101,11 @@
                             <div class="text-2xl font-medium text-gray-900 dark:text-gray-100" v-html="q3tohtml(user.name)"></div>
                         </div>
                     </div>
-
-                    <!-- <div class="ml-10">
-                        <div class="text-sm w-16 h-16 flex flex-col items-center justify-center border-green-500 text-white rounded-full p-1 relative">
-                            <span class="font-bold">19555</span>
-                            <span>Records</span>
-                            <div class="effect-vq3"></div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-5">
-                <div class="col-span-1">
+            <div class="grid grid-cols-1 lg:grid-cols-5 mx-5 lg:mx-0">
+                <div class="col-span-2 lg:col-span-1 mt-10 lg:mt-0 order-0 lg:order-0">
                     <div class="text-center text-xl font-medium text-gray-900 dark:text-gray-100">CPM</div>
                     <div class="tech-line-cpm mb-4"></div>
 
@@ -85,14 +131,46 @@
                     </div>
                 </div>
 
-                <div class="col-span-1 md:col-span-3 mt-10">
-                    <div class="text-center text-xl font-medium text-gray-900 dark:text-gray-100">Records</div>
-                    <div class="tech-line-plain mx-10 my-4">
+                <div class="col-span-2 lg:col-span-3 mt-10 mx-0 lg:mx-10 order-2 lg:order-1">
+                    <div class="grid grid-cols-4 gap-1 mb-10">
+                        <div v-for="(data, option) in options" :key="option">
+                            <button @click="selectOption(option)" v-if="selectedOption !== option" :class="`cursor-pointer group w-full z-10 relative overflow-hidden rounded-md bg-gray-700 bg-opacity-30 hover:bg-opacity-50 p-5 ` + data.color">
+                                <div class="flex items-center transition-transform group-hover:scale-110">
+                                    <svg class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                    <div class="font-semibold w-full text-center">{{ data.label }} </div>
+                                </div>
+
+                                <div class="absolute -left-1 -top-1 w-24 h-24 z-0 opacity-15 transition-transform group-hover:scale-150">
+                                    <svg class="text-black fill-current w-full h-full" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                </div>
+                            </button>
+
+                            <button v-else :class="`cursor-pointer group w-full z-10 relative rounded-md bg-gray-400 p-5  text-gray-900`">
+                                <div class="flex items-center transition-transform group-hover:scale-110">
+                                    <svg class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                    <div class="font-semibold w-full text-center">{{ data.label }} </div>
+                                </div>
+
+                                <div class="absolute -left-1 -top-1 w-24 h-24 z-0 opacity-15">
+                                    <svg class="text-black fill-current w-full h-full" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tech-line-plain my-4"></div>
+
+
+                    <div>
                         <ProfileRecord v-for="record in records.data" :key="record.id" :record="record" />
+                    </div>
+
+                    <div class="mt-5 flex justify-center">
+                        <Pagination :last_page="records.last_page" :current_page="records.current_page" :link="records.first_page_url" />
                     </div>
                 </div>
 
-                <div class="col-span-1">
+                <div class="col-span-2 lg:col-span-1 mt-10 lg:mt-0 order-1 lg:order-2">
                     <div class="text-center text-xl font-medium text-gray-900 dark:text-gray-100">VQ3</div>
                     <div class="tech-line-vq3 mb-4"></div>
 
@@ -126,6 +204,17 @@
     .profile-effect {
         transition: all .5s ease-in-out;
         box-shadow: 0 0 100px 40px #20f555b3;
+        height: 1px;
+        left: 50%;
+        top: 50%;
+        position: absolute;
+        width: 1px;
+        z-index: 1;
+    }
+
+    .selected-button-effect {
+        transition: all .5s ease-in-out;
+        box-shadow: 0 0 70px 30px #ffffffb3;
         height: 1px;
         left: 50%;
         top: 50%;

@@ -7,7 +7,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Popper from "vue3-popper";
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import MainLayout from "@/Layouts/MainLayout.vue" 
 
@@ -68,11 +68,15 @@ const q3tohtml = (name) => {
 };
 
 const timeSince = (date) => {
-    const currentDate = moment();
-    const inputDate = moment(date);
+    const currentDate = moment.tz();
+    const inputDate = moment.tz(date, "Europe/Berlin");
     const duration = moment.duration(currentDate.diff(inputDate));
 
     if (duration.asDays() < 1) {
+        if (duration.hours() == 0) {
+            return `${duration.minutes()} minutes`;
+        }
+        
         return `${duration.hours()} hours, ${duration.minutes()} minutes`;
     } else if (duration.asDays() < 365) {
         const months = duration.months();

@@ -11,7 +11,9 @@
     const props = defineProps({
         map: Object,
         cpmRecords: Object,
-        vq3Records: Object
+        vq3Records: Object,
+        my_cpm_record: Object,
+        my_vq3_record: Object
     });
 
     const order = ref('ASC');
@@ -223,6 +225,40 @@
                 <MapCardLineSmall :map="map" />
             </div>
 
+
+            <div class="md:flex justify-center mb-5">
+                <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col mr-1 justify-center">
+                    <div v-if="my_vq3_record">
+                        <div class="flex-grow" v-if="screenWidth > 640">
+                            <MapRecord :record="my_vq3_record" />
+                        </div>
+
+                        <div class="flex-grow" v-else>
+                            <MapRecordSmall :record="my_vq3_record" />
+                        </div>
+                    </div>
+
+                    <div v-else class="flex items-center justify-center text-gray-500">
+                        <div>You have no VQ3 Record In this map</div>
+                    </div>
+                </div>
+
+                <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col ml-1 mt-5 md:mt-0 justify-center">
+                    <div v-if="my_cpm_record">
+                        <div class="flex-grow" v-if="screenWidth > 640">
+                            <MapRecord :record="my_cpm_record" />
+                        </div>
+
+                        <div class="flex-grow" v-else>
+                            <MapRecordSmall :record="my_cpm_record" />
+                        </div>
+                    </div>
+
+                    <div v-else class="flex items-center justify-center text-gray-500 items-center">
+                        <div>You have no CPM Record In this map</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="md:flex justify-center">
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col mr-1">

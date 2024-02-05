@@ -10,6 +10,9 @@ use App\Models\Record;
 
 class ProfileController extends Controller {
     public function index(Request $request, User $user) {
+        $worldRecordsCpm = Record::where('rank', 1)->where('physics', 'cpm')->count();
+        $worldRecordsVq3 = Record::where('rank', 1)->where('physics', 'vq3')->count();
+
         $type = $request->input('type', 'latest');
 
         $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes'];
@@ -33,6 +36,9 @@ class ProfileController extends Controller {
         return Inertia::render('Profile')
             ->with('records', $records)
             ->with('user', $user)
+            ->with('type', $type)
+            ->with('cpm_world_record', $worldRecordsCpm)
+            ->with('vq3_world_record', $worldRecordsVq3)
             ->with('type', $type)
             ->with('profile', $user->mdd_profile);
     }

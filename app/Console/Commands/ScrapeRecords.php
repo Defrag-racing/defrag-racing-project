@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Map;
 use App\Models\Record;
 use App\Models\RecordHistory;
+use App\Models\MddProfile;
 
 use App\Jobs\ProcessNotificationsJob;
 

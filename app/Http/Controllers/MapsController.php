@@ -55,6 +55,15 @@ class MapsController extends Controller
         $cpmGametype = $gametype . '_cpm';
         $vq3Gametype = $gametype . '_vq3';
 
+
+        if ($request->user()->mdd_id) {
+            $my_cpm_record = Record::where('mapname', $mapname)->where('mdd_id', $request->user()->mdd_id)->where('gametype', $cpmGametype)->with('user')->first();
+            $my_vq3_record = Record::where('mapname', $mapname)->where('mdd_id', $request->user()->mdd_id)->where('gametype', $vq3Gametype)->with('user')->first();
+        } else {
+            $my_cpm_record = null;
+            $my_vq3_record = null;
+        }
+
         if (! in_array($column, ['date_set', 'time'])) {
             $column = 'date_set';
         }
@@ -69,13 +78,13 @@ class MapsController extends Controller
 
         $cpmRecords = $cpmRecords->where('gametype', $cpmGametype);
 
-        $cpmRecords = $cpmRecords->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(30, ['*'], 'cpmPage')->withQueryString();
+        $cpmRecords = $cpmRecords->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'cpmPage')->withQueryString();
 
         $vq3Records = Record::where('mapname', $map->name);
 
         $vq3Records = $vq3Records->where('gametype', $vq3Gametype);
 
-        $vq3Records = $vq3Records->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(30, ['*'], 'vq3Page')->withQueryString();
+        $vq3Records = $vq3Records->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
 
         $cpmPage = ($request->has('cpmPage')) ? min($request->cpmPage, $cpmRecords->lastPage()) : 1;
 
@@ -92,6 +101,8 @@ class MapsController extends Controller
         return Inertia::render('MapView')
             ->with('map', $map)
             ->with('cpmRecords', $cpmRecords)
-            ->with('vq3Records', $vq3Records);
+            ->with('vq3Records', $vq3Records)
+            ->with('my_cpm_record', $my_cpm_record)
+            ->with('my_vq3_record', $my_vq3_record);
     }
 }

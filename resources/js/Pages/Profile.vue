@@ -111,8 +111,7 @@
     const selectedOption = ref(props.type || 'latest');
 
     const selectOption = (option) => {
-        console.log(option);
-        router.reload({ data: { type: option } })
+        router.reload({ data: { type: option, page: 1 } })
     }
 
     watch(() => props.type, (newVal) => {

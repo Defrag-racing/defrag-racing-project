@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Models\User;
 use App\Models\Record;
 
+use Illuminate\Support\Facades\DB;
+
 class ProfileController extends Controller {
     public function index(Request $request, User $user) {
         $worldRecordsCpm = Record::where('mdd_id', $user->mdd_id)->where('rank', 1)->where('physics', 'cpm')->count();
@@ -31,7 +33,7 @@ class ProfileController extends Controller {
             default             => $this->latestRecords($user),
         };
 
-        $records = $records->with('map')->paginate(10);
+        $records = $records->with('map')->paginate(10)->withQueryString();
 
         return Inertia::render('Profile')
             ->with('records', $records)
@@ -50,9 +52,25 @@ class ProfileController extends Controller {
     }
 
     public function recentlyBeaten(User $user) {
-        $playerId = $user->mdd_id;
+        $mddId = $user->mdd_id;
 
-        $records = Record::query();
+        $records =  Record::selectRaw("
+            a.*,
+                (SELECT COUNT(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time < a.time ORDER BY time) AS rank_num,
+                (SELECT COUNT(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype) AS rank_total,
+                b.time AS my_time
+        ")
+        ->from('records as a')
+        ->leftJoin('records as b', 'a.mapname', '=', 'b.mapname')
+        ->whereRaw('a.time < b.time')
+        ->whereRaw('NOT a.mdd_id = b.mdd_id')
+        ->whereRaw('a.gametype = b.gametype')
+        ->whereRaw('b.mdd_id = ?', [$mddId])
+        ->whereRaw('a.deleted_at IS NULL')
+        ->withTrashed()
+        ->orderByRaw('a.date_set DESC');
+        
+
         return $records;
     }
 
@@ -83,7 +101,23 @@ class ProfileController extends Controller {
     }
 
     public function bestTimes(User $user) {
-        
+        $mddId = $user->mdd_id;
+
+        $records =  Record::selectRaw("
+            a.*,
+                (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time<a.time ORDER by time) as rank_num,
+                (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype) as rank_total,
+                (SELECT time FROM records WHERE mapname=a.mapname AND gametype=a.gametype ORDER BY TIME LIMIT 1) AS time_first,
+                (SELECT 1-((rank_num+1)/(rank_total+1))) AS skill
+        ")
+        ->from('records as a')
+        ->whereRaw('a.mdd_id = ?', [$mddId])
+        ->whereRaw('a.deleted_at IS NULL')
+        ->withTrashed()
+        ->orderBy('skill', 'DESC')
+        ->orderByRaw('a.date_set DESC');
+
+        return $records;
     }
 
     public function worstRanks(User $user) {
@@ -93,6 +127,22 @@ class ProfileController extends Controller {
     }
 
     public function worstTimes(User $user) {
-        
+        $mddId = $user->mdd_id;
+
+        $records =  Record::selectRaw("
+            a.*,
+                (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time<a.time ORDER by time) as rank_num,
+                (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype) as rank_total,
+                (SELECT time FROM records WHERE mapname=a.mapname AND gametype=a.gametype ORDER BY TIME LIMIT 1) AS time_first,
+                (SELECT 1-((rank_num+1)/(rank_total+1))) AS skill
+        ")
+        ->from('records as a')
+        ->whereRaw('a.mdd_id = ?', [$mddId])
+        ->whereRaw('a.deleted_at IS NULL')
+        ->withTrashed()
+        ->orderBy('skill', 'ASC')
+        ->orderByRaw('a.date_set DESC');
+
+        return $records;
     }
 }

@@ -56,7 +56,7 @@ class MapsController extends Controller
         $vq3Gametype = $gametype . '_vq3';
 
 
-        if ($request->user()->mdd_id) {
+        if ($request->user() && $request->user()->mdd_id) {
             $my_cpm_record = Record::where('mapname', $mapname)->where('mdd_id', $request->user()->mdd_id)->where('gametype', $cpmGametype)->with('user')->first();
             $my_vq3_record = Record::where('mapname', $mapname)->where('mdd_id', $request->user()->mdd_id)->where('gametype', $vq3Gametype)->with('user')->first();
         } else {

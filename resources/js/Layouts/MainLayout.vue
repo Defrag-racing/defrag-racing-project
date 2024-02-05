@@ -194,32 +194,11 @@
                             </div>
                         </div>
 
-                        <div class="flex md:items-center md:ms-6 justify-end">
+                        <div class="flex items-center md:ms-6 justify-end">
                             <div class="flex justify-end flex-grow" v-if="screenWidth > 640">
                                 <div v-if="$page.props.auth.user">
                                     <NotificationMenu :ping="true" />
                                 </div>
-                            </div>
-
-                            <div class="md:hidden">
-                                <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-400 hover:bg-grayop-900 focus:outline-none focus:bg-grayop-900 focus:text-gray-400 transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
-                                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                        <path
-                                            :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M4 6h16M4 12h16M4 18h16"
-                                        />
-                                        <path
-                                            :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
-                                </button>
                             </div>
 
 
@@ -263,7 +242,7 @@
                             </div>
 
                             <!-- Auth Buttons -->
-                            <div v-else>
+                            <div v-else v-if="screenWidth > 390">
                                 <div class="flex">
                                     <Link :href="route('login')">
                                         <PrimaryButton type="button" class="py-1">
@@ -277,6 +256,27 @@
                                         </SecondaryButton>
                                     </Link>
                                 </div>
+                            </div>
+
+                            <div class="md:hidden">
+                                <button class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-400 hover:bg-grayop-900 focus:outline-none focus:bg-grayop-900 focus:text-gray-400 transition duration-150 ease-in-out" @click="showingNavigationDropdown = ! showingNavigationDropdown">
+                                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                        <path
+                                            :class="{'hidden': showingNavigationDropdown, 'inline-flex': ! showingNavigationDropdown }"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M4 6h16M4 12h16M4 18h16"
+                                        />
+                                        <path
+                                            :class="{'hidden': ! showingNavigationDropdown, 'inline-flex': showingNavigationDropdown }"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -315,6 +315,14 @@
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="md:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink :href="route('login')" :active="route().current('login')">
+                            Login
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('register')" :active="route().current('register')">
+                            Register
+                        </ResponsiveNavLink>
+
                         <ResponsiveNavLink :href="route('home')" :active="route().current('home')">
                             Home
                         </ResponsiveNavLink>

@@ -5,18 +5,19 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+use App\Jobs\ScrapeRecords;
+
 class Kernel extends ConsoleKernel
 {
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
-    {
+    protected function schedule(Schedule $schedule): void {
         $schedule->command('scrape:servers')->everyMinute();
 
         $schedule->command('scrape:servers 1')->everyFiveMinutes()->runInBackground();
 
-        $schedule->command('scrape:records')->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
+        $schedule->job(new ScrapeRecords)->withoutOverlapping()->evenInMaintenanceMode()->everyThirtySeconds();
 
         $schedule->command('scrape:maps')->everyTwoMinutes();
     }

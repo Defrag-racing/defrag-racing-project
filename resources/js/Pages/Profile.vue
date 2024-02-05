@@ -9,8 +9,15 @@
         records: Object,
         type: String,
         profile: Object,
-        cpm_world_records: Number,
-        vq3_world_records: Number,
+        cpm_world_records: {
+            type: Number,
+            default: 0
+        },
+        vq3_world_records: {
+            type: Number,
+            default: 0
+        },
+        hasProfile: Boolean
     });
 
     const options = ref({
@@ -148,7 +155,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center">
+                        <div class="flex items-center justify-center">
                             <div>
                                 <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user.country}.png`" :title="user.country" class="w-7 inline mr-2 mb-0.5">
                             </div>
@@ -172,7 +179,7 @@
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
                                     <span class="mr-1"> {{ stat.label }} </span>
                                 </div>
-                                <span v-if="!stat.wr">{{ profile['cpm_' + stat.value] }}</span>
+                                <span v-if="!stat.wr">{{ ( profile?.hasOwnProperty('cpm_' + stat.value) ) ? profile['cpm_' + stat.value] : 0 }}</span>
                                 <span v-else>{{ cpm_world_records }}</span>
                             </div>
     
@@ -211,12 +218,20 @@
                     <div class="tech-line-plain my-4"></div>
 
 
-                    <div>
-                        <ProfileRecord v-for="record in records.data" :key="record.id" :record="record" />
+                    <div v-if="hasProfile && records.total > 0">
+                        <div>
+                            <ProfileRecord v-for="record in records.data" :key="record.id" :record="record" />
+                        </div>
+    
+                        <div class="mt-5 flex justify-center">
+                            <Pagination :last_page="records.last_page" :current_page="records.current_page" :link="records.first_page_url" />
+                        </div>
                     </div>
 
-                    <div class="mt-5 flex justify-center">
-                        <Pagination :last_page="records.last_page" :current_page="records.current_page" :link="records.first_page_url" />
+                    <div v-else>
+                        <div class="text-center text-gray-400">
+                            This player has no records !
+                        </div>
                     </div>
                 </div>
 
@@ -233,7 +248,7 @@
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
                                     <span class="mr-1"> {{ stat.label }} </span>
                                 </div>
-                                <span v-if="!stat.wr">{{ profile['vq3_' + stat.value] }}</span>
+                                <span v-if="!stat.wr">{{ profile ? profile['vq3_' + stat.value] : 0 }}</span>
                                 <span v-else>{{ vq3_world_records }}</span>
                             </div>
     

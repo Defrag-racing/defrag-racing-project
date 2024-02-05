@@ -11,7 +11,19 @@ use App\Models\Record;
 use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller {
-    public function index(Request $request, User $user) {
+    public function index(Request $request, $userId) {
+        $user = User::where('id', $userId)->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country']);
+
+        if (! $user) {
+            return redirect()->route('home');
+        }
+
+        if (! $user->mdd_id ) {
+            return Inertia::render('Profile')
+                ->with('user', $user)
+                ->with('hasProfile', false);
+        }
+
         $worldRecordsCpm = Record::where('mdd_id', $user->mdd_id)->where('rank', 1)->where('physics', 'cpm')->count();
         $worldRecordsVq3 = Record::where('mdd_id', $user->mdd_id)->where('rank', 1)->where('physics', 'vq3')->count();
 
@@ -42,7 +54,8 @@ class ProfileController extends Controller {
             ->with('cpm_world_records', $worldRecordsCpm)
             ->with('vq3_world_records', $worldRecordsVq3)
             ->with('type', $type)
-            ->with('profile', $user->mdd_profile);
+            ->with('profile', $user->mdd_profile)
+            ->with('hasProfile', true);
     }
 
     public function latestRecords(User $user) {

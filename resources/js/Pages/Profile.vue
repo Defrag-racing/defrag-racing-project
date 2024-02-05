@@ -52,7 +52,7 @@
             color: 'text-green-400'
         },
         'worstranks': {
-            label: 'Worest Ranks',
+            label: 'Worst Ranks',
             icon: 'trash',
             color: 'text-red-400'
         },

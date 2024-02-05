@@ -102,7 +102,8 @@ class ProfileController extends Controller {
                             ->where('physics', $map->physics);
                     });
                 }
-            });
+            })
+            ->orderBy('date_set', 'DESC');
 
         return $records;
     }

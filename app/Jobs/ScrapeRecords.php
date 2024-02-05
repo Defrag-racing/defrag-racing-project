@@ -124,6 +124,8 @@ class ScrapeRecords implements ShouldQueue
 
         if ($mdd_profile) {
             $mdd_profile->processStats();
+        } else {
+            ScrapeProfile::dispatch($newrecord->mdd_id);
         }
 
         ProcessNotificationsJob::dispatch($newrecord);

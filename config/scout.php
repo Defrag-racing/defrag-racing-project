@@ -228,6 +228,31 @@ return [
                     'prefix'   => true
                 ],
             ],
+
+            \App\Models\MddProfile::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        [
+                            'name' => 'id',
+                            'type' => 'string',
+                        ],
+                        [
+                            'name'  => 'plain_name',
+                            'type'  => 'string[]'
+                        ],
+                        [
+                            'name' => 'created_at',
+                            'type' => 'int64',
+                        ],
+                    ],
+                    'default_sorting_field' => 'created_at',
+                    "token_separators"      => ["-", "_"]
+                ],
+                'search-parameters' => [
+                    'query_by' => 'plain_name',
+                    'prefix'   => true
+                ],
+            ],
         ],
     ],
 

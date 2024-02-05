@@ -14,6 +14,7 @@
     import MapSearchItem from '@/Components/MapSearchItem.vue';
     import PlayerSearchItem from '@/Components/PlayerSearchItem.vue';
     import NotificationMenu from '@/Components/NotificationMenu.vue';
+import { watchEffect } from 'vue';
 
     defineProps({
         title: String,
@@ -180,14 +181,14 @@
                                         <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                                     </div>
 
-                                    <div v-if="players.data?.length > 0  && (searchCategory == 'all' || searchCategory == 'players')">
+                                    <div v-if="players?.length > 0  && (searchCategory == 'all' || searchCategory == 'players')">
                                         <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                             Players
                                         </div>
-                                        <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                                        <PlayerSearchItem v-for="player in players" :player="player" :key="player.id" />
                                     </div>
 
-                                    <div v-if="players.data?.length == 0 && maps.data?.length == 0">
+                                    <div v-if="players?.length == 0 && maps.data?.length == 0">
                                         There are no results !
                                     </div>
                                 </div>
@@ -409,14 +410,14 @@
                                 <MapSearchItem v-for="map in maps.data" :map="map" :key="map.id" />
                             </div>
 
-                            <div v-if="players.data?.length > 0 && (searchCategory == 'all' || searchCategory == 'players')">
+                            <div v-if="players?.length > 0 && (searchCategory == 'all' || searchCategory == 'players')">
                                 <div class="font-bold text-gray-400 capitalized text-sm mb-1">
                                     Players
                                 </div>
-                                <PlayerSearchItem v-for="player in players.data" :player="player" :key="player.id" />
+                                <PlayerSearchItem v-for="player in players" :player="player" :key="player.id" />
                             </div>
 
-                            <div v-if="players.data?.length == 0 && maps.data?.length == 0">
+                            <div v-if="players?.length == 0 && maps.data?.length == 0">
                                 There are no results !
                             </div>
                         </div>

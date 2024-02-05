@@ -8,7 +8,9 @@
         user: Object,
         records: Object,
         type: String,
-        profile: Object
+        profile: Object,
+        cpm_world_records: Number,
+        vq3_world_records: Number,
     });
 
     const options = ref({
@@ -71,7 +73,8 @@
             label: 'World Records',
             value: 'world_records',
             icon: 'trophy',
-            type: 'svg'
+            type: 'svg',
+            wr: true
         },
         {
             label: 'Strafe Records',
@@ -170,7 +173,8 @@
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
                                     <span class="mr-1"> {{ stat.label }} </span>
                                 </div>
-                                <span>{{ profile['cpm_' + stat.value] }}</span>
+                                <span v-if="!stat.wr">{{ profile['cpm_' + stat.value] }}</span>
+                                <span v-else>{{ cpm_world_records }}</span>
                             </div>
     
                             <div class="hr-cpm w-full my-4"></div>
@@ -230,7 +234,8 @@
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
                                     <span class="mr-1"> {{ stat.label }} </span>
                                 </div>
-                                <span>{{ profile['vq3_' + stat.value] }}</span>
+                                <span v-if="!stat.wr">{{ profile['vq3_' + stat.value] }}</span>
+                                <span v-else>{{ vq3_world_records }}</span>
                             </div>
     
                             <div class="hr-vq3 w-full my-4"></div>

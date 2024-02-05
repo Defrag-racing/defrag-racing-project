@@ -10,8 +10,8 @@ use App\Models\Record;
 
 class ProfileController extends Controller {
     public function index(Request $request, User $user) {
-        $worldRecordsCpm = Record::where('rank', 1)->where('physics', 'cpm')->count();
-        $worldRecordsVq3 = Record::where('rank', 1)->where('physics', 'vq3')->count();
+        $worldRecordsCpm = Record::where('mdd_id', $user->mdd_id)->where('rank', 1)->where('physics', 'cpm')->count();
+        $worldRecordsVq3 = Record::where('mdd_id', $user->mdd_id)->where('rank', 1)->where('physics', 'vq3')->count();
 
         $type = $request->input('type', 'latest');
 
@@ -37,8 +37,8 @@ class ProfileController extends Controller {
             ->with('records', $records)
             ->with('user', $user)
             ->with('type', $type)
-            ->with('cpm_world_record', $worldRecordsCpm)
-            ->with('vq3_world_record', $worldRecordsVq3)
+            ->with('cpm_world_records', $worldRecordsCpm)
+            ->with('vq3_world_records', $worldRecordsVq3)
             ->with('type', $type)
             ->with('profile', $user->mdd_profile);
     }

@@ -90,9 +90,9 @@
                 </div>
 
                 <!-- Best Record -->
-                <div class="bg-blackop-30 rounded-md">
+                <div class="bg-blackop-30 rounded-md shadow-xl" :class="{'best-record-gradiant-cpm': server.defrag.includes('cpm'), 'best-record-gradiant-vq3': !server.defrag.includes('cpm')}">
                     <div class="text-lg p-2 rounded-md mt-3" v-if="server.besttime_name">
-                        <div class="text-xs capitalize text-gray-400 font-bold">BEST TIME </div>
+                        <div class="text-xs capitalize text-gray-200 font-bold">BEST TIME </div>
     
                         <div class="flex justify-between items-center">
                             <div>

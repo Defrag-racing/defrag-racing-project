@@ -121,3 +121,11 @@
     position: absolute;
     width: 1px;
 }
+
+.best-record-gradiant-vq3 {
+    background: linear-gradient(90deg, rgba(253, 173, 23, 0.136) 0%, rgba(13, 96, 250, 0.075) 100%);
+}
+
+.best-record-gradiant-cpm {
+    background: linear-gradient(90deg, rgba(253, 173, 23, 0.136) 0%, rgba(21, 250, 13, 0.116) 100%);
+}

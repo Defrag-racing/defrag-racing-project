@@ -226,8 +226,12 @@ import { watchEffect } from 'vue';
                                             Manage Account
                                         </div>
 
+                                        <DropdownLink :href="route('profile.index', $page.props.auth.user.id)">
+                                            My Profile
+                                        </DropdownLink>
+
                                         <DropdownLink :href="route('profile.show')">
-                                            Profile
+                                            Settings
                                         </DropdownLink>
 
                                         <div class="border-t border-gray-200 dark:border-gray-600" />

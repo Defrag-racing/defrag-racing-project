@@ -28,11 +28,11 @@
     <div>
         <div class="flex items-center justify-between">
             <div class="font-bold mr-5 text-white text-lg">#{{ record.rank }}</div>
-            <Link class="flex rounded-md" href="#">
+            <Link class="flex rounded-md" :href="route(record.user ? 'profile.index' : 'profile.mdd', record.user ? record.user.id : record.mdd_id)">
                 <div class="flex justify-between items-center">
                     <div>
                         <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'" :title="bestrecordCountry">
-                        <a class="font-bold text-white" href="#" v-html="q3tohtml(record.user?.name ?? record.name)"></a>
+                        <Link class="font-bold text-white" :href="route(record.user ? 'profile.index' : 'profile.mdd', record.user ? record.user.id : record.mdd_id)" v-html="q3tohtml(record.user?.name ?? record.name)"></Link>
                     </div>
                 </div>
             </Link>

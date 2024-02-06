@@ -1,4 +1,5 @@
 <script setup>
+    import { Link } from '@inertiajs/vue3';
     import OnlinePlayer from '@/Components/OnlinePlayer.vue';
     import MapDetails from './MapDetails.vue';
     import { computed } from 'vue';
@@ -97,7 +98,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <img :src="`/images/flags/${bestrecordCountry}.png`" class="w-5 inline mr-2">
-                                <a class="hover:underline font-bold " href="#" v-html="q3tohtml(server.besttime_name)"></a>
+                                <Link class="hover:underline font-bold " :href="server.besttime_url ? route('profile.index', server.besttime_url) : '#'" v-html="q3tohtml(server.besttime_name)"></Link>
                             </div>
                             <div class="font-bold">
                                 {{  formatTime(server.besttime_time) }}

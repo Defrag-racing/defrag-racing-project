@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 use App\Models\User;
 use App\Models\Record;
+use App\Models\MddProfile;
 
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +16,7 @@ class ProfileController extends Controller {
         $user = User::where('id', $userId)->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country']);
 
         if (! $user) {
-            return redirect()->route('home');
+            return redirect()->route('profile.mdd', $userId);
         }
 
         if (! $user->mdd_id ) {
@@ -36,13 +37,13 @@ class ProfileController extends Controller {
         }
 
         $records = match ($type) {
-            'recentlybeaten'    => $this->recentlyBeaten($user),
-            'tiedranks'         => $this->tiedRanks($user),
-            'bestranks'         => $this->bestRanks($user),
-            'besttimes'         => $this->bestTimes($user),
-            'worstranks'        => $this->worstRanks($user),
-            'worsttimes'        => $this->worstTimes($user),
-            default             => $this->latestRecords($user),
+            'recentlybeaten'    => $this->recentlyBeaten($user->mdd_id),
+            'tiedranks'         => $this->tiedRanks($user->mdd_id),
+            'bestranks'         => $this->bestRanks($user->mdd_id),
+            'besttimes'         => $this->bestTimes($user->mdd_id),
+            'worstranks'        => $this->worstRanks($user->mdd_id),
+            'worsttimes'        => $this->worstTimes($user->mdd_id),
+            default             => $this->latestRecords($user->mdd_id),
         };
 
         $records = $records->with('map')->paginate(10)->withQueryString();
@@ -58,15 +59,54 @@ class ProfileController extends Controller {
             ->with('hasProfile', true);
     }
 
-    public function latestRecords(User $user) {
-        $records = Record::where('mdd_id', $user->mdd_id)->orderBy('date_set', 'DESC');
+    public function mdd(Request $request, $userId) {
+        $user = MddProfile::where('id', $userId)->with('user')->first();
+
+        if (! $user) {
+            return redirect()->route('home');
+        }
+
+        $worldRecordsCpm = Record::where('mdd_id', $user->id)->where('rank', 1)->where('physics', 'cpm')->count();
+        $worldRecordsVq3 = Record::where('mdd_id', $user->id)->where('rank', 1)->where('physics', 'vq3')->count();
+
+        $type = $request->input('type', 'latest');
+
+        $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes'];
+
+        if (!in_array($type, $types)) {
+            $type = 'latest';
+        }
+
+        $records = match ($type) {
+            'recentlybeaten'    => $this->recentlyBeaten($user->id),
+            'tiedranks'         => $this->tiedRanks($user->id),
+            'bestranks'         => $this->bestRanks($user->id),
+            'besttimes'         => $this->bestTimes($user->id),
+            'worstranks'        => $this->worstRanks($user->id),
+            'worsttimes'        => $this->worstTimes($user->id),
+            default             => $this->latestRecords($user->id),
+        };
+
+        $records = $records->with('map')->paginate(10)->withQueryString();
+
+        return Inertia::render('Profile')
+            ->with('records', $records)
+            ->with('user', $user->user)
+            ->with('type', $type)
+            ->with('cpm_world_records', $worldRecordsCpm)
+            ->with('vq3_world_records', $worldRecordsVq3)
+            ->with('type', $type)
+            ->with('profile', $user)
+            ->with('hasProfile', true);
+    }
+
+    public function latestRecords($mddId) {
+        $records = Record::where('mdd_id', $mddId)->orderBy('date_set', 'DESC');
 
         return $records;
     }
 
-    public function recentlyBeaten(User $user) {
-        $mddId = $user->mdd_id;
-
+    public function recentlyBeaten($mddId) {
         $records =  Record::selectRaw("
             a.*,
                 (SELECT COUNT(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time < a.time ORDER BY time) AS rank_num,
@@ -87,8 +127,8 @@ class ProfileController extends Controller {
         return $records;
     }
 
-    public function tiedRanks(User $user) {
-        $playerId = $user->mdd_id;
+    public function tiedRanks($mddId) {
+        $playerId = $mddId;
 
         $playerMaps = Record::where('mdd_id', $playerId)->get(['rank', 'mapname', 'physics']);
 
@@ -108,15 +148,13 @@ class ProfileController extends Controller {
         return $records;
     }
 
-    public function bestRanks(User $user) {
-        $records = Record::where('mdd_id', $user->mdd_id)->orderBy('rank', 'ASC')->orderBy('date_set', 'DESC');
+    public function bestRanks($mddId) {
+        $records = Record::where('mdd_id', $mddId)->orderBy('rank', 'ASC')->orderBy('date_set', 'DESC');
 
         return $records;
     }
 
-    public function bestTimes(User $user) {
-        $mddId = $user->mdd_id;
-
+    public function bestTimes($mddId) {
         $records =  Record::selectRaw("
             a.*,
                 (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time<a.time ORDER by time) as rank_num,
@@ -134,15 +172,13 @@ class ProfileController extends Controller {
         return $records;
     }
 
-    public function worstRanks(User $user) {
-        $records = Record::where('mdd_id', $user->mdd_id)->orderBy('rank', 'DESC')->orderBy('date_set', 'DESC');
+    public function worstRanks($mddId) {
+        $records = Record::where('mdd_id', $mddId)->orderBy('rank', 'DESC')->orderBy('date_set', 'DESC');
 
         return $records;
     }
 
-    public function worstTimes(User $user) {
-        $mddId = $user->mdd_id;
-
+    public function worstTimes($mddId) {
         $records =  Record::selectRaw("
             a.*,
                 (SELECT count(id) FROM records WHERE mapname=a.mapname AND gametype=a.gametype AND time<a.time ORDER by time) as rank_num,

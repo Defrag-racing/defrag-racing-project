@@ -1,5 +1,5 @@
 <script setup>
-    import { Head, router } from '@inertiajs/vue3';
+    import { Head, router, usePage } from '@inertiajs/vue3';
     import MapCardLine from '@/Components/MapCardLine.vue';
     import MapRecord from '@/Components/MapRecord.vue';
     import MapRecordSmall from '@/Components/MapRecordSmall.vue';
@@ -15,6 +15,8 @@
         my_cpm_record: Object,
         my_vq3_record: Object
     });
+
+    const page = usePage()
 
     const order = ref('ASC');
     const column = ref('time');
@@ -239,7 +241,8 @@
                     </div>
 
                     <div v-else class="flex items-center justify-center text-gray-500">
-                        <div>You have no VQ3 Record In this map</div>
+                        <div v-if="page.props?.auth?.user">You have no VQ3 Record In this map</div>
+                        <div v-else>You need to be logged in to see your records</div>
                     </div>
                 </div>
 
@@ -255,7 +258,8 @@
                     </div>
 
                     <div v-else class="flex items-center justify-center text-gray-500 items-center">
-                        <div>You have no CPM Record In this map</div>
+                        <div v-if="page.props?.auth?.user">You have no CPM Record In this map</div>
+                        <div v-else>You need to be logged in to see your records</div>
                     </div>
                 </div>
             </div>

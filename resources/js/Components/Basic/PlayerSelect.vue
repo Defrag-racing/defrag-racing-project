@@ -71,7 +71,6 @@
 
     const selectSingleOption = (id) => {
         selectedOptions.value = [id]
-        console.log(selectedOptions.value)
     }
 
     const clearOptions = () => {

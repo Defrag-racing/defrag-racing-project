@@ -141,7 +141,7 @@
                     <div>
                         <div class="flex flex-col items-center p-4 relative">
                             <div class="profile-effect"></div>
-                            <img style="z-index: 2;" class="h-24 w-24 rounded-full border-4 border-gray-500 object-cover" :src="user.profile_photo_path ? '/storage/' + user.profile_photo_path : '/images/null.jpg'" :alt="user.name">
+                            <img style="z-index: 2;" class="h-24 w-24 rounded-full border-4 border-gray-500 object-cover" :src="user?.profile_photo_path ? '/storage/' + user.profile_photo_path : '/images/null.jpg'" :alt="user?.name ?? profile.name">
 
                             <div class="text-gray-500 absolute" style="width: 300px; top: 5%">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"  viewBox="0 0 750 300">
@@ -157,9 +157,9 @@
 
                         <div class="flex items-center justify-center">
                             <div>
-                                <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user.country}.png`" :title="user.country" class="w-7 inline mr-2 mb-0.5">
+                                <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user?.country ?? profile.country}.png`" :title="user?.country ?? profile.country" class="w-7 inline mr-2 mb-0.5">
                             </div>
-                            <div class="text-2xl font-medium text-gray-900 dark:text-gray-100" v-html="q3tohtml(user.name)"></div>
+                            <div class="text-2xl font-medium text-gray-900 dark:text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
                         </div>
                     </div>
                 </div>

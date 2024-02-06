@@ -25,12 +25,6 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-// Route::get('/test', function () {
-//     $record = \App\Models\Record::where('id', 582949)->first();
-
-//     \App\Jobs\ProcessNotificationsJob::dispatch($record);
-// });
-
 Route::get('/', [WebController::class, 'home'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
@@ -58,3 +52,4 @@ Route::get('/notifications', [NotificationsController::class, 'index'])->name('n
 Route::post('/notifications', [NotificationsController::class, 'clear'])->name('notifications.clear');
 
 Route::get('/profile/{userId}', [ProfileController::class, 'index'])->name('profile.index');
+Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('profile.mdd');

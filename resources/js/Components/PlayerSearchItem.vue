@@ -8,7 +8,7 @@
 
 <template>
     <div>
-        <Link class="flex rounded-md hover:bg-grayop-800 p-2" href="#">
+        <Link class="flex rounded-md hover:bg-grayop-800 p-2" :href="route(player.mdd ? 'profile.mdd' : 'profile.index', player.id)">
             <div class="mr-4 flex items-center">
                 <img class="h-10 w-10 rounded-full object-cover" :src="player.profile_photo_path ? '/storage/' + player.profile_photo_path : '/images/null.jpg'" :alt="player.name">
                 
@@ -17,7 +17,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <img :src="`/images/flags/${player.country}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'">
-                                <a class="font-bold text-white" href="#" v-html="q3tohtml(player.name)"></a>
+                                <span class="font-bold text-white" v-html="q3tohtml(player.name)"></span>
                             </div>
                         </div>
                     </div>

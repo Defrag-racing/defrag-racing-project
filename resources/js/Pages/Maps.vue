@@ -8,7 +8,7 @@
     const props = defineProps({
         maps: Object,
         queries: Object,
-        users: Array
+        profiles: Array
     });
 
     const showFilters = ref(Object.keys(props.queries ?? {}).length > 0);
@@ -52,7 +52,7 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <MapFilters :show="showFilters" :queries="queries ?? {}" :users="users" />
+                <MapFilters :show="showFilters" :queries="queries ?? {}" :profiles="profiles" />
 
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div class="flex flex-wrap justify-center">

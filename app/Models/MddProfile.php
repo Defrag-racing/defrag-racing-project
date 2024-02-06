@@ -216,4 +216,8 @@ class MddProfile extends Model
             'created_at' => $this->created_at->timestamp,
         ];
     }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

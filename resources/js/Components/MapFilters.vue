@@ -8,7 +8,7 @@
     const props = defineProps({
         show: Boolean,
         queries: Object,
-        users: Array
+        profiles: Array
     });
 
     const types = {
@@ -242,7 +242,7 @@
 
                 <div>
                     <PlayerSelect
-                        :options="users"
+                        :options="profiles"
                         :multi="true"
                         v-model="form.has_records"
                         :values="form.has_records"
@@ -258,7 +258,7 @@
 
                 <div>
                     <PlayerSelect
-                    :options="users"
+                    :options="profiles"
                     :multi="true"
                     v-model="form.have_no_records"
                     :values="form.have_no_records"
@@ -276,7 +276,7 @@
 
                 <div>
                     <PlayerSelect
-                        :options="users"
+                        :options="profiles"
                         :multi="false"
                         v-model="form.world_record"
                         :values="form.world_record"

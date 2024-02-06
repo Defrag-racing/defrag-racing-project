@@ -1,5 +1,5 @@
 <script setup>
-    import { onMounted, ref, watch } from 'vue';
+    import { onMounted, ref, watch, computed } from 'vue';
 
     const emit = defineEmits(['update:modelValue'])
 
@@ -26,11 +26,11 @@
 
     const filterOptions = () => {
         filteredOptions.value = props.options.filter((item) => {
-            return item.plain_name.toLowerCase().includes(search.value.toLowerCase())
+            return getPlainName(item).toLowerCase().includes(search.value.toLowerCase())
         }).sort((a, b) => {
-            if (selectedOptions.value.includes(a.mdd_id)) {
+            if (selectedOptions.value.includes(a.id)) {
                 return -1
-            } else if (selectedOptions.value.includes(b.mdd_id)) {
+            } else if (selectedOptions.value.includes(b.id)) {
                 return 1
             } else {
                 return 0
@@ -71,6 +71,7 @@
 
     const selectSingleOption = (id) => {
         selectedOptions.value = [id]
+        console.log(selectedOptions.value)
     }
 
     const clearOptions = () => {
@@ -88,6 +89,30 @@
     onMounted(() => {
         selectedOptions.value = props.values
     })
+
+    const getCountry = (user) => {
+        if (user.user) {
+            return user.user.country
+        }
+
+        return user.country
+    }
+
+    const getName = (user) => {
+        if (user.user) {
+            return user.user.name
+        }
+
+        return user.name
+    }
+
+    const getPlainName = (user) => {
+        if (user.user) {
+            return user.user.plain_name
+        }
+
+        return user.plain_name
+    }
 </script>
 
 <template>
@@ -103,9 +128,9 @@
                     </svg>
                 </div>
             </div>
-            <div :class="{'option': !selectedOptions.includes(user.mdd_id), 'bg-blue-600 hover:bg-blue-700': selectedOptions.includes(user.mdd_id)}" class="p-2 cursor-pointer rounded-md mb-2 text-white flex items-center" v-for="(user, index) in filteredOptions" :key="index" @click="selectOption(user.mdd_id)">
-                <img :src="`/images/flags/${user.country}.png`" onerror="this.src='/images/flags/_404.png'" class="w-8 pt-1 mr-5">
-                <span v-html="q3tohtml(user.name)"></span>
+            <div :class="{'option': !selectedOptions.includes(user.id), 'bg-blue-600 hover:bg-blue-700': selectedOptions.includes(user.id)}" class="p-2 cursor-pointer rounded-md mb-2 text-white flex items-center" v-for="(user, index) in filteredOptions" :key="index" @click="selectOption(user.id)">
+                <img :src="`/images/flags/${getCountry(user)}.png`" onerror="this.src='/images/flags/_404.png'" class="w-8 pt-1 mr-5">
+                <span v-html="q3tohtml(getName(user))"></span>
             </div>
         </div>
     </div>

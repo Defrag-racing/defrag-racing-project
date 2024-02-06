@@ -8,13 +8,16 @@ use Inertia\Inertia;
 use App\Models\Record;
 use App\Models\User;
 use App\Models\Map;
+use App\Models\MddProfile;
 
 use App\Filters\MapFilters;
 
 class MapsController extends Controller
 {
     public function index(Request $request) {
-        $users = User::orderBy('plain_name', 'ASC')->whereNot('mdd_id', NULL)->get(['mdd_id', 'name', 'country', 'plain_name']);
+        $mddProfiles = MddProfile::orderBy('id', 'DESC')
+            ->with('user:id,name,plain_name,country')
+            ->get(['id', 'user_id', 'name', 'country', 'plain_name']);
 
         $maps = Map::orderBy('id', 'DESC')->paginate(21)->withQueryString();
 
@@ -22,11 +25,14 @@ class MapsController extends Controller
             return redirect()->route('maps', ['page' => $maps->lastPage()]);
         }
 
-        return Inertia::render('Maps')->with('maps', $maps)->with('users', $users);
+        return Inertia::render('Maps')->with('maps', $maps)->with('profiles', $mddProfiles);
     }
 
     public function filters(Request $request) {
-        $users = User::orderBy('plain_name', 'ASC')->whereNot('mdd_id', NULL)->get(['mdd_id', 'name', 'country', 'plain_name']);
+        $mddProfiles = MddProfile::orderBy('id', 'DESC')
+            ->with('user:id,name,plain_name,country')
+            ->get(['id', 'user_id', 'name', 'country', 'plain_name']);
+
         
         $mapFilters = (new MapFilters())->filter($request);
 
@@ -45,7 +51,7 @@ class MapsController extends Controller
         return Inertia::render('Maps')
             ->with('maps', $maps)
             ->with('queries', $queries)
-            ->with('users', $users);
+            ->with('profiles', $mddProfiles);
     }
 
     public function map(Request $request, $mapname) {

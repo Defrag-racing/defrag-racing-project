@@ -34,6 +34,19 @@ class SettingsController extends Controller
         $user->save();
     }
 
+    public function preferences(Request $request) {
+        $user = $request->user();
+
+        if ($request->has('color')) {
+            if (! preg_match('/^#[a-fA-F0-9]{6}$/', $request->color)) {
+                return;
+            }
+            $user->color = $request->color;
+        }
+
+        $user->save();
+    }
+
     public function generate (Request $request) {
         $request->validate([
             'profile_link' => ['required', 'string', 'url:http,https', new MddProfile]

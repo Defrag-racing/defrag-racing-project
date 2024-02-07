@@ -8,6 +8,7 @@ import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
 import UpdateSocialMediaForm from '@/Pages/Profile/Partials/UpdateSocialMediaForm.vue';
 import VerifyMddProfile from '@/Pages/Profile/Partials/VerifyMddProfile.vue';
+import UpdateProfilePreferences from '@/Pages/Profile/Partials/UpdateProfilePreferences.vue';
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -29,6 +30,12 @@ defineProps({
             <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
+
+                    <SectionBorder />
+                </div>
+
+                <div>
+                    <UpdateProfilePreferences :user="$page.props.auth.user" />
 
                     <SectionBorder />
                 </div>

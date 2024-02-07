@@ -20,6 +20,8 @@
         hasProfile: Boolean
     });
 
+    const color = ref(props.user?.color ? props.user.color : '#ffffff');
+
     const options = ref({
         'latest': {
             label: 'Latest Records',
@@ -263,14 +265,27 @@
 
 <style>
     .profile-effect {
+        box-shadow: 0 0 100px 40px v-bind('color');
         transition: all .5s ease-in-out;
-        box-shadow: 0 0 100px 40px #20f555b3;
         height: 1px;
         left: 50%;
         top: 50%;
         position: absolute;
         width: 1px;
         z-index: 1;
+        animation: pulse 5s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 100px 40px v-bind('color');
+        }
+        50% {
+            box-shadow: 0 0 200px 40px v-bind('color');
+        }
+        100% {
+            box-shadow: 0 0 100px 40px v-bind('color');
+        }
     }
 
     .selected-button-effect {

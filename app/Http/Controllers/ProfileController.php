@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller {
     public function index(Request $request, $userId) {
-        $user = User::where('id', $userId)->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country']);
+        $user = User::where('id', $userId)->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country', 'color']);
 
         if (! $user) {
             return redirect()->route('profile.mdd', $userId);

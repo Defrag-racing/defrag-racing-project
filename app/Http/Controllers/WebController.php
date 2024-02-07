@@ -14,11 +14,11 @@ class WebController extends Controller
         return Inertia::render('Home')->with('announcements', $announcements);
     }
 
-    function flag($flag) {
+    public function flag($flag) {
         return response()->file(public_path() . '/images/flags/_404.png');
     }
 
-    function thumbs($image) {
+    public function thumbs($image) {
         return response()->file(public_path() . '/images/unknown.jpg');
     }
 }

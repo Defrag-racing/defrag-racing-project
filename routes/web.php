@@ -44,6 +44,7 @@ Route::get('/bundles/{id?}/{slug?}', [BundlesController::class, 'index'])->name(
 
 
 Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])->name('settings.socialmedia');
+Route::post('/settings/preferences', [SettingsController::class, 'preferences'])->name('settings.preferences');
 Route::post('/settings/mdd/generate', [SettingsController::class, 'generate'])->name('settings.mdd.generate');
 Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name('settings.mdd.verify');
 

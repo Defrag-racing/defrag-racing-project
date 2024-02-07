@@ -45,7 +45,8 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'model',
         'plain_name',
         'notification_settings',
-        'created_at'
+        'created_at',
+        'color'
     ];
 
     /**

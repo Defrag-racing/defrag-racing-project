@@ -118,9 +118,25 @@
     ];
 
     const selectedOption = ref(props.type || 'latest');
+    const loading = ref('');
 
     const selectOption = (option) => {
-        router.reload({ data: { type: option, page: 1 } })
+        if (loading.value === option) {
+            return;
+        }
+
+        router.reload({
+            data: {
+                type: option,
+                page: 1
+            },
+            onStart: () => {
+                loading.value = option;
+            },
+            onFinish: () => {
+                loading.value = '';
+            }
+        })
     }
 
     watch(() => props.type, (newVal) => {
@@ -195,7 +211,10 @@
                         <div v-for="(data, option) in options" :key="option">
                             <button @click="selectOption(option)" v-if="selectedOption !== option" :class="`cursor-pointer group w-full z-10 relative overflow-hidden rounded-md bg-gray-700 bg-opacity-30 hover:bg-opacity-50 p-5 ` + data.color">
                                 <div class="flex items-center transition-transform group-hover:scale-110">
-                                    <svg class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                    <svg v-if="loading !== option" class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 animate-spin">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                    </svg>
                                     <div class="font-semibold w-full text-center">{{ data.label }} </div>
                                 </div>
 

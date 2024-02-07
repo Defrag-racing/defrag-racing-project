@@ -22,8 +22,6 @@
 
         return Math.abs(props.record.besttime - props.record.time)
     });
-
-    console.log(props.record)
 </script>
 
 <template>

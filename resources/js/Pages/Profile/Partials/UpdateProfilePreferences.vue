@@ -34,7 +34,7 @@
         </template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-6">
                 <div class="flex justify-center">
                     <div>
                         <div class="flex flex-col items-center p-4 relative">
@@ -63,10 +63,10 @@
                 </div>
             </div>
 
-            <div class="col-span-6 sm:col-span-4 flex flex-col items-center">
+            <div class="col-span-6 flex flex-col items-center">
                 <div class="text-white mb-2">Profile Color</div>
                 <div class="flex justify-center">
-                    <v-color-picker color="#1F293780" v-model="form.color" hide-inputs />
+                    <v-color-picker show-swatches color="#1F293780" v-model="form.color" hide-inputs />
                 </div>
                 <InputError :message="form.errors.color" class="mt-2" />
             </div>

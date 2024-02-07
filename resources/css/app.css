@@ -123,9 +123,9 @@
 }
 
 .best-record-gradiant-vq3 {
-    background: linear-gradient(90deg, rgba(253, 173, 23, 0.136) 0%, rgba(13, 96, 250, 0.075) 100%);
+    background: linear-gradient(90deg, rgba(187, 187, 187, 0.136) 0%, rgba(3, 91, 255, 0.267) 100%);
 }
 
 .best-record-gradiant-cpm {
-    background: linear-gradient(90deg, rgba(253, 173, 23, 0.136) 0%, rgba(21, 250, 13, 0.116) 100%);
+    background: linear-gradient(90deg, rgba(187, 187, 187, 0.136) 0%, rgba(21, 250, 13, 0.116) 100%);
 }

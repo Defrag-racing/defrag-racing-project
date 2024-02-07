@@ -222,7 +222,7 @@
 
                     <div v-if="hasProfile && records.total > 0">
                         <div>
-                            <ProfileRecord v-for="record in records.data" :key="record.id" :record="record" />
+                            <ProfileRecord :showPlayer="selectedOption === 'recentlybeaten' || selectedOption === 'tiedranks'" :showPlayerLabel="(selectedOption === 'recentlybeaten') ? 'Beaten By' : 'Tied With'" v-for="record in records.data" :key="record.id" :record="record" />
                         </div>
     
                         <div class="mt-5 flex justify-center">

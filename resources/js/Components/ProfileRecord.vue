@@ -4,7 +4,15 @@
     import MapCard from './MapCard.vue';
 
     const props = defineProps({
-        record: Object
+        record: Object,
+        showPlayer: {
+            type: Boolean,
+            default: false
+        },
+        showPlayerLabel: {
+            type: String,
+            default: ''
+        }
     });
 
     const timeDiff =  computed(() => {
@@ -14,11 +22,13 @@
 
         return Math.abs(props.record.besttime - props.record.time)
     });
+
+    console.log(props.record)
 </script>
 
 <template>
     <div>
-        <div class="flex justify-between rounded-md p-2 items-center">
+        <div class="flex justify-between rounded-md p-1 items-center">
             <div class="mr-4 flex items-center">
                 <div class="font-bold text-white text-lg w-11 hidden sm:block">{{ record.rank }}</div>
 
@@ -45,15 +55,25 @@
                 </div>
             </div>
 
-            <div class="ml-4 hidden sm:block">
-                <div class="text-gray-400 text-xs" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
+            <div class="flex justify-start flex-grow">
+                <div class="hidden sm:block" v-if="showPlayer">
+                    <div class="text-gray-400 flex flex-col items-start">
+                        <div class="mr-2">{{ showPlayerLabel }}</div>
+                        <Link class="flex rounded-md" :href="route('profile.mdd', record.mdd_id)">
+                            <div>
+                                <img :src="`/images/flags/${record.country}.png`" class="w-5 inline mr-2" onerror="this.src='/images/flags/_404.png'" :title="record.country">
+                                <span class="font-bold text-white" v-html="q3tohtml(record.name)"></span>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
             </div>
 
             <div class="flex items-center">
-
-                <div class="text-right ml-5">
+                <div class="text-right ml-5 flex flex-col items-end">
                     <div class="text-lg font-bold text-gray-300 text-right" style="width: 100px;">{{  formatTime(record.time) }}</div>
                     <div class="text-xs text-red-500" v-if="timeDiff">- {{  formatTime(timeDiff) }}</div>
+                    <div class="text-gray-400 text-xs" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
                 </div>
 
                 <div class="ml-5 hidden sm:block">

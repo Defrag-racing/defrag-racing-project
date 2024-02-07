@@ -162,7 +162,7 @@ import { watchEffect } from 'vue';
                                 @input="performSearch"
                             />
 
-                            <div v-if="showResultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute z-10 bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500">
+                            <div v-if="showResultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500" style="z-index: 2000;">
                                 <div v-if="search.length == 0">
                                     Type a search query...
                                 </div>

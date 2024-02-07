@@ -61,7 +61,7 @@
             leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95"
         >
-            <div v-show="open" style="width: 400px; display: none; max-width: 80vw;" class="absolute z-50 mt-2 rounded-md shadow-lg end-0" @click="open = false">
+            <div v-show="open" style="width: 400px; display: none; max-width: 80vw; z-index: 2000;" class="absolute mt-2 rounded-md shadow-lg end-0" @click="open = false">
                 <div class="rounded-md ring-1 ring-white ring-opacity-5 bg-gray-700 py-2 px-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center font-bold text-gray-300">

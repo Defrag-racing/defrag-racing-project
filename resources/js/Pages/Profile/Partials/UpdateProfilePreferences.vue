@@ -3,9 +3,7 @@
     import ActionMessage from '@/Components/Laravel/ActionMessage.vue';
     import FormSection from '@/Components/Laravel/FormSection.vue';
     import InputError from '@/Components/Laravel/InputError.vue';
-    import InputLabel from '@/Components/Laravel/InputLabel.vue';
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
-    import TextInput from '@/Components/Laravel/TextInput.vue';
 
     const props = defineProps({
         user: Object,
@@ -24,7 +22,7 @@
 </script>
 
 <template>
-    <FormSection @submitted="updateProfilePreferences">
+    <FormSection @submitted="updateProfilePreferences" id="preferences">
         <template #title>
             Profile Preferences
         </template>
@@ -66,7 +64,7 @@
             <div class="col-span-6 flex flex-col items-center">
                 <div class="text-white mb-2">Profile Color</div>
                 <div class="flex justify-center">
-                    <v-color-picker show-swatches color="#1F293780" v-model="form.color" hide-inputs />
+                    <v-color-picker show-swatches color="#1F2937" v-model="form.color" hide-inputs />
                 </div>
                 <InputError :message="form.errors.color" class="mt-2" />
             </div>

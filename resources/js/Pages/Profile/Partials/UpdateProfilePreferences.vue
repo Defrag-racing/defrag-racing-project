@@ -85,7 +85,7 @@
 </template>
 
 
-<style>
+<style scoped>
     .profile-effect {
         box-shadow: 0 0 100px 40px v-bind('color');
         transition: all .5s ease-in-out;

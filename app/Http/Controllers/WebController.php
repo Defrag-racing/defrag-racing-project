@@ -14,7 +14,7 @@ class WebController extends Controller
         return Inertia::render('Home')->with('announcements', $announcements);
     }
 
-    public function flag($flag) {
+    public function flags($flag) {
         return response()->file(public_path() . '/images/flags/_404.png');
     }
 

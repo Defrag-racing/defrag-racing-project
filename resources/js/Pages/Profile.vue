@@ -67,21 +67,10 @@
 
     const stats = [
         {
-            label: 'Total Records',
-            value: 'total_records',
-            icon: 'infinity',
-            type: 'svg'
-        },
-        {
-            label: 'Fastcaps Records',
-            value: 'ctf_records',
-            icon: 'flag',
-            type: 'svg'
-        },
-        {
             label: 'World Records',
             value: 'world_records',
             icon: 'trophy',
+            color: 'text-yellow-500',
             type: 'svg',
             wr: true
         },
@@ -89,6 +78,7 @@
             label: 'Strafe Records',
             value: 'strafe_records',
             icon: 'strafe',
+            color: 'text-orange-500',
             type: 'imgsvg'
         },
         {
@@ -114,6 +104,20 @@
             value: 'bfg_records',
             icon: 'bfg',
             type: 'item'
+        },
+        {
+            label: 'Fastcaps Records',
+            value: 'ctf_records',
+            icon: 'flag',
+            color: 'text-cyan-500',
+            type: 'svg'
+        },
+        {
+            label: 'Total Records',
+            value: 'total_records',
+            icon: 'infinity',
+            color: 'text-gray-500',
+            type: 'svg'
         },
     ];
 
@@ -177,7 +181,7 @@
                             <div>
                                 <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user?.country ?? profile.country}.png`" :title="user?.country ?? profile.country" class="w-7 inline mr-2 mb-0.5">
                             </div>
-                            <div class="text-2xl font-medium text-gray-900 dark:text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
+                            <div class="text-2xl font-medium text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
                         </div>
                     </div>
                 </div>
@@ -191,11 +195,11 @@
                     <div class="text-gray-400 text-sm"> 
                         <div v-for="stat in stats">
                             <div class="flex justify-between">
-                                <div class="flex">
+                                <div :class="`flex ` + stat.color">
                                     <svg v-if="stat.type == 'svg'" class="fill-current w-5 h-5 mr-2" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + stat.icon"></use></svg>
                                     <img v-if="stat.type == 'imgsvg'" class="fill-current w-5 mr-2" src="/images/svg/strafe.svg">
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
-                                    <span class="mr-1"> {{ stat.label }} </span>
+                                    <span class="mr-1 text-gray-400"> {{ stat.label }} </span>
                                 </div>
                                 <span v-if="!stat.wr">{{ ( profile?.hasOwnProperty('cpm_' + stat.value) ) ? profile['cpm_' + stat.value] : 0 }}</span>
                                 <span v-else>{{ cpm_world_records }}</span>
@@ -207,9 +211,9 @@
                 </div>
 
                 <div class="col-span-2 lg:col-span-3 mt-10 mx-0 lg:mx-10 order-2 lg:order-1">
-                    <div class="grid grid-cols-4 gap-1 mb-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 mb-10">
                         <div v-for="(data, option) in options" :key="option">
-                            <button @click="selectOption(option)" v-if="selectedOption !== option" :class="`cursor-pointer group w-full z-10 relative overflow-hidden rounded-md bg-gray-700 bg-opacity-30 hover:bg-opacity-50 p-5 ` + data.color">
+                            <div @click="selectOption(option)" v-if="selectedOption !== option" :class="`cursor-pointer group w-full z-10 relative overflow-hidden rounded-md bg-gray-700 bg-opacity-30 hover:bg-opacity-50 p-5 ` + data.color">
                                 <div class="flex items-center transition-transform group-hover:scale-110">
                                     <svg v-if="loading !== option" class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
                                     <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 animate-spin">
@@ -221,9 +225,9 @@
                                 <div class="absolute -left-1 -top-1 w-24 h-24 z-0 opacity-15 transition-transform group-hover:scale-150">
                                     <svg class="text-black fill-current w-full h-full" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
                                 </div>
-                            </button>
+                            </div>
 
-                            <button v-else :class="`cursor-pointer group w-full z-10 relative rounded-md bg-gray-400 p-5  text-gray-900`">
+                            <div v-else :class="`cursor-pointer group w-full z-10 relative rounded-md bg-gray-400 p-5  text-gray-900`">
                                 <div class="flex items-center transition-transform group-hover:scale-110">
                                     <svg class="fill-current w-6 h-6" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
                                     <div class="font-semibold w-full text-center">{{ data.label }} </div>
@@ -232,7 +236,7 @@
                                 <div class="absolute -left-1 -top-1 w-24 h-24 z-0 opacity-15">
                                     <svg class="text-black fill-current w-full h-full" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + data.icon"></use></svg>
                                 </div>
-                            </button>
+                            </div>
                         </div>
                     </div>
 
@@ -263,11 +267,11 @@
                     <div class="text-gray-400 text-sm"> 
                         <div v-for="stat in stats">
                             <div class="flex justify-between">
-                                <div class="flex">
+                                <div :class="`flex ` + stat.color">
                                     <svg v-if="stat.type == 'svg'" class="fill-current w-5 h-5 mr-2" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-` + stat.icon"></use></svg>
                                     <img v-if="stat.type == 'imgsvg'" class="fill-current w-5 mr-2" src="/images/svg/strafe.svg">
                                     <div v-if="stat.type == 'item'" :class="`sprite-items sprite-${stat.icon} w-4 h-4 mr-3`"></div>
-                                    <span class="mr-1"> {{ stat.label }} </span>
+                                    <span class="mr-1 text-gray-400"> {{ stat.label }} </span>
                                 </div>
                                 <span v-if="!stat.wr">{{ profile ? profile['vq3_' + stat.value] : 0 }}</span>
                                 <span v-else>{{ vq3_world_records }}</span>

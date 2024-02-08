@@ -128,22 +128,19 @@ class ProfileController extends Controller {
     }
 
     public function tiedRanks($mddId) {
-        $playerId = $mddId;
-
-        $playerMaps = Record::where('mdd_id', $playerId)->get(['rank', 'mapname', 'physics']);
-
-        $records = Record::where('mdd_id', '!=', $playerId)
-            ->whereIn('mapname', $playerMaps->pluck('mapname'))
-            ->where(function ($query) use ($playerMaps) {
-                foreach ($playerMaps as $map) {
-                    $query->orWhere(function ($subQuery) use ($map) {
-                        $subQuery->where('mapname', $map->mapname)
-                            ->where('rank', $map->rank)
-                            ->where('physics', $map->physics);
-                    });
-                }
+        $records = Record::select('r1.*')
+            ->from('records as r1')
+            ->join('records as r2', function ($join) use($mddId) {
+                $join->on('r1.mapname', '=', 'r2.mapname')
+                    ->on('r1.gametype', '=', 'r2.gametype')
+                    ->on('r1.rank', '=', 'r2.rank')
+                    ->where('r1.mdd_id', '!=', $mddId);
             })
-            ->orderBy('date_set', 'DESC');
+            ->where('r1.deleted_at', '=', null)
+            ->where('r2.mdd_id', '=', $mddId)
+            ->where('r2.deleted_at', '=', null)
+            ->withTrashed()
+            ->orderBy('r1.date_set', 'DESC');
 
         return $records;
     }

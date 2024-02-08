@@ -8,6 +8,7 @@ use App\Models\Map;
 use App\Models\User;
 use App\Models\Record;
 use App\Models\MddProfile;
+use App\Models\OldtopRecord;
 use Illuminate\Support\Facades\DB;
 
 class ImportDataCommand extends Command
@@ -165,5 +166,56 @@ class ImportDataCommand extends Command
             $mdd = new MddProfile($newElement);
             $mdd->save();
         }
+    }
+
+    public function oldtop($data) {
+        $pattern = '/\^\w/';
+
+        DB::beginTransaction();
+
+        foreach($data as $element) {
+            $physic = intval($element['physic']);
+            $gametype = '';
+
+            if ($physic == '0') {
+                $gametype = 'run_vq3';
+            }
+
+            if ($physic == '1') {
+                $gametype = 'run_cpm';
+            }
+            
+            if ($physic > 10 && $physic < 18) {
+                $ctf = ($physic - 10);
+                $gametype = 'ctf' . $ctf . '_vq3';
+            }
+            
+            if ($physic > 20 && $physic < 28) {
+                $ctf = ($physic - 20);
+                $gametype = 'ctf' . $ctf . '_cpm';
+            }
+
+            if ($gametype === '') {
+                $gametype = 'unkown';
+            }
+
+            $newElement = [
+                'id'                =>      intval($element['id']),
+                'name'              =>      $element['visname'],
+                'plain_name'        =>      $element['playername'],
+                'mapname'           =>      $element['mapname'],
+                'country'           =>      '_404',
+                'time'              =>      intval($element['rectime']),
+                'physic'            =>      $physic,
+                'rank'              =>      intval($element['rank']),
+                'date_set'          =>      $element['ts'],
+                'gametype'          =>      $gametype
+            ];
+
+            $oldtop = new OldtopRecord($newElement);
+            $oldtop->save();
+        }
+
+        DB::commit();
     }
 }

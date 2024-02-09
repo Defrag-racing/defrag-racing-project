@@ -5,18 +5,23 @@
     import MapRecordSmall from '@/Components/MapRecordSmall.vue';
     import MapCardLineSmall from '@/Components/MapCardLineSmall.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
+    import ToggleButton from '@/Components/Basic/ToggleButton.vue';
     import Dropdown from '@/Components/Laravel/Dropdown.vue';
-    import { watchEffect, ref, onMounted, onUnmounted } from 'vue';
+    import { watchEffect, ref, onMounted, onUnmounted, computed } from 'vue';
 
     const props = defineProps({
         map: Object,
         cpmRecords: Object,
         vq3Records: Object,
+        cpmOldRecords: Object,
+        vq3OldRecords: Object,
         my_cpm_record: Object,
-        my_vq3_record: Object
+        my_vq3_record: Object,
     });
 
-    const page = usePage()
+    const page = usePage();
+
+    const oldtop = ref(false);
 
     const order = ref('ASC');
     const column = ref('time');
@@ -88,6 +93,35 @@
     const resizeScreen = () => {
         screenWidth.value = window.innerWidth
     };
+
+    const onChangeOldtop = (value) => {
+        oldtop.value = value;
+    }
+
+    const getVq3Records = computed(() => {
+        if (! oldtop.value ) {
+            return props.vq3Records
+        }
+
+        let oldtop_data = props.vq3OldRecords.data.map((item) => {
+            item['oldtop'] = true
+
+            return item
+        });
+
+        let result = {
+            total: Math.max(props.vq3Records.total, props.vq3OldRecords.total),
+            data: [...props.vq3Records.data, ...oldtop_data],
+            first_page_url: props.vq3Records.first_page_url,
+            current_page: props.vq3Records.current_page,
+            last_page: (props.vq3Records.total > props.vq3OldRecords.total) ? props.vq3Records.last_page : props.vq3OldRecords.last_page,
+            per_page: props.vq3Records.per_page
+        }
+
+        result.data.sort((a, b) => a.time - b.time)
+
+        return result
+    })
 
     onMounted(() => {
         window.addEventListener("resize", resizeScreen);
@@ -220,7 +254,11 @@
 
         <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
             <div v-if="screenWidth > 640">
-                <MapCardLine :map="map" />
+                <MapCardLine :map="map">
+                    <div class="text-white mr-3">Old Top: </div>
+                    <ToggleButton :isActive="oldtop"  @setIsActive="onChangeOldtop" />
+                    <div class="mr-5"></div>
+                </MapCardLine>
             </div>
 
             <div v-else>
@@ -232,7 +270,7 @@
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col mr-1 justify-center">
                     <div v-if="my_vq3_record">
                         <div class="flex-grow" v-if="screenWidth > 640">
-                            <MapRecord :record="my_vq3_record" />
+                            <MapRecord physics="VQ3" :record="my_vq3_record" />
                         </div>
 
                         <div class="flex-grow" v-else>
@@ -249,7 +287,7 @@
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col ml-1 mt-5 md:mt-0 justify-center">
                     <div v-if="my_cpm_record">
                         <div class="flex-grow" v-if="screenWidth > 640">
-                            <MapRecord :record="my_cpm_record" />
+                            <MapRecord physics="CPM" :record="my_cpm_record" />
                         </div>
 
                         <div class="flex-grow" v-else>
@@ -266,13 +304,13 @@
 
             <div class="md:flex justify-center">
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col mr-1">
-                    <div v-if="vq3Records.total > 0">
+                    <div v-if="getVq3Records.total > 0">
                         <div class="flex-grow" v-if="screenWidth > 640">
-                            <MapRecord v-for="record in vq3Records.data" :key="record.id" :record="record" />
+                            <MapRecord v-for="record in getVq3Records.data" physics="VQ3" :oldtop="record.oldtop" :key="record.id" :record="record" />
                         </div>
 
                         <div class="flex-grow" v-else>
-                            <MapRecordSmall v-for="record in vq3Records.data" :key="record.id" :record="record" />
+                            <MapRecordSmall v-for="record in getVq3Records.data" :key="record.id" :record="record" />
                         </div>
                     </div>
 
@@ -287,15 +325,15 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-center" v-if="vq3Records.total > vq3Records.per_page">
-                        <Pagination pageName="vq3Page" :last_page="vq3Records.last_page" :current_page="vq3Records.current_page" :link="vq3Records.first_page_url" />
+                    <div class="flex justify-center" v-if="getVq3Records.total > getVq3Records.per_page">
+                        <Pagination pageName="vq3Page" :last_page="getVq3Records.last_page" :current_page="getVq3Records.current_page" :link="getVq3Records.first_page_url" />
                     </div>
                 </div>
 
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col ml-1 mt-5 md:mt-0">
                     <div v-if="cpmRecords.total > 0">
                         <div class="flex-grow" v-if="screenWidth > 640">
-                            <MapRecord v-for="record in cpmRecords.data" :key="record.id" :record="record" />
+                            <MapRecord v-for="record in cpmRecords.data" physics="CPM" :key="record.id" :record="record" />
                         </div>
 
                         <div class="flex-grow" v-else>

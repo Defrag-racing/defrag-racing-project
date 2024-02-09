@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Models\Record;
+use App\Models\OldtopRecord;
 use App\Models\User;
 use App\Models\Map;
 use App\Models\MddProfile;
@@ -92,6 +93,20 @@ class MapsController extends Controller
 
         $vq3Records = $vq3Records->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
 
+        // old top
+        $cpmOldRecords = OldtopRecord::where('mapname', $map->name);
+
+        $cpmOldRecords = $cpmOldRecords->where('gametype', $cpmGametype);
+
+        $cpmOldRecords = $cpmOldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'cpmPage')->withQueryString();
+
+        $vq3OldRecords = OldtopRecord::where('mapname', $map->name);
+
+        $vq3OldRecords = $vq3OldRecords->where('gametype', $vq3Gametype);
+
+        $vq3OldRecords = $vq3OldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
+        // oldtop end
+
         $cpmPage = ($request->has('cpmPage')) ? min($request->cpmPage, $cpmRecords->lastPage()) : 1;
 
         $vq3Page = ($request->has('vq3Page')) ? min($request->vq3Page, $vq3Records->lastPage()) : 1;
@@ -109,6 +124,9 @@ class MapsController extends Controller
             ->with('cpmRecords', $cpmRecords)
             ->with('vq3Records', $vq3Records)
             ->with('my_cpm_record', $my_cpm_record)
-            ->with('my_vq3_record', $my_vq3_record);
+            ->with('my_vq3_record', $my_vq3_record)
+            ->with('cpmOldRecords', $cpmOldRecords)
+            ->with('vq3OldRecords', $vq3OldRecords);
+
     }
 }

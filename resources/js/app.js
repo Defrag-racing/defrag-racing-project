@@ -54,7 +54,6 @@ const q3tohtml = (name) => {
         if (name[i] == '^') {
             if (name[i + 1] == '^') {
                 colored_name += '^';
-                i++;
             } else {
                 color = name[i + 1];
                 i++;

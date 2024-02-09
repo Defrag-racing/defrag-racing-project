@@ -132,6 +132,7 @@
                 </div>
 
                 <div class="flex flex-wrap items-center">
+                    <slot />
                     <div class="text-white mr-3">Map Physics: </div>
                     <div class="text-white rounded-full text-xs px-2 py-0.5 uppercase font-bold" :class="{'bg-green-700': map.physics.includes('cpm'), 'bg-blue-600': map.physics.includes('vq3'), 'bg-gray-700': map.physics.includes('all')}">
                         <div>{{ map.physics }}</div>

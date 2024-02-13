@@ -93,19 +93,27 @@ class MapsController extends Controller
 
         $vq3Records = $vq3Records->with('user')->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
 
-        // old top
-        $cpmOldRecords = OldtopRecord::where('mapname', $map->name);
 
-        $cpmOldRecords = $cpmOldRecords->where('gametype', $cpmGametype);
+        $showOldtop = $request->input('showOldtop', false);
 
-        $cpmOldRecords = $cpmOldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'cpmPage')->withQueryString();
+        if ($showOldtop === 'true') {
+             // old top
+            $cpmOldRecords = OldtopRecord::where('mapname', $map->name);
 
-        $vq3OldRecords = OldtopRecord::where('mapname', $map->name);
+            $cpmOldRecords = $cpmOldRecords->where('gametype', $cpmGametype);
 
-        $vq3OldRecords = $vq3OldRecords->where('gametype', $vq3Gametype);
+            $cpmOldRecords = $cpmOldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'cpmPage')->withQueryString();
 
-        $vq3OldRecords = $vq3OldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
-        // oldtop end
+            $vq3OldRecords = OldtopRecord::where('mapname', $map->name);
+
+            $vq3OldRecords = $vq3OldRecords->where('gametype', $vq3Gametype);
+
+            $vq3OldRecords = $vq3OldRecords->orderBy($column, $order)->orderBy('date_set', 'ASC')->paginate(50, ['*'], 'vq3Page')->withQueryString();
+            // oldtop end
+        } else {
+            $cpmOldRecords = null;
+            $vq3OldRecords = null;
+        }
 
         $cpmPage = ($request->has('cpmPage')) ? min($request->cpmPage, $cpmRecords->lastPage()) : 1;
 
@@ -126,7 +134,8 @@ class MapsController extends Controller
             ->with('my_cpm_record', $my_cpm_record)
             ->with('my_vq3_record', $my_vq3_record)
             ->with('cpmOldRecords', $cpmOldRecords)
-            ->with('vq3OldRecords', $vq3OldRecords);
+            ->with('vq3OldRecords', $vq3OldRecords)
+            ->with('showOldtop', ($showOldtop === 'true'));
 
     }
 }

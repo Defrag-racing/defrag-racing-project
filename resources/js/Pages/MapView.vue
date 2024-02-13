@@ -17,11 +17,13 @@
         vq3OldRecords: Object,
         my_cpm_record: Object,
         my_vq3_record: Object,
+        showOldtop: {
+            type: Boolean,
+            default: false
+        }
     });
 
     const page = usePage();
-
-    const oldtop = ref(false);
 
     const order = ref('ASC');
     const column = ref('time');
@@ -95,11 +97,15 @@
     };
 
     const onChangeOldtop = (value) => {
-        oldtop.value = value;
+        router.reload({
+            data: {
+                showOldtop: value
+            }
+        })
     }
 
     const getVq3Records = computed(() => {
-        if (! oldtop.value ) {
+        if (! props.showOldtop ) {
             return props.vq3Records
         }
 
@@ -116,6 +122,31 @@
             current_page: props.vq3Records.current_page,
             last_page: (props.vq3Records.total > props.vq3OldRecords.total) ? props.vq3Records.last_page : props.vq3OldRecords.last_page,
             per_page: props.vq3Records.per_page
+        }
+
+        result.data.sort((a, b) => a.time - b.time)
+
+        return result
+    })
+
+    const getCpmRecords = computed(() => {
+        if (! props.showOldtop ) {
+            return props.cpmRecords
+        }
+
+        let oldtop_data = props.cpmOldRecords.data.map((item) => {
+            item['oldtop'] = true
+
+            return item
+        });
+
+        let result = {
+            total: Math.max(props.cpmRecords.total, props.cpmOldRecords.total),
+            data: [...props.cpmRecords.data, ...oldtop_data],
+            first_page_url: props.cpmRecords.first_page_url,
+            current_page: props.cpmRecords.current_page,
+            last_page: (props.cpmRecords.total > props.cpmOldRecords.total) ? props.cpmRecords.last_page : props.cpmOldRecords.last_page,
+            per_page: props.cpmRecords.per_page
         }
 
         result.data.sort((a, b) => a.time - b.time)
@@ -256,7 +287,7 @@
             <div v-if="screenWidth > 640">
                 <MapCardLine :map="map">
                     <div class="text-white mr-3">Old Top: </div>
-                    <ToggleButton :isActive="oldtop"  @setIsActive="onChangeOldtop" />
+                    <ToggleButton :isActive="showOldtop"  @setIsActive="onChangeOldtop" />
                     <div class="mr-5"></div>
                 </MapCardLine>
             </div>
@@ -331,13 +362,13 @@
                 </div>
 
                 <div class="rounded-md p-3 flex-1 bg-grayop-700 flex flex-col ml-1 mt-5 md:mt-0">
-                    <div v-if="cpmRecords.total > 0">
+                    <div v-if="getCpmRecords.total > 0">
                         <div class="flex-grow" v-if="screenWidth > 640">
-                            <MapRecord v-for="record in cpmRecords.data" physics="CPM" :key="record.id" :record="record" />
+                            <MapRecord v-for="record in getCpmRecords.data" physics="CPM" :key="record.id" :record="record" />
                         </div>
 
                         <div class="flex-grow" v-else>
-                            <MapRecordSmall v-for="record in cpmRecords.data" :key="record.id" :record="record" />
+                            <MapRecordSmall v-for="record in getCpmRecords.data" :key="record.id" :record="record" />
                         </div>
                     </div>
 
@@ -352,8 +383,8 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-center" v-if="cpmRecords.total > cpmRecords.per_page">
-                        <Pagination pageName="cpmPage" :last_page="cpmRecords.last_page" :current_page="cpmRecords.current_page" :link="cpmRecords.first_page_url" />
+                    <div class="flex justify-center" v-if="getCpmRecords.total > getCpmRecords.per_page">
+                        <Pagination pageName="cpmPage" :last_page="getCpmRecords.last_page" :current_page="getCpmRecords.current_page" :link="getCpmRecords.first_page_url" />
                     </div>
                 </div>
             </div>

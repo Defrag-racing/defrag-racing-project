@@ -33,6 +33,7 @@ Route::get('/servers/json', [EndpointController::class, 'index'])->name('servers
 
 Route::get('/maps', [MapsController::class, 'index'])->name('maps');
 Route::get('/maps/filters', [MapsController::class, 'filters'])->name('maps.filters');
+Route::get('/maps/download/{mapname}', [WebController::class, 'map'])->name('maps.download');
 
 Route::get('/maps/{mapname}', [MapsController::class, 'map'])->name('maps.map');
 

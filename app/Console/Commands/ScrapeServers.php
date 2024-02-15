@@ -45,6 +45,8 @@ class ScrapeServers extends Command
         $noDataServers = [];
 
         foreach($servers as $server) {
+            $this->info('Scraping ' . $server->ip . ':' . $server->port);
+
             $data = $this->getServerData($server);
 
             if ($data == null || $data['rcon'] == false) {
@@ -62,9 +64,17 @@ class ScrapeServers extends Command
     }
 
     public function handle_failed_servers($servers) {
-        $q3df_scrapper = new Q3DFServers();
+        if (count($servers) == 0) {
+            return;
+        }
 
-        $q3df_servers = $q3df_scrapper->scrape();
+        try {
+            $q3df_scrapper = new Q3DFServers();
+
+            $q3df_servers = $q3df_scrapper->scrape();
+        } catch (\Exception $e) {
+            $q3df_servers = [];
+        }
 
         foreach($servers as $server) {
             $address = $server['server']->ip . ':' . $server['server']->port;
@@ -73,7 +83,7 @@ class ScrapeServers extends Command
                 
                 continue;
             }
-            
+
             if ($server['data'] === null) {
                 $server['server']->offline = true;
                 $server['server']->save();
@@ -121,6 +131,9 @@ class ScrapeServers extends Command
     }
 
     public function updateServer($server, $data) {
+        $this->info('Updating ' . $server->ip . ':' . $server->port);
+        $this->info('Found ' . count($data['players']) . ' players');
+
         $server->name = trim($data['hostname']);
 
         $pattern = '/\^\w/';

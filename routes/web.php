@@ -60,6 +60,6 @@ Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('pr
 Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('images.flags');
 Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');
 
-Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments');
+Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/create', [TournamentsController::class, 'create'])->name('tournaments.create');
 Route::post('/tournaments/create', [TournamentsController::class, 'store'])->name('tournaments.store');

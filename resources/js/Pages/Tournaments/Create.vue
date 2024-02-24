@@ -8,6 +8,15 @@
     import InputLabel from '@/Components/Laravel/InputLabel.vue';
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
     import TextInput from '@/Components/Laravel/TextInput.vue';
+    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    import rulesData from '@/rules';
+
+    const props = defineProps({
+        error: {
+            type: String,
+            default: '',
+        }
+    });
 
     const form = useForm({
         _method: 'POST',
@@ -17,12 +26,31 @@
         trailer: '',
         start_date: '',
         end_date: '',
+        rules: rulesData,
+        has_teams: false,
+        has_donations: false,
+        prize_pool: '0'
     });
+
+    const editor = ClassicEditor;
+    const editorConfig = {
+        heading: {
+            options: [
+                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+                { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+                { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+            ]
+        }
+    };
 
     const photoPreview = ref(null);
     const photoInput = ref(null);
 
-    const tabs = ['basic', 'details'];
+    const tabs = ['basic', 'details', 'options'];
     const currentTab = ref(0);
 
     const finishBasicInformation = () => {
@@ -33,6 +61,45 @@
 
             return;
         }
+
+        if (tab === 'details') {
+            if ( detailsTabFinished() ) currentTab.value++;
+
+            return;
+        }
+
+        form.post(route('tournaments.store'), {
+            errorBag: 'finishBasicInformation',
+            preserveScroll: true,
+            onSuccess: () => {
+                console.log('finished')
+            },
+        });
+    };
+
+    const detailsTabFinished = () => {
+        if (form.start_date.length === 0) {
+            form.errors.start_date = 'The Start Date field is required.';
+            return false;
+        }
+
+        form.errors.start_date = '';
+
+        if (form.end_date.length === 0) {
+            form.errors.end_date = 'The End Date field is required.';
+            return false;
+        }
+        
+        form.errors.end_date = '';
+
+        if (form.rules.length === 0) {
+            form.errors.rules = 'The rules field is required.';
+            return false;
+        }
+
+        form.errors.rules = '';
+
+        return true;
     };
 
     const basicTabFinished = () => {
@@ -62,7 +129,7 @@
         form.photo = photo;
 
         return true;
-    }
+    };
 
     const selectNewPhoto = () => {
         photoInput.value.click();
@@ -90,7 +157,13 @@
         };
 
         reader.readAsDataURL(photo);
+
+        form.photo = photo;
     };
+
+    const previousTab = () => {
+        if (currentTab.value > 0) currentTab.value--;
+    }
 </script>
 
 <template>
@@ -105,15 +178,25 @@
 
         <div>
             <div class="max-w-8xl mx-auto py-10 sm:px-6 lg:px-8">
+                <v-alert
+                    v-if="error"
+                    color="error"
+                    icon="error"
+                    title="An Error Occurred!"
+                    :text="error"
+                    class="mb-5"
+                />
                 <FormSection @submitted="finishBasicInformation">
                     <template #title>
                         <div v-if="tabs[currentTab] == 'basic'">Basic Information</div>
                         <div v-if="tabs[currentTab] == 'details'">Tournament details</div>
+                        <div v-if="tabs[currentTab] == 'options'">Tournament Options</div>
                     </template>
             
                     <template #description>
                         <div v-if="tabs[currentTab] == 'basic'">Basic information about your tournament.</div>
                         <div v-if="tabs[currentTab] == 'details'">Tournament in-depth details and dates.</div>
+                        <div v-if="tabs[currentTab] == 'options'">Edit various options for the tournament.</div>
                     </template>
             
                     <template #form>
@@ -202,7 +285,9 @@
 
                             <div class="mb-3">
                                 <InputLabel for="rules" value="Rules" />
-                                <textarea
+                                <ckeditor
+                                    :editor="editor"
+                                    :config="editorConfig"
                                     id="rules"
                                     v-model="form.rules"
                                     type="text"
@@ -211,12 +296,69 @@
                                 <InputError :message="form.errors.rules" class="mt-2" />
                             </div>
                         </div>
+
+                        <div class="col-span-6" v-if="tabs[currentTab] == 'options'">
+                            <div class="mb-3">
+                                <div class="flex">
+                                    <input
+                                        id="has_teams"
+                                        v-model="form.has_teams"
+                                        type="checkbox"
+                                        class="mt-1 rounded-md mr-2"
+                                    />
+
+                                    <p class="text-white">Teams support</p>
+                                </div>
+                                <p class="text-sm text-gray-500">
+                                    Players can create a team of two players (1 vq3, 1 cpm) and the teams results are independent of normal tournament result. (Similar to DFWC teams).
+                                </p>
+                                <InputError :message="form.errors.has_teams" class="mt-2" />
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="flex">
+                                    <input
+                                        id="has_donations"
+                                        v-model="form.has_donations"
+                                        type="checkbox"
+                                        class="mt-1 rounded-md mr-2"
+                                    />
+
+                                    <p class="text-white">Donations support</p>
+                                </div>
+                                <p class="text-sm text-gray-500">
+                                    Does this tournament support player donation ?
+                                </p>
+                                <InputError :message="form.errors.has_donations" class="mt-2" />
+                            </div>
+
+                            <div class="mb-3">
+                                <InputLabel for="prize_pool" value="Prize Pool" />
+                                <TextInput
+                                    id="prize_pool"
+                                    v-model="form.prize_pool"
+                                    type="number"
+                                    class="mt-1 block w-full"
+                                />
+                                <p class="text-sm text-gray-500">
+                                    Leave at 0 if there is no prize for this tournament.
+                                </p>
+                                <InputError :message="form.errors.prize_pool" class="mt-2" />
+                            </div>
+                        </div>
                     </template>
             
                     <template #actions>
-                        <PrimaryButton>
-                            Next
-                        </PrimaryButton>
+                        <div class="flex justify-between w-full">
+                            <SecondaryButton v-if="currentTab > 0" @click="previousTab">
+                                Back
+                            </SecondaryButton>
+    
+                            <PrimaryButton>
+                                <span v-if="tabs[currentTab] === 'options'">Submit</span>
+                                <span v-else>Next</span>
+                            </PrimaryButton>
+                        </div>
                     </template>
                 </FormSection>
             </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\EndpointController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TournamentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,3 +59,7 @@ Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('pr
 
 Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('images.flags');
 Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');
+
+Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments');
+Route::get('/tournaments/create', [TournamentsController::class, 'create'])->name('tournaments.create');
+Route::post('/tournaments/create', [TournamentsController::class, 'store'])->name('tournaments.store');

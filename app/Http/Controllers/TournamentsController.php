@@ -36,13 +36,21 @@ class TournamentsController extends Controller {
 
             $organizer = Organizer::query()
                 ->where('tournament_id', $tournament->id)
-                ->where('user_id', $request->user()->id);
+                ->where('user_id', $request->user()->id)
+                ->where('role', '!=', 'validator')
+                ->exists();
 
-            $tournament->isOrganizer = $organizer->where('role', '!=', 'validator')->exists();
-            $tournament->isValidator = $organizer
-                                        ->where('role', 'validator')
-                                        ->orWhere('role', 'admin')
-                                        ->exists();
+            $validator = Organizer::query()
+                ->where('tournament_id', $tournament->id)
+                ->where('user_id', $request->user()->id)
+                ->where('role', 'validator')
+                ->orWhere('role', 'admin')
+                ->exists();
+
+
+            $tournament->isOrganizer = $organizer;
+
+            $tournament->isValidator = $validator;
         });
 
         return Inertia::render('Tournaments/Index')

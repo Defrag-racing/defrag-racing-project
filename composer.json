@@ -20,6 +20,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/scout": "^10.8",
         "laravel/tinker": "^2.8",
+        "mokhosh/filament-kanban": "^2.3",
         "opcodesio/log-viewer": "^3.1",
         "php-http/curl-client": "^2.3",
         "spiral/roadrunner-cli": "^2.5.0",

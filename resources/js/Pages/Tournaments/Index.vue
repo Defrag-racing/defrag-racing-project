@@ -76,11 +76,19 @@
                             <div v-for="(tournament, id) in activeTournaments">
                                 <TournamentCard :key="id" :tournament="tournament"></TournamentCard>
                             </div>
+
+                            <div v-if="activeTournaments.length === 0" class="text-center text-gray-400">
+                                No active tournaments available.
+                            </div>
                         </div>
             
                         <div v-show="activeTab === 'upcoming'" id="upcoming-tab">
                             <div v-for="(tournament, id) in upcomingTournaments">
                                 <TournamentCard :key="id" :tournament="tournament"></TournamentCard>
+                            </div>
+
+                            <div v-if="upcomingTournaments.length === 0" class="text-center text-gray-400">
+                                No upcoming tournaments available.
                             </div>
                         </div>
             
@@ -92,6 +100,10 @@
                             <div v-for="(tournament, id) in pastTournaments">
                                 <TournamentCard :key="id" :tournament="tournament"></TournamentCard>
                             </div>
+
+                            <div v-if="pastTournaments.length === 0" class="text-center text-gray-400">
+                                No historical tournaments available.
+                            </div>
                         </div>
             
                         <div v-show="activeTab === 'search'" id="search-tab">
@@ -101,6 +113,10 @@
             
                             <div v-for="tournament in filteredTournaments">
                                 <TournamentCard :key="tournament.id" :tournament="tournament"></TournamentCard>
+                            </div>
+
+                            <div v-if="filteredTournaments.length === 0 && searchInput.length > 0" class="text-center text-gray-400">
+                                No tournaments found.
                             </div>
                         </div>
                       </div>

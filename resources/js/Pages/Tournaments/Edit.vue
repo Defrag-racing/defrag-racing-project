@@ -6,17 +6,18 @@
         error: {
             type: String,
             default: '',
-        }
+        },
+        tournament: Object
     });
 </script>
 
 <template>
     <div>
-        <Head title="Create Tournament" />
+        <Head title="Edit Tournament" />
 
         <div class="max-w-8xl mx-auto pt-6 px-4 md:px-6 lg:px-8">
             <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
-                Create Tournament
+                Edit Tournament [{{ tournament.name }}]
             </h2>
         </div>
 
@@ -31,7 +32,7 @@
                     class="mb-5"
                 />
 
-                <TournamentForm :tournament="{}" url="tournaments.store" />
+                <TournamentForm :tournament="tournament" url="tournaments.update" />
             </div>
         </div>
     </div>

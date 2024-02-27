@@ -63,3 +63,5 @@ Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('i
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/create', [TournamentsController::class, 'create'])->name('tournaments.create');
 Route::post('/tournaments/create', [TournamentsController::class, 'store'])->name('tournaments.store');
+Route::get('/tournaments/{tournament}/edit', [TournamentsController::class, 'edit'])->name('tournaments.edit');
+Route::post('/tournaments/{tournament}/edit', [TournamentsController::class, 'update'])->name('tournaments.update');

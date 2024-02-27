@@ -27,4 +27,29 @@ class Tournament extends Model
         'streamer_window',
         'creator',
     ];
+
+    public function isOrganizer ($userId) {
+        $organizer = Organizer::query()
+            ->where('tournament_id', $this->id)
+            ->where('user_id', $userId)
+            ->where('role', '!=', 'validator')
+            ->exists();
+
+        return $organizer;
+    }
+
+    public function isValidator ($userId) {
+        $organizer = Organizer::query()
+            ->where('tournament_id', $this->id)
+            ->where('user_id', $userId)
+            ->where('role', 'validator')
+            ->orWhere('role', 'admin')
+            ->exists();
+
+        return $organizer;
+    }
+
+    public function organizers() {
+        return $this->hasMany(Organizer::class);
+    }
 }

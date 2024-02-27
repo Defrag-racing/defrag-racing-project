@@ -14,6 +14,7 @@ use App\Http\Controllers\RankingController;
 use App\Http\Controllers\EndpointController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TournamentsController;
+use App\Http\Controllers\TournamentManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +62,10 @@ Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('image
 Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
-Route::get('/tournaments/create', [TournamentsController::class, 'create'])->name('tournaments.create');
-Route::post('/tournaments/create', [TournamentsController::class, 'store'])->name('tournaments.store');
-Route::get('/tournaments/{tournament}/edit', [TournamentsController::class, 'edit'])->name('tournaments.edit');
-Route::post('/tournaments/{tournament}/edit', [TournamentsController::class, 'update'])->name('tournaments.update');
+Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
+
+Route::get('/tournaments/create', [TournamentManagementController::class, 'create'])->name('tournaments.create');
+Route::post('/tournaments/create', [TournamentManagementController::class, 'store'])->name('tournaments.store');
+
+Route::get('/tournaments/{tournament}/edit', [TournamentManagementController::class, 'edit'])->name('tournaments.edit');
+Route::post('/tournaments/{tournament}/edit', [TournamentManagementController::class, 'update'])->name('tournaments.update');

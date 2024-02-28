@@ -1,4 +1,5 @@
 <script setup>
+    import moment from 'moment';
     import { computed, ref } from 'vue';
     import { Link } from '@inertiajs/vue3';
 
@@ -78,6 +79,14 @@
 
         return data;
     });
+
+    const date = computed(() => {
+        const time = props.map.created_at.split('T')[1].split('.')[0];
+
+        const result = props.map.date_added.split(' ')[0] + ' ' + time;
+
+        return moment(result);
+    });
 </script>
 
 <template>
@@ -140,10 +149,14 @@
                 </div>
             </div>
 
-            <div class="w-full mt-1">
+            <div class="w-full mt-1 flex justify-between mb-1">
                 <!-- Author -->
                 <div class="flex items-center text-gray-400 text-sm">
                     By <Link class="ml-1 hover:text-gray-300 overflow-hidden truncate" :title="map?.author" :href="route('maps.filters', {author: map?.author ?? 'unknown'})">{{ map?.author ?? 'Unknown' }}</Link>
+                </div>
+
+                <div class="flex items-center text-gray-400 text-sm" :title="date.format('MMMM Do, YYYY')">
+                    Added {{ date.fromNow() }}
                 </div>
             </div>
 

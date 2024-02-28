@@ -70,7 +70,11 @@
     });
 
     const date = computed(() => {
-        return moment(props.map.date_added).fromNow()
+        const time = props.map.created_at.split('T')[1].split('.')[0];
+
+        const result = props.map.date_added.split(' ')[0] + ' ' + time;
+
+        return moment(result).fromNow();
     });
 
     const getGametype = computed(() => {

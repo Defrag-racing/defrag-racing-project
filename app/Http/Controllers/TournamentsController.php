@@ -68,14 +68,12 @@ class TournamentsController extends Controller {
         
         $tournament->load('organizers.user');
 
-        return Inertia::render('Tournaments/Tournament/Show')
-            ->with('tab', 'Overview')
+        return Inertia::render('Tournaments/Tournament/Overview')
             ->with('tournament', $tournament);
     }
 
     public function rules(Tournament $tournament, Request $request) {
-        return Inertia::render('Tournaments/Tournament/Show')
-            ->with('tab', 'Rules')
+        return Inertia::render('Tournaments/Tournament/Rules')
             ->with('tournament', $tournament);
     }
 }

@@ -52,4 +52,12 @@ class Tournament extends Model
     public function organizers() {
         return $this->hasMany(Organizer::class);
     }
+
+    public function donations() {
+        return $this->hasMany(Donation::class);
+    }
+
+    public function faqs() {
+        return $this->hasMany(TournamentFaq::class);
+    }
 }

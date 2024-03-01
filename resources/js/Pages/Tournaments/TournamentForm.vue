@@ -9,7 +9,6 @@
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import rulesData from '@/rules';
-import { current } from 'tailwindcss/colors';
 
     const props = defineProps({
         tournament: Object,

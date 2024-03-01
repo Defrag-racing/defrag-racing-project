@@ -12,6 +12,11 @@ use App\Rules\YouTubeUrl;
 use Carbon\Carbon;
 
 class TournamentManagementController extends Controller {
+    public function manage (Tournament $tournament) {
+        return Inertia::render('Tournaments/Tournament/ManageTournament')
+                ->with('tournament', $tournament);
+    }
+
     public function create() {
         return Inertia::render('Tournaments/Create');
     }

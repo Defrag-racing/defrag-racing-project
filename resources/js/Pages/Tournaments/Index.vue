@@ -19,18 +19,22 @@
     const tabs = [
         {
             name: 'Active Tournaments',
+            label: 'Active Tournaments',
             link: false,
         },
         {
             name: 'Upcoming Tournaments',
+            label: 'Upcoming Tournaments',
             link: false,
         },
         {
             name: 'Historical Tournaments',
+            label: 'Historical Tournaments',
             link: false,
         },
         {
             name: 'Search Tournaments',
+            label: 'Search Tournaments',
             link: false,
         }
     ];

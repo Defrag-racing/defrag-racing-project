@@ -1,13 +1,15 @@
 <script setup>
+    import Tournament from '@/Pages/Tournaments/Tournament.vue';
+
     const props = defineProps({
         tournament: Object
     });
 </script>
 
 <template>
-    <div>
+    <Tournament :tournament="tournament" tab="Rules">
         <div v-html="tournament.rules" class="wysiwyg-wrap2"></div>
-    </div>
+    </Tournament>
 </template>
 
 <style>

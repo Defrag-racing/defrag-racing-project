@@ -21,13 +21,13 @@
         <ul class="mr-5 w-60">
             <li v-for="tab in tabs">
                 <Link :href="route(tab.route, tab.params)" v-if="tab.link">
-                    <div :class="{ 'text-white bg-grayop-300': activeTab === tab.name, 'bg-grayop-500': activeTab !== tab.name}" class="cursor-pointer rounded-lg w-full py-3 text-gray-300 mb-4">
-                        {{ tab.name }}
+                    <div :class="{ 'text-white bg-grayop-300': activeTab === tab.name, 'bg-grayop-500 hover:bg-grayop-400': activeTab !== tab.name}" class="cursor-pointer rounded-lg w-full py-3 text-gray-300 mb-4">
+                        {{ tab.label }}
                     </div>
                 </Link>
 
-                <div v-else @click="toggleTab(tab)" :class="{ 'text-white bg-grayop-300': activeTab === tab.name}" class="cursor-pointer rounded-lg w-full py-3 text-gray-300 mb-4">
-                    {{ tab.name }}
+                <div v-else @click="toggleTab(tab)" :class="{ 'text-white bg-grayop-300': activeTab === tab.name, 'bg-grayop-500 hover:bg-grayop-400': activeTab !== tab.name}" class="cursor-pointer rounded-lg w-full py-3 text-gray-300 mb-4">
+                    {{ tab.label }}
                 </div>
             </li>
         </ul>

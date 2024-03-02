@@ -60,4 +60,8 @@ class Tournament extends Model
     public function faqs() {
         return $this->hasMany(TournamentFaq::class);
     }
+
+    public function suggestions() {
+        return $this->hasMany(TournamentSuggestion::class);
+    }
 }

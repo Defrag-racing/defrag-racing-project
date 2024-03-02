@@ -17,6 +17,7 @@ use App\Http\Controllers\TournamentsController;
 use App\Http\Controllers\TournamentManagementController;
 use App\Http\Controllers\Tournaments\DonationController;
 use App\Http\Controllers\Tournaments\FaqController;
+use App\Http\Controllers\Tournaments\SuggestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,12 +67,19 @@ Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('i
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules');
+Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations');
+Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs');
 
 Route::get('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'create'])->name('tournaments.create');
 Route::post('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'store'])->name('tournaments.store');
 
+Route::post('/tournaments/{tournament}/suggestions/create', [SuggestionController::class, 'store'])->name('tournaments.suggestions.store');
+
 Route::middleware(['tournaments.management'])->prefix('/tournaments/manage')->group(function () {
     Route::get('{tournament}', [TournamentManagementController::class, 'manage'])->name('tournaments.manage');
+
+    Route::get('{tournament}/suggestions', [SuggestionController::class, 'index'])->name('tournaments.suggestions.index');
+    Route::get('{tournament}/suggestions/{suggestion}/delete', [SuggestionController::class, 'destroy'])->name('tournaments.suggestions.destroy');
 
     Route::get('{tournament}/edit', [TournamentManagementController::class, 'edit'])->name('tournaments.edit');
     Route::post('{tournament}/edit', [TournamentManagementController::class, 'update'])->name('tournaments.update');

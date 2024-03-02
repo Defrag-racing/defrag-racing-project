@@ -76,4 +76,18 @@ class TournamentsController extends Controller {
         return Inertia::render('Tournaments/Tournament/Rules')
             ->with('tournament', $tournament);
     }
+
+    public function donations(Tournament $tournament, Request $request) {
+        $tournament->load('donations.user');
+
+        return Inertia::render('Tournaments/Tournament/Donations')
+            ->with('tournament', $tournament);
+    }
+
+    public function faqs(Tournament $tournament, Request $request) {
+        $tournament->load('faqs');
+
+        return Inertia::render('Tournaments/Tournament/Faqs')
+            ->with('tournament', $tournament);
+    }
 }

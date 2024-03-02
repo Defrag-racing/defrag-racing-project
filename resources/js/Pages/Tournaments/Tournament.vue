@@ -56,14 +56,15 @@
             name: 'Donations',
             label: 'Donations',
             link: true,
-            route: 'tournaments.show',
-            params: { tournament: props.tournament.id }
+            route: 'tournaments.donations',
+            params: { tournament: props.tournament.id },
+            condition: props.tournament.has_donations
         },
         {
             name: 'FAQs',
             label: 'FAQs',
             link: true,
-            route: 'tournaments.show',
+            route: 'tournaments.faqs',
             params: { tournament: props.tournament.id }
         },
         {

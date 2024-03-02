@@ -64,4 +64,8 @@ class Tournament extends Model
     public function suggestions() {
         return $this->hasMany(TournamentSuggestion::class);
     }
+
+    public function streamers () {
+        return $this->hasMany(TournamentStreamer::class);
+    }
 }

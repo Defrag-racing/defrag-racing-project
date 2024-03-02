@@ -22,6 +22,10 @@
                 Manage Faqs
             </Link>
 
+            <Link :href="route('tournaments.streamers.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                Manage Streamers
+            </Link>
+
             <Link :href="route('tournaments.suggestions.index', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                 View Suggestions
             </Link>

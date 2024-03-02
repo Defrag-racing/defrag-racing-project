@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue';
+    import { Link } from '@inertiajs/vue3';
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
     import SuggestionForm from '@/Components/SuggestionForm.vue';
 
@@ -62,5 +63,40 @@
         </div>
 
         <div class="w-1/2 h-0.5 mb-5 mt-3" style="background-color: #4d78bf"></div>
+
+        <!-- Description -->
+        <div>
+            <div class="flex justify-between">
+                <p class="text-sm text-gray-900 dark:text-gray-400 mb-5">{{ tournament.description }}</p>
+            </div>
+        </div>
+
+        <!-- Live Streamers -->
+        <div>
+            <h1 class="font-black text-3xl dark:text-white my-5">Live Streamers</h1>
+
+            <div class="w-1/2 h-0.5 mb-5 mt-3" style="background-color: #4d78bf"></div>
+
+            <div class="text-gray-900 dark:text-gray-400 text-lg mb-10 flex flex-wrap">
+                <!-- <a v-for="streamer in tournament.streamers" :key="streamer.id" target="_blank" :href="'https://www.twitch.tv/' + streamer.twitch_username" class="mx-5">
+                    <div class="w-full flex justify-center mb-2">
+                        <div class="flex items-end rounded-lg" :style="'background-image: url(\'https://static-cdn.jtvnw.net/previews-ttv/live_user_' + streamer.twitch_username + '-350x250.jpg\'); width: 350px; height: 250px;'">
+                            <div class="h-12 w-full px-5 pt-2 rounded-b-lg flex" style="background-color: #000000b9;">
+                                <div class="text-2xl font-bold hover:underline">{{ tournament.name }}</div>
+                                <div class="ml-3" style="width: 22px; height: 22px; background-color: rgb(207, 0, 0); border-radius: 50%; margin-top: 5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </a> -->
+
+                <div v-for="streamer in tournament.streamers" :key="streamer.id" class="mr-10 text-gray-500 text-lg mb-10 ">
+                    <Link :href="route('profile.index', streamer.user.id)" v-html="q3tohtml(streamer.user.name)" class="text-2xl" />
+
+                    <a class="flex justify-center hover:underline text-sm text-center" :href="'https://www.twitch.tv/' + streamer.twitch_username">
+                        @<div>{{ streamer.twitch_username }}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
     </Tournament>
 </template>

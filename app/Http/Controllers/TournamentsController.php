@@ -66,7 +66,8 @@ class TournamentsController extends Controller {
         $tournament->isOrganizer = $tournament->isOrganizer($request->user()->id);
         $tournament->isValidator = $tournament->isValidator($request->user()->id);
         
-        $tournament->load('organizers.user');
+        $tournament->load('organizers.user:id,name,plain_name,country');
+        $tournament->load('streamers.user:id,name,plain_name,country');
 
         return Inertia::render('Tournaments/Tournament/Overview')
             ->with('tournament', $tournament);
@@ -78,7 +79,7 @@ class TournamentsController extends Controller {
     }
 
     public function donations(Tournament $tournament, Request $request) {
-        $tournament->load('donations.user');
+        $tournament->load('donations.user:id,name,plain_name,country');
 
         return Inertia::render('Tournaments/Tournament/Donations')
             ->with('tournament', $tournament);

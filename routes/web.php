@@ -19,6 +19,7 @@ use App\Http\Controllers\Tournaments\DonationController;
 use App\Http\Controllers\Tournaments\FaqController;
 use App\Http\Controllers\Tournaments\SuggestionController;
 use App\Http\Controllers\Tournaments\StreamerController;
+use App\Http\Controllers\Tournaments\RelatedTournamentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,4 +108,12 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage')->gr
     Route::get('{tournament}/streamers/{streamer}/edit', [StreamerController::class, 'edit'])->name('tournaments.streamers.edit');
     Route::post('{tournament}/streamers/{streamer}/update', [StreamerController::class, 'update'])->name('tournaments.streamers.update');
     Route::get('{tournament}/streamers/{streamer}', [StreamerController::class, 'destroy'])->name('tournaments.streamers.destroy');
+
+    
+    Route::get('{tournament}/related', [RelatedTournamentController::class, 'index'])->name('tournaments.related.manage');
+    Route::get('{tournament}/related/create', [RelatedTournamentController::class, 'create'])->name('tournaments.related.create');
+    Route::post('{tournament}/related/store', [RelatedTournamentController::class, 'store'])->name('tournaments.related.store');
+    Route::get('{tournament}/related/{relatedTournament}/edit', [RelatedTournamentController::class, 'edit'])->name('tournaments.related.edit');
+    Route::post('{tournament}/related/{relatedTournament}/update', [RelatedTournamentController::class, 'update'])->name('tournaments.related.update');
+    Route::get('{tournament}/related/{relatedTournament}', [RelatedTournamentController::class, 'destroy'])->name('tournaments.related.destroy');
 });

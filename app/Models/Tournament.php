@@ -68,4 +68,8 @@ class Tournament extends Model
     public function streamers () {
         return $this->hasMany(TournamentStreamer::class);
     }
+
+    public function relatedTournaments () {
+        return $this->hasMany(RelatedTournament::class);
+    }
 }

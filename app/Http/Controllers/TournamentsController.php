@@ -66,11 +66,19 @@ class TournamentsController extends Controller {
         $tournament->isOrganizer = $tournament->isOrganizer($request->user()->id);
         $tournament->isValidator = $tournament->isValidator($request->user()->id);
         
-        $tournament->load('organizers.user:id,name,plain_name,country');
+        $organizers = Organizer::query()
+            ->where('tournament_id', $tournament->id)
+            ->with('user:id,name,plain_name,country')
+            ->get()
+            ->groupBy('role');
+
         $tournament->load('streamers.user:id,name,plain_name,country');
 
+        $tournament->load('relatedTournaments.tournament');
+
         return Inertia::render('Tournaments/Tournament/Overview')
-            ->with('tournament', $tournament);
+            ->with('tournament', $tournament)
+            ->with('organizers', $organizers);
     }
 
     public function rules(Tournament $tournament, Request $request) {

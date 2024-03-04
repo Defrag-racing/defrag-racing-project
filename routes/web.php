@@ -61,25 +61,4 @@ Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('i
 
 
 Route::get('/test', function () {
-    $users = \App\Models\User::all();
-    for($i = 0; $i < 50; $i++) {
-        $user = $users->random();
-
-        $clan = new \App\Models\Clan();
-        $clan->name = 'Clan ' . $i;
-        $clan->image = 'clans/pGiK1xl2s5Aqn6nCop8FPmBbv9Bhsj7DVkxaoOkc.jpg';
-        $clan->admin_id = $user->id;
-        $clan->save();
-
-        $playerCount = rand(1, 30);
-
-        for($j = 0; $j < $playerCount; $j++) {
-            $player = new \App\Models\ClanPlayer();
-            $player->clan_id = $clan->id;
-            $player->user_id = $users->random()->id;
-            $player->save();
-        }
-    }
-
-    return 'done';
 });

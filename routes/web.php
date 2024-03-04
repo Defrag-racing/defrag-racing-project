@@ -117,3 +117,7 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage')->gr
     Route::post('{tournament}/related/{relatedTournament}/update', [RelatedTournamentController::class, 'update'])->name('tournaments.related.update');
     Route::get('{tournament}/related/{relatedTournament}', [RelatedTournamentController::class, 'destroy'])->name('tournaments.related.destroy');
 });
+
+Route::get('/test', function () {
+    return 'test';
+});

@@ -14,7 +14,6 @@
     import MapSearchItem from '@/Components/MapSearchItem.vue';
     import PlayerSearchItem from '@/Components/PlayerSearchItem.vue';
     import NotificationMenu from '@/Components/NotificationMenu.vue';
-import { watchEffect } from 'vue';
 
     defineProps({
         title: String,
@@ -132,7 +131,7 @@ import { watchEffect } from 'vue';
             </span>
         </Banner>
 
-        <div class="min-h-screen bg-gray-900 main-background">
+        <div class="min-h-screen bg-gray-900 main-background" :style="'background-image: url(\'' + $state.globalBackgroundImage + '\')'">
             <nav class="border-b border-grayop-700">
                 <!-- Top Bar -->
                 <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8">
@@ -445,6 +444,15 @@ import { watchEffect } from 'vue';
 </template>
 
 <style>
+    .main-background {
+        background-color: #111827;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+        justify-content: center;
+    }
+
     .popper {
         padding: 0 !important;
     }

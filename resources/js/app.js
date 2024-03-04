@@ -3,6 +3,7 @@ import '../css/app.css';
 import '../css/items.css';
 
 import { createApp, h } from 'vue';
+import { reactive } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
@@ -133,6 +134,10 @@ createInertiaApp({
         app.config.globalProperties.q3tohtml = q3tohtml
 
         app.config.globalProperties.timeSince = timeSince
+
+        app.config.globalProperties.$state = reactive({
+            globalBackgroundImage: '/images/bg-image.png'
+        })
 
         app.mount(el);
 

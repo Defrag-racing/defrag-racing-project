@@ -1,6 +1,8 @@
 <script setup>
     import { Head } from '@inertiajs/vue3';
-    import Tabs from '@/Components/Tabs.vue';
+    import Tabs2 from '@/Components/Tabs2.vue';
+    import Tabs3 from '@/Components/Tabs3.vue';
+    import { onMounted, getCurrentInstance } from 'vue';
 
     const props = defineProps({
         tournament: Object,
@@ -76,24 +78,31 @@
         },
 
     ];
+
+    const instance = getCurrentInstance();
+    const globalProperties = instance.appContext.config.globalProperties;
+
+    onMounted(() => {
+        globalProperties.$state.globalBackgroundImage = '/storage/' + props.tournament.image;
+    });
 </script>
 
 <template>
     <div>
         <Head title="Tournaments" />
 
-        <div class="py-12">
+        <div class="pb-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center flex-wrap">
-                    <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
-                        {{ tournament.name }}
-                    </h2>
-                </div>
-
-                <div class="mb-12 pb-5 pt-1 rounded-lg flex mt-10">
-                    <Tabs :tabs="tabs" :activeTab="tab" />
+                <div class="mb-12 pb-5 pt-1 rounded-lg mt-5 flex" style="z-index: 2;">
 
                     <div class="rounded-lg p-5 w-full bg-grayop-800">
+                        <div class="flex justify-center items-center flex-wrap mb-2">
+                            <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
+                                {{ tournament.name }}
+                            </h2>
+                        </div>
+
+                        <Tabs2 :tabs="tabs" :activeTab="tab" style="z-index: 3;" />
                         <slot></slot>
                     </div>
                   </div>
@@ -101,3 +110,10 @@
             </div>
         </div>
 </template>
+
+<style>
+    .image-hover-effect {
+        background: radial-gradient(circle, #ff6347, #ffd700);
+        opacity: 0.5
+    }
+</style>

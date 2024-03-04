@@ -22,16 +22,6 @@
     }
 }
 
-.main-background {
-    background: url('/images/bg-image.png');
-    background-color: #111827;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
-    justify-content: center;
-}
-
 .shape {
     clip-path: polygon(
         0% 0%,

@@ -9,7 +9,7 @@
 
 <template>
     <div class="mb-5">
-        <div class="rounded-md bg-blackop-30 px-5 py-2 mx-2 flex items-center justify-between">
+        <div class="rounded-md bg-blackop-30 px-5 py-2 flex items-center justify-between">
             <div>
                 <div class="flex items-center">
                     <img class="h-8 w-8 rounded-full object-cover mr-3" :src="'/storage/' + clan.image">

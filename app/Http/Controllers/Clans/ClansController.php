@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
 class ClansController extends Controller {
-    public function index () {
+    public function index (Request $request) {
         $clans = Clan::with('admin:id,name')
             ->with(['players.user' => function ($query) {
                 $query->select('id', 'name', 'profile_photo_path');
@@ -19,9 +19,18 @@ class ClansController extends Controller {
             ->withCount('players')
             ->paginate(20);
 
-        return Inertia::render('Clans/Index', [
-            'clans' => $clans
-        ]);
+        $myClan = $request->user()
+            ->clan()
+            ->with('admin:id,name')
+            ->with(['players.user' => function ($query) {
+                $query->select('id', 'name', 'profile_photo_path');
+            }])
+            ->withCount('players')
+            ->first();
+
+        return Inertia::render('Clans/Index')
+            ->with('clans', $clans)
+            ->with('myClan', $myClan);
     }
 
     public function create (Request $request) {

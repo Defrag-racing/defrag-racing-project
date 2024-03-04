@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref } from 'vue';
+    import { computed, ref, watchEffect } from 'vue';
     import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
@@ -24,30 +24,43 @@
         }, 1000);
     };
 
+    let weaponsList = ref([]);
+    let itemsList = ref([]);
+    let functionsList = ref([]);
 
-    let weaponsList = props.map?.weapons?.split(',') ?? [];
+    const getItemsData = () => {
+        let weaponsListTemp = props.map?.weapons?.split(',') ?? [];
 
-    if (weaponsList.length > 0) {
-        if (weaponsList[0].length == 0) {
-            weaponsList.splice(0, 1);
+        if (weaponsListTemp.length > 0) {
+            if (weaponsListTemp[0].length == 0) {
+                weaponsListTemp.splice(0, 1);
+            }
         }
-    }
 
-    let itemsList = props.map?.items?.split(',') ?? [];
+        weaponsList.value = weaponsListTemp;
 
-    if (itemsList.length > 0) {
-        if (itemsList[0].length == 0) {
-            itemsList.splice(0, 1);
+        let itemsListTemp = props.map?.items?.split(',') ?? [];
+
+        if (itemsListTemp.length > 0) {
+            if (itemsListTemp[0].length == 0) {
+                itemsListTemp.splice(0, 1);
+            }
         }
-    }
 
-    let functionsList = props.map?.functions?.split(',') ?? [];
+        itemsList.value = itemsListTemp;
 
-    if (functionsList.length > 0) {
-        if (functionsList[0].length == 0) {
-            functionsList.splice(0, 1);
+        let functionsListTemp = props.map?.functions?.split(',') ?? [];
+
+        if (functionsListTemp.length > 0) {
+            if (functionsListTemp[0].length == 0) {
+                functionsListTemp.splice(0, 1);
+            }
         }
-    }
+
+        functionsList.value = functionsListTemp;
+    };
+
+    getItemsData();
 
     const mapName = computed(() => {
         return props.map?.name ?? props.mapname;
@@ -73,6 +86,10 @@
         }
 
         return data;
+    });
+
+    watchEffect(() => {
+        getItemsData();
     });
 </script>
 

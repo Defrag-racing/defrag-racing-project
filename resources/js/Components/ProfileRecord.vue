@@ -42,6 +42,7 @@
                                 <span>{{  record.mapname }}</span>
                             </Link>
                         </div>
+                        <div class="text-gray-400 text-xs" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
                 
                 
                         <template #content>
@@ -71,7 +72,6 @@
                 <div class="text-right ml-5 flex flex-col items-end">
                     <div class="text-lg font-bold text-gray-300 text-right" style="width: 100px;">{{  formatTime(record.time) }}</div>
                     <div class="text-xs text-red-500" v-if="timeDiff">- {{  formatTime(timeDiff) }}</div>
-                    <div class="text-gray-400 text-xs" :title="record.date_set"> {{ timeSince(record.date_set) }} ago</div>
                 </div>
 
                 <div class="ml-5 hidden sm:block">

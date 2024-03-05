@@ -19,14 +19,19 @@ class ClansController extends Controller {
             ->withCount('players')
             ->paginate(20);
 
-        $myClan = $request->user()
-            ->clan()
-            ->with('admin:id,name')
-            ->with(['players.user' => function ($query) {
-                $query->select('id', 'name', 'profile_photo_path');
-            }])
-            ->withCount('players')
-            ->first();
+        if ($request->user()) {
+            $myClan = $request->user()
+                ->clan()
+                ->with('admin:id,name')
+                ->with(['players.user' => function ($query) {
+                    $query->select('id', 'name', 'profile_photo_path');
+                }])
+                ->withCount('players')
+                ->first();
+        } else {
+            $myClan = null;
+        }
+        
 
         return Inertia::render('Clans/Index')
             ->with('clans', $clans)

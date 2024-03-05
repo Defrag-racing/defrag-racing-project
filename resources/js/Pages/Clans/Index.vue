@@ -16,13 +16,13 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mb-5">
                     <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
                         Clans
                     </h2>
 
                     <div class="flex">
-                        <Link v-if="! myClan" href="#" class="text-gray-300 bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
+                        <Link v-if="! myClan" :href="route('clans.create')" class="text-gray-300 bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>

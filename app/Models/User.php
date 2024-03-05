@@ -15,6 +15,8 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 
+use Carbon\Carbon;
+
 class User extends Authenticatable implements FilamentUser, HasName, MustVerifyEmail
 {
     use HasApiTokens;
@@ -108,7 +110,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return [
             'id' => (string) $this->id,
             'plain_name' => $this->generateSubstrings($this->plain_name),
-            'created_at' => $this->created_at->timestamp,
+            'created_at' => Carbon::parse($this->created_at)->timestamp,
         ];
     }
 

@@ -2,12 +2,22 @@
     import { Head } from '@inertiajs/vue3';
     import { Link } from '@inertiajs/vue3';
     import Pagination from '@/Components/Basic/Pagination.vue';
-    import Clan from './Clan.vue';
+    import ClanCard from './ClanCard.vue';
+    import { ref } from 'vue';
+    import InvitePlayerModal from './InvitePlayerModal.vue';
+    import KickPlayerModal from './KickPlayerModal.vue';
+    import LeaveClanModal from './LeaveClanModal.vue';
 
     const props = defineProps({
         clans: Object,
         myClan: Object,
+        users: Array
     });
+
+    const showInvitePlayer = ref(false);
+    const showKickPlayer = ref(false);
+    const showTransferOwnership = ref(false);
+    const showLeaveClan = ref(false);
 </script>
 
 <template>
@@ -37,20 +47,35 @@
                         My Clan
                     </h2>
                     <div class="my-5 rounded-md my-clan">
-                        <Clan :clan="myClan" manage />
+                        <ClanCard
+                            :clan="myClan"
+                            manage
+                            :InvitePlayer="() => showInvitePlayer = !showInvitePlayer"
+                            :KickPlayer="() => showKickPlayer = !showKickPlayer"
+                            :TransferOwnership="() => showTransferOwnership = !showTransferOwnership"
+                            :LeaveClan="() => showLeaveClan = !showLeaveClan"
+                        />
                     </div>
                 </div>
 
                 <div class="tech-line-clan"></div>
 
                 <div class="mt-5">
-                    <Clan v-for="clan in clans.data" :key="clan.id" :clan="clan" />
+                    <ClanCard v-for="clan in clans.data" :key="clan.id" :clan="clan" />
                     
                     <div class="flex justify-center" v-if="clans.total > clans.per_page">
                         <Pagination :current_page="clans.current_page" :last_page="clans.last_page" :link="clans.first_page_url" />
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div v-if="myClan">
+            <InvitePlayerModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showInvitePlayer" :close="() => showInvitePlayer = false" :players="users" />
+
+            <KickPlayerModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showKickPlayer" :close="() => showKickPlayer = false" :users="myClan.players" />
+    
+            <LeaveClanModal v-if="myClan.admin_id !== $page.props.auth.user.id" :show="showLeaveClan" :close="() => showLeaveClan = false" />
         </div>
     </div>
 </template>

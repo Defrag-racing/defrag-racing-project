@@ -15,6 +15,8 @@
     import PlayerSearchItem from '@/Components/PlayerSearchItem.vue';
     import NotificationMenu from '@/Components/NotificationMenu.vue';
 
+    import AlertBanner from '@/Components/Basic/AlertBanner.vue';
+
     defineProps({
         title: String,
     });
@@ -119,6 +121,18 @@
                 gtag('config', 'G-FMC55XYK1K');
             </component>
         </Head>
+
+        <div v-if="$page.props.danger">
+            <AlertBanner styling="danger" :random="$page.props.dangerRandom">
+                {{ $page.props.danger }}
+            </AlertBanner>
+        </div>
+
+        <div v-if="$page.props.success">
+            <AlertBanner styling="success" :random="$page.props.successRandom">
+                {{ $page.props.success }}
+            </AlertBanner>
+        </div>
 
         <Banner :show="true" styling="success" handle="dfracing2024-announcement">
             <span>

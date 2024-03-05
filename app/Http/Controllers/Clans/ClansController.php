@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clans;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Clan;
+use App\Models\User;
 
 use App\Http\Controllers\Controller;
 
@@ -24,18 +25,22 @@ class ClansController extends Controller {
                 ->clan()
                 ->with('admin:id,name')
                 ->with(['players.user' => function ($query) {
-                    $query->select('id', 'name', 'profile_photo_path');
+                    $query->select('id', 'name', 'profile_photo_path', 'country', 'plain_name');
                 }])
                 ->withCount('players')
                 ->first();
+
+            $users = User::query()->orderBy('plain_name')->get(['id', 'name', 'country', 'plain_name']);
         } else {
             $myClan = null;
+            $users = [];
         }
         
 
         return Inertia::render('Clans/Index')
             ->with('clans', $clans)
-            ->with('myClan', $myClan);
+            ->with('myClan', $myClan)
+            ->with('users', $users);
     }
 
     public function create (Request $request) {
@@ -76,6 +81,6 @@ class ClansController extends Controller {
             'user_id' => $request->user()->id
         ]);
 
-        return redirect()->route('clans.index');
+        return redirect()->route('clans.index')->withSuccess('Clan created Successfully');
     }
 }

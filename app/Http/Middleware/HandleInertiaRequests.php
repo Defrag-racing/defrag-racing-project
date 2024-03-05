@@ -48,7 +48,11 @@ class HandleInertiaRequests extends Middleware
         }
 
         return array_merge(parent::share($request), [
-            'recordsNotifications'     =>      $recordsNotifications
+            'recordsNotifications'      =>      $recordsNotifications,
+            'danger'                    =>      $request->session()->get('danger'),
+            'success'                   =>      $request->session()->get('success'),
+            'dangerRandom'                 =>      random_int(0, 1_000_000_000),
+            'successRandom'                 =>      random_int(0, 1_000_000_000)
         ]);
     }
 }

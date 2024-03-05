@@ -8,10 +8,14 @@
         manage: {
             type: Boolean,
             default: false
-        }
+        },
+        InvitePlayer: Function,
+        KickPlayer: Function,
+        TransferOwnership: Function,
+        LeaveClan: Function
     });
 
-    const showClanManagement = ref(false);
+    const showClanManagement = ref(true);
 </script>
 
 <template>
@@ -46,8 +50,14 @@
                         </template>
                     </Popper>
                 </div>
-                <div class="text-gray-400 text-sm font-bold relative" v-if="clan.players_count > 5">
-                    + {{ clan.players_count - 5 }} More
+
+                <div v-for="(item, index) in Math.max(0, 5 - clan.players.length)" :key="'it_' + item">
+                    <div class="relative h-8 w-8" :style="`left: -${index * 10}px; z-index: ${index}`">
+                    </div>
+                </div>
+
+                <div class="text-gray-400 text-sm font-bold relative w-20">
+                    <div v-if="clan.players_count > 5">+ {{ clan.players_count - 5 }} More</div>
                 </div>
 
                 <div v-if="manage" @click="showClanManagement = !showClanManagement" class="text-white bg-blackop-30 cursor-pointer hover:bg-blackop-20 text-center rounded-lg px-3 py-2 mr-2 flex items-center ml-4">
@@ -64,7 +74,7 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <div class="text-gray-100 bg-green-700 cursor-pointer hover:bg-green-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
+                    <div v-if="clan.admin_id === $page.props.auth.user.id" @click="InvitePlayer" class="text-gray-100 bg-green-700 cursor-pointer hover:bg-green-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                         </svg>
@@ -72,7 +82,7 @@
                         Invite Player
                     </div>
 
-                    <div class="text-gray-100 bg-yellow-700 cursor-pointer hover:bg-yellow-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
+                    <div v-if="clan.admin_id === $page.props.auth.user.id" @click="KickPlayer" class="text-gray-100 bg-yellow-700 cursor-pointer hover:bg-yellow-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                         </svg>
@@ -82,7 +92,7 @@
                 </div>
 
                 <div class="flex items-center">
-                    <div class="text-gray-100 bg-sky-700 cursor-pointer hover:bg-sky-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
+                    <div v-if="clan.admin_id === $page.props.auth.user.id" @click="TransferOwnership" class="text-gray-100 bg-sky-700 cursor-pointer hover:bg-sky-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75" />
                         </svg>
@@ -90,12 +100,20 @@
                         Transfer Ownership
                     </div>
     
-                    <div class="text-gray-300 bg-red-700 cursor-pointer hover:bg-red-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
+                    <div v-if="clan.admin_id !== $page.props.auth.user.id" @click="LeaveClan" class="text-gray-300 bg-red-700 cursor-pointer hover:bg-red-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
                         </svg>
     
                         Leave Clan
+                    </div>
+    
+                    <div v-if="clan.admin_id === $page.props.auth.user.id" @click="LeaveClan" class="text-gray-300 bg-red-700 cursor-pointer hover:bg-red-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                        </svg>
+    
+                        Dismantle Clan
                     </div>
                 </div>
             </div>

@@ -43,44 +43,7 @@ class ClansController extends Controller {
             ->with('users', $users);
     }
 
-    public function create (Request $request) {
-        if ($request->user()->clan()->exists()) {
-            return redirect()->route('clans.index');
-        }
-
-        if (Clan::where('admin_id', $request->user()->id)->exists()) {
-            return redirect()->route('clans.index');
-        }
-
-        return Inertia::render('Clans/Create');
-    }
-
-    public function store (Request $request) {
-        if ($request->user()->clan()->exists()) {
-            return redirect()->route('clans.index');
-        }
-
-        if (Clan::where('admin_id', $request->user()->id)->exists()) {
-            return redirect()->route('clans.index');
-        }
-
-        $request->validate([
-            'name' => 'required',
-            'image' => 'required',
-        ]);
-
-        $clan = new Clan();
-
-        $clan->name = $request->name;
-        $clan->image = $request->file('image')->store('clans', 'public');
-        $clan->admin_id = $request->user()->id;
-
-        $clan->save();
-
-        $clanPlayer = $clan->players()->create([
-            'user_id' => $request->user()->id
-        ]);
-
-        return redirect()->route('clans.index')->withSuccess('Clan created Successfully');
+    public function show(Clan $clan, Request $request) {
+        $clan->load('players');
     }
 }

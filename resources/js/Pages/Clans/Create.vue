@@ -20,7 +20,7 @@
     const imageInput = ref(null);
 
     const submitForm = () => {
-        form.post(route('clans.store'), {
+        form.post(route('clans.manage.store'), {
             errorBag: 'submitForm',
             preserveScroll: true
         });

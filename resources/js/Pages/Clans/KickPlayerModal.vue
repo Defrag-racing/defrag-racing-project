@@ -79,9 +79,8 @@
                             v-model="user_id"
                             :values="[]"
                             :options="players"
-                            :class="{ 'border-red-500': form.errors.player_id }"
                         />
-                        <InputError :message="form.errors.answer" />
+                        <InputError :message="form.errors.player_id" />
                     </div>
 
                     <div class="text-gray-500" v-if="user_id.length > 0">

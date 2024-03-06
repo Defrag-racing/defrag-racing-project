@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Clan;
 use App\Models\User;
+use App\Models\ClanInvitation;
+use App\Models\ClanPlayer;
 
 use App\Http\Controllers\Controller;
 
@@ -35,15 +37,49 @@ class ClansController extends Controller {
             $myClan = null;
             $users = [];
         }
+
+        $invitations = ClanInvitation::query()
+            ->where('user_id', $request->user()->id)
+            ->where('accepted', false)
+            ->with('clan')
+            ->get();
         
 
         return Inertia::render('Clans/Index')
             ->with('clans', $clans)
             ->with('myClan', $myClan)
-            ->with('users', $users);
+            ->with('users', $users)
+            ->with('invitations', $invitations);
     }
 
     public function show(Clan $clan, Request $request) {
         $clan->load('players');
+    }
+
+    public function accept(ClanInvitation $invitation, Request $request) {
+        if ($invitation->user_id !== $request->user()->id) {
+            return redirect()->route('clans.index')->withDanger('You are not allowed to do that');
+        }
+
+        $invitation->accepted = true;
+        $invitation->save();
+
+        $clanPlayer = new ClanPlayer();
+        $clanPlayer->clan_id = $invitation->clan_id;
+        $clanPlayer->user_id = $request->user()->id;
+
+        $clanPlayer->save();
+
+        return redirect()->route('clans.index')->withSuccess('You have joined the clan');
+    }
+
+    public function reject(ClanInvitation $invitation, Request $request) {
+        if ($invitation->user_id !== $request->user()->id) {
+            return redirect()->route('clans.index')->withDanger('You are not allowed to do that');
+        }
+
+        $invitation->delete();
+
+        return redirect()->route('clans.index')->withSuccess('You have rejected the invitation');
     }
 }

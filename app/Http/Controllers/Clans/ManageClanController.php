@@ -188,6 +188,30 @@ class ManageClanController extends Controller {
         return redirect()->back()->withSuccess('Ownership of the clan has been transferred.');
     }
 
+    public function dismantle(Request $request) {
+        $myClan = $request->user()->clan()->first();
+
+        if (! $myClan) {
+            return redirect()->back()->withDanger('You are not in a clan.');
+        }
+
+        if ($myClan->admin_id !== $request->user()->id) {
+            return redirect()->back()->withDanger('You are not the admin of the clan.');
+        }
+
+        $clanPlayers = ClanPlayer::where('clan_id', $myClan->id)->count();
+
+        if ($clanPlayers > 1) {
+            return redirect()->back()->withDanger('You cannot dismantle the clan while there are still members in it.');
+        }
+
+        ClanPlayer::where('clan_id', $myClan->id)->delete();
+        
+        $myClan->delete();
+
+        return redirect()->back()->withSuccess('The clan has been dismantled.');
+    }
+
     public function update (Clan $clan, Request $request) {
         if ($clan->admin_id !== $request->user()->id) {
             return redirect()->route('clans.index')->withDanger('You are not the admin of the clan.');

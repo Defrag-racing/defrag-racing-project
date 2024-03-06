@@ -16,4 +16,5 @@ Route::prefix('manage')->group(function () {
     Route::post('/kick', [ManageClanController::class, 'kick'])->name('clans.manage.kick');
     Route::post('/leave', [ManageClanController::class, 'leave'])->name('clans.manage.leave');
     Route::post('/transfer', [ManageClanController::class, 'transfer'])->name('clans.manage.transfer');
+    Route::post('/dismantle', [ManageClanController::class, 'dismantle'])->name('clans.manage.dismantle');
 });

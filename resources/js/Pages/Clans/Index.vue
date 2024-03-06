@@ -9,6 +9,7 @@
     import LeaveClanModal from './LeaveClanModal.vue';
     import TransferOwnershipModal from './TransferOwnershipModal.vue';
     import EditClanModal from './EditClanModal.vue';
+    import DismantleClanModal from './DismantleClanModal.vue';
 
     const props = defineProps({
         clans: Object,
@@ -21,6 +22,7 @@
     const showTransferOwnership = ref(false);
     const showLeaveClan = ref(false);
     const showEditClan = ref(false);
+    const showDismantleClan = ref(false);
 </script>
 
 <template>
@@ -34,8 +36,8 @@
                         Clans
                     </h2>
 
-                    <div class="flex">
-                        <Link v-if="! myClan" :href="route('clans.manage.create')" class="text-gray-300 bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
+                    <div class="flex" v-if="! myClan">
+                        <Link :href="route('clans.manage.create')" class="text-gray-300 bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -58,6 +60,7 @@
                             :TransferOwnership="() => showTransferOwnership = !showTransferOwnership"
                             :LeaveClan="() => showLeaveClan = !showLeaveClan"
                             :EditClan="() => showEditClan = !showEditClan"
+                            :DismantleClan="() => showDismantleClan = !showDismantleClan"
                         />
                     </div>
                 </div>
@@ -84,6 +87,8 @@
             <TransferOwnershipModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showTransferOwnership" :close="() => showTransferOwnership = false" :users="myClan.players" :clan="myClan" />
 
             <EditClanModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showEditClan" :close="() => showEditClan = false" :clan="myClan" />
+
+            <DismantleClanModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showDismantleClan" :close="() => showDismantleClan = false" />
         </div>
     </div>
 </template>

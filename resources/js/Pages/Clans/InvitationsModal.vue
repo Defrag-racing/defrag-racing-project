@@ -1,24 +1,28 @@
 <script setup>
     import { useForm } from '@inertiajs/vue3';
-    import InputError from '@/Components/Laravel/InputError.vue';
-    import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
-    import InputLabel from '@/Components/Laravel/InputLabel.vue';
-    import TextInput from '@/Components/Laravel/TextInput.vue';
     import Modal from '@/Components/Laravel/Modal.vue';
-    import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
     import { ref } from 'vue';
 
     const props = defineProps({
         invitations: Array,
         close: Function,
-        show: Boolean
+        show: Boolean,
+        myClan: Object
     });
+
+    const showAcceptConfirmation = ref(false);
 
     const form = useForm({
         _method: 'POST'
     });
 
     const acceptInvitation = (id) => {
+        if (! myClan) {
+            acceptInvitationConfirmed(id);
+        }
+    };
+
+    const acceptInvitationConfirmed = (id) => {
         form.post(route('clans.invitation.accept', id), {
             errorBag: 'submitForm',
             preserveScroll: true,
@@ -26,7 +30,7 @@
                 props.close();
             }
         });
-    };
+    }
 
     const rejectInvitation = (id) => {
         form.post(route('clans.invitation.reject', id), {

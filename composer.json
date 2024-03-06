@@ -14,6 +14,7 @@
         "flowframe/laravel-trend": "^0.1.5",
         "guzzlehttp/guzzle": "^7.8",
         "inertiajs/inertia-laravel": "^0.6.8",
+        "intervention/image": "^2",
         "laravel/framework": "^10.10",
         "laravel/jetstream": "^4.2",
         "laravel/octane": "^2.2",

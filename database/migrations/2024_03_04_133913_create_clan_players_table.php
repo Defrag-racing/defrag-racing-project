@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('clan_id');
             $table->integer('user_id');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

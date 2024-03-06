@@ -32,17 +32,19 @@ class ClansController extends Controller {
                 ->withCount('players')
                 ->first();
 
+
+            $invitations = ClanInvitation::query()
+                ->where('user_id', $request->user()->id)
+                ->where('accepted', false)
+                ->with('clan')
+                ->get();
+
             $users = User::query()->orderBy('plain_name')->get(['id', 'name', 'country', 'plain_name']);
         } else {
             $myClan = null;
             $users = [];
+            $invitations = [];
         }
-
-        $invitations = ClanInvitation::query()
-            ->where('user_id', $request->user()->id)
-            ->where('accepted', false)
-            ->with('clan')
-            ->get();
         
 
         return Inertia::render('Clans/Index')

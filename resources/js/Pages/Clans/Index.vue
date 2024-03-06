@@ -7,6 +7,7 @@
     import InvitePlayerModal from './InvitePlayerModal.vue';
     import KickPlayerModal from './KickPlayerModal.vue';
     import LeaveClanModal from './LeaveClanModal.vue';
+    import TransferOwnershipModal from './TransferOwnershipModal.vue';
 
     const props = defineProps({
         clans: Object,
@@ -76,6 +77,8 @@
             <KickPlayerModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showKickPlayer" :close="() => showKickPlayer = false" :users="myClan.players" />
     
             <LeaveClanModal v-if="myClan.admin_id !== $page.props.auth.user.id" :show="showLeaveClan" :close="() => showLeaveClan = false" />
+
+            <TransferOwnershipModal v-if="myClan.admin_id === $page.props.auth.user.id" :show="showTransferOwnership" :close="() => showTransferOwnership = false" :users="myClan.players" :clan="myClan" />
         </div>
     </div>
 </template>

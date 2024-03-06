@@ -46,6 +46,8 @@ class ManageClanController extends Controller {
         $invite->user_id = $player->id;
 
         $invite->save();
+
+        return redirect()->back()->withSuccess('The player has been invited to the clan.');
     }
 
     public function kick (Request $request) {
@@ -81,6 +83,8 @@ class ManageClanController extends Controller {
         }
 
         $clanPlayer->delete();
+
+        return redirect()->back()->withSuccess('The player has been kicked from the clan.');
     }
 
     public function leave (Request $request) {
@@ -101,5 +105,45 @@ class ManageClanController extends Controller {
         }
 
         $clanPlayer->delete();
+
+        return redirect()->back()->withSuccess('You have left the clan.');
+    }
+
+    public function transfer (Request $request) {
+        $myClan = $request->user()->clan()->first();
+
+        if (! $myClan) {
+            return redirect()->back()->withDanger('You are not in a clan.');
+        }
+
+        if ($myClan->admin_id !== $request->user()->id) {
+            return redirect()->back()->withDanger('You are not the admin of the clan.');
+        }
+
+        $request->validate([
+            'player_id' => 'required|exists:users,id',
+        ]);
+
+
+        $player = User::find($request->player_id);
+
+        if (! $player) {
+            return redirect()->back()->withDanger('The player does not exist.');
+        }
+
+        if ($myClan->admin_id === $player->id) {
+            return redirect()->back()->withDanger('You already have ownership of this clan.');
+        }
+
+        $clanPlayer = ClanPlayer::where('clan_id', $myClan->id)->where('user_id', $request->player_id)->first();
+
+        if (! $clanPlayer) {
+            return redirect()->back()->withDanger('The player is not in the clan.');
+        }
+
+        $myClan->admin_id = $player->id;
+        $myClan->save();
+
+        return redirect()->back()->withSuccess('Ownership of the clan has been transferred.');
     }
 }

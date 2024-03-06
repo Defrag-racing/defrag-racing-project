@@ -4,13 +4,17 @@
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
     import Modal from '@/Components/Laravel/Modal.vue';
     import PlayerSelectDefrag from '@/Components/Basic/PlayerSelectDefrag2.vue';
-    import { ref, computed, watch } from 'vue';
+    import { ref, watch } from 'vue';
+    import ConfirmTransferOwnershipModal from './ConfirmTransferOwnershipModal.vue';
 
     const props = defineProps({
         users: Array,
         close: Function,
-        show: Boolean
+        show: Boolean,
+        clan: Object
     });
+
+    const showConfirmation = ref(false);
 
     const players = ref(props.users.map(player => {
         return player.user
@@ -30,12 +34,21 @@
             return;
         }
 
-        form.post(route('clans.manage.kick'), {
-            errorBag: 'submitForm',
+        showConfirmation.value = true;
+    };
+
+    const finalSubmit = () => {
+        if (user_id.value.length > 0) {
+            form.player_id = user_id.value[0];
+        } else {
+            return;
+        }
+
+        form.post(route('clans.manage.transfer'), {
             preserveScroll: true,
             onSuccess: () => {
-                user_id.value = [];
-                props.close();
+                showConfirmation.value = false;
+                close();
             }
         });
     };
@@ -61,7 +74,7 @@
             <div class="p-5">
                 <div class="flex justify-between items-center">
                     <h2 class="font-semibold text-xl text-gray-200 leading-tight">
-                        Kick a Player
+                        Transfer Ownership
                     </h2>
 
                     <div class="text-gray-200 cursor-pointer rounded-full hover:bg-grayop-700 p-1" @click="close">
@@ -84,17 +97,26 @@
                         <InputError :message="form.errors.answer" />
                     </div>
 
-                    <div class="text-gray-500" v-if="user_id.length > 0">
+                    <div class="text-gray-500 mb-3" v-if="user_id.length > 0">
                         Selected Player: <span class="text-gray-300" v-html="q3tohtml(selectedUser())"></span>
                     </div>
 
                     <div class="flex justify-center">
-                        <PrimaryButton type="submit" class="w-32 justify-center">
-                            Kick
-                        </PrimaryButton>
+                        <button type="submit" class="font-semibold text-xs text-white uppercase tracking-widest text-gray-300 bg-red-700 cursor-pointer hover:bg-red-600 text-center rounded-lg px-3 py-2 mr-2 flex items-center text-sm">
+                            Transfer Ownership
+                        </button>
                     </div>
                 </form>
             </div>
         </Modal>
+
+        <ConfirmTransferOwnershipModal
+            v-if="showConfirmation && user_id.length > 0"
+            :show="showConfirmation"
+            :close="() => showConfirmation = false"
+            :submit="finalSubmit"
+            :player="players.find(player => player.id === form.player_id)"
+            :clan="clan"
+        />
     </div>
 </template>

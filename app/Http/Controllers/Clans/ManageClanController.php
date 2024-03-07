@@ -11,6 +11,8 @@ use App\Models\ClanPlayer;
 
 use App\Http\Controllers\Controller;
 
+use Intervention\Image\Facades\Image;
+
 use Carbon\Carbon;
 
 class ManageClanController extends Controller {
@@ -40,10 +42,27 @@ class ManageClanController extends Controller {
             'image' => 'required',
         ]);
 
+        $image = $request->file('image');
+        $img = Image::make($image);
+
+        $width = $img->width();
+        $height = $img->height();
+
+        $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+        $uploadPath = public_path('storage/clans');
+
+        if ($width > 128 || $height > 128) {
+            $image = Image::make($image)->fit(128, 128);
+            $image->save($uploadPath . '/' . $imageName);
+            $file = 'clans/' . $imageName;
+        } else {
+            $file = $image->store('clans', 'public');
+        }
+
         $clan = new Clan();
 
         $clan->name = $request->name;
-        $clan->image = $request->file('image')->store('clans', 'public');
+        $clan->image = $file;
         $clan->admin_id = $request->user()->id;
 
         $clan->save();
@@ -224,7 +243,24 @@ class ManageClanController extends Controller {
         $clan->name = $request->name;
 
         if ($request->file('image')) {
-            $clan->image = $request->file('image')->store('clans', 'public');
+            $image = $request->file('image');
+            $img = Image::make($image);
+
+            $width = $img->width();
+            $height = $img->height();
+
+            $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+            $uploadPath = public_path('storage/clans');
+
+            if ($width > 128 || $height > 128) {
+                $image = Image::make($image)->fit(128, 128);
+                $image->save($uploadPath . '/' . $imageName);
+                $file = 'clans/' . $imageName;
+            } else {
+                $file = $image->store('clans', 'public');
+            }
+
+            $clan->image = $file;
         }
 
         $clan->save();

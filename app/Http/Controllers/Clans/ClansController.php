@@ -55,7 +55,13 @@ class ClansController extends Controller {
     }
 
     public function show(Clan $clan, Request $request) {
-        $clan->load('players');
+        $players = User::whereHas('clan', function ($query) use ($clan) {
+            $query->where('clan_id', $clan->id);
+        })->get(['id', 'name', 'profile_photo_path', 'country', 'plain_name']);
+
+        return Inertia::render('Clans/Show')
+            ->with('clan', $clan)
+            ->with('players', $players);
     }
 
     public function accept(ClanInvitation $invitation, Request $request) {

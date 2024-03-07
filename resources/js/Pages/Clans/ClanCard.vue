@@ -24,11 +24,11 @@
     <div class="rounded-md bg-blackop-30 px-5 py-2 mb-5">
         <div class="md:flex items-center justify-between">
             <div>
-                <div class="flex items-center">
+                <Link :href="route('clans.show', clan.id)" class="flex items-center">
                     <img class="h-8 w-8 rounded-full object-cover mr-3" :src="'/storage/' + clan.image">
     
-                    <h2 class="text-xl text-gray-300" v-html="q3tohtml(clan.name)"></h2>
-                </div>
+                    <h2 class="text-xl text-gray-300 hover:underline" v-html="q3tohtml(clan.name)"></h2>
+                </Link>
     
                 <div class="mt-3 flex text-sm">
                     <div class="text-gray-500 mr-1">Admin: </div>

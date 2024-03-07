@@ -63,8 +63,16 @@ class ClansController extends Controller {
             return redirect()->route('clans.index')->withDanger('You are not allowed to do that');
         }
 
+        if ($request->user()->clan()->first()->admin_id === $request->user()->id) {
+            return redirect()->route('clans.index')->withDanger('You are the admin of another clan, you need to either transfer ownership or dismantle your current clan before joining another one.');
+        }
+
         $invitation->accepted = true;
         $invitation->save();
+
+        $clanPlayers = ClanPlayer::query()
+            ->where('user_id', $request->user()->id)
+            ->delete();
 
         $clanPlayer = new ClanPlayer();
         $clanPlayer->clan_id = $invitation->clan_id;

@@ -2,6 +2,7 @@
     import { useForm } from '@inertiajs/vue3';
     import Modal from '@/Components/Laravel/Modal.vue';
     import { ref } from 'vue';
+    import ConfirmAcceptInvitationModal from './ConfirmAcceptInvitationModal.vue';
 
     const props = defineProps({
         invitations: Array,
@@ -12,21 +13,27 @@
 
     const showAcceptConfirmation = ref(false);
 
+    const chosenInvitation = ref(null);
+
     const form = useForm({
         _method: 'POST'
     });
 
-    const acceptInvitation = (id) => {
-        if (! myClan) {
-            acceptInvitationConfirmed(id);
+    const acceptInvitation = (invitation) => {
+        chosenInvitation.value = invitation;
+        if (! props.myClan) {
+            acceptInvitationConfirmed();
+        } else {
+            showAcceptConfirmation.value = true;
         }
     };
 
-    const acceptInvitationConfirmed = (id) => {
-        form.post(route('clans.invitation.accept', id), {
+    const acceptInvitationConfirmed = () => {
+        form.post(route('clans.invitation.accept', chosenInvitation.value.id), {
             errorBag: 'submitForm',
             preserveScroll: true,
             onSuccess: () => {
+                showAcceptConfirmation.value = false;
                 props.close();
             }
         });
@@ -69,7 +76,7 @@
                             </div>
 
                             <div class="flex">
-                                <div @click="acceptInvitation(invitation.id)" title="Accept" class="text-white bg-green-700 cursor-pointer hover:bg-green-600 text-center rounded-full flex items-center p-1 mr-2">
+                                <div @click="acceptInvitation(invitation)" title="Accept" class="text-white bg-green-700 cursor-pointer hover:bg-green-600 text-center rounded-full flex items-center p-1 mr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                     </svg>
@@ -92,5 +99,15 @@
                 </div>
             </div>
         </Modal>
+
+        <div v-if="chosenInvitation">
+            <ConfirmAcceptInvitationModal
+                :show="showAcceptConfirmation"
+                :close="() => showAcceptConfirmation = false"
+                :confirm="acceptInvitationConfirmed"
+                :clan="chosenInvitation.clan"
+                :myClan="myClan"
+            />
+        </div>
     </div>
 </template>

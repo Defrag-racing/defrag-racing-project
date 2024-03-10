@@ -21,6 +21,7 @@ class ScrapeProfile implements ShouldQueue
 
     public function __construct($mdd_id) {
         $this->mdd_id = $mdd_id;
+        $this->xpath = null;
     }
 
     public function handle(): void {

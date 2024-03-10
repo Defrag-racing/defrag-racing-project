@@ -47,7 +47,7 @@ class ImageGenerator {
             $base64Image = base64_encode($imageData);
     
             return 'data:image/png;base64,' . $base64Image;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }

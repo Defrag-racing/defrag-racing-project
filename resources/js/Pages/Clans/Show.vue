@@ -1,21 +1,12 @@
 <script setup>
-    import { Head } from '@inertiajs/vue3';
-    import { Link } from '@inertiajs/vue3';
-    import Pagination from '@/Components/Basic/Pagination.vue';
-    import ClanCard from './ClanCard.vue';
-    import { ref } from 'vue';
-    import InvitePlayerModal from './InvitePlayerModal.vue';
-    import KickPlayerModal from './KickPlayerModal.vue';
-    import LeaveClanModal from './LeaveClanModal.vue';
-    import TransferOwnershipModal from './TransferOwnershipModal.vue';
-    import EditClanModal from './EditClanModal.vue';
-    import DismantleClanModal from './DismantleClanModal.vue';
-    import InvitationsModal from './InvitationsModal.vue';
+    import { Head, Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         clan: Object,
         players: Array,
     });
+
+    console.log(props.players)
 </script>
 
 <template>
@@ -24,13 +15,36 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center mb-5 flex-wrap">
-                    <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
-                        <img class="h-20 w-20 rounded-full object-cover mr-3" :src="'/storage/' + clan.image">
+                <div class="flex justify-center items-center mb-5 flex-wrap">
+                    <div class="font-semibold text-3xl text-gray-200 leading-tight">
+                        <img class="h-20 w-20 rounded-full object-cover shadow-lg" :src="'/storage/' + clan.image">
             
-                        <h2 class="text-xl text-gray-300 hover:underline" v-html="q3tohtml(clan.name)"></h2>
-                    </h2>
+                        <h2 class="text-2xl text-gray-300 hover:underline text-center mt-1" v-html="q3tohtml(clan.name)"></h2>
+                    </div>
                 </div>
+
+                <div class="tech-line-clan"></div>
+
+                <div class="text-xl text-gray-300 mt-3 text-center">Players</div>
+
+                <div class="flex flex-wrap justify-center my-5">
+                    <Link v-for="player in players" class="m-2" :href="route('profile.index', player.id)">
+                        <div class="cursor-pointer group w-full z-10 relative overflow-hidden rounded-md bg-gray-700 bg-opacity-30 hover:bg-opacity-50 py-3 px-10 py-3">
+                            <div class="flex items-center transition-transform group-hover:scale-110">
+                                <img style="z-index: 2;" class="h-8 w-8 rounded-full object-cover mr-4" :src="player.profile_photo_path ? '/storage/' + player.profile_photo_path : '/images/null.jpg'">
+
+                                <div class="font-semibold w-full text-center text-white" v-html="q3tohtml(player.name)"></div>
+                            </div>
+
+                            <div class="absolute -left-1 -top-1 w-24 h-24 z-0 opacity-15 transition-transform group-hover:scale-150">
+                                <svg class="text-black fill-current w-full h-full" viewBox="0 0 20 20"><use :xlink:href="`/images/svg/icons.svg#icon-human`"></use></svg>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+
+                <div class="tech-line-clan"></div>
+                <div class="text-xl text-gray-300 mt-3 text-center">Achievements</div>
             </div>
         </div>
     </div>

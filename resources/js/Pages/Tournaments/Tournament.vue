@@ -83,7 +83,7 @@
     const globalProperties = instance.appContext.config.globalProperties;
 
     onMounted(() => {
-        globalProperties.$state.globalBackgroundImage = '/storage/' + props.tournament.image;
+        // globalProperties.$state.globalBackgroundImage = '/storage/' + props.tournament.image;
     });
 </script>
 

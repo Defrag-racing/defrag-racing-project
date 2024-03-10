@@ -15,7 +15,7 @@
     const form = useForm({
         _method: 'POST',
         name: props.donation?.name || '',
-        amount: props.donation?.amount.toString() || '',
+        amount: props.donation?.amount?.toString() || '',
         currency: props.donation?.currency || '',
         message: props.donation?.message || '',
         tournament_id: props.donation?.tournament_id || '',

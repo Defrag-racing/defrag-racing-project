@@ -7,12 +7,25 @@ use App\Http\Controllers\Tournaments\FaqController;
 use App\Http\Controllers\Tournaments\SuggestionController;
 use App\Http\Controllers\Tournaments\StreamerController;
 use App\Http\Controllers\Tournaments\RelatedTournamentController;
+use App\Http\Controllers\Tournaments\TeamController;
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules');
 Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations');
 Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs');
+
+Route::prefix('/tournaments/{tournament}/teams')->group(function () {
+    Route::get('/index', [TeamController::class, 'index'])->name('tournaments.teams.index');
+    Route::get('/manage', [TeamController::class, 'manage'])->name('tournaments.teams.manage');
+    Route::get('/create', [TeamController::class, 'create'])->name('tournaments.teams.create');
+    Route::post('/create', [TeamController::class, 'store'])->name('tournaments.teams.store');
+    Route::get('/leave', [TeamController::class, 'leave'])->name('tournaments.teams.leave');
+    Route::post('/invite', [TeamController::class, 'invite'])->name('tournaments.teams.invite');
+
+    Route::post('/{invitation}/accept', [TeamController::class, 'accept'])->name('tournaments.teams.accept');
+    Route::post('/{invitation}/reject', [TeamController::class, 'reject'])->name('tournaments.teams.reject');
+});
 
 Route::get('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'create'])->name('tournaments.create');
 Route::post('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'store'])->name('tournaments.store');

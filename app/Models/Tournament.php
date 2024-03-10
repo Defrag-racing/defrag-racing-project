@@ -72,4 +72,8 @@ class Tournament extends Model
     public function relatedTournaments () {
         return $this->hasMany(RelatedTournament::class);
     }
+
+    public function teams () {
+        return $this->hasMany(Team::class);
+    }
 }

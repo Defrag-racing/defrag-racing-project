@@ -137,4 +137,12 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function clan () {
         return $this->hasOneThrough(Clan::class, ClanPlayer::class, 'user_id', 'id', 'id', 'clan_id');
     }
+
+    public function team() {
+        return $this->hasOne(Team::class, 'cpm_player_id', 'id') ?? $this->hasOne(Team::class, 'vq3_player_id', 'id');
+    }
+
+    public function teamInvites() {
+        return $this->hasMany(TeamInvite::class, 'user_id', 'id');
+    }
 }

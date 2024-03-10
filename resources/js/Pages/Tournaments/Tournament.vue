@@ -1,5 +1,5 @@
 <script setup>
-    import { Head } from '@inertiajs/vue3';
+    import { Head, usePage } from '@inertiajs/vue3';
     import Tabs2 from '@/Components/Tabs2.vue';
     import Tabs3 from '@/Components/Tabs3.vue';
     import { onMounted, getCurrentInstance } from 'vue';
@@ -8,6 +8,8 @@
         tournament: Object,
         tab: String
     });
+
+    const page = usePage()
 
     const tabs = [
         {
@@ -42,15 +44,15 @@
             name: 'Teams',
             label: 'Teams',
             link: true,
-            route: 'tournaments.show',
+            route: 'tournaments.teams.index',
             params: { tournament: props.tournament.id },
             condition: props.tournament.has_teams
         },
         {
             name: 'ManageTeams',
-            label: 'Manage Teams',
+            label: 'Manage Team',
             link: true,
-            route: 'tournaments.show',
+            route: 'tournaments.teams.manage',
             params: { tournament: props.tournament.id },
             condition: props.tournament.has_teams
         },
@@ -74,7 +76,8 @@
             label: 'Manage Tournament',
             link: true,
             route: 'tournaments.manage',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: props.tournament.admin_id === page.props?.auth?.user?.id
         },
 
     ];

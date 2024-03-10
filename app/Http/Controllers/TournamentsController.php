@@ -63,8 +63,8 @@ class TournamentsController extends Controller {
     }
 
     public function show(Tournament $tournament, Request $request) {
-        $tournament->isOrganizer = $tournament->isOrganizer($request->user()->id);
-        $tournament->isValidator = $tournament->isValidator($request->user()->id);
+        $tournament->isOrganizer = $tournament->isOrganizer($request->user()?->id);
+        $tournament->isValidator = $tournament->isValidator($request->user()?->id);
         
         $organizers = Organizer::query()
             ->where('tournament_id', $tournament->id)

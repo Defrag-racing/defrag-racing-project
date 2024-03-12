@@ -61,4 +61,18 @@ Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('i
 
 
 Route::get('/test', function () {
+    // $users = \App\Models\User::all();
+
+    // $count = 50;
+
+    // // make 50 teams with random cpm_player_id and vq3_player_id
+
+    // for ($i = 0; $i < $count; $i++) {
+    //     $team = new \App\Models\Team();
+    //     $team->name = 'Team ' . $i;
+
+    //     $team->cpm_player_id = $users->random()->id;
+    //     $team->vq3_player_id = $users->random()->id;
+    //     $team->save();
+    // }
 });

@@ -50,7 +50,7 @@
 
         <div v-else>
             <div class="flex justify-center items-center justify-between">
-                <div class="text-2xl text-center" v-html="q3tohtml(team.name)"></div>
+                <div class="text-2xl text-center text-white" v-html="q3tohtml(team.name)"></div>
 
                 <Link :href="route('tournaments.teams.leave', tournament.id)" class="text-gray-100 text-sm bg-grayop-700 cursor-pointer hover:bg-gray-600 text-center rounded-lg px-2 py-1 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
@@ -137,7 +137,7 @@
     </Tournament>
 </template>
 
-<style>
+<style scoped>
     .tech-line-cpm {
         background: linear-gradient(90deg,#ffffff42,#7dff88,#ffffff42);
         box-shadow: 0 0 50px 4px #0aff336f;

@@ -13,14 +13,21 @@ class Round extends Model
         'name',
         'start_date',
         'end_date',
-        'tournament_id',
-        'packed',
-        'published',
-        'mapname',
         'author',
-        'image',
         'weapons',
         'items',
         'functions',
+        'image',
+        'tournament_id',
+        'results',
+        'published'
     ];
+
+    public function tournament() {
+        return $this->belongsTo(Tournament::class);
+    }
+
+    public function maps() {
+        return $this->hasMany(RoundMap::class);
+    }
 }

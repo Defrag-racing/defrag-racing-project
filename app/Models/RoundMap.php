@@ -12,7 +12,7 @@ class RoundMap extends Model
     protected $fillable = [
         'round_id',
         'crc',
-        'file',
-        'filename'
+        'name',
+        'pk3'
     ];
 }

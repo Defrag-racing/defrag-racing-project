@@ -4,10 +4,12 @@ use App\Http\Controllers\TournamentsController;
 use App\Http\Controllers\TournamentManagementController;
 use App\Http\Controllers\Tournaments\DonationController;
 use App\Http\Controllers\Tournaments\FaqController;
+use App\Http\Controllers\Tournaments\RoundController;
 use App\Http\Controllers\Tournaments\SuggestionController;
 use App\Http\Controllers\Tournaments\StreamerController;
 use App\Http\Controllers\Tournaments\RelatedTournamentController;
 use App\Http\Controllers\Tournaments\TeamController;
+use App\Http\Controllers\Tournaments\RoundMapController;
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
@@ -71,4 +73,17 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage')->gr
     Route::get('{tournament}/related/{relatedTournament}/edit', [RelatedTournamentController::class, 'edit'])->name('tournaments.related.edit');
     Route::post('{tournament}/related/{relatedTournament}/update', [RelatedTournamentController::class, 'update'])->name('tournaments.related.update');
     Route::get('{tournament}/related/{relatedTournament}', [RelatedTournamentController::class, 'destroy'])->name('tournaments.related.destroy');
+
+
+    Route::get('{tournament}/rounds', [RoundController::class, 'index'])->name('tournaments.rounds.manage');
+    Route::get('{tournament}/rounds/create', [RoundController::class, 'create'])->name('tournaments.rounds.create');
+    Route::post('{tournament}/rounds/store', [RoundController::class, 'store'])->name('tournaments.rounds.store');
+    Route::get('{tournament}/rounds/{round}/edit', [RoundController::class, 'edit'])->name('tournaments.rounds.edit');
+    Route::post('{tournament}/rounds/{round}/update', [RoundController::class, 'update'])->name('tournaments.rounds.update');
+    Route::post('{tournament}/rounds/{round}', [RoundController::class, 'destroy'])->name('tournaments.rounds.destroy');
+
+    Route::get('{tournament}/rounds/{round}/maps', [RoundMapController::class, 'index'])->name('tournaments.rounds.maps.index');
+    Route::get('{tournament}/rounds/{round}/maps/create', [RoundMapController::class, 'create'])->name('tournaments.rounds.maps.create');
+    Route::post('{tournament}/rounds/{round}/maps/create', [RoundMapController::class, 'store'])->name('tournaments.rounds.maps.store');
+    Route::get('{tournament}/rounds/{round}/maps/{map}/delete', [RoundMapController::class, 'destroy'])->name('tournaments.rounds.maps.destroy');
 });

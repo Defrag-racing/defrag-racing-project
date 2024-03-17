@@ -34,8 +34,8 @@
                 View Suggestions
             </Link>
 
-            <a href="#" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
-                Create New Round
+            <a :href="route('tournaments.rounds.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                Manage Rounds
             </a>
         </div>
     </Tournament>

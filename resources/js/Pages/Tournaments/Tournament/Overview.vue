@@ -63,8 +63,8 @@
                     </div>
                 </div>
             </div>
-    
-            <div class="w-1/2 h-0.5 mb-5 mt-3" style="background-color: #4d78bf"></div>
+
+            <div class="tech-line-overview"></div>
         </div>
 
         <!-- Description -->
@@ -78,7 +78,7 @@
         <div>
             <h1 class="font-black text-3xl text-white my-5">Live Streamers</h1>
 
-            <div class="w-1/2 h-0.5 mb-5 mt-3" style="background-color: #4d78bf"></div>
+            <div class="tech-line-overview"></div>
 
             <div class="text-gray-400 text-lg flex flex-wrap">
                 <div v-for="streamer in tournament.streamers" :key="streamer.id" class="mr-10 text-gray-500 text-lg mb-10 ">
@@ -95,7 +95,7 @@
         <div v-if="tournament.prize_pool > 0">
             <h1 class="font-black text-3xl dark:text-white my-5">Prize Pool</h1>
 
-            <div class="w-1/2 h-0.5 mb-5" style="background-color: #4d78bf"></div>
+            <div class="tech-line-overview"></div>
 
             <div class="text-gray-900 dark:text-gray-400 text-lg mb-10">
                 Current Prize Pool: <span class="text-blue-400 text-xl">{{ tournament.prize_pool }}$</span>
@@ -106,7 +106,7 @@
         <div>
             <h1 class="font-black text-3xl dark:text-white my-5">Organizers</h1>
 
-            <div class="w-1/2 h-0.5 mb-5" style="background-color: #4d78bf"></div>
+            <div class="tech-line-overview"></div>
 
             <div class="mt-5">
                 <div class="w-full flex text-center">
@@ -124,7 +124,7 @@
         <!-- Related Tournaments -->
         <h1 class="font-black text-3xl dark:text-white my-5">Related Tournaments</h1>
 
-        <div class="w-1/2 h-0.5 mb-5" style="background-color: #4d78bf"></div>
+        <div class="tech-line-overview"></div>
 
         <div class="w-full flex flex-wrap">
             <div v-for="relatedTournament in tournament.related_tournaments" :key="relatedTournament.id" class="mr-5 mb-4">
@@ -137,3 +137,14 @@
         </div>
     </Tournament>
 </template>
+
+<style scoped>
+    .tech-line-overview {
+        background: linear-gradient(90deg,#ffffff42,#2f90ff,#ffffff42);
+        box-shadow: 0 0 50px 4px #0a7cffb2;
+        height: 1px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        max-width: 100%;
+    }
+</style>

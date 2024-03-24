@@ -97,15 +97,6 @@ class RoundController extends Controller {
 
         $start_date = Carbon::parse($request->start_date);
         $end_date = Carbon::parse($request->end_date);
-        $now = Carbon::now();
-
-        if ($start_date->lt($now)) {
-            return redirect()->back()->withDanger('Start date must be in the future');
-        }
-
-        if ($end_date->lt($start_date)) {
-            return redirect()->back()->withDanger('End date must be after the start date');
-        }
 
         if ($request->file('image')) {
             $image = $request->file('image')->store('tournaments/rounds', 'public');

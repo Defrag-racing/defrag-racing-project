@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Round;
 use App\Models\RoundMap;
+use App\Models\Map;
 
 use Carbon\Carbon;
 
@@ -44,6 +45,28 @@ class RoundMapController extends Controller {
         ]);
 
         return redirect()->back()->withSuccess('Map created successfully !');
+    }
+
+    public function existingstore(Request $request, Tournament $tournament, Round $round) {
+        $request->validate([
+            'mapname'        =>      'required|exists:maps,name'
+        ]);
+
+        $map = Map::where('name', $request->mapname)->first();
+
+        if (! $map) {
+            return redirect()->back()->withError('Map not found !');
+        }
+
+        $roundMap = new RoundMap();
+        $roundMap->round_id = $round->id;
+        $roundMap->name = $map->name;
+        $roundMap->pk3 = $map->pk3;
+        $roundMap->crc = '';
+
+        $roundMap->save();
+
+        return redirect()->back()->withSuccess('Map added successfully !');
     }
 
     public function destroy(Tournament $tournament, Round $round, RoundMap $map) {

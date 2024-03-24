@@ -53,8 +53,8 @@
 </script>
 
 <template>
-    <div class="bg-blackop-30 p-3 rounded-md my-5">
-        <div class="text-2xl text-center text-gray-300 mb-3">Add Map</div>
+    <div>
+        <div class="text-2xl text-center text-gray-300 mb-3">Add New Map</div>
         <form enctype="multipart/form-data" @submit.prevent="finishBasicInformation" class="flex justify-center">
             <div class="w-80">
                 <div class="mb-3">

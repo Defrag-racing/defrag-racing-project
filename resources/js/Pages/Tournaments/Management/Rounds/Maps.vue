@@ -2,7 +2,7 @@
     import { Link } from '@inertiajs/vue3';
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
     import MapForm from "./MapForm.vue";
-    import { ref } from 'vue';
+    import MapFormExisting from "./MapFormExisting.vue";
 
     const props = defineProps({
         tournament: Object,
@@ -14,8 +14,14 @@
     <Tournament :tournament="tournament" tab="ManageTournament">
         <div class="text-gray-300 text-xl text-center">{{ round.name }} Maps</div>
 
-        <div>
-            <MapForm :tournament="tournament" :round="round" />
+        <div class="flex bg-blackop-30 p-3 rounded-md my-5">
+            <div class="flex justify-center flex-grow">
+                <MapForm :tournament="tournament" :round="round" />
+            </div>
+
+            <div class="flex justify-center flex-grow">
+                <MapFormExisting :tournament="tournament" :round="round" />
+            </div>
         </div>
 
         <div v-for="map in round.maps" :key="round.id">

@@ -24,6 +24,8 @@ class ScrapeRecords implements ShouldQueue
     private $start;
     private $pages;
 
+    public $timeout = 600;
+
     public function __construct($start = 1, $pages = 0) {
         $this->start = $start;
         $this->pages = $pages;
@@ -48,8 +50,6 @@ class ScrapeRecords implements ShouldQueue
             echo ('No records found !') . PHP_EOL;
         }
 
-        echo 'WE ARE FINISHED SCRAPPING' . PHP_EOL;
-
         $this->processRecords($records);
 
         echo ("Finished Running the scrapper.") . PHP_EOL;
@@ -62,11 +62,8 @@ class ScrapeRecords implements ShouldQueue
                     ->where('mode', $record['mode'])
                     ->where('mdd_id', $record['mdd_id'])
                     ->where('mapname', $record['map'])->first();
-            
-            echo ("Checking Record [" . $record['name'] . "] (" . $record['time'] . ") (" . $record['map'] . ") (" . $record['physics'] . ")") . PHP_EOL;
 
             if (! $find) {
-                echo ("Record Not Found [" . $record['name'] . "] (" . $record['time'] . ") (" . $record['map'] . ") (" . $record['physics'] . ")") . PHP_EOL;
                 $this->insertRecord($record);
                 continue;
             }
@@ -77,12 +74,8 @@ class ScrapeRecords implements ShouldQueue
             }
 
             if ($find->time !== $record['time']) {
-                echo 'Historic Record Found [' . $find->name . '] (' . $find->time . ') (' . $find->mapname . ') (' . $find->physics . ')' . PHP_EOL;
-
                 $this->insertHistoricRecord($find, $record);
             }
-
-            echo 'Adding Record [' . $record['name'] . '] (' . $record['time'] . ') (' . $record['map'] . ') (' . $record['physics'] . ')' . PHP_EOL;
 
             $this->insertRecord($record);
         }

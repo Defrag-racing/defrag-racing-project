@@ -46,19 +46,11 @@ class Q3DFRecords {
     public function scrape($page) {
         echo 'Scraping page: ' . $page . PHP_EOL;
 
-        try {
-            $response = file_get_contents($this->url . $page);
-        } catch(\Exception $e) {
-            echo 'Failed to load page data' . PHP_EOL;
-            echo $e->getMessage() . PHP_EOL;
-            $response = false;
-        }
+        $response = file_get_contents($this->url . $page);
 
         if ($response === false) {
             return [];
         }
-
-        echo 'Loaded page data successfully' . PHP_EOL;
 
         libxml_use_internal_errors(true);
 
@@ -67,13 +59,9 @@ class Q3DFRecords {
 
         libxml_clear_errors();
 
-        echo 'Parsed page data successfully' . PHP_EOL;
-
         $this->xpath = new DOMXPath($dom);
 
         $recordsTable = $this->xpath->query('//table[contains(@class, "recordlist")]/tbody')->item(0);
-
-        echo 'Queried records table successfully' . PHP_EOL;
 
         return $this->getRecords($recordsTable);
     }
@@ -97,8 +85,6 @@ class Q3DFRecords {
         $records = [];
 
         $recordsParts = $recordsTable->getElementsByTagName('tr');
-
-        echo 'Found ' . $recordsParts->length . ' records' . PHP_EOL;
 
         foreach($recordsParts as $recordPart) {
             $records[] = $this->getRecord($recordPart);
@@ -128,8 +114,6 @@ class Q3DFRecords {
         $player['mode'] = $physicsParts[1];
 
         $player['date'] = $date->toDateTimeString();
-
-        echo 'Parsed record successfully with name: ' . $player['name'] . ' and time: ' . $player['time'] . PHP_EOL;
 
         return $player;
     }

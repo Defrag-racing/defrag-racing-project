@@ -39,7 +39,7 @@ class WebController extends Controller
             $parts = explode('/', $map->pk3);
             $url = "https://dl.defrag.racing/downloads/maps/" . end($parts);;
 
-            return redirect($url);
+            return redirect($url, 307);
         }
 
         abort(404);

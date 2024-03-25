@@ -52,6 +52,8 @@ class Q3DFRecords {
             return [];
         }
 
+        echo 'Loaded page data successfully';
+
         libxml_use_internal_errors(true);
 
         $dom = new DOMDocument();
@@ -59,9 +61,13 @@ class Q3DFRecords {
 
         libxml_clear_errors();
 
+        echo 'Parsed page data successfully';
+
         $this->xpath = new DOMXPath($dom);
 
         $recordsTable = $this->xpath->query('//table[contains(@class, "recordlist")]/tbody')->item(0);
+
+        echo 'Queried records table successfully';
 
         return $this->getRecords($recordsTable);
     }
@@ -85,6 +91,8 @@ class Q3DFRecords {
         $records = [];
 
         $recordsParts = $recordsTable->getElementsByTagName('tr');
+
+        echo 'Found ' . $recordsParts->length . ' records';
 
         foreach($recordsParts as $recordPart) {
             $records[] = $this->getRecord($recordPart);
@@ -114,6 +122,8 @@ class Q3DFRecords {
         $player['mode'] = $physicsParts[1];
 
         $player['date'] = $date->toDateTimeString();
+
+        echo 'Parsed record successfully with name: ' . $player['name'] . ' and time: ' . $player['time'] . PHP_EOL;
 
         return $player;
     }

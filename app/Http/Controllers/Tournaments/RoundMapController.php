@@ -60,7 +60,7 @@ class RoundMapController extends Controller {
 
         $roundMap = new RoundMap();
         $roundMap->round_id = $round->id;
-        $roundMap->name = $map->name;
+        $roundMap->name = $map->name . '.pk3';
         $roundMap->pk3 = $map->pk3;
         $roundMap->crc = '';
 

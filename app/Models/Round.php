@@ -11,6 +11,8 @@ class Round extends Model
 
     protected $fillable = [
         'name',
+        'mapname',
+        'category',
         'start_date',
         'end_date',
         'author',

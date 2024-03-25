@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('rounds', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('mapname');
+            $table->string('category');
             $table->string('image');
             $table->string('author');
             $table->datetime('start_date');

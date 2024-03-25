@@ -23,7 +23,7 @@
             name: 'Rounds',
             label: 'Rounds',
             link: true,
-            route: 'tournaments.show',
+            route: 'tournaments.rounds.index',
             params: { tournament: props.tournament.id }
         },
         {

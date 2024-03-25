@@ -145,6 +145,16 @@
         }
     ];
 
+    const categories = [
+        'Strafe',
+        'Rockets',
+        'Combo',
+        'Plasma',
+        'Accuracy',
+        'Technical',
+        'Haste strafe'
+    ];
+
     const props = defineProps({
         item: Object,
         tournament: Object,
@@ -154,6 +164,8 @@
     const form = useForm({
         _method: 'POST',
         name: props.item?.name || '',
+        mapname: props.item?.mapname || '',
+        category: props.item?.category || '',
         image: props.item?.image || '',
         start_date: props.item?.start_date || '',
         end_date: props.item?.end_date || '',
@@ -243,6 +255,18 @@
                     </div>
                     
                     <div class="mb-3">
+                        <InputLabel for="mapname" value="Map Name" />
+                        <TextInput
+                            id="mapname"
+                            v-model="form.mapname"
+                            type="text"
+                            class="mt-1 block w-full"
+                            :class="{ 'border-red-500': form.errors.mapname }"
+                        />
+                        <InputError :message="form.errors.mapname" />
+                    </div>
+                    
+                    <div class="mb-3">
                         <InputLabel for="author" value="Map Author" />
                         <TextInput
                             id="author"
@@ -252,6 +276,16 @@
                             :class="{ 'border-red-500': form.errors.author }"
                         />
                         <InputError :message="form.errors.author" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <InputLabel for="category" value="Map Category" />
+                        <select id="category" v-model="form.category" class="border-2 border-grayop-700 bg-grayop-900 text-gray-600 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm w-full">
+                            <option v-for="category in categories" :value="category">
+                                {{ category }}
+                            </option>
+                        </select>
+                        <InputError :message="form.errors.mapname" />
                     </div>
 
                     <div class="mb-3">

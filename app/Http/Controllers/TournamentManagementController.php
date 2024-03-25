@@ -13,8 +13,13 @@ use Carbon\Carbon;
 
 class TournamentManagementController extends Controller {
     public function manage (Tournament $tournament) {
+        $donations = $tournament->donations()->count();
+        $suggestions = $tournament->suggestions()->where('done', false)->count();
+
         return Inertia::render('Tournaments/Tournament/ManageTournament')
-                ->with('tournament', $tournament);
+                ->with('tournament', $tournament)
+                ->with('donations', $donations)
+                ->with('suggestions', $suggestions);
     }
 
     public function create() {

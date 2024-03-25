@@ -91,5 +91,5 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage')->gr
     Route::get('{tournament}/rounds/{round}/maps/create', [RoundMapController::class, 'create'])->name('tournaments.rounds.maps.create');
     Route::post('{tournament}/rounds/{round}/maps/create', [RoundMapController::class, 'store'])->name('tournaments.rounds.maps.store');
     Route::post('{tournament}/rounds/{round}/maps/existing/create', [RoundMapController::class, 'existingstore'])->name('tournaments.rounds.maps.existing.store');
-    Route::get('{tournament}/rounds/{round}/maps/{map}/delete', [RoundMapController::class, 'destroy'])->name('tournaments.rounds.maps.destroy');
+    Route::get('{tournament}/rounds/{round}/maps/{map}/done', [RoundMapController::class, 'destroy'])->name('tournaments.rounds.maps.destroy');
 });

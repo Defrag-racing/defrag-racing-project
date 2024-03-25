@@ -3,7 +3,9 @@
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
 
     const props = defineProps({
-        tournament: Object
+        tournament: Object,
+        donations: Number,
+        suggestions: Number
     });
 </script>
 
@@ -15,7 +17,7 @@
             </Link>
 
             <Link :href="route('tournaments.donations.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
-                Manage Donations
+                Manage Donations ({{ donations }})
             </Link>
 
             <Link :href="route('tournaments.faqs.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
@@ -30,7 +32,10 @@
                 Manage Related Tournaments
             </Link>
 
-            <Link :href="route('tournaments.suggestions.index', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+            <Link :href="route('tournaments.suggestions.index', tournament.id)" class="relative text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                <div v-if="suggestions > 0" class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                    {{ suggestions }}
+                </div>
                 View Suggestions
             </Link>
 

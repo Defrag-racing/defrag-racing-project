@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('title');
             $table->text('message');
+            $table->boolean('done')->default(false);
             $table->timestamps();
         });
     }

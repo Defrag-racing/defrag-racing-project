@@ -14,9 +14,9 @@
                     {{ suggestion.title }}
                 </h2>
     
-                <div class="flex">
+                <div class="flex" v-if="! suggestion.done">
                     <Link :href="route('tournaments.suggestions.destroy', {tournament: suggestion.tournament_id, suggestion: suggestion.id})" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
-                        Delete
+                        Archive
                     </Link>
                 </div>
             </div>

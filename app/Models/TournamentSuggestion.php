@@ -14,5 +14,6 @@ class TournamentSuggestion extends Model
         'user_id',
         'title',
         'message',
+        'done'
     ];
 }

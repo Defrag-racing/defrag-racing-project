@@ -52,7 +52,7 @@ class Q3DFRecords {
             return [];
         }
 
-        echo 'Loaded page data successfully';
+        echo 'Loaded page data successfully' . PHP_EOL;
 
         libxml_use_internal_errors(true);
 
@@ -61,13 +61,13 @@ class Q3DFRecords {
 
         libxml_clear_errors();
 
-        echo 'Parsed page data successfully';
+        echo 'Parsed page data successfully' . PHP_EOL;
 
         $this->xpath = new DOMXPath($dom);
 
         $recordsTable = $this->xpath->query('//table[contains(@class, "recordlist")]/tbody')->item(0);
 
-        echo 'Queried records table successfully';
+        echo 'Queried records table successfully' . PHP_EOL;
 
         return $this->getRecords($recordsTable);
     }
@@ -92,7 +92,7 @@ class Q3DFRecords {
 
         $recordsParts = $recordsTable->getElementsByTagName('tr');
 
-        echo 'Found ' . $recordsParts->length . ' records';
+        echo 'Found ' . $recordsParts->length . ' records' . PHP_EOL;
 
         foreach($recordsParts as $recordPart) {
             $records[] = $this->getRecord($recordPart);

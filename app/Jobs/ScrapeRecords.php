@@ -24,7 +24,7 @@ class ScrapeRecords implements ShouldQueue
     private $start;
     private $pages;
 
-    public $timeout = 600;
+    public $timeout = 1200;
 
     public function __construct($start = 1, $pages = 0) {
         $this->start = $start;

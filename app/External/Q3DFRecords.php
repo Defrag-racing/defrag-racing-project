@@ -46,7 +46,13 @@ class Q3DFRecords {
     public function scrape($page) {
         echo 'Scraping page: ' . $page . PHP_EOL;
 
-        $response = file_get_contents($this->url . $page);
+        try {
+            $response = file_get_contents($this->url . $page);
+        } catch(\Exception $e) {
+            echo 'Failed to load page data' . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            $response = false;
+        }
 
         if ($response === false) {
             return [];

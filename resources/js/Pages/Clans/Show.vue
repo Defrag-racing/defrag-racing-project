@@ -5,8 +5,6 @@
         clan: Object,
         players: Array,
     });
-
-    console.log(props.players)
 </script>
 
 <template>

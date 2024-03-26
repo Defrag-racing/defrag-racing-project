@@ -27,6 +27,13 @@
             params: { tournament: props.tournament.id }
         },
         {
+            name: 'News',
+            label: 'News',
+            link: true,
+            route: 'tournaments.news.index',
+            params: { tournament: props.tournament.id }
+        },
+        {
             name: 'Standings',
             label: 'Standings',
             link: true,

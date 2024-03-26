@@ -37,20 +37,12 @@
 <template>
     <div>
         <div @click="showSection = !showSection" class="flex justify-center items-center cursor-pointer text-center text-xl font-medium text-gray-300 bg-blackop-30 p-2 rounded-md hover:text-white">
-            <div class="mr-2">
-                Comments
+            <div>
+                {{ showSection ? 'Hide Comments' : 'Show Comments' }}
             </div>
-
-            <svg v-if="!showSection" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-            </svg>
-
-            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-            </svg>
         </div>
 
-        <div class="bg-blackop-30 p-4 rounded-md" v-show="showSection">
+        <div class="bg-blackop-30 p-4 rounded-md mt-5" v-show="showSection">
             <div class="flex justify-between items-center">
                 <TextInput
                     v-model="form.comment"
@@ -95,6 +87,10 @@
                     </div>
     
                     <div class="ruler my-5"></div>
+                </div>
+
+                <div class="text-center text-gray-400" v-if="comments.length === 0">
+                    There are no comments yet.
                 </div>
             </div>
         </div>

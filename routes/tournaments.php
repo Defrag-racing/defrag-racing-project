@@ -29,6 +29,8 @@ Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
 Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index');
 Route::post('/tournaments/{tournament}/news/{new}/comment', [NewsController::class, 'comment'])->name('tournaments.news.comment');
 
+Route::post('/tournaments/{tournament}/comments/{comment}/reply', [NewsController::class, 'reply'])->name('tournaments.comments.reply');
+
 Route::prefix('/tournaments/{tournament}/teams')->group(function () {
     Route::get('/index', [TeamController::class, 'index'])->name('tournaments.teams.index');
     Route::get('/manage', [TeamController::class, 'manage'])->name('tournaments.teams.manage');

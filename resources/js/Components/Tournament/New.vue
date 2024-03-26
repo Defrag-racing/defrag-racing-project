@@ -24,6 +24,6 @@
             {{ item.content }}
         </div>
     
-        <CommentSection class="mt-5" :comments="item.comments" :url="route('tournaments.news.comment', {tournament: tournament.id, new: item.id})" />
+        <CommentSection :tournament="tournament" class="mt-5" :comments="item.comments" :url="route('tournaments.news.comment', {tournament: tournament.id, new: item.id})" />
     </div>
 </template>

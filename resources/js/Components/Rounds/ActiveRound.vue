@@ -60,6 +60,6 @@
 
         <MySubmissions :round="listing.round" v-if="active" />
 
-        <CommentSection :comments="listing.comments" :url="route('tournaments.rounds.comment', {tournament: tournament.id, listing: listing.id})" />
+        <CommentSection :tournament="tournament" :comments="listing.comments" :url="route('tournaments.rounds.comment', {tournament: tournament.id, listing: listing.id})" />
     </div>
 </template>

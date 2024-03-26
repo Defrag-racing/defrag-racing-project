@@ -16,6 +16,8 @@ class ListingComment extends Model
         'comment',
     ];
 
+    protected $with=['user', 'comments'];
+
     public function commentable()
     {
         return $this->morphTo();
@@ -24,5 +26,10 @@ class ListingComment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(ListingComment::class, 'commentable');
     }
 }

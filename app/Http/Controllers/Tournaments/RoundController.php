@@ -21,7 +21,9 @@ class RoundController extends Controller {
         $listings = TournamentListing::where('tournament_id', $tournament->id)
                 ->orderBy('order', 'DESC')
                 ->with('round.maps')
-                ->with('comments.user')
+                ->with(['comments' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }])
                 ->get();
 
         return Inertia::render('Tournaments/Tournament/Rounds')

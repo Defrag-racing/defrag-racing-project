@@ -12,12 +12,15 @@ use App\Rules\YouTubeUrl;
 use App\Http\Controllers\Controller;
 
 use App\Models\TournamentNew;
+use App\Models\ListingComment;
 
 class NewsController extends Controller {
     public function index (Tournament $tournament) {
         $news = TournamentNew::where('tournament_id', $tournament->id)
             ->orderBy('created_at', 'desc')
-            ->with('comments.user')
+            ->with(['comments' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }])
             ->get();
 
         return Inertia::render('Tournaments/Tournament/News')
@@ -32,5 +35,14 @@ class NewsController extends Controller {
         ]);
 
         return redirect()->route('tournaments.news.index', $tournament);
+    }
+
+    public function reply (Request $request, Tournament $tournament, ListingComment $comment) {
+        $comment->comments()->create([
+            'user_id' => $request->user()->id,
+            'comment' => $request->comment,
+        ]);
+
+        return back();
     }
 }

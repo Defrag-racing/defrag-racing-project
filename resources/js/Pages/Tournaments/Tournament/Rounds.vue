@@ -39,11 +39,11 @@
     <Tournament :tournament="tournament" tab="Rounds">
         <div v-for="listing in listings" :key="listing.id">
             <ActiveRound
-                v-if="status(listing) === 'Active'"
-                :round="listing.round"
+                v-if="status(listing) === 'Active' || status(listing) === 'Completed'"
                 :tournament="tournament"
                 :title="listing.title"
-                :active="true"
+                :active="status(listing) === 'Active'"
+                :listing="listing"
             />
         </div>
     </Tournament>

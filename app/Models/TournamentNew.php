@@ -5,31 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TournamentListing extends Model
+class TournamentNew extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'tournament_id',
         'title',
-        'description',
+        'content',
         'image',
         'link',
-        'type',
-        'subtype',
-        'tournament_id',
-        'round_id',
-        'order',
-        'system',
+        'video',
     ];
 
     public function tournament()
     {
         return $this->belongsTo(Tournament::class);
-    }
-
-    public function round()
-    {
-        return $this->belongsTo(Round::class);
     }
 
     public function comments()

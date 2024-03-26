@@ -1,18 +1,22 @@
 <script setup>
     import { ref } from 'vue';
     import { Link } from '@inertiajs/vue3';
+    import moment from 'moment';
 
     defineProps({
         round: Object,
         title: String
     });
 
-    const displayTime = ref('Local')
+    const displayTime = ref('CET')
 
     const getDate = (date) => {
-        const d = new Date(date);
+        moment.tz.setDefault("CET");
+        const inputDate = moment(date, 'YYYY-MM-DD HH:mm:ss');
 
-        return d.toLocaleString();
+        const localDate = inputDate.clone().local();
+
+        return displayTime.value === 'Local' ? localDate.format("YYYY-MM-DD HH:mm") : inputDate.format("YYYY-MM-DD HH:mm");
     }
 
     const changeDisplayTime = () => {

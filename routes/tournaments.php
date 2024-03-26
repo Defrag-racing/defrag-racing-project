@@ -20,6 +20,7 @@ Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faq
 
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index');
+    Route::post('/listings/{listing}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
 });
 
 Route::prefix('/tournaments/{tournament}/teams')->group(function () {

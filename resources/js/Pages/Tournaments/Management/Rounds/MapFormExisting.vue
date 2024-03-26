@@ -122,12 +122,12 @@
                             v-model="search"
                             @focus="onSearchFocus"
                             type="text"
-                            class="mt-1 h-10 hidden sm:block md:w-80 lg:w-100"
+                            class="mt-1 h-10 hidden sm:block w-full"
                             placeholder="Search..."
                             @input="performSearch"
                         />
 
-                        <div v-if="showResultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block md:w-80 lg:w-100 mt-1 absolute bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500" style="z-index: 2000;">
+                        <div v-if="showResultsSection" class="defrag-scrollbar search-results hidden p-3 sm:block w-80 mt-1 absolute bg-gray-900 border-2 border-grayop-700 rounded-md text-gray-500" style="z-index: 2000;">
                             <div v-if="search.length == 0">
                                 Type a search query...
                             </div>

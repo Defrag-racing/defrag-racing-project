@@ -2,12 +2,13 @@
     import { computed, ref } from 'vue';
     import RoundPart from '@/Components/Rounds/RoundPart.vue';
     import MySubmissions from '@/Components/Rounds/MySubmissions.vue';
+    import CommentSection from '@/Components/Tournament/CommentSection.vue';
 
     defineProps({
-        round: Object,
         tournament: Object,
         title: String,
-        active: Boolean
+        active: Boolean,
+        listing: Object
     });
 
     const uploadFileName = ref('Select Demo to upload...')
@@ -19,7 +20,7 @@
 
 <template>
     <div class="mb-5 p-5 rounded-md mx-auto bg-blackop-30">
-        <RoundPart :round="round" :title="title">
+        <RoundPart :round="listing.round" :title="title">
             <template #additional>
                 <div class="flex items-center" v-if="active">
                     <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
@@ -57,6 +58,8 @@
             </template>
         </RoundPart>
 
-        <MySubmissions :round="round" v-if="active" />
+        <MySubmissions :round="listing.round" v-if="active" />
+
+        <CommentSection :comments="listing.comments" :url="route('tournaments.rounds.comment', {tournament: tournament.id, listing: listing.id})" />
     </div>
 </template>

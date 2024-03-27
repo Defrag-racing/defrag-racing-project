@@ -13,6 +13,7 @@ use App\Http\Controllers\Tournaments\TeamController;
 use App\Http\Controllers\Tournaments\RoundMapController;
 use App\Http\Controllers\Tournaments\NewsController;
 use App\Http\Controllers\Tournaments\NewsManagementController;
+use App\Http\Controllers\Tournaments\OrganizersManagementController;
 
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
@@ -108,4 +109,11 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage/{tour
     Route::get('/news/{news}/edit', [NewsManagementController::class, 'edit'])->name('tournaments.news.edit');
     Route::post('/news/{news}/update', [NewsManagementController::class, 'update'])->name('tournaments.news.update');
     Route::get('/news/{news}', [NewsManagementController::class, 'destroy'])->name('tournaments.news.destroy');
+
+    Route::get('/organizers', [OrganizersManagementController::class, 'index'])->name('tournaments.organizers.manage');
+    Route::get('/organizers/create', [OrganizersManagementController::class, 'create'])->name('tournaments.organizers.create');
+    Route::post('/organizers/store', [OrganizersManagementController::class, 'store'])->name('tournaments.organizers.store');
+    Route::get('/organizers/{organizer}/edit', [OrganizersManagementController::class, 'edit'])->name('tournaments.organizers.edit');
+    Route::post('/organizers/{organizer}/update', [OrganizersManagementController::class, 'update'])->name('tournaments.organizers.update');
+    Route::get('/organizers/{organizer}', [OrganizersManagementController::class, 'destroy'])->name('tournaments.organizers.destroy');
 });

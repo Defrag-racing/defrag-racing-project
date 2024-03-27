@@ -46,6 +46,10 @@
             <Link :href="route('tournaments.news.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                 Manage News
             </Link>
+
+            <Link :href="route('tournaments.organizers.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                Manage Organizers
+            </Link>
         </div>
     </Tournament>
 </template>

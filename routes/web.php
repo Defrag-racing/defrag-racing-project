@@ -54,6 +54,3 @@ Route::post('/notifications', [NotificationsController::class, 'clear'])->name('
 
 Route::get('/profile/{userId}', [ProfileController::class, 'index'])->name('profile.index');
 Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('profile.mdd');
-
-Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('images.flags');
-Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');

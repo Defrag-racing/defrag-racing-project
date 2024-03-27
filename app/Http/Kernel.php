@@ -40,6 +40,11 @@ class Kernel extends HttpKernel
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ],
 
+        'general' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class
+        ],
+
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',

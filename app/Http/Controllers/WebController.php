@@ -45,7 +45,7 @@ class WebController extends Controller
             copy($url, $temp);
 
 
-            return response()->download($tempImage, $filename)->deleteFileAfterSend(true);
+            return response()->download($temp, $filename)->deleteFileAfterSend(true);
         }
 
         abort(404);

@@ -37,9 +37,15 @@ class WebController extends Controller
 
         if ($map && $map->pk3) {
             $parts = explode('/', $map->pk3);
-            $url = "https://dl.defrag.racing/downloads/maps/" . end($parts);;
+            $filename = end($parts);
 
-            return redirect($url, 307);
+            $url = "https://dl.defrag.racing/downloads/maps/" . $filename;
+
+            $temp = tempnam(sys_get_temp_dir(), $filename);
+            copy($url, $temp);
+
+
+            return response()->download($tempImage, $filename)->deleteFileAfterSend(true);
         }
 
         abort(404);

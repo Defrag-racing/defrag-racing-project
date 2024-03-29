@@ -25,6 +25,6 @@ class TournamentNew extends Model
 
     public function comments()
     {
-        return $this->morphMany(ListingComment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

@@ -1,4 +1,6 @@
 <script setup>
+    import MyDemoEntry from '@/Components/Rounds/MyDemoEntry.vue';
+
     defineProps({
         round: Object,
         tournament: Object
@@ -17,31 +19,11 @@
                 <div class="uppercase font-black text-2xl dark:text-blue-200 text-center w-full">vq3</div>
             </div>
 
-            <div v-for="submission in round.submissions" class="w-full px-5 py-2 rounded-md bg-white bg-opacity-20 dark:bg-opacity-5 mb-1 flex items-center">
-                <div class="w-10/12 inline-flex items-center truncate">
-                    <div>
-                        <div class="w-full flex items-center flex-nowrap">
-                            <div class="text-xl q3shadow">{{ submission.time }}</div>
-                        </div>
-                        <div class="text-sm opacity-60 whitespace-nowrap">Uploaded <b>{{ submission.created }} ago</b></div>
-                    </div>
-                </div>
 
-                <div class="w-2/12 inline-flex justify-end flex-wrap">
-                    <a href="#" class="font-black text-lg leading-none mb-1 text-indigo-900 dark:text-indigo-100 hover:underline cursor-pointer">
-                        Download
-                    </a>
-                </div>
-            </div>
+            <MyDemoEntry v-for="demo in round.vq3_demos" :demo="demo" :key="demo.id" />
 
-            <div v-if="round.submissions?.length == 0" class="w-full px-5 py-4 rounded-md text-center mb-1 flex items-center justify-center">
-                <div class="inline-flex items-center truncate">
-                    <div>
-                        <div class="w-full flex items-center justify-center">
-                            <div class="text-xl q3shadow text-center">No Demos Submitted</div>
-                        </div>
-                    </div>
-                </div>
+            <div v-if="round.vq3_demos?.length == 0">
+                <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
             </div>
         </div>
 
@@ -50,31 +32,10 @@
                 <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
             </div>
 
-            <div v-for="submission in round.submissions" class="w-full px-5 py-2 rounded-md bg-white bg-opacity-20 dark:bg-opacity-5 mb-1 flex items-center">
-                <div class="w-10/12 inline-flex items-center truncate">
-                    <div>
-                        <div class="w-full flex items-center flex-nowrap">
-                            <div class="text-xl q3shadow">{{ submission.time }}</div>
-                        </div>
-                        <div class="text-sm opacity-60 whitespace-nowrap">Uploaded <b>{{ submission.created }} ago</b></div>
-                    </div>
-                </div>
+            <MyDemoEntry v-for="demo in round.cpm_demos" :demo="demo" :key="demo.id" />
 
-                <div class="w-2/12 inline-flex justify-end flex-wrap">
-                    <a href="#" class="font-black text-lg leading-none mb-1 text-indigo-900 dark:text-indigo-100 hover:underline cursor-pointer">
-                        Download
-                    </a>
-                </div>
-            </div>
-
-            <div v-if="round.submissions?.length == 0" class="w-full px-5 py-4 rounded-md text-center mb-1 flex items-center justify-center">
-                <div class="inline-flex items-center truncate">
-                    <div>
-                        <div class="w-full flex items-center justify-center">
-                            <div class="text-xl q3shadow text-center">No Demos Submitted</div>
-                        </div>
-                    </div>
-                </div>
+            <div v-if="round.cpm_demos?.length == 0">
+                <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
             </div>
         </div>
     </div>

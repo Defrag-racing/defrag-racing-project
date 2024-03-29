@@ -5,13 +5,15 @@
     const props = defineProps({
         tournament: Object,
         donations: Number,
-        suggestions: Number
+        suggestions: Number,
+        myroles: Array
     });
+
 </script>
 
 <template>
     <Tournament :tournament="tournament" tab="ManageTournament">
-        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between">
+        <div v-if="myroles.includes('admin') || myroles.includes('organizer')" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between">
             <Link :href="route('tournaments.edit', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                 Edit Tournament
             </Link>
@@ -49,6 +51,12 @@
 
             <Link :href="route('tournaments.organizers.manage', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                 Manage Organizers
+            </Link>
+        </div>
+
+        <div v-if="myroles.includes('validator')" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between">
+            <Link :href="route('tournaments.validation.index', tournament.id)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                Validate Demos
             </Link>
         </div>
     </Tournament>

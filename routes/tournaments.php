@@ -14,7 +14,10 @@ use App\Http\Controllers\Tournaments\RoundMapController;
 use App\Http\Controllers\Tournaments\NewsController;
 use App\Http\Controllers\Tournaments\NewsManagementController;
 use App\Http\Controllers\Tournaments\OrganizersManagementController;
+use App\Http\Controllers\Tournaments\ValidateDemosController;
+use App\Http\Controllers\DemoDownloadController;
 
+Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
@@ -24,7 +27,9 @@ Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faq
 
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index');
-    Route::post('/listings/{listing}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
+    Route::post('/{round}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
+
+    Route::post('/{round}/submit', [RoundController::class, 'submit'])->name('tournaments.rounds.submit');
 });
 
 Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index');
@@ -116,4 +121,11 @@ Route::middleware(['tournaments.management'])->prefix('/tournaments/manage/{tour
     Route::get('/organizers/{organizer}/edit', [OrganizersManagementController::class, 'edit'])->name('tournaments.organizers.edit');
     Route::post('/organizers/{organizer}/update', [OrganizersManagementController::class, 'update'])->name('tournaments.organizers.update');
     Route::get('/organizers/{organizer}', [OrganizersManagementController::class, 'destroy'])->name('tournaments.organizers.destroy');
+});
+
+Route::middleware(['tournaments.validation'])->prefix('/tournaments/manage/{tournament}/validation')->group(function () {
+    Route::get('/', [ValidateDemosController::class, 'index'])->name('tournaments.validation.index');
+    Route::get('/{round}', [ValidateDemosController::class, 'round'])->name('tournaments.validation.round');
+    Route::post('/{round}/demos/{demo}/approve', [ValidateDemosController::class, 'approve'])->name('tournaments.validation.approve');
+    Route::post('/{round}/demos/{demo}/reject', [ValidateDemosController::class, 'reject'])->name('tournaments.validation.reject');
 });

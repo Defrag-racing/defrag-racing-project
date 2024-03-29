@@ -32,10 +32,9 @@ class Tournament extends Model
         $organizer = Organizer::query()
             ->where('tournament_id', $this->id)
             ->where('user_id', $userId)
-            ->where('role', '!=', 'validator')
-            ->exists();
+            ->pluck('role');
 
-        return $organizer;
+        return $organizer->contains('admin') || $organizer->contains('organizer');
     }
 
     public function isValidator ($userId) {

@@ -12,7 +12,7 @@ use App\Rules\YouTubeUrl;
 use App\Http\Controllers\Controller;
 
 use App\Models\TournamentNew;
-use App\Models\ListingComment;
+use App\Models\Comment;
 
 class NewsController extends Controller {
     public function index (Tournament $tournament) {
@@ -37,7 +37,7 @@ class NewsController extends Controller {
         return redirect()->route('tournaments.news.index', $tournament);
     }
 
-    public function reply (Request $request, Tournament $tournament, ListingComment $comment) {
+    public function reply (Request $request, Tournament $tournament, Comment $comment) {
         $comment->comments()->create([
             'user_id' => $request->user()->id,
             'comment' => $request->comment,

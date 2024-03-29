@@ -4,10 +4,10 @@
 
     const props = defineProps({
         tournament: Object,
-        listings: Array
+        rounds: Array
     });
 
-    const getRoundStatus = (round) => {
+    const status = (round) => {
         const date = new Date();
         const start = new Date(round.start_date);
         const end = new Date(round.end_date);
@@ -23,27 +23,15 @@
         return 'Active';
     }
 
-    const status = (listing) => {
-        if (listing.type === 'tournament') {
-            return 'Tournament';
-        }
-
-        if (listing.type === 'round') {
-            return getRoundStatus(listing.round);
-        }
-    }
-
 </script>
 
 <template>
     <Tournament :tournament="tournament" tab="Rounds">
-        <div v-for="listing in listings" :key="listing.id">
+        <div v-for="round in rounds" :key="round.id">
             <ActiveRound
-                v-if="status(listing) === 'Active' || status(listing) === 'Completed'"
                 :tournament="tournament"
-                :title="listing.title"
-                :active="status(listing) === 'Active'"
-                :listing="listing"
+                :active="status(round) === 'Active'"
+                :round="round"
             />
         </div>
     </Tournament>

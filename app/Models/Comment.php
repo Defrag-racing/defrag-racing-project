@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ListingComment extends Model
+class Comment extends Model
 {
     use HasFactory;
 
@@ -30,6 +30,6 @@ class ListingComment extends Model
 
     public function comments()
     {
-        return $this->morphMany(ListingComment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

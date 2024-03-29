@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use App\Models\Tournament;
 
-class TournamentManagementMiddleware
+class TournamentValidationMiddleware
 {
     /**
      * Handle an incoming request.
@@ -23,7 +23,7 @@ class TournamentManagementMiddleware
 
         $tournament = $request->route('tournament');
 
-        if (! $tournament->isOrganizer($request->user()->id)) {
+        if (! $tournament->isValidator($request->user()->id)) {
             return redirect()->route('tournaments.index');
         }
 

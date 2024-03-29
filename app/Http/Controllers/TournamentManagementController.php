@@ -12,14 +12,20 @@ use App\Rules\YouTubeUrl;
 use Carbon\Carbon;
 
 class TournamentManagementController extends Controller {
-    public function manage (Tournament $tournament) {
+    public function manage (Tournament $tournament, Request $request) {
         $donations = $tournament->donations()->count();
         $suggestions = $tournament->suggestions()->where('done', false)->count();
+
+        $myroles = Organizer::query()
+            ->where('tournament_id', $tournament->id)
+            ->where('user_id', $request->user()->id)
+            ->pluck('role');
 
         return Inertia::render('Tournaments/Tournament/ManageTournament')
                 ->with('tournament', $tournament)
                 ->with('donations', $donations)
-                ->with('suggestions', $suggestions);
+                ->with('suggestions', $suggestions)
+                ->with('myroles', $myroles);
     }
 
     public function create() {

@@ -32,4 +32,16 @@ class Round extends Model
     public function maps() {
         return $this->hasMany(RoundMap::class);
     }
+
+    public function comments() {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function vq3_demos() {
+        return $this->hasMany(Demo::class)->where('physics', 'vq3')->orderBy('time', 'asc');
+    }
+
+    public function cpm_demos() {
+        return $this->hasMany(Demo::class)->where('physics', 'cpm')->orderBy('time', 'asc');
+    }
 }

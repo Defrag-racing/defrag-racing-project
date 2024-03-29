@@ -27,7 +27,7 @@
 <template>
     <div class="mb-5 p-2 rounded-lg mx-auto">
         <div class="flex justify-between">
-            <div class="font-black text-3xl text-white">{{ title }}</div>
+            <div class="font-black text-3xl text-white">{{ round.name }}</div>
         </div>
     
         <div class="tech-line-overview mt-4 mb-8"></div>

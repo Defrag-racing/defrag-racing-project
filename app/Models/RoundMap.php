@@ -13,6 +13,7 @@ class RoundMap extends Model
         'round_id',
         'crc',
         'name',
+        'download_name',
         'pk3'
     ];
 }

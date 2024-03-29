@@ -58,7 +58,7 @@
         {
             text: 'Validate Demos',
             route: route('tournaments.validation.index', props.tournament.id),
-            condition: props.myroles.includes('validator')
+            condition: props.myroles.includes('admin') || props.myroles.includes('validator')
         }
     ];
 

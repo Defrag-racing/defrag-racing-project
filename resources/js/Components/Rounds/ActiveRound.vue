@@ -86,7 +86,7 @@
             </template>
         </RoundPart>
 
-        <MySubmissions :round="round" v-if="active" />
+        <MySubmissions :round="round" />
 
         <CommentSection :tournament="tournament" :comments="round.comments" :url="route('tournaments.rounds.comment', {tournament: tournament.id, round: round.id})" />
     </div>

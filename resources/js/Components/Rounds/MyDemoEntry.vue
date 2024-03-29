@@ -17,7 +17,7 @@
             </div>
 
             <div class="w-2/12 inline-flex justify-end flex-wrap">
-                <a href="#" class="font-black text-lg leading-none mb-1 text-indigo-900 dark:text-indigo-100 hover:underline cursor-pointer">
+                <a :href="route('tournaments.demos.download', demo.id)" download class="font-black text-lg leading-none mb-1 text-indigo-900 dark:text-indigo-100 hover:underline cursor-pointer">
                     Download
                 </a>
             </div>

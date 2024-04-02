@@ -116,7 +116,7 @@
 
                         <Tabs2 :tabs="tabs" :activeTab="tab" style="z-index: 3;" />
 
-                        <OverviewNew :comments="false" :key="pinnedNews.id" :item="pinnedNews" :tournament="tournament" />
+                        <OverviewNew v-if="pinnedNews" :comments="false" :key="pinnedNews.id" :item="pinnedNews" :tournament="tournament" />
 
                         <slot></slot>
                     </div>

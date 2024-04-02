@@ -20,8 +20,8 @@ use App\Http\Controllers\StandingsController;
 
 Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
 
-Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index')->middleware('tournaments.news.pinned');
-Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show')->middleware('tournaments.news.pinned');
+Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
+Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules')->middleware('tournaments.news.pinned');
 Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations')->middleware('tournaments.news.pinned');
 Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs')->middleware('tournaments.news.pinned');
@@ -34,7 +34,7 @@ Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::post('/{round}/submit', [RoundController::class, 'submit'])->name('tournaments.rounds.submit');
 });
 
-Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index');
 Route::post('/tournaments/{tournament}/news/{new}/comment', [NewsController::class, 'comment'])->name('tournaments.news.comment');
 
 Route::post('/tournaments/{tournament}/comments/{comment}/reply', [NewsController::class, 'reply'])->name('tournaments.comments.reply');

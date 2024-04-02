@@ -175,6 +175,7 @@
                             <Checkbox v-model:checked="form.pinned" name="pinned" />
                             <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Pin this news ?</span>
                         </label>
+                        <div class="ml-6 mt-2 text-sm text-gray-500">(Pinned news will be shown in all pages of the tournaments) e.g Used for major announcements.</div>
                     </div>
                 </div>
             </template>

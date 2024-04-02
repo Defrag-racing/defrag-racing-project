@@ -20,26 +20,26 @@ use App\Http\Controllers\StandingsController;
 
 Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
 
-Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
-Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
-Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules');
-Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations');
-Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs');
-Route::get('/tournaments/{tournament}/standings', [StandingsController::class, 'index'])->name('tournaments.standings');
+Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/standings', [StandingsController::class, 'index'])->name('tournaments.standings')->middleware('tournaments.news.pinned');
 
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
-    Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index');
+    Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index')->middleware('tournaments.news.pinned');
     Route::post('/{round}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
 
     Route::post('/{round}/submit', [RoundController::class, 'submit'])->name('tournaments.rounds.submit');
 });
 
-Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index');
+Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index')->middleware('tournaments.news.pinned');
 Route::post('/tournaments/{tournament}/news/{new}/comment', [NewsController::class, 'comment'])->name('tournaments.news.comment');
 
 Route::post('/tournaments/{tournament}/comments/{comment}/reply', [NewsController::class, 'reply'])->name('tournaments.comments.reply');
 
-Route::prefix('/tournaments/{tournament}/teams')->group(function () {
+Route::prefix('/tournaments/{tournament}/teams')->middleware('tournaments.news.pinned')->group(function () {
     Route::get('/index', [TeamController::class, 'index'])->name('tournaments.teams.index');
     Route::get('/manage', [TeamController::class, 'manage'])->name('tournaments.teams.manage');
     Route::get('/create', [TeamController::class, 'create'])->name('tournaments.teams.create');

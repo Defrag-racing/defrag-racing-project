@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'tournaments.management' => \App\Http\Middleware\TournamentManagementMiddleware::class,
         'tournaments.validation' => \App\Http\Middleware\TournamentValidationMiddleware::class,
+        'tournaments.news.pinned' => \App\Http\Middleware\TournamentPinnedNewsMiddleware::class,
     ];
 }

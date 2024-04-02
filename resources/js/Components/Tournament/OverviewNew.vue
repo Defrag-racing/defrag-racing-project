@@ -1,6 +1,6 @@
 <script setup>
     import { computed, ref } from 'vue';
-    import CommentSection from '@/Components/Tournament/CommentSection.vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         tournament: Object,
@@ -15,9 +15,9 @@
 <template>
     <div>
         <div class="mb-5 p-5 rounded-md mx-auto bg-grayop-900">
-            <div class="text-white font-bold text-xl">
+            <Link :href="route('tournaments.news.index', tournament)" class="text-white font-bold text-xl hover:underline">
                 {{ title }}
-            </div>
+            </Link>
         </div>
     </div>
 </template>

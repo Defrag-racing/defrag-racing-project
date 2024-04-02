@@ -1,8 +1,8 @@
 <script setup>
     import { Head, usePage } from '@inertiajs/vue3';
     import Tabs2 from '@/Components/Tabs2.vue';
-    import Tabs3 from '@/Components/Tabs3.vue';
-    import { onMounted, getCurrentInstance } from 'vue';
+    import { onMounted, getCurrentInstance, ref } from 'vue';
+    import OverviewNew from '@/Components/Tournament/OverviewNew.vue';
 
     const props = defineProps({
         tournament: Object,
@@ -10,6 +10,8 @@
     });
 
     const page = usePage()
+
+    const pinnedNews = ref(page.props.pinnedNews)
 
     const tabs = [
         {
@@ -113,6 +115,9 @@
                         </div>
 
                         <Tabs2 :tabs="tabs" :activeTab="tab" style="z-index: 3;" />
+
+                        <OverviewNew :comments="false" :key="pinnedNews.id" :item="pinnedNews" :tournament="tournament" />
+
                         <slot></slot>
                     </div>
                   </div>

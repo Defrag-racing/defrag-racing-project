@@ -3,10 +3,12 @@
     import { Link } from '@inertiajs/vue3';
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
     import SuggestionForm from '@/Components/SuggestionForm.vue';
+    import OverviewNew from '@/Components/Tournament/OverviewNew.vue';
 
     const props = defineProps({
         tournament: Object,
-        organizers: Object
+        organizers: Object,
+        latestNews: Array
     });
 
     const trailerOpened = ref(false);
@@ -19,6 +21,18 @@
 
 <template>
     <Tournament :tournament="tournament" tab="Overview">
+        <div v-if="latestNews.length > 0">
+            <div class="flex justify-between items-center">
+                <h1 class="font-black text-3xl text-white mb-3">Latest News</h1>
+            </div>
+
+            <div class="">
+                <OverviewNew :comments="false" v-for="item in latestNews" :key="item.id" :item="item" :tournament="tournament" />
+            </div>
+
+            <div class="tech-line-overview"></div>
+        </div>
+
         <!-- Top Bar -->
         <div>
             <div class="flex justify-between items-center">

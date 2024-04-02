@@ -48,6 +48,7 @@ class NewsManagementController extends Controller {
         }
 
         $news->tournament_id = $tournament->id;
+        $news->pinned = $request->has('pinned') && $request->pinned == true;
         $news->save();
 
         return redirect()->route('tournaments.news.manage', $tournament);
@@ -76,6 +77,7 @@ class NewsManagementController extends Controller {
             $news->image = $request->file('image')->store('news', 'public');
         }
 
+        $news->pinned = $request->has('pinned') && $request->pinned == true;
         $news->save();
 
         return redirect()->route('tournaments.news.manage', $tournament);

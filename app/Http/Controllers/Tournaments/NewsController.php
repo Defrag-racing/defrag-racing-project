@@ -21,6 +21,7 @@ class NewsController extends Controller {
             ->with(['comments' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }])
+            ->with('round')
             ->get();
 
         return Inertia::render('Tournaments/Tournament/News')

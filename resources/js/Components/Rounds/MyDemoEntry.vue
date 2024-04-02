@@ -12,7 +12,10 @@
                     <div class="w-full flex items-center flex-nowrap">
                         <div class="text-xl text-white">{{ formatTime(demo.time) }}</div>
                     </div>
-                    <div class="text-sm text-gray-500">Uploaded <b>{{ timeSince(demo.created_at) }} ago</b></div>
+                    <div>
+                        <div class="text-sm text-gray-500">Uploaded <b>{{ timeSince(demo.created_at) }} ago</b></div>
+                        <div class="text-red-500" v-if="demo.rejected">Rejected: {{ demo.reason }}</div>
+                    </div>
                 </div>
             </div>
 

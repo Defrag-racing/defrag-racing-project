@@ -37,7 +37,7 @@
             name: 'Standings',
             label: 'Standings',
             link: true,
-            route: 'tournaments.show',
+            route: 'tournaments.standings',
             params: { tournament: props.tournament.id }
         },
         {

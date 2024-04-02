@@ -15,45 +15,18 @@ class TournamentsController extends Controller {
             ->orWhere('creator', $request->user()->id)
             ->get();
 
-        $activeTournaments = [];
-        $upcomingTournaments = [];
-        $pastTournaments = [];
+        $activeTournaments = Tournament::whereHas('rounds', function ($query) {
+            $query->where('start_date', '<=', Carbon::now())
+                ->where('end_date', '>=', Carbon::now());
+        })->get();
 
-        $tournaments->each(function($tournament) use ($request, &$activeTournaments, &$upcomingTournaments, &$pastTournaments) {
-            $start_date = Carbon::parse($tournament->start_date);
-            $end_date = Carbon::parse($tournament->end_date);
-            $now = Carbon::now();
+        $upcomingTournaments = Tournament::whereHas('rounds', function ($query) {
+            $query->where('start_date', '>', Carbon::now());
+        })->get();
 
-            if ($now->between($start_date, $end_date) && $now->gte($start_date)) {
-                array_push($activeTournaments, $tournament);
-            }
-
-            if ($now->lt($start_date)) {
-                array_push($upcomingTournaments, $tournament);
-            }
-
-            if ($now->gt($end_date)) {
-                array_push($pastTournaments, $tournament);
-            }
-
-            $organizer = Organizer::query()
-                ->where('tournament_id', $tournament->id)
-                ->where('user_id', $request->user()->id)
-                ->where('role', '!=', 'validator')
-                ->exists();
-
-            $validator = Organizer::query()
-                ->where('tournament_id', $tournament->id)
-                ->where('user_id', $request->user()->id)
-                ->where('role', 'validator')
-                ->orWhere('role', 'admin')
-                ->exists();
-
-
-            $tournament->isOrganizer = $organizer;
-
-            $tournament->isValidator = $validator;
-        });
+        $pastTournaments = Tournament::whereDoesntHave('rounds', function ($query) {
+            $query->where('end_date', '>', Carbon::now());
+        })->get();
 
         return Inertia::render('Tournaments/Index')
             ->with('tournaments', $tournaments)
@@ -65,6 +38,12 @@ class TournamentsController extends Controller {
     public function show(Tournament $tournament, Request $request) {
         $tournament->isOrganizer = $tournament->isOrganizer($request->user()?->id);
         $tournament->isValidator = $tournament->isValidator($request->user()?->id);
+
+        $latestNews = $tournament->news()
+            ->orderBy('created_at', 'desc')
+            ->with('round')
+            ->limit(2)
+            ->get();
         
         $organizers = Organizer::query()
             ->where('tournament_id', $tournament->id)
@@ -78,7 +57,8 @@ class TournamentsController extends Controller {
 
         return Inertia::render('Tournaments/Tournament/Overview')
             ->with('tournament', $tournament)
-            ->with('organizers', $organizers);
+            ->with('organizers', $organizers)
+            ->with('latestNews', $latestNews);
     }
 
     public function rules(Tournament $tournament, Request $request) {

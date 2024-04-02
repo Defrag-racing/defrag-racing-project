@@ -79,4 +79,8 @@ class Tournament extends Model
     public function rounds () {
         return $this->hasMany(Round::class);
     }
+
+    public function news () {
+        return $this->hasMany(TournamentNew::class);
+    }
 }

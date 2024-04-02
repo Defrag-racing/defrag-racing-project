@@ -7,6 +7,7 @@
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
     import TextInput from '@/Components/Laravel/TextInput.vue';
     import SecondaryButton from '@/Components/Laravel/SecondaryButton.vue';
+    import Checkbox from '@/Components/Laravel/Checkbox.vue';
 
     const props = defineProps({
         item: Object,
@@ -22,6 +23,7 @@
         title: props.item?.title || '',
         content: props.item?.content || '',
         image: null,
+        pinned: props.item?.pinned ? true : false
     });
 
     const finishBasicInformation = () => {
@@ -166,6 +168,13 @@
                             Select A New Photo
                         </SecondaryButton>
                         <InputError :message="form.errors.image" class="mt-2" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="flex items-center">
+                            <Checkbox v-model:checked="form.pinned" name="pinned" />
+                            <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">Pin this news ?</span>
+                        </label>
                     </div>
                 </div>
             </template>

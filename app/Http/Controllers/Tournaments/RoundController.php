@@ -34,6 +34,8 @@ class RoundController extends Controller {
                 ->with(['cpm_demos' => function ($query) use($request) {
                     $query->where('user_id', $request->user()->id);
                 }])
+                ->with('vq3_results.user')
+                ->with('cpm_results.user')
                 ->get();
 
         return Inertia::render('Tournaments/Tournament/Rounds')
@@ -129,12 +131,12 @@ class RoundController extends Controller {
         $newDemo->time = $demo_data['time'];
         $newDemo->physics = $demo_data['physics'];
 
+        $newDemo->counted = ! ($tournament->organizers()->where('user_id', $request->user()->id)->exists());
+
         $newDemo->rank = 0;
         $newDemo->points = 0;
 
         $newDemo->save();
-
-
 
         return back()->withSuccess('Demo uploaded successfully');
     }

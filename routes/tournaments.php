@@ -16,6 +16,7 @@ use App\Http\Controllers\Tournaments\NewsManagementController;
 use App\Http\Controllers\Tournaments\OrganizersManagementController;
 use App\Http\Controllers\Tournaments\ValidateDemosController;
 use App\Http\Controllers\DemoDownloadController;
+use App\Http\Controllers\StandingsController;
 
 Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
 
@@ -24,6 +25,7 @@ Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])-
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules');
 Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations');
 Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs');
+Route::get('/tournaments/{tournament}/standings', [StandingsController::class, 'index'])->name('tournaments.standings');
 
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index');

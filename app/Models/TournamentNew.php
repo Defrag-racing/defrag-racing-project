@@ -16,6 +16,9 @@ class TournamentNew extends Model
         'image',
         'link',
         'video',
+        'round_id',
+        'type',
+        'pinned'
     ];
 
     public function tournament()
@@ -26,5 +29,10 @@ class TournamentNew extends Model
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function round()
+    {
+        return $this->belongsTo(Round::class);
     }
 }

@@ -1,6 +1,7 @@
 <script setup>
     import { computed, ref } from 'vue';
     import RoundPart from '@/Components/Rounds/RoundPart.vue';
+    import RoundResults from '@/Components/Rounds/RoundResults.vue';
     import MySubmissions from '@/Components/Rounds/MySubmissions.vue';
     import CommentSection from '@/Components/Tournament/CommentSection.vue';
     import { useForm } from '@inertiajs/vue3';
@@ -85,6 +86,8 @@
                 </div>
             </template>
         </RoundPart>
+
+        <RoundResults :round="round" v-if="round.results" />
 
         <MySubmissions :round="round" />
 

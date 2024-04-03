@@ -1,8 +1,8 @@
 <script setup>
-    import DemoResultEntry from '@/Components/Rounds/DemoResultEntry.vue';
+    import DemoClanResultEntry from '@/Components/Rounds/DemoClanResultEntry.vue';
     import ResultTabs from '@/Components/Rounds/ResultTabs.vue';
 
-    defineProps({
+    const props = defineProps({
         round: Object,
         tournament: Object
     })
@@ -13,7 +13,7 @@
 
     <div class="tech-line-overview my-4"></div>
 
-    <ResultTabs active="single" :tournament="tournament" :round="round" />
+    <ResultTabs active="clans" :tournament="tournament" :round="round" />
 
     <div class="tech-line-overview my-4"></div>
 
@@ -25,9 +25,9 @@
             </div>
 
 
-            <DemoResultEntry v-for="demo in round.vq3_results" :demo="demo" :key="demo.id" />
+            <DemoClanResultEntry physics="vq3" v-for="item in round.clans_vq3" :item="item" :key="item.clan.id" />
 
-            <div v-if="round.vq3_results?.length == 0">
+            <div v-if="round.clans_vq3.length == 0">
                 <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
             </div>
         </div>
@@ -37,9 +37,9 @@
                 <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
             </div>
 
-            <DemoResultEntry v-for="demo in round.cpm_results" :demo="demo" :key="demo.id" />
+            <DemoClanResultEntry physics="cpm" v-for="item in round.clans_cpm" :item="item" :key="item.clan.id" />
 
-            <div v-if="round.cpm_results?.length == 0">
+            <div v-if="round.clans_cpm?.length == 0">
                 <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
             </div>
         </div>

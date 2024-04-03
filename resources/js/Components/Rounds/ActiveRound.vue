@@ -1,7 +1,8 @@
 <script setup>
-    import { computed, ref } from 'vue';
+    import { ref } from 'vue';
     import RoundPart from '@/Components/Rounds/RoundPart.vue';
     import RoundResults from '@/Components/Rounds/RoundResults.vue';
+    import RoundResultsClans from '@/Components/Rounds/RoundResultsClans.vue';
     import MySubmissions from '@/Components/Rounds/MySubmissions.vue';
     import CommentSection from '@/Components/Tournament/CommentSection.vue';
     import { useForm } from '@inertiajs/vue3';
@@ -10,7 +11,11 @@
     const props = defineProps({
         tournament: Object,
         active: Boolean,
-        round: Object
+        round: Object,
+        type: {
+            type: String,
+            default: 'single'
+        }
     });
 
     const form = useForm({
@@ -87,7 +92,13 @@
             </template>
         </RoundPart>
 
-        <RoundResults :round="round" v-if="round.results" />
+        <RoundResults :tournament="tournament" :round="round" v-if="round.results && type === 'single'" />
+
+        <RoundResultsClans
+            :round="round"
+            :tournament="tournament"
+            v-if="round.results && type === 'clans'"
+        />
 
         <MySubmissions :round="round" />
 

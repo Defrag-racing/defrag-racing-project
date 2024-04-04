@@ -16,32 +16,6 @@ class StandingsController extends Controller {
             ->where('results', true)
             ->pluck('id');
 
-
-        $vq3_standings = collect([]);
-
-        $vq3_demos = Demo::whereIn('round_id', $rounds)
-            ->where('physics', 'vq3')
-            ->where('rejected', false)
-            ->groupBy('user_id')
-            ->orderBy('points', 'desc')
-            ->with('user')
-            ->get();
-
-        foreach ($vq3_demos as $demo) {
-            if ($vq3_standings->has($demo->user_id)) {
-                $vq3_standings[$demo->user_id]['points'] += $demo->points;
-            } else {
-                $vq3_standings[$demo->user_id] = [
-                    'points' => $demo->points,
-                    'user' => $demo->user
-                ];
-            }
-        }
-
-        $vq3_standings = $vq3_standings->sortBy(function (array $demo, int $key) {
-            return $demo['points'];
-        });
-
         $cpm_standings = collect([]);
 
         $cpm_demos = Demo::whereIn('round_id', $rounds)
@@ -65,7 +39,35 @@ class StandingsController extends Controller {
             }
         }
 
-        $cpm_standings_sorted = $cpm_standings->sortByDesc(function (array $demo, int $key) {
+        $cpm_standings->sortByDesc(function (array $demo, int $key) {
+            return $demo['points'];
+        });
+
+        $vq3_standings = collect([]);
+
+        $vq3_demos = Demo::whereIn('round_id', $rounds)
+            ->where('physics', 'vq3')
+            ->where('rejected', false)
+            ->groupBy('user_id')
+            ->orderBy('points', 'desc')
+            ->with('user')
+            ->get();
+
+        foreach ($vq3_demos as $demo) {
+            $first = $vq3_standings->firstWhere('id', $demo->user_id);
+
+            if ($first) {
+                $first['points'] += $demo->points;
+            } else {
+                $vq3_standings[] = [
+                    'points'    => $demo->points,
+                    'user'      => $demo->user,
+                    'id'        => $demo->user_id
+                ];
+            }
+        }
+
+        $vq3_standings->sortByDesc(function (array $demo, int $key) {
             return $demo['points'];
         });
 

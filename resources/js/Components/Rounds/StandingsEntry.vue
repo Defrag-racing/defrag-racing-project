@@ -3,7 +3,8 @@
 
     const props = defineProps({
         demo: Object,
-        physics: String
+        physics: String,
+        rank: Number
     });
 </script>
 
@@ -14,6 +15,11 @@
                 <div>
                     <div class="w-full flex items-center flex-nowrap">
                         <div class="mr-4 flex items-center">
+
+                            <div class="text-white font-bold mr-2 text-lg">
+                                {{ rank }}
+                            </div>
+
                             <img class="h-10 w-10 rounded-full object-cover" :src="demo.user.profile_photo_path ? '/storage/' + demo.user?.profile_photo_path : '/images/null.jpg'" :alt="demo.user?.name ?? record.name">
                             
                             <div class="ml-4">

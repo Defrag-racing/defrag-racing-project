@@ -25,7 +25,7 @@
                 </div>
     
     
-                <StandingsEntry physics="vq3" v-for="demo in vq3_standings" :demo="demo" :key="demo.id" />
+                <StandingsEntry physics="vq3" v-for="(demo, index) in vq3_standings" :demo="demo" :key="demo.id" :rank="index+1" />
     
                 <div v-if="vq3_standings?.length == 0">
                     <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
@@ -37,7 +37,7 @@
                     <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
                 </div>
     
-                <StandingsEntry physics="cpm" v-for="demo in cpm_standings" :demo="demo" :key="demo.id" />
+                <StandingsEntry physics="cpm" v-for="(demo, index) in cpm_standings" :demo="demo" :key="demo.id" :rank="index+1" />
     
                 <div v-if="cpm_standings?.length == 0">
                     <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>

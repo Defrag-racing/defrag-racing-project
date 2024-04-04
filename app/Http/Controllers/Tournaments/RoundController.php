@@ -16,6 +16,7 @@ use App\Models\Round;
 use App\Models\Demo;
 
 use App\External\DemoValidator;
+use App\Models\Team;
 
 use Carbon\Carbon;
 
@@ -129,6 +130,68 @@ class RoundController extends Controller {
         return Inertia::render('Tournaments/Tournament/RoundsClans')
                 ->with('tournament', $tournament)
                 ->with('rounds', $rounds);
+    }
+
+    public function teams (Tournament $tournament, Request $request) {
+        $rounds = Round::where('tournament_id', $tournament->id)
+                ->where('start_date', '<=', Carbon::now())
+                ->orderBy('start_date', 'DESC')
+                ->with('maps')
+                ->with(['comments' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                }])
+                ->with(['vq3_demos' => function ($query) use($request) {
+                    $query->where('user_id', $request->user()->id);
+                }])
+                ->with(['cpm_demos' => function ($query) use($request) {
+                    $query->where('user_id', $request->user()->id);
+                }])
+                ->with('vq3_results.user')
+                ->with('cpm_results.user')
+                ->get();
+
+        $teams = Team::where('tournament_id', $tournament->id)
+                ->whereNotNull('vq3_player_id')
+                ->whereNotNull('cpm_player_id')
+                ->with('vq3Player')
+                ->with('cpmPlayer')
+                ->get();
+    
+        foreach($rounds as $round) {
+            foreach($teams as $team) {
+                $vq3_results = $round->vq3_results->where('user_id', $team->vq3_player_id)->first();
+                $cpm_results = $round->cpm_results->where('user_id', $team->cpm_player_id)->first();
+
+                if ($vq3_results) {
+                    if (! isset($team->vq3_points)) {
+                        $team->vq3_points = 0;
+                        $team->vq3_rank = 0;
+                        $team->vq3_number = 0;
+                    }
+
+                    $team->vq3_points += $vq3_results->points;
+                    $team->vq3_rank += $vq3_results->rank;
+                    $team->vq3_number++;
+                }
+
+                if ($cpm_results) {
+                    if (! isset($team->cpm_points)) {
+                        $team->cpm_points = 0;
+                        $team->cpm_rank = 0;
+                        $team->cpm_number = 0;
+                    }
+
+                    $team->cpm_points += $cpm_results->points;
+                    $team->cpm_rank += $cpm_results->rank;
+                    $team->cpm_number++;
+                }
+            }
+        }
+
+        return Inertia::render('Tournaments/Tournament/RoundsTeams')
+                ->with('tournament', $tournament)
+                ->with('rounds', $rounds)
+                ->with('teams', $teams);
     }
 
     public function comment(Tournament $tournament, Round $round, Request $request) {

@@ -9,7 +9,7 @@
 </script>
 
 <template>
-    <h1 class="font-black text-3xl dark:text-white mb-3">Results</h1>
+    <h1 class="font-black text-3xl dark:text-white mb-3">Clan Results</h1>
 
     <div class="tech-line-overview my-4"></div>
 

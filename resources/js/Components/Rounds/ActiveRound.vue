@@ -3,6 +3,7 @@
     import RoundPart from '@/Components/Rounds/RoundPart.vue';
     import RoundResults from '@/Components/Rounds/RoundResults.vue';
     import RoundResultsClans from '@/Components/Rounds/RoundResultsClans.vue';
+    import RoundResultsTeams from '@/Components/Rounds/RoundResultsTeams.vue';
     import MySubmissions from '@/Components/Rounds/MySubmissions.vue';
     import CommentSection from '@/Components/Tournament/CommentSection.vue';
     import { useForm } from '@inertiajs/vue3';
@@ -15,6 +16,10 @@
         type: {
             type: String,
             default: 'single'
+        },
+        teams: {
+            type: Array,
+            default: []
         }
     });
 
@@ -98,6 +103,13 @@
             :round="round"
             :tournament="tournament"
             v-if="round.results && type === 'clans'"
+        />
+
+        <RoundResultsTeams
+            :round="round"
+            :tournament="tournament"
+            :teams="teams"
+            v-if="round.results && type === 'teams'"
         />
 
         <MySubmissions :round="round" />

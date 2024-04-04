@@ -32,7 +32,7 @@
             Clan Results
         </Link>
 
-        <Link :href="active === 'teams' ? '#' : route('tournaments.rounds.index', tournament.id, round.id)" v-if="tournament.has_teams" class="p-2 rounded-r-md flex-1 text-gray-300 text-lg font-bold text-center cursor-pointer" :class="getClasses('teams')">
+        <Link :href="active === 'teams' ? '#' : route('tournaments.rounds.teams', tournament.id, round.id)" v-if="tournament.has_teams" class="p-2 rounded-r-md flex-1 text-gray-300 text-lg font-bold text-center cursor-pointer" :class="getClasses('teams')">
             Team Results
         </Link>
     </div>

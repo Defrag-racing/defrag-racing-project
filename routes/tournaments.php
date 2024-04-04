@@ -30,6 +30,7 @@ Route::get('/tournaments/{tournament}/standings', [StandingsController::class, '
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index')->middleware('tournaments.news.pinned');
     Route::get('/clans', [RoundController::class, 'clans'])->name('tournaments.rounds.clans')->middleware('tournaments.news.pinned');
+    Route::get('/teams', [RoundController::class, 'teams'])->name('tournaments.rounds.teams')->middleware('tournaments.news.pinned');
 
     Route::post('/{round}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
 

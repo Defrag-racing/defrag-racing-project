@@ -12,6 +12,7 @@ use App\Rules\YouTubeUrl;
 use App\Http\Controllers\Controller;
 
 use App\Models\Round;
+use Intervention\Image\Facades\Image;
 
 use Carbon\Carbon;
 
@@ -69,12 +70,29 @@ class RoundManagementController extends Controller {
             $functions = '';
         }
 
+        $image = $request->file('image');
+        $img = Image::make($image);
+
+        $width = $img->width();
+        $height = $img->height();
+
+        $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+        $uploadPath = public_path('storage/tournaments/rounds');
+
+        if ($width > 640 || $height > 360) {
+            $image = Image::make($image)->fit(640, 360);
+            $image->save($uploadPath . '/' . $imageName);
+            $file = 'tournaments/rounds/' . $imageName;
+        } else {
+            $file = $image->store('tournaments/rounds', 'public');
+        }
+
         $round = $tournament->rounds()->create([
             'name'          =>      $request->name,
             'author'        =>      $request->author,
             'start_date'    =>      $start_date,
             'end_date'      =>      $end_date,
-            'image'         =>      $request->file('image')->store('tournaments/rounds', 'public'),
+            'image'         =>      $file,
             'weapons'       =>      $weapons,
             'items'         =>      $items,
             'functions'     =>      $functions,
@@ -105,9 +123,24 @@ class RoundManagementController extends Controller {
         $end_date = Carbon::parse($request->end_date);
 
         if ($request->file('image')) {
-            $image = $request->file('image')->store('tournaments/rounds', 'public');
+            $image = $request->file('image');
+            $img = Image::make($image);
+
+            $width = $img->width();
+            $height = $img->height();
+
+            $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+            $uploadPath = public_path('storage/tournaments/rounds');
+
+            if ($width > 640 || $height > 360) {
+                $image = Image::make($image)->fit(640, 360);
+                $image->save($uploadPath . '/' . $imageName);
+                $file = 'tournaments/rounds/' . $imageName;
+            } else {
+                $file = $image->store('tournaments/rounds', 'public');
+            }
         } else {
-            $image = $round->image;
+            $file = $round->image;
         }
 
         if (isset($request->weapons) && isset($request->weapons['include'])) {
@@ -132,7 +165,7 @@ class RoundManagementController extends Controller {
             'name'          =>      $request->name,
             'start_date'    =>      $start_date,
             'end_date'      =>      $end_date,
-            'image'         =>      $image,
+            'image'         =>      $file,
             'weapons'       =>      $weapons,
             'items'         =>      $items,
             'functions'     =>      $functions,

@@ -8,6 +8,7 @@ use App\Models\Tournament;
 use App\Models\Organizer;
 
 use App\Rules\YouTubeUrl;
+use Intervention\Image\Facades\Image;
 
 use Carbon\Carbon;
 
@@ -76,11 +77,28 @@ class TournamentManagementController extends Controller {
         $tournament->has_donations = $request->has_donations;
         $tournament->creator = $request->user()->id;
 
-        $tournament->image = $request->photo->store('tournaments', 'public');
+        $image = $request->file('photo');
+        $img = Image::make($image);
+
+        $width = $img->width();
+        $height = $img->height();
+
+        $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+        $uploadPath = public_path('storage/tournaments');
+
+        if ($width > 640 || $height > 360) {
+            $image = Image::make($image)->fit(640, 360);
+            $image->save($uploadPath . '/' . $imageName);
+            $file = 'tournaments/' . $imageName;
+        } else {
+            $file = $image->store('tournaments', 'public');
+        }
 
         if ($request->has('trailer')) {
             $tournament->trailer = $request->trailer;
         }
+
+        $tournament->image = $file;
 
         $tournament->save();
 
@@ -156,7 +174,24 @@ class TournamentManagementController extends Controller {
         $tournament->creator = $request->user()->id;
 
         if ($request->has('photo')) {
-            $tournament->image = $request->photo->store('tournaments', 'public');
+            $image = $request->file('photo');
+            $img = Image::make($image);
+
+            $width = $img->width();
+            $height = $img->height();
+
+            $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
+            $uploadPath = public_path('storage/tournaments');
+
+            if ($width > 640 || $height > 360) {
+                $image = Image::make($image)->fit(640, 360);
+                $image->save($uploadPath . '/' . $imageName);
+                $file = 'tournaments/' . $imageName;
+            } else {
+                $file = $image->store('tournaments', 'public');
+            }
+
+            $tournament->image = $file;
         }
 
         if ($request->has('trailer')) {

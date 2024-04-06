@@ -48,7 +48,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'plain_name',
         'notification_settings',
         'created_at',
-        'color'
+        'color',
+        'defrag_news',
+        'tournament_news',
+        'records_vq3',
+        'records_cpm',
     ];
 
     /**

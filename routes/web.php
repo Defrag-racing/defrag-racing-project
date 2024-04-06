@@ -48,6 +48,7 @@ Route::post('/settings/socialmedia', [SettingsController::class, 'socialmedia'])
 Route::post('/settings/preferences', [SettingsController::class, 'preferences'])->name('settings.preferences');
 Route::post('/settings/mdd/generate', [SettingsController::class, 'generate'])->name('settings.mdd.generate');
 Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name('settings.mdd.verify');
+Route::post('/settings/notifications', [SettingsController::class, 'notifications'])->name('settings.notifications');
 
 
 Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');

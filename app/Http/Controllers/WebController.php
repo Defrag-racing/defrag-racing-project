@@ -7,13 +7,37 @@ use Inertia\Inertia;
 use App\Models\Announcement;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Map;
+use App\Models\Server;
 
 class WebController extends Controller
 {
     public function home() {
-        $announcements = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->limit(1)->get();
+        $announcement = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->first();
 
-        return Inertia::render('Home')->with('announcements', $announcements);
+        $maps = Map::orderBy('created_at', 'DESC')->limit(5)->get();
+
+        $servers = Server::where('offline', false)
+            ->where('visible', true)
+            ->with(['mapdata', 'onlinePlayers.spectators'])
+            ->orderBy('plain_name', 'asc')
+            ->get();
+
+        $servers = $this->sortServers($servers);
+
+        $servers = $servers->values()->take(3);
+
+        return Inertia::render('Home')
+            ->with('announcement', $announcement)
+            ->with('maps', $maps)
+            ->with('servers', $servers);
+    }
+
+    function sortServers($servers) {
+        $servers = $servers->sortByDesc(function ($server) {
+            return $server->onlinePlayers->count();
+        });
+
+        return $servers;
     }
 
     public function flags($flag) {

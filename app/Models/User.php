@@ -149,4 +149,12 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function teamInvites() {
         return $this->hasMany(TeamInvite::class, 'user_id', 'id');
     }
+
+    public function systemNotify() {
+
+    }
+
+    public function recordsNotify() {
+        
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 use App\Models\RecordNotification;
+use App\Models\Notification;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -39,9 +40,15 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $recordsNotifications = [];
+        $systemNotifications = [];
 
         if ($request->user()) {
             $recordsNotifications = RecordNotification::where('read', false)
+                ->where('user_id', $request->user()->id)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+            $systemNotifications = Notification::where('read', false)
                 ->where('user_id', $request->user()->id)
                 ->orderBy('created_at', 'DESC')
                 ->get();
@@ -49,6 +56,7 @@ class HandleInertiaRequests extends Middleware
 
         return array_merge(parent::share($request), [
             'recordsNotifications'      =>      $recordsNotifications,
+            'systemNotifications'       =>      $systemNotifications,
             'danger'                    =>      $request->session()->get('danger'),
             'success'                   =>      $request->session()->get('success'),
             'dangerRandom'                 =>      random_int(0, 1_000_000_000),

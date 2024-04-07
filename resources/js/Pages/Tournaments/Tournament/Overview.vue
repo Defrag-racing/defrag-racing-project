@@ -125,7 +125,7 @@
             <div class="mt-5">
                 <div class="w-full flex text-center">
                     <div class="w-60" v-for="(data, role) in organizers">
-                        <h1 class="text-gray-900 dark:text-gray-400 mr-2 capitalize mb-2">{{ role }}s</h1>
+                        <h1 class="text-gray-900 dark:text-gray-400 capitalize mb-2">{{ role }}s</h1>
 
                         <div v-for="organizer in data">
                             <Link :href="route('profile.index', organizer.user.id)" class="text-gray-500 my-4 hover:underline" v-html="q3tohtml(organizer.user.name)" />

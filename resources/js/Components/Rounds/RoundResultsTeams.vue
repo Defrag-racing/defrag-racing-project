@@ -1,6 +1,7 @@
 <script setup>
     import DemoClanResultEntry from '@/Components/Rounds/DemoClanResultEntry.vue';
     import ResultTabs from '@/Components/Rounds/ResultTabs.vue';
+    import { Link } from '@inertiajs/vue3';
 
     const props = defineProps({
         round: Object,
@@ -44,7 +45,7 @@
         <div class="w-full">
             <!-- Heading -->
             <div class="w-full flex items-center bg-gray-700 dark:bg-opacity-10 bg-opacity-15 p-1 shadow-md">
-                <div class="uppercase font-black dark:text-gray-200 text-center w-full" v-html="q3tohtml(team.name)">
+                <div class="font-black dark:text-gray-200 text-center w-full" v-html="q3tohtml(team.name)">
                     
                 </div>
             </div>
@@ -53,13 +54,13 @@
         <div class="w-full">
             <!-- Heading -->
             <div class="w-full flex items-center bg-blue-900 dark:bg-opacity-10 bg-opacity-15 p-1 shadow-md">
-                <div class="uppercase font-black dark:text-blue-200 text-center w-full" v-html="q3tohtml(team.vq3_player.name)"></div>
+                <Link :href="route('profile.index', team.vq3_player.id)" class="font-black dark:text-blue-200 text-center w-full" v-html="q3tohtml(team.vq3_player.name)"></Link>
             </div>
         </div>
 
         <div class="w-full">
             <div class="w-full flex items-center bg-green-900 dark:bg-opacity-10 bg-opacity-15 p-1 shadow-md">
-                <div class="uppercase font-black dark:text-green-200 text-center w-full" v-html="q3tohtml(team.cpm_player.name)"></div>
+                <Link :href="route('profile.index', team.cpm_player.id)" class="font-black dark:text-green-200 text-center w-full" v-html="q3tohtml(team.cpm_player.name)"></Link>
             </div>
         </div>
     </div>

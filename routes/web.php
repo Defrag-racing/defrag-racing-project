@@ -13,6 +13,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\EndpointController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ChangelogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,8 +52,11 @@ Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name
 Route::post('/settings/notifications', [SettingsController::class, 'notifications'])->name('settings.notifications');
 
 
-Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
-Route::post('/notifications', [NotificationsController::class, 'clear'])->name('notifications.clear');
+Route::get('/notifications/records', [NotificationsController::class, 'records'])->name('notifications.index');
+Route::post('/notifications/records', [NotificationsController::class, 'recordsclear'])->name('notifications.clear');
+
+Route::get('/notifications/system', [NotificationsController::class, 'system'])->name('notifications.system.index');
+Route::post('/notifications/system', [NotificationsController::class, 'systemclear'])->name('notifications.system.clear');
 
 Route::get('/profile/{userId}', [ProfileController::class, 'index'])->name('profile.index');
 Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('profile.mdd');
@@ -60,20 +64,4 @@ Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('pr
 Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('images.flags');
 Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');
 
-
-Route::get('/test', function () {
-    // $users = \App\Models\User::all();
-
-    // $count = 50;
-
-    // // make 50 teams with random cpm_player_id and vq3_player_id
-
-    // for ($i = 0; $i < $count; $i++) {
-    //     $team = new \App\Models\Team();
-    //     $team->name = 'Team ' . $i;
-
-    //     $team->cpm_player_id = $users->random()->id;
-    //     $team->vq3_player_id = $users->random()->id;
-    //     $team->save();
-    // }
-});
+Route::get('/changelog', [ChangelogController::class, 'index'])->name('changelog');

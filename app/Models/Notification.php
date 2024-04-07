@@ -10,18 +10,19 @@ class Notification extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'icon',
-        'meta',
+        'before',
+        'headline',
+        'after',
+        'subheadline',
+        'image',
         'url',
         'read',
         'type',
-        'user_id',
-        'record_id'
+        'user_id'
     ];
-
-    public function record () {
-        return $this->belongsTo(Record::class);
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

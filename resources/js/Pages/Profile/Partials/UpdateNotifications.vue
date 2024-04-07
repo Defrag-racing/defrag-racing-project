@@ -63,7 +63,7 @@
                     </label>
 
                     <label class="flex items-center cursor-pointer mb-3">
-                        <Checkbox :checked="true" name="invitations" disabled />
+                        <Checkbox :checked="true" name="invitations" disabled class="text-gray-500" />
                         <span class="ms-2 text-sm text-gray-400">
                             Invitations (Clan invites, Team invites, etc...) [Mandatory]
                         </span>

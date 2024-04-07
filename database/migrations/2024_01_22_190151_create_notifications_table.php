@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->text('text')->nullable()->default(NULL);;
-            $table->string('icon')->nullable()->default(NULL);
-            $table->string('meta')->nullable()->default(NULL);
-            $table->string('url')->nullable()->default(NULL);
+            $table->string('before');
+            $table->string('headline');
+            $table->string('after');
+            $table->string('subheadline')->nullable()->default(null);
+            $table->string('image')->nullable()->default(null);
+
+            $table->string('url');
+    
             $table->boolean('read')->default(false);
             $table->string('type');
             $table->integer('user_id');

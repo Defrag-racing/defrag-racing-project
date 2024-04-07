@@ -11,14 +11,12 @@ use App\Models\Map;
 class WebController extends Controller
 {
     public function home() {
-        $announcements = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->get();
+        $announcements = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->limit(1)->get();
 
         return Inertia::render('Home')->with('announcements', $announcements);
     }
 
     public function flags($flag) {
-        // return response()->file(public_path() . '/images/flags/_404.png');
-
         $fileResponse = new BinaryFileResponse(public_path() . '/images/flags/_404.png');
 
         return $fileResponse;

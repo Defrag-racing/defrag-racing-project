@@ -8,6 +8,7 @@ use App\Models\Announcement;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\Map;
 use App\Models\Server;
+use App\Models\Tournament;
 
 class WebController extends Controller
 {
@@ -15,6 +16,12 @@ class WebController extends Controller
         $announcement = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->first();
 
         $maps = Map::orderBy('created_at', 'DESC')->limit(5)->get();
+
+        $tournaments = Tournament::query()
+            ->where('start_date', '<=', now())
+            ->orderBy('start_date', 'DESC')
+            ->limit(3)
+            ->get();
 
         $servers = Server::where('offline', false)
             ->where('visible', true)
@@ -29,7 +36,8 @@ class WebController extends Controller
         return Inertia::render('Home')
             ->with('announcement', $announcement)
             ->with('maps', $maps)
-            ->with('servers', $servers);
+            ->with('servers', $servers)
+            ->with('tournaments', $tournaments);
     }
 
     function sortServers($servers) {

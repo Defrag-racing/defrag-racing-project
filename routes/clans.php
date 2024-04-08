@@ -9,7 +9,7 @@ Route::get('/{clan}', [ClansController::class, 'show'])->name('clans.show');
 Route::post('/invitations/{invitation}/accept', [ClansController::class, 'accept'])->name('clans.invitation.accept');
 Route::post('/invitations/{invitation}/reject', [ClansController::class, 'reject'])->name('clans.invitation.reject');
 
-Route::prefix('manage')->group(function () {
+Route::prefix('manage')->middleware('auth')->group(function () {
     Route::get('/create', [ManageClanController::class, 'create'])->name('clans.manage.create');
     Route::post('/create', [ManageClanController::class, 'store'])->name('clans.manage.store');
 

@@ -22,10 +22,7 @@
 
     const updateSocialMediaInformation = () => {
         form.post(route('settings.notifications'), {
-            preserveScroll: true,
-            onError: (e) => {
-                console.log(e)
-            },
+            preserveScroll: true
         });
     };
 </script>

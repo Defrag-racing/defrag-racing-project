@@ -20,7 +20,11 @@ class MapsController extends Controller
             ->with('user:id,name,plain_name,country')
             ->get(['id', 'user_id', 'name', 'country', 'plain_name']);
 
-        $maps = Map::orderBy('id', 'DESC')->paginate(21)->withQueryString();
+        $maps = Map::query()
+            ->orderBy('date_added', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->paginate(21)
+            ->withQueryString();
 
         if ($request->has('page') && $request->get('page') > $maps->lastPage()) {
             return redirect()->route('maps', ['page' => $maps->lastPage()]);

@@ -15,7 +15,7 @@
 
     <div class="tech-line-overview my-4"></div>
 
-    <ResultTabs active="teams" :tournament="tournament" :round="round" />
+    <ResultTabs active="teams" :tournament="tournament" url="tournaments.rounds.index" :args="[tournament.id, round.id]" />
 
     <div class="tech-line-overview my-4"></div>
 

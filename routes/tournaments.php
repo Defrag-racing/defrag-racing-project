@@ -25,7 +25,9 @@ Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])-
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules')->middleware('tournaments.news.pinned');
 Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations')->middleware('tournaments.news.pinned');
 Route::get('/tournaments/{tournament}/faqs', [TournamentsController::class, 'faqs'])->name('tournaments.faqs')->middleware('tournaments.news.pinned');
-Route::get('/tournaments/{tournament}/standings', [StandingsController::class, 'index'])->name('tournaments.standings')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/standings', [StandingsController::class, 'index'])->name('tournaments.standings.index')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/standings/clans', [StandingsController::class, 'clans'])->name('tournaments.standings.clans')->middleware('tournaments.news.pinned');
+Route::get('/tournaments/{tournament}/standings/teams', [StandingsController::class, 'teams'])->name('tournaments.standings.teams')->middleware('tournaments.news.pinned');
 
 Route::prefix('/tournaments/{tournament}/rounds')->group(function () {
     Route::get('/', [RoundController::class, 'index'])->name('tournaments.rounds.index')->middleware('tournaments.news.pinned');

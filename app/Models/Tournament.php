@@ -90,12 +90,6 @@ class Tournament extends Model
         $rounds = Round::where('tournament_id', $this->id)
                 ->where('start_date', '<=', Carbon::now())
                 ->orderBy('start_date', 'DESC')
-                ->with(['vq3_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with(['cpm_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
                 ->with('vq3_results.user.clan')
                 ->with('cpm_results.user.clan')
                 ->get();
@@ -165,5 +159,67 @@ class Tournament extends Model
             'vq3'       =>      $clan_results_vq3,
             'cpm'       =>      $clan_results_cpm
         ];
+    }
+
+    public function teamResults () {
+        $rounds = Round::where('tournament_id', $this->id)
+                ->where('start_date', '<=', Carbon::now())
+                ->orderBy('start_date', 'DESC')
+                ->with('maps')
+                ->with('vq3_results.user')
+                ->with('cpm_results.user')
+                ->get();
+
+        $teams = Team::where('tournament_id', $this->id)
+                ->whereNotNull('vq3_player_id')
+                ->whereNotNull('cpm_player_id')
+                ->with('vq3Player')
+                ->with('cpmPlayer')
+                ->get();
+
+        $team_results = [];
+    
+        foreach($rounds as $round) {
+            foreach($teams as $team) {
+                $vq3_results = $round->vq3_results->where('user_id', $team->vq3_player_id)->first();
+                $cpm_results = $round->cpm_results->where('user_id', $team->cpm_player_id)->first();
+
+                if ($vq3_results) {
+                    if (! isset($team_results[$team->id])) {
+                        $team_results[$team->id] = [
+                            'points'    =>      0,
+                            'number'    =>      0,
+                            'team'          =>      $team
+                        ];
+                    }
+
+                    $team_results[$team->id]['points'] += $vq3_results->points;
+                    $team_results[$team->id]['number']++;
+                }
+
+                if ($cpm_results) {
+                    if (! isset($team_results[$team->id])) {
+                        $team_results[$team->id] = [
+                            'points'    =>      0,
+                            'number'    =>      0,
+                            'team'          =>      $team
+                        ];
+                    }
+
+                    $team_results[$team->id]['points'] += $cpm_results->points;
+                    $team_results[$team->id]['number']++;
+                }
+            }
+        }
+
+        usort($team_results, function($a, $b) {
+            if ($a['points'] == $b['points']) {
+                return $a['points'] - $b['points'];
+            }
+
+            return $b['points'] - $a['points'];
+        });
+
+        return $team_results;
     }
 }

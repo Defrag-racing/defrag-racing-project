@@ -77,4 +77,15 @@ class StandingsController extends Controller {
             ->with('vq3_standings', $vq3_standings)
             ->with('cpm_standings', $cpm_standings);
     }
+
+    public function clans(Request $request, Tournament $tournament) {
+        $results = $tournament->clanResults();
+
+        dd($results);
+
+        return Inertia::render('Tournaments/Tournament/Standings')
+            ->with('tournament', $tournament)
+            ->with('vq3_standings', $results['vq3'])
+            ->with('cpm_standings', $results['cpm']);
+    }
 }

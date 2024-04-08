@@ -99,29 +99,29 @@ class Tournament extends Model
                 ->with('vq3_results.user.clan')
                 ->with('cpm_results.user.clan')
                 ->get();
+
+        $clan_results_vq3 = [];
+        $clan_results_cpm = [];
     
         foreach($rounds as $round) {
             $vq3_results = $round->vq3_results;
             $cpm_results = $round->cpm_results;
-
-            $clans_cpm = [];
-            $clans_vq3 = [];
 
             foreach($vq3_results as $demo) {
                 if (! $demo->user->clan) {
                     continue;
                 }
 
-                if (! isset($clans_vq3[$demo->user->clan->id])) {
-                    $clans_vq3[$demo->user->clan->id] = [
+                if (! isset($clan_results_vq3[$demo->user->clan->id])) {
+                    $clan_results_vq3[$demo->user->clan->id] = [
                         'clan' => $demo->user->clan,
                         'points' => 0,
                         'number' => 0
                     ];
                 }
 
-                $clans_vq3[$demo->user->clan->id]['points'] += $demo->points;
-                $clans_vq3[$demo->user->clan->id]['number']++;
+                $clan_results_vq3[$demo->user->clan->id]['points'] += $demo->points;
+                $clan_results_vq3[$demo->user->clan->id]['number']++;
             }
 
             foreach($cpm_results as $demo) {
@@ -129,47 +129,41 @@ class Tournament extends Model
                     continue;
                 }
 
-                if (! isset($clans_cpm[$demo->user->clan->id])) {
-                    $clans_cpm[$demo->user->clan->id] = [
+                if (! isset($clan_results_cpm[$demo->user->clan->id])) {
+                    $clan_results_cpm[$demo->user->clan->id] = [
                         'clan' => $demo->user->clan,
                         'points' => 0,
                         'number' => 0
                     ];
                 }
 
-                $clans_cpm[$demo->user->clan->id]['points'] += $demo->points;
-                $clans_cpm[$demo->user->clan->id]['number']++;
+                $clan_results_cpm[$demo->user->clan->id]['points'] += $demo->points;
+                $clan_results_cpm[$demo->user->clan->id]['number']++;
             }
 
-            usort($clans_vq3, function($a, $b) {
-                if ($a['points'] == $b['points']) {
-                    return $a['rank'] - $b['rank'];
-                }
-    
-                return $b['points'] - $a['points'];
-            });
-    
-            usort($clans_cpm, function($a, $b) {
-                if ($a['points'] == $b['points']) {
-                    return $a['rank'] - $b['rank'];
-                }
-    
-                return $b['points'] - $a['points'];
-            });
-
-            $round->clans_vq3 = $clans_vq3;
-            $round->clans_cpm = $clans_cpm;
+            $round->clan_results_vq3 = $clan_results_vq3;
+            $round->clan_results_cpm = $clan_results_cpm;
         }
 
-        $clan_results_vq3 = [];
-        $clan_results_cpm = [];
+        usort($clan_results_vq3, function($a, $b) {
+            if ($a['points'] == $b['points']) {
+                return $a['rank'] - $b['rank'];
+            }
 
-        foreach($rounds as $round) {
-            
-        }
+            return $b['points'] - $a['points'];
+        });
 
-        return Inertia::render('Tournaments/Tournament/RoundsClans')
-                ->with('tournament', $tournament)
-                ->with('rounds', $rounds);
+        usort($clan_results_cpm, function($a, $b) {
+            if ($a['points'] == $b['points']) {
+                return $a['rank'] - $b['rank'];
+            }
+
+            return $b['points'] - $a['points'];
+        });
+
+        return [
+            'vq3'       =>      $clan_results_vq3,
+            'cpm'       =>      $clan_results_cpm
+        ];
     }
 }

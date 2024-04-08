@@ -1,8 +1,13 @@
 <script setup>
-    import { Link } from '@inertiajs/vue3';
+    import { router } from '@inertiajs/vue3';
 
     const props = defineProps({
-        map: Object
+        map: Object,
+        isRoute: {
+            type: Boolean,
+            default: true
+        },
+        click: Function
     });
     
     const copyMap = () => {
@@ -38,11 +43,20 @@
             functionsList.splice(0, 1);
         }
     }
+
+    const onClick = () => {
+        if (props.isRoute) {
+            router.get(route('maps.map', (props.map.name)))
+            return
+        }
+
+        props.click(props.map.name)
+    }
 </script>
 
 <template>
     <div>
-        <Link class="flex rounded-md hover:bg-grayop-800 p-2" :href="route('maps.map', (map.name))">
+        <div class="flex cursor-pointer rounded-md hover:bg-grayop-800 p-2" @click="onClick">
             <div class="p-0.5 rounded-md">
                 <img onerror="this.src='/images/unknown.jpg'" :src="`/storage/${map?.thumbnail}`" class="rounded-md" style="width: 65px; height: 50px;">
             </div>
@@ -83,7 +97,7 @@
                     </div>
                 </div>
             </div>
-        </Link>
+        </div>
     
         <hr class="my-1 text-gray-800 border-gray-800 bg-gray-800">
     </div>

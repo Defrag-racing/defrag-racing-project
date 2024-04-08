@@ -15,6 +15,8 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 
+use Carbon\Carbon;
+
 class User extends Authenticatable implements FilamentUser, HasName, MustVerifyEmail
 {
     use HasApiTokens;
@@ -46,7 +48,11 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'plain_name',
         'notification_settings',
         'created_at',
-        'color'
+        'color',
+        'defrag_news',
+        'tournament_news',
+        'records_vq3',
+        'records_cpm',
     ];
 
     /**
@@ -108,7 +114,7 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return [
             'id' => (string) $this->id,
             'plain_name' => $this->generateSubstrings($this->plain_name),
-            'created_at' => $this->created_at->timestamp,
+            'created_at' => Carbon::parse($this->created_at)->timestamp,
         ];
     }
 
@@ -130,5 +136,25 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
 
     public function mdd_profile() {
         return $this->hasOne(MddProfile::class, 'id', 'mdd_id');
+    }
+
+    public function clan () {
+        return $this->hasOneThrough(Clan::class, ClanPlayer::class, 'user_id', 'id', 'id', 'clan_id');
+    }
+
+    public function team() {
+        return $this->hasOne(Team::class, 'cpm_player_id', 'id') ?? $this->hasOne(Team::class, 'vq3_player_id', 'id');
+    }
+
+    public function teamInvites() {
+        return $this->hasMany(TeamInvite::class, 'user_id', 'id');
+    }
+
+    public function systemNotify() {
+
+    }
+
+    public function recordsNotify() {
+        
     }
 }

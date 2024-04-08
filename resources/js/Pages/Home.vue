@@ -1,14 +1,21 @@
+<script>
+    import HomeLayout from '@/Layouts/HomeLayout.vue'
+
+    export default {
+        layout: HomeLayout,
+    }
+</script>
+
 <script setup>
     import { Head } from '@inertiajs/vue3';
-    import moment from 'moment';
+    import MapCardSmall from '@/Components/MapCardSmall.vue';
+    import ServerCard from '@/Components/ServerCard.vue';
 
     const props = defineProps({
-        announcements: Object,
+        maps: Array,
+        servers: Array,
+        announcement: Object
     });
-
-    const date = (created_at) => {
-        return moment(created_at).fromNow();
-    }
 </script>
 
 <template>
@@ -17,28 +24,61 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-
-                <div class="flex justify-center mb-10">
+                <div class="flex justify-center mt-10">
                     <img src="/images/logo.png">
                 </div>
 
-                <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4 mb-4" v-for="announcement in announcements">
-                    <div class="text-xl font-bold text-white flex">
-                        <span class="mr-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" />
+                <div class="px-4 mx-auto max-w-screen-xl text-center py-10">
+
+                    <a href="#" class="inline-flex justify-between items-center py-1 px-1 pe-4 mb-7 text-sm text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800">
+                        <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">Latest News</span> <span class="text-sm font-medium">
+                            {{ announcement.title }}
+                        </span> 
+                        <svg class="w-2.5 h-2.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                    </a>
+
+                    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome to Defrag<span class="text-6xl text-blue-500">.</span>Racing</h1>
+                    <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
+                        Defrag is a speed running game where you compete on reaching the finish line in the shortest time possible.
+                    </p>
+
+                    <div class="flex justify-center">
+                        <a href="#" class="inline-flex justify-center items-center py-2.5 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                            Getting Started
+                            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                             </svg>
-                        </span>
-
-                        <span>{{ announcement.title }}</span>
+                        </a>
                     </div>
+                </div>
 
-                    <hr class="my-3 text-gray-700 border-gray-700 bg-gray-700">
+                <div class="py-2">
+                    <div class="flex items-center mb-5">
+                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                        <div class="text-white text-xl mx-2">Latest Servers</div>
+                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center items-center gap-4">
+                        <div v-for="server in servers" :key="server.id">
+                            <ServerCard :server="server" />
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="text-gray-400" v-html="announcement.text"></div>
-
-                    <div class="mt-2 flex justify-end">
-                        <div class="text-gray-500 text-sm">Added {{ date(announcement.created_at) }}</div>
+                <div class="py-2">
+                    <div class="flex items-center mb-5">
+                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                        <div class="text-white text-xl mx-2">Latest Maps</div>
+                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                    </div>
+                    
+                    <div class="flex flex-wrap justify-center items-center gap-4">
+                        <div v-for="map in maps">
+                            <MapCardSmall :map="map" :mapname="map.name" :key="map.id" />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('round_comments', function (Blueprint $table) {
+        Schema::create('clans', function (Blueprint $table) {
             $table->id();
-            $table->integer('round_id');
-            $table->integer('user_id');
-            $table->text('comment');
+            $table->string('name');
+            $table->string('plain_name');
+            $table->string('image');
+            $table->integer('admin_id');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('round_comments');
+        Schema::dropIfExists('clans');
     }
 };

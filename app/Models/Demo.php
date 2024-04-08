@@ -22,4 +22,12 @@ class Demo extends Model {
         'counted',
         'reason',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function round() {
+        return $this->belongsTo(Round::class);
+    }
 }

@@ -38,6 +38,15 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('general')
                 ->group(base_path('routes/general.php'));
+
+            Route::middleware(['web', 'auth'])
+                ->group(base_path('routes/tournaments.php'));
+
+
+            Route::middleware('web')
+                ->namespace('App\Http\Controllers\Clans')
+                ->prefix('clans')
+                ->group(base_path('routes/clans.php'));
         });
     }
 }

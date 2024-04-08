@@ -34,6 +34,26 @@ class SettingsController extends Controller
         $user->save();
     }
 
+    public function notifications(Request $request) {
+        $request->validate([
+            'records_vq3'       =>      ['required', 'string', 'in:all,wr'],
+            'records_cpm'       =>      ['required', 'string', 'in:all,wr']
+        ]);
+
+        $user = $request->user();
+
+        $defrag_news = $request->input('defrag_news', false);
+        $tournament_news = $request->input('tournament_news', false);
+
+        $user->defrag_news = $defrag_news;
+        $user->tournament_news = $tournament_news;
+
+        $user->records_vq3 = $request->records_vq3;
+        $user->records_cpm = $request->records_cpm;
+
+        $user->save();
+    }
+
     public function preferences(Request $request) {
         $user = $request->user();
 

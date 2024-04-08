@@ -9,6 +9,7 @@ import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfile
 import UpdateSocialMediaForm from '@/Pages/Profile/Partials/UpdateSocialMediaForm.vue';
 import VerifyMddProfile from '@/Pages/Profile/Partials/VerifyMddProfile.vue';
 import UpdateProfilePreferences from '@/Pages/Profile/Partials/UpdateProfilePreferences.vue';
+import UpdateNotifications from '@/Pages/Profile/Partials/UpdateNotifications.vue';
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -36,6 +37,12 @@ defineProps({
 
                 <div>
                     <UpdateProfilePreferences :user="$page.props.auth.user" />
+
+                    <SectionBorder />
+                </div>
+
+                <div>
+                    <UpdateNotifications :user="$page.props.auth.user" />
 
                     <SectionBorder />
                 </div>

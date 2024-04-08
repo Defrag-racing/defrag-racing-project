@@ -137,7 +137,6 @@ class ImportDataCommand extends Command
                 'date_set'        =>      $element['date_set'],
                 'user_id'        =>      $element['player_id'],
                 'mdd_id'        =>      $element['player_mdd_id'],
-                'date_set'        =>      $element['date_set'],
                 'mapname'        =>      $element['mapname'],
             ];
 

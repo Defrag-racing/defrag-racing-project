@@ -14,19 +14,18 @@ return new class extends Migration
         Schema::create('rounds', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('mapname');
+            $table->string('category');
+            $table->string('image');
+            $table->string('author');
             $table->datetime('start_date');
             $table->datetime('end_date');
             $table->integer('tournament_id');
-            $table->boolean('packed')->default(false);
-            $table->boolean('published')->default(false);
-
-            // Map
-            $table->string('mapname');
-            $table->string('author');
-            $table->string('image');
             $table->string('weapons');
             $table->string('items');
             $table->string('functions');
+            $table->boolean('results')->default(false);
+            $table->boolean('published')->default(false);
 
             $table->timestamps();
         });

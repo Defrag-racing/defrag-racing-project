@@ -14,4 +14,12 @@ class TournamentStreamer extends Model
         'user_id',
         'twitch_username',
     ];
+
+    public function tournament() {
+        return $this->belongsTo(Tournament::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -3,6 +3,7 @@ import '../css/app.css';
 import '../css/items.css';
 
 import { createApp, h } from 'vue';
+import { reactive } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
@@ -14,6 +15,8 @@ import MainLayout from "@/Layouts/MainLayout.vue"
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Defrag Racing';
 
@@ -121,7 +124,8 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .use(vuetify);
+            .use(vuetify)
+            .use(CKEditor);
 
         app.component("Popper", Popper);
 
@@ -130,6 +134,10 @@ createInertiaApp({
         app.config.globalProperties.q3tohtml = q3tohtml
 
         app.config.globalProperties.timeSince = timeSince
+
+        app.config.globalProperties.$state = reactive({
+            globalBackgroundImage: '/images/bg-image.png'
+        })
 
         app.mount(el);
 

@@ -13,4 +13,8 @@ class RelatedTournament extends Model
         'tournament_id',
         'related_tournament_id',
     ];
+
+    public function tournament() {
+        return $this->belongsTo(Tournament::class, 'related_tournament_id');
+    }
 }

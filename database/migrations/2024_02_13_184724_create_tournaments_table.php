@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->boolean('has_donations')->default(false);
 
-            $table->integer('streamer_window')->default(0);
+            $table->integer('streamer_window')->default(1);
 
             $table->integer('creator');
 

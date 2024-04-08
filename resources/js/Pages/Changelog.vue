@@ -17,6 +17,10 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-3xl text-gray-200 leading-tight mb-10">
+                    Changelog
+                </h2>
+
                 <ol class="relative border-s border-gray-200 dark:border-gray-700">                  
                     <li class="mb-5 ms-4" v-for="(announcement, index) in announcements">
                         <div class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>

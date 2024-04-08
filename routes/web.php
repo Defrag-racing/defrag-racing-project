@@ -64,3 +64,4 @@ Route::get('/images/flags/{flag}', [WebController::class, 'flags'])->name('image
 Route::get('/storage/thumbs/{image}', [WebController::class, 'thumbs'])->name('images.thumbs');
 
 Route::get('/changelog', [ChangelogController::class, 'index'])->name('changelog');
+Route::get('/announcements', [ChangelogController::class, 'announcements'])->name('announcements');

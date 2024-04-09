@@ -4,6 +4,7 @@
     import FormSection from '@/Components/Laravel/FormSection.vue';
     import InputError from '@/Components/Laravel/InputError.vue';
     import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
+    import { computed } from 'vue';
 
     const props = defineProps({
         user: Object,
@@ -19,6 +20,21 @@
             preserveScroll: true
         });
     };
+
+    const getAnimation = computed(() => {
+        const isMozilla = /firefox/.test(navigator.userAgent.toLowerCase());
+        let result = '';
+
+        if (isMozilla) {
+            result = 'none';
+        } else {
+            result = 'profilepulse 5s linear infinite';
+        }
+
+        return {
+            '--profile-animation': result,
+        }
+    })
 </script>
 
 <template>
@@ -36,7 +52,7 @@
                 <div class="flex justify-center">
                     <div>
                         <div class="flex flex-col items-center p-4 relative">
-                            <div class="profile-effect"></div>
+                            <div class="profile-effect" :style="getAnimation"></div>
                             <img style="z-index: 2;" class="h-24 w-24 rounded-full border-4 border-gray-500 object-cover" :src="user?.profile_photo_path ? '/storage/' + user.profile_photo_path : '/images/null.jpg'" :alt="user?.name ?? profile.name">
 
                             <div class="text-gray-500 absolute" style="width: 300px; top: 5%">
@@ -85,7 +101,7 @@
 
 <style scoped>
     .profile-effect {
-        box-shadow: 0 0 100px 40px v-bind('color');
+        box-shadow: 0 0 100px 40px v-bind('form.color');
         transition: all .5s ease-in-out;
         height: 1px;
         left: 50%;
@@ -93,10 +109,10 @@
         position: absolute;
         width: 1px;
         z-index: 1;
-        animation: pulse 5s infinite;
+        animation: var(--profile-animation);
     }
 
-    @keyframes pulse {
+    @keyframes profilepulse {
         0% {
             box-shadow: 0 0 100px 40px v-bind('form.color');
         }

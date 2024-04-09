@@ -36,7 +36,6 @@ class RoundMapResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('crc')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\Toggle::make('external')
                     ->required()

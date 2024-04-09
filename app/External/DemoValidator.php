@@ -126,7 +126,7 @@ class DemoValidator {
         foreach ($roundmaps as $roundmap) {
             if ($roundmap->crc !== '') {
                 if ($config->defrag_bspcrc != (string)$roundmap->crc) {
-                    throw new \Exception('Map is not valid. Must be one of the maps added to this round.');
+                    throw new \Exception('Map is not valid. Must be one of the maps added to this round. [CRC ERROR]');
                 }
             }
 

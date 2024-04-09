@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tournament;
 use App\Models\Organizer;
+use App\Models\Record;
 use Carbon\Carbon;
 
 class TournamentsController extends Controller {
     public function index(Request $request) {
+        $canCreate = Record::where('user_id', $request->user()->id)->count() >= 200;
+
         $tournaments = Tournament::query()
             ->where('published', true)
             ->orWhere('creator', $request->user()->id)
@@ -45,7 +48,8 @@ class TournamentsController extends Controller {
             ->with('tournaments', $tournaments)
             ->with('activeTournaments', $activeTournaments)
             ->with('upcomingTournaments', $upcomingTournaments)
-            ->with('pastTournaments', $pastTournaments);
+            ->with('pastTournaments', $pastTournaments)
+            ->with('canCreate', $canCreate);
     }
 
     public function show(Tournament $tournament, Request $request) {

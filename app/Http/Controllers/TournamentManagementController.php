@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tournament;
 use App\Models\Organizer;
+use App\Models\Record;
 
 use App\Rules\YouTubeUrl;
 use Intervention\Image\Facades\Image;
@@ -29,11 +30,19 @@ class TournamentManagementController extends Controller {
                 ->with('myroles', $myroles);
     }
 
-    public function create() {
+    public function create(Request $request) {
+        if (Record::where('user_id', $request->user()->id)->count() < 200) {
+            return back()->withDanger('You need to have at least 200 records to create a tournament.');
+        }
+
         return Inertia::render('Tournaments/Create');
     }
 
     public function store(Request $request) {
+        if (Record::where('user_id', $request->user()->id)->count() < 200) {
+            return back()->withDanger('You need to have at least 200 records to create a tournament.');
+        }
+
         $request->validate([
             'name' => ['required', 'max:255', 'string'],
             'description' => ['required', 'string'],

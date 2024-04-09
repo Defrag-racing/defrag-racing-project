@@ -10,6 +10,7 @@
         activeTournaments: Object,
         upcomingTournaments: Object,
         pastTournaments: Object,
+        canCreate: Boolean
     });
 
     const filteredTournaments = ref([]);
@@ -67,13 +68,21 @@
                         Tournaments
                     </h2>
     
-                    <Link :href="route('tournaments.create')" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600">
+                    <Link v-if="canCreate" :href="route('tournaments.create')" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
     
                         <div>Create Tournaments</div>
                     </Link>
+    
+                    <div v-else class="flex items-center text-gray-500 bg-grayop-700 py-2 px-4 rounded-md font-bold bg-grayop-700 cursor-default" title="You cannot create tournaments because you have less than 200 records.">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+
+                        <div>Create Tournaments</div>
+                    </div>
                 </div>
 
                 <div class="mb-12 pb-5 pt-1 rounded-lg flex mt-10">

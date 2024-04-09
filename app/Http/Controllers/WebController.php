@@ -15,7 +15,11 @@ class WebController extends Controller
     public function home() {
         $announcement = Announcement::where('type', 'home')->orderBy('created_at', 'DESC')->first();
 
-        $maps = Map::orderBy('created_at', 'DESC')->limit(5)->get();
+        $maps = Map::query()
+            ->orderBy('date_added', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->limit(5)
+            ->get();
 
         $tournaments = Tournament::query()
             ->where('start_date', '<=', now())

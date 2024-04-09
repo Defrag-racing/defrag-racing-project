@@ -102,9 +102,9 @@
 
 <template>
     <div>
-        <div class="rounded p-2 mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
+        <div class="rounded mx-2 mb-4 group" :class="{'bg-gray-700': !transparent, 'bg-grayop-700': transparent}">
             <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', getRouteData)">
-                <div class="rounded-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 400px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
+                <div class="rounded-t-md w-full h-48 bg-fit flex flex-col items-end justify-between mx-auto" :style="`width: 440px; max-width: 90vw; height: 280px; background-image: url('/storage/${map.thumbnail}')`" onerror="this.style.backgroundImage='url(\'/images/unknown.jpg\')'" >
                     <div :class="`rounded-md ${background} p-2 uppercase text-white font-bold mr-3 mt-2`">
                         {{ map.physics }}
                     </div>
@@ -128,7 +128,7 @@
                 </div>
             </Link>
     
-            <div class="flex justify-between items-center bg-blackop-50 rounded-md mt-2 py-2 px-2">
+            <div class="flex justify-between items-center rounded-md py-2 px-2">
                 <div class="flex items-center">
                     <Link class="text-lg text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', getRouteData)"> {{ map.name }} </Link>
 
@@ -160,7 +160,7 @@
                 </a>
             </div>
     
-            <div class="flex justify-between items-center bg-blackop-20 rounded-md mt-1 py-1 px-2">
+            <div class="flex justify-between items-center rounded-md pb-2 px-2">
                 <div class="text-gray-400 overflow-hidden truncate text-left" style="width: 200px;">
                     By <Link class="text-gray-400 font-bold hover:underline cursor-pointer truncate" style="width: 250px;" :href="route('maps.filters', {author: map?.author ?? 'unknown'})"> {{ map.author }} </Link>
                 </div>

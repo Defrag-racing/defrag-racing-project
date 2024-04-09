@@ -44,7 +44,7 @@ Route::middleware(['tournaments.tournamentaccess'])->group(function () {
         Route::post('/{round}/comment', [RoundController::class, 'comment'])->name('tournaments.rounds.comment');
 
         Route::post('/{round}/submit', [RoundController::class, 'submit'])->name('tournaments.rounds.submit');
-        Route::post('/{demo}/delete', [RoundController::class, 'delete'])->name('tournaments.demos.delete');
+        // Route::post('/{demo}/delete', [RoundController::class, 'delete'])->name('tournaments.demos.delete');
     });
 
     Route::get('/tournaments/{tournament}/news', [NewsController::class, 'index'])->name('tournaments.news.index');

@@ -251,26 +251,6 @@ class RoundController extends Controller {
             return back()->withDanger('Demo is invalid');
         }
 
-        if ($demo_data['physics'] == 'vq3') {
-            $existingDemo = Demo::where('user_id', $request->user()->id)
-                    ->where('round_id', $round->id)
-                    ->where('physics', 'vq3')
-                    ->count();
-
-            if ($existingDemo == 3) {
-                return back()->withDanger('You have already submitted 3 VQ3 demos for this round, delete one to submit a new one');
-            }
-        } else {
-            $existingDemo = Demo::where('user_id', $request->user()->id)
-                    ->where('round_id', $round->id)
-                    ->where('physics', 'cpm')
-                    ->count();
-
-            if ($existingDemo == 3) {
-                return back()->withDanger('You have already submitted 3 CPM demos for this round, delete one to submit a new one');
-            }
-        }
-
         $newDemo = new Demo();
 
         $newDemo->user_id = $request->user()->id;

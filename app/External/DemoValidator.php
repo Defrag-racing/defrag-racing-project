@@ -142,8 +142,8 @@ class DemoValidator {
         $config = $this->data->gameStates[0]->configStringValues;
 
         $rules = [
-            'defrag_clfps' => '125',
-            'defrag_svfps' => '125',
+            // 'defrag_clfps' => '125',
+            // 'defrag_svfps' => '125',
             'df_mp_InterferenceOff' => '3',
             'g_speed' => '320',
             'sv_cheats' => '0',

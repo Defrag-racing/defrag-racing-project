@@ -27,11 +27,15 @@ class TeamController extends Controller {
             ->with('cpmPlayer:id,name,country,profile_photo_path', 'vq3Player:id,name,country,profile_photo_path')
             ->get();
 
-        $myTeam = Team::where('tournament_id', $tournament->id)
-            ->where('cpm_player_id', $request->user()->id)
-            ->orWhere('vq3_player_id', $request->user()->id)
-            ->with('cpmPlayer:id,name,country,profile_photo_path', 'vq3Player:id,name,country,profile_photo_path')
-            ->first();
+        if ($request->user()) {
+            $myTeam = Team::where('tournament_id', $tournament->id)
+                ->where('cpm_player_id', $request->user()->id)
+                ->orWhere('vq3_player_id', $request->user()->id)
+                ->with('cpmPlayer:id,name,country,profile_photo_path', 'vq3Player:id,name,country,profile_photo_path')
+                ->first();
+        } else {
+            $myTeam = null;
+        }
 
         return Inertia::render('Tournaments/Teams/Index')
             ->with('tournament', $tournament)
@@ -40,6 +44,10 @@ class TeamController extends Controller {
     }
 
     public function manage(Tournament $tournament, Request $request) {
+        if (! $request->user()) {
+            return redirect()->route('login');
+        }
+
         $users = User::orderBy('plain_name', 'ASC')->get([
             'id',
             'name',

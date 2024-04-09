@@ -28,16 +28,20 @@ class RoundController extends Controller {
                 ->with('maps')
                 ->with(['comments' => function ($query) {
                     $query->orderBy('created_at', 'desc');
-                }])
-                ->with(['vq3_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with(['cpm_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with('vq3_results.user')
-                ->with('cpm_results.user')
-                ->get();
+                }]);
+
+        if ($request->user()) {
+            $rounds = $rounds->with(['vq3_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }])
+            ->with(['cpm_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }]);
+        }
+                
+        $rounds = $rounds->with('vq3_results.user')
+            ->with('cpm_results.user')
+            ->get();
 
         return Inertia::render('Tournaments/Tournament/Rounds')
                 ->with('tournament', $tournament)
@@ -51,16 +55,20 @@ class RoundController extends Controller {
                 ->with('maps')
                 ->with(['comments' => function ($query) {
                     $query->orderBy('created_at', 'desc');
-                }])
-                ->with(['vq3_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with(['cpm_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with('vq3_results.user.clan')
-                ->with('cpm_results.user.clan')
-                ->get();
+                }]);
+
+        if ($request->user()) {
+            $rounds = $rounds->with(['vq3_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }])
+            ->with(['cpm_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }]);
+        } 
+
+        $rounds = $rounds->with('vq3_results.user.clan')
+        ->with('cpm_results.user.clan')
+        ->get();
     
         foreach($rounds as $round) {
             $vq3_results = $round->vq3_results;
@@ -139,16 +147,21 @@ class RoundController extends Controller {
                 ->with('maps')
                 ->with(['comments' => function ($query) {
                     $query->orderBy('created_at', 'desc');
-                }])
-                ->with(['vq3_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with(['cpm_demos' => function ($query) use($request) {
-                    $query->where('user_id', $request->user()->id);
-                }])
-                ->with('vq3_results.user')
-                ->with('cpm_results.user')
-                ->get();
+                }]);
+
+        if ($request->user()) {
+            $rounds = $rounds->with(['vq3_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }])
+            ->with(['cpm_demos' => function ($query) use($request) {
+                $query->where('user_id', $request->user()->id);
+            }]);
+        }
+                
+
+        $rounds = $rounds->with('vq3_results.user')
+        ->with('cpm_results.user')
+        ->get();
 
         $teams = Team::where('tournament_id', $tournament->id)
                 ->whereNotNull('vq3_player_id')
@@ -195,6 +208,10 @@ class RoundController extends Controller {
     }
 
     public function comment(Tournament $tournament, Round $round, Request $request) {
+        if (! $request->user()) {
+            return back()->withDanger('You must be logged in to comment');
+        }
+
         $round->comments()->create([
             'user_id' => $request->user()->id,
             'comment' => $request->comment
@@ -204,6 +221,10 @@ class RoundController extends Controller {
     }
 
     public function submit(Tournament $tournament, Round $round, Request $request) {
+        if (! $request->user()) {
+            return back()->withDanger('You must be logged in to comment');
+        }
+
         if (! $request->demo) {
             return back()->withDanger('You must upload a demo');
         }

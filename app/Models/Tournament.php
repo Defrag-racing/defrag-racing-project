@@ -89,6 +89,7 @@ class Tournament extends Model
     public function clanResults () {
         $rounds = Round::where('tournament_id', $this->id)
                 ->where('start_date', '<=', Carbon::now())
+                ->where('end_date', '<=', Carbon::now())
                 ->orderBy('start_date', 'DESC')
                 ->with('vq3_results.user.clan')
                 ->with('cpm_results.user.clan')

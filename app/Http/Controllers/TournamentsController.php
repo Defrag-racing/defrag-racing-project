@@ -18,15 +18,15 @@ class TournamentsController extends Controller {
         $activeTournaments = Tournament::whereHas('rounds', function ($query) {
             $query->where('start_date', '<=', Carbon::now())
                 ->where('end_date', '>=', Carbon::now());
-        })->get();
+        })->where('published', true)->get();
 
         $upcomingTournaments = Tournament::whereHas('rounds', function ($query) {
             $query->where('start_date', '>', Carbon::now());
-        })->get();
+        })->where('published', true)->get();
 
         $pastTournaments = Tournament::whereDoesntHave('rounds', function ($query) {
             $query->where('end_date', '>', Carbon::now());
-        })->get();
+        })->where('published', true)->get();
 
         return Inertia::render('Tournaments/Index')
             ->with('tournaments', $tournaments)

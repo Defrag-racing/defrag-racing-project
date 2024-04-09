@@ -141,10 +141,12 @@ class DemoValidator {
     public function validate() {
         $config = $this->data->gameStates[0]->configStringValues;
 
+        foreach($config as $key => $value) {
+            $config->{strtolower($key)} = $value;
+        }
+
         $rules = [
-            // 'defrag_clfps' => '125',
-            // 'defrag_svfps' => '125',
-            'df_mp_InterferenceOff' => '3',
+            'df_mp_interferenceOff' => '3',
             'g_speed' => '320',
             'sv_cheats' => '0',
             'timescale' => '1',
@@ -154,7 +156,7 @@ class DemoValidator {
         ];
 
         foreach ($rules as $rule => $value) {
-            if (!isset($config->$rule) || (string)$config->$rule != (string)$value) {
+            if (!isset($config->$rule) || strtolower((string)$config->$rule) != (string)$value) {
                 throw new \Exception('Rule ' . $rule . ' is not valid. Must be ' . $value . '.');
             }
         }

@@ -14,6 +14,11 @@ class RoundMap extends Model
         'crc',
         'name',
         'download_name',
-        'pk3'
+        'pk3',
+        'external'
     ];
+
+    public function round() {
+        return $this->belongsTo(Round::class);
+    }
 }

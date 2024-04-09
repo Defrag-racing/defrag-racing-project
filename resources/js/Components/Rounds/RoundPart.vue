@@ -93,9 +93,14 @@
                             Download
                         </div>
                         <div class="text-lg text-white flex-grow">
-                            <a v-for="pk3 in round.maps" href="#" class="text-indigo-500 dark:text-indigo-400 hover:underline mr-3">
-                                {{ pk3.name }}
-                            </a>
+                            <div v-for="pk3 in round.maps">
+                                <a v-if="pk3.external" :download="pk3.download_name" :href="'https://dl.defrag.racing/downloads/maps/' + pk3.pk3.split('/').pop()" class="text-indigo-500 dark:text-indigo-400 hover:underline mr-3">
+                                    {{ pk3.name }}
+                                </a>
+                                <a v-else target="_blank" :href="route('tournaments.maps.download', pk3.id)" class="text-indigo-500 dark:text-indigo-400 hover:underline mr-3">
+                                    {{ pk3.name }}
+                                </a>
+                            </div>
                         </div>
                     </div>
     

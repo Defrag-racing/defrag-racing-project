@@ -58,11 +58,12 @@
         <form enctype="multipart/form-data" @submit.prevent="finishBasicInformation" class="flex justify-center">
             <div class="w-80">
                 <div class="mb-3">
-                    <InputLabel for="name" value="Download File Name" />
+                    <InputLabel for="name" value="Map name (without extensions, must match the bsp name)" />
                     <TextInput
                         id="name"
                         v-model="form.name"
-                        placeholder="mapname.pk3"
+                        placeholder="mapname"
+                        title="without extensions, must match the bsp name"
                         type="text"
                         class="mt-1 block w-full"
                         :class="{ 'border-red-500': form.errors.name }"

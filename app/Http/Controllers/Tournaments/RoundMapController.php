@@ -40,6 +40,7 @@ class RoundMapController extends Controller {
 
         $round = $round->maps()->create([
             'name'          =>      $request->name,
+            'download_name' =>      $request->name . '.pk3',
             'pk3'           =>      $request->file('pk3')->store('tournaments/rounds/maps'),
             'crc'           =>      $request->crc ?? ''
         ]);
@@ -60,8 +61,10 @@ class RoundMapController extends Controller {
 
         $roundMap = new RoundMap();
         $roundMap->round_id = $round->id;
-        $roundMap->name = $map->name . '.pk3';
+        $roundMap->name = $map->name;
         $roundMap->pk3 = $map->pk3;
+        $roundMap->download_name = $map->pk3 . '.pk3';
+        $roundMap->external = true;
         $roundMap->crc = '';
 
         $roundMap->save();

@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="px-4 mx-auto max-w-screen-xl text-center py-10">
-                    <Link :href="route('announcements')" class="inline-flex justify-between items-center py-1 px-1 pe-4 mb-3 text-sm text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800">
+                    <Link :href="route('announcements')" class="inline-flex justify-between items-center py-1 px-1 pe-4 mb-3 text-sm  rounded-full bg-blue-900 text-blue-300 hover:bg-blue-800">
                         <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">
                             <span class="font-bold">Latest News - </span>
                             <span class="text-gray-300">{{ timeSince(announcement.created_at) }} ago</span>
@@ -54,8 +54,8 @@
                         </Link> 
                     </div>
 
-                    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Welcome to Defrag<span class="text-6xl text-blue-500">.</span>Racing</h1>
-                    <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
+                    <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">Welcome to Defrag<span class="text-6xl text-blue-500">.</span>Racing</h1>
+                    <p class="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-200">
                         Defrag is a speed running game where you compete on reaching the finish line in the shortest time possible.
                     </p>
 

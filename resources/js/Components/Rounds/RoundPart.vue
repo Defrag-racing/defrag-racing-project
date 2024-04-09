@@ -81,7 +81,7 @@
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
                             Type
                         </div>
-                        <div class="text-lg dark:text-white flex-grow">
+                        <div class="text-lg text-white flex-grow">
                             {{ round.category }} Map
                         </div>
                     </div>
@@ -94,10 +94,10 @@
                         </div>
                         <div class="text-lg text-white flex-grow">
                             <div v-for="pk3 in round.maps">
-                                <a v-if="pk3.external" :download="pk3.download_name" :href="'https://dl.defrag.racing/downloads/maps/' + pk3.pk3.split('/').pop()" class="text-indigo-500 dark:text-indigo-400 hover:underline mr-3">
+                                <a v-if="pk3.external" :download="pk3.download_name" :href="'https://dl.defrag.racing/downloads/maps/' + pk3.pk3.split('/').pop()" class="text-indigo-400 hover:underline mr-3">
                                     {{ pk3.name }}
                                 </a>
-                                <a v-else target="_blank" :href="route('tournaments.maps.download', pk3.id)" class="text-indigo-500 dark:text-indigo-400 hover:underline mr-3">
+                                <a v-else target="_blank" :href="route('tournaments.maps.download', pk3.id)" class="text-indigo-400 hover:underline mr-3">
                                     {{ pk3.name }}
                                 </a>
                             </div>

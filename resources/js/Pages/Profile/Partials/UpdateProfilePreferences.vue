@@ -71,7 +71,7 @@
                             <div>
                                 <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user?.country ?? profile.country}.png`" :title="user?.country ?? profile.country" class="w-7 inline mr-2 mb-0.5">
                             </div>
-                            <div class="text-2xl font-medium text-gray-900 dark:text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
+                            <div class="text-2xl font-medium text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
                         </div>
                     </div>
                 </div>

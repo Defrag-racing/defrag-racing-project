@@ -111,25 +111,25 @@
 
         <!-- Prize Pool -->
         <div v-if="tournament.prize_pool > 0">
-            <h1 class="font-black text-3xl dark:text-white my-5">Prize Pool</h1>
+            <h1 class="font-black text-3xl text-white my-5">Prize Pool</h1>
 
             <div class="tech-line-overview"></div>
 
-            <div class="text-gray-900 dark:text-gray-400 text-lg mb-10">
+            <div class="text-gray-400 text-lg mb-10">
                 Current Prize Pool: <span class="text-blue-400 text-xl">{{ tournament.prize_pool }}$</span>
             </div>
         </div>
 
         <!-- Organizers -->
         <div>
-            <h1 class="font-black text-3xl dark:text-white my-5">Organizers</h1>
+            <h1 class="font-black text-3xl text-white my-5">Organizers</h1>
 
             <div class="tech-line-overview"></div>
 
             <div class="mt-5">
                 <div class="w-full flex text-center">
                     <div class="w-60" v-for="(data, role) in organizers">
-                        <h1 class="text-gray-900 dark:text-gray-400 capitalize mb-2">{{ role }}s</h1>
+                        <h1 class="text-gray-400 capitalize mb-2">{{ role }}s</h1>
 
                         <div v-for="organizer in data">
                             <Link :href="route('profile.index', organizer.user.id)" class="text-gray-500 my-4 hover:underline" v-html="q3tohtml(organizer.user.name)" />
@@ -141,7 +141,7 @@
 
         <!-- Related Tournaments -->
         <div v-if="tournament.related_tournaments > 0">
-            <h1 class="font-black text-3xl dark:text-white my-5">Related Tournaments</h1>
+            <h1 class="font-black text-3xl text-white my-5">Related Tournaments</h1>
 
             <div class="tech-line-overview"></div>
 

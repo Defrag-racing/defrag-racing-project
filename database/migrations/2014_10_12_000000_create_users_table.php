@@ -34,6 +34,13 @@ return new class extends Migration
 
             $table->string('model')->default('sarge');
 
+            $table->boolean('defrag_news')->default(true);
+            $table->boolean('tournament_news')->default(true);
+            $table->boolean('invitations')->default(true);
+
+            $table->string('records_vq3')->default('all');
+            $table->string('records_cpm')->default('all');
+
             $table->timestamps();
         });
     }

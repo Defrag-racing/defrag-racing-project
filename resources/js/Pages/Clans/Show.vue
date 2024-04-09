@@ -14,7 +14,7 @@
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-center items-center mb-5 flex-wrap">
-                    <div class="font-semibold text-3xl text-gray-200 leading-tight">
+                    <div class="font-semibold text-3xl text-gray-200 leading-tight flex flex-col items-center justify-center">
                         <img class="h-20 w-20 rounded-full object-cover shadow-lg" :src="'/storage/' + clan.image">
             
                         <h2 class="text-2xl text-gray-300 hover:underline text-center mt-1" v-html="q3tohtml(clan.name)"></h2>

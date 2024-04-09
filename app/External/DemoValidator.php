@@ -146,7 +146,7 @@ class DemoValidator {
         }
 
         $rules = [
-            'df_mp_interferenceOff' => '3',
+            'df_mp_interferenceoff' => '3',
             'g_speed' => '320',
             'sv_cheats' => '0',
             'timescale' => '1',

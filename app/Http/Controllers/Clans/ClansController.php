@@ -36,6 +36,7 @@ class ClansController extends Controller {
             $invitations = ClanInvitation::query()
                 ->where('user_id', $request->user()->id)
                 ->where('accepted', false)
+                ->has('clan')
                 ->with('clan')
                 ->get();
 

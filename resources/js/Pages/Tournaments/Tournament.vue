@@ -3,6 +3,7 @@
     import Tabs2 from '@/Components/Tabs2.vue';
     import { onMounted, getCurrentInstance, ref } from 'vue';
     import OverviewNew from '@/Components/Tournament/OverviewNew.vue';
+    import PrimaryButton from '@/Components/Laravel/PrimaryButton.vue';
 
     const props = defineProps({
         tournament: Object,
@@ -76,8 +77,7 @@
             link: true,
             route: 'tournaments.donations',
             params: { tournament: props.tournament.id },
-            condition: props.tournament.has_donations,
-            condition: true
+            condition: props.tournament.has_donations
         },
         {
             name: 'FAQs',
@@ -115,10 +115,19 @@
                 <div class="mb-12 pb-5 pt-1 rounded-lg mt-5 flex" style="z-index: 2;">
 
                     <div class="rounded-lg p-5 w-full bg-grayop-800">
-                        <div class="flex justify-center items-center flex-wrap mb-2">
+                        <div class="flex justify-between items-center flex-wrap mb-2">
+                            <div class="h-1 w-40"></div>
                             <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
                                 {{ tournament.name }}
                             </h2>
+                            <a v-if="tournament.donation_link" :href="tournament.donation_link" target="_blank" class="flex justify-center">
+                                <PrimaryButton class="w-40 flex justify-center bg-yellow-500 hover:bg-yellow-400 text-black" style="color: black;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                    Donate
+                                </PrimaryButton>
+                            </a>
                         </div>
 
                         <Tabs2 :tabs="tabs" :activeTab="tab" style="z-index: 3;" />

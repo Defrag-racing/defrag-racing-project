@@ -28,6 +28,7 @@ class Tournament extends Model
         'has_donations',
         'streamer_window',
         'creator',
+        'donation_link'
     ];
 
     public function isOrganizer ($userId) {

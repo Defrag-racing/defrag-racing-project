@@ -60,6 +60,12 @@ class TournamentManagementController extends Controller {
             return Inertia::render('Tournaments/Create')->with('error', 'A tournament with that name already exists');
         }
 
+        if ($request->has_donations) {
+            if (! $request->has('donation_link') || $request->donation_link == null || $request->donation_link == '') {
+                return back()->withDanger('You need to provide a donation link if you want to accept donations.');
+            }
+        }
+
         $tournament = new Tournament;
         $tournament->name = $request->name;
         $tournament->description = $request->description;
@@ -68,6 +74,7 @@ class TournamentManagementController extends Controller {
         $tournament->has_teams = $request->has_teams;
         $tournament->prize_pool = $request->prize_pool;
         $tournament->has_donations = $request->has_donations;
+        $tournament->donation_link = $request->has('donation_link') ? $request->donation_link : null;
         $tournament->creator = $request->user()->id;
 
         $image = $request->file('photo');

@@ -25,6 +25,7 @@
         has_teams: (props.tournament.has_teams == 1) ? true : false,
         has_donations: (props.tournament.has_donations == 1) ? true : false,
         prize_pool: props.tournament.prize_pool?.toString() || '0',
+        donation_link: props.tournament.donation_link || '',
     });
 
     const editor = ClassicEditor;
@@ -286,6 +287,17 @@
                             Does this tournament support player donation ?
                         </p>
                         <InputError :message="form.errors.has_donations" class="mt-2" />
+                    </div>
+
+                    <div class="mb-3" v-if="form.has_donations">
+                        <InputLabel for="donation_link" value="Donation Link" />
+                        <TextInput
+                            id="donation_link"
+                            v-model="form.donation_link"
+                            type="text"
+                            class="mt-1 block w-full"
+                        />
+                        <InputError :message="form.errors.donation_link" class="mt-2" />
                     </div>
 
                     <div class="mb-3">

@@ -2,46 +2,24 @@ const data = `<section class="ruleset">
 <h3>1. Intro</h3>
 <ul class="ruleset">
     <li>Players have to meet the following criterias in order to participate in the Defrag World Cup 2021.</li>
-    <li>In order to participate, players have to <a href="/comp/dfwc2021/signup.html">register here</a>.</li>
+    <li>In order to participate, players have to <a href="/register">register here</a>.</li>
     <li><em>Note: It is strictly not allowed to share your account with another player.</em></li>
 </ul>
 
 <h3>2. Client</h3>
 <ul class="ruleset">
     <li>
-        Only the official DFWC-Defrag client is allowed in order to participate in this world cup.
-        <br>
-        <a href="/comp/dfwc2021/faq.html#downloads">Download the official client here</a>
-    </li>
-
-    <li>
-        <em>Note: DFWC2021 maps will not work with any other client for anti cheat reasons,
-            for more information skip to <a href="#cheating">5. Cheating</a>
-        </em>
-    </li>
-
-    <li>
-        If you do not have Defrag (mod) installed, you can <a href="https://q3defrag.org/files/defrag/?C=N;O=D">download the latest version here</a>.
+        If you do not have Defrag (mod) installed, you can <a href="/bundles">download the latest version here</a>.
     </li>
 </ul>
 
 <h3>3. Config</h3>
 <ul class="ruleset">
     <li>
-        DFWC 2021 requires some Cvars to be set in order to allow for consistency of each run/demo.<br>
-        <a href="/pub/data/dfwc2021/dfwc-rules.cfg">Download the DFWC2021 config here</a>
+        Tournament requires some Cvars to be set in order to allow for consistency of each run/demo.<br>
+        <a href="/bundles">Download the bundle from the bundles section</a>
     </li>
     <li>
-        Usage: Download the config file and place it into <dfn>game-folder / defrag /</dfn>.<br>
-        Run the DFWC Client, once the game is running, open console and execute this command: <code>/exec dfwc-rules.cfg</code>
-        After you are prompted with the confirmation message, go ahead and set your name and country for the demos:
-        <code class="pre">/df_name NICKNAME
-/df_country COUNTRY</code>
-<em>
-Note: This will not affect your existing config, it will force/add its own cvar values to your existing setup.
-<br>Make a copy of your existing config if you do not wish to do that.
-</em>
-<br>
 <br>
 Additional cvar information:
         <pre>"df_name" must be set to the player name
@@ -100,7 +78,7 @@ Additional cvar information:
         In any case, the player as well as the community would be allowed to appeal
         to this before the final decision is made.
         If you are in doubt whether your route will be allowed or not,
-        please reach out to one of the DFWC staff.
+        please reach out to one of the Tournament staff.
     </li>
 </ul>
 
@@ -154,21 +132,8 @@ Additional cvar information:
 <h3>6. Map exploits</h3>
 <ul class="ruleset">
 <li class="dig"><strong>Map decompilation.</strong> <br>
-Decompilation of bsp files is discouraged. We made the bsp files protected this time, so that only the official DFWC client can open them.<br>
-After DFWC is over, regular versions of the maps (playable on any server and client) will be uploaded on ws.q3df.org.<br>
-Besides, the official DFWC2019 anticheat client is unable to open other maps - that is normal.<br>
 If you need to know where some triggers or player clips are located in a map, you can do it without decompilation this time.<br>
-The anticheat client comes with an extra pk3 file and has 4 new CVars for that:
-<pre>scr_clips_draw "1" - this will render player clips in-game
-scr_clips_shader "tcRenderShader" - the recommended shader (comes in the special pk3 file)
-scr_triggers_draw "1" - this will render triggers in-game
-scr_triggers_shader "tcRenderShader" - the recommended shader (comes in the special pk3 file)
-</pre>
-Usage: download the tcRender.pk3 from the FAQ page and put it in your baseq3 folder. Set a binding like the following:
-<code>
-    bind &lt;key&gt; "toggle scr_clips_draw; toggle scr_triggers_draw;"
-</code>
-<em>Note: the usage of this pk3 and these commands is not necessary. You may use them, if you like, or you may ignore them.</em>
+Usage: Download the <a href="/bundles/2/useful-pk3s">Clean trigger, clip and slick brush</a> from the bundles page and put it in your baseq3 folder.
 </li>
     <li class="dig">
         <strong>Walllingering / Wallbugs:</strong> It is not allowed to build up large amounts of speed without

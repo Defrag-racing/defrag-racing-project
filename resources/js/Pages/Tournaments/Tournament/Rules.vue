@@ -8,7 +8,7 @@
 
 <template>
     <Tournament :tournament="tournament" tab="Rules">
-        <div v-html="tournament.rules" class="wysiwyg-wrap2"></div>
+        <div v-html="tournament.rules.replace('TOURNAMENT_ID', tournament.id)" class="wysiwyg-wrap2"></div>
     </Tournament>
 </template>
 

@@ -10,7 +10,7 @@
         activeTournaments: Object,
         upcomingTournaments: Object,
         pastTournaments: Object,
-        canCreate: Boolean
+        records: Number
     });
 
     const filteredTournaments = ref([]);
@@ -68,14 +68,14 @@
                         Tournaments
                     </h2>
     
-                    <Link v-if="canCreate" :href="route('tournaments.create')" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600">
+                    <Link v-if="records >= 200" :href="route('tournaments.create')" class="flex items-center text-white bg-grayop-700 py-2 px-4 rounded-md font-bold cursor-pointer bg-grayop-700 hover:bg-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
     
                         <div>Create Tournaments</div>
                     </Link>
-    
+
                     <div v-else class="flex items-center text-gray-500 bg-grayop-700 py-2 px-4 rounded-md font-bold bg-grayop-700 cursor-default" title="You cannot create tournaments because you have less than 200 records.">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -85,7 +85,13 @@
                     </div>
                 </div>
 
-                <div class="mb-12 pb-5 pt-1 rounded-lg flex mt-10">
+                <div class="flex justify-end mt-2" v-if="records < 200">
+                    <div class="text-yellow-500 text-sm">
+                        You cannot create tournaments because you have less than 200 records. You now have {{ records }} records.
+                    </div>
+                </div>
+
+                <div class="mb-12 pb-5 pt-1 rounded-lg flex flex-col items-center md:items-stretch md:flex-row mt-10">
                     <Tabs :tabs="tabs" :onClick="toggleTab" :activeTab="activeTab" />
 
                     <div class="rounded-lg p-5 w-full bg-grayop-800">

@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class TournamentsController extends Controller {
     public function index(Request $request) {
-        $canCreate = Record::where('user_id', $request->user()->id)->count() >= 200;
+        $records = Record::where('user_id', $request->user()->id)->count();
 
         $tournaments = Tournament::query()
             ->where('published', true)
@@ -49,7 +49,7 @@ class TournamentsController extends Controller {
             ->with('activeTournaments', $activeTournaments)
             ->with('upcomingTournaments', $upcomingTournaments)
             ->with('pastTournaments', $pastTournaments)
-            ->with('canCreate', $canCreate);
+            ->with('records', $records);
     }
 
     public function show(Tournament $tournament, Request $request) {

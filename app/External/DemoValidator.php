@@ -130,7 +130,7 @@ class DemoValidator {
                 }
             }
 
-            if ($config->mapname == $roundmap->name) {
+            if (strtolower($config->mapname) == strtolower($roundmap->name)) {
                 return;
             }
         }

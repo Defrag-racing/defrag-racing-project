@@ -2,11 +2,16 @@
     import { Link } from '@inertiajs/vue3';
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
     import DeleteRoundModal from './DeleteRoundModal.vue';
+    import { useForm } from '@inertiajs/vue3';
 
     import { ref } from 'vue';
 
     const props = defineProps({
         tournament: Object
+    });
+
+    const form = useForm({
+        _method: 'POST'
     });
 
     const showDeleteRound = ref(false);
@@ -15,6 +20,10 @@
     const deleteRound = (round) => {
         selectedRound.value = round;
         showDeleteRound.value = true;
+    }
+
+    const publishRound = (round) => {
+        form.post(route('tournaments.rounds.publish', {tournament: props.tournament.id, round: round.id}));
     }
 </script>
 
@@ -28,8 +37,11 @@
 
         <div v-for="round in tournament.rounds" :key="round.id">
             <div class="rounded-md bg-blackop-30 px-5 py-3 mx-2 my-2 flex">
-                <div>
+                <div class="flex flex-col items-center">
                     <img :src="'/storage/' + round.image" style="width: 200px;" class="border-2 rounded-md border-grayop-500">
+                    
+                    <div v-if="round.published" class="text-lg text-green-500 mt-3">Published</div>
+                    <div v-else class="text-lg text-red-500 mt-3">Unpublished</div>
                 </div>
 
                 <div class="ml-5">
@@ -46,6 +58,10 @@
                     <Link :href="route('tournaments.rounds.maps.index', {tournament: tournament.id, round: round.id})" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                         Edit Maps
                     </Link>
+
+                    <div @click="publishRound(round)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                        {{ round.published ? 'Unpublish Round' : 'Publish Round' }}
+                    </div>
 
                     <div @click="deleteRound(round)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                         Delete Round

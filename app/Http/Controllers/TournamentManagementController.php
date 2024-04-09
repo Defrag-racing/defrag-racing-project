@@ -48,8 +48,6 @@ class TournamentManagementController extends Controller {
             'description' => ['required', 'string'],
             'rules' => ['required', 'string'],
             'photo' => ['required', 'image'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
             'has_teams' => ['required', 'boolean'],
             'prize_pool' => ['required', 'numeric'],
             'has_donations' => ['required', 'boolean'],
@@ -62,25 +60,11 @@ class TournamentManagementController extends Controller {
             return Inertia::render('Tournaments/Create')->with('error', 'A tournament with that name already exists');
         }
 
-        $start_date = Carbon::parse($request->start_date);
-        $end_date = Carbon::parse($request->end_date);
-        $now = Carbon::now();
-
-        if ($start_date->lt($now)) {
-            return Inertia::render('Tournaments/Create')->with('error', 'Start date must be in the future');
-        }
-
-        if ($end_date->lt($start_date)) {
-            return Inertia::render('Tournaments/Create')->with('error', 'End date must be after start date');
-        }
-
         $tournament = new Tournament;
         $tournament->name = $request->name;
         $tournament->description = $request->description;
         $tournament->rules = $request->rules;
         $tournament->slug = $slug;
-        $tournament->start_date = $request->start_date;
-        $tournament->end_date = $request->end_date;
         $tournament->has_teams = $request->has_teams;
         $tournament->prize_pool = $request->prize_pool;
         $tournament->has_donations = $request->has_donations;
@@ -149,8 +133,6 @@ class TournamentManagementController extends Controller {
             'name' => ['required', 'max:255', 'string'],
             'description' => ['required', 'string'],
             'rules' => ['required', 'string'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
             'has_teams' => ['required', 'boolean'],
             'prize_pool' => ['required', 'numeric'],
             'has_donations' => ['required', 'boolean'],
@@ -159,24 +141,10 @@ class TournamentManagementController extends Controller {
 
         $slug = \Str::slug($request->name);
 
-        $start_date = Carbon::parse($request->start_date);
-        $end_date = Carbon::parse($request->end_date);
-        $now = Carbon::now();
-
-        if ($start_date->lt($now)) {
-            return Inertia::render('Tournaments/Edit')->with('tournament', $tournament)->with('error', 'Start date must be in the future');
-        }
-
-        if ($end_date->lt($start_date)) {
-            return Inertia::render('Tournaments/Edit')->with('tournament', $tournament)->with('error', 'End date must be after start date');
-        }
-
         $tournament->name = $request->name;
         $tournament->description = $request->description;
         $tournament->rules = $request->rules;
         $tournament->slug = $slug;
-        $tournament->start_date = $request->start_date;
-        $tournament->end_date = $request->end_date;
         $tournament->has_teams = $request->has_teams;
         $tournament->prize_pool = $request->prize_pool;
         $tournament->has_donations = $request->has_donations;
@@ -210,5 +178,12 @@ class TournamentManagementController extends Controller {
         $tournament->save();
 
         return redirect()->route('tournaments.index');
+    }
+
+    public function publish (Tournament $tournament, Request $request) {
+        $tournament->published = ! $tournament->published;
+        $tournament->save();
+
+        return back();
     }
 }

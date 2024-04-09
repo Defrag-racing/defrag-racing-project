@@ -74,5 +74,6 @@ class Kernel extends HttpKernel
         'tournaments.management' => \App\Http\Middleware\TournamentManagementMiddleware::class,
         'tournaments.validation' => \App\Http\Middleware\TournamentValidationMiddleware::class,
         'tournaments.news.pinned' => \App\Http\Middleware\TournamentPinnedNewsMiddleware::class,
+        'tournaments.tournamentaccess' => \App\Http\Middleware\TournamentAccessMiddleware::class,
     ];
 }

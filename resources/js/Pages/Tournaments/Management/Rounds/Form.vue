@@ -298,7 +298,7 @@
                             @change="updateImagePreview"
                         >
         
-                        <InputLabel for="image" value="Tournament Image" />
+                        <InputLabel for="image" value="Round Image" />
 
                         <div v-if="imagePreview" class="mt-2">
                             <span

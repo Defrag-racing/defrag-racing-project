@@ -182,4 +182,14 @@ class RoundManagementController extends Controller {
 
         return redirect()->route('tournaments.rounds.manage', $tournament)->withSuccess('Round deleted successfully !');
     }
+
+    public function publish(Tournament $tournament, Round $round) {
+        $round->update([
+            'published'     =>      ! $round->published
+        ]);
+
+        $message = $round->published ? 'Round published successfully !' : 'Round unpublished successfully !';
+
+        return redirect()->route('tournaments.rounds.manage', $tournament)->withSuccess($message);
+    }
 }

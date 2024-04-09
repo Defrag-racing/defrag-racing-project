@@ -21,8 +21,6 @@
         description: props.tournament.description || '',
         photo: null,
         trailer: props.tournament.trailer || '',
-        start_date: props.tournament.start_date || '',
-        end_date: props.tournament.end_date || '',
         rules: props.tournament.rules || rulesData,
         has_teams: (props.tournament.has_teams == 1) ? true : false,
         has_donations: (props.tournament.has_donations == 1) ? true : false,
@@ -83,20 +81,6 @@
     };
 
     const detailsTabFinished = () => {
-        if (form.start_date.length === 0) {
-            form.errors.start_date = 'The Start Date field is required.';
-            return false;
-        }
-
-        form.errors.start_date = '';
-
-        if (form.end_date.length === 0) {
-            form.errors.end_date = 'The End Date field is required.';
-            return false;
-        }
-        
-        form.errors.end_date = '';
-
         if (form.rules.length === 0) {
             form.errors.rules = 'The rules field is required.';
             return false;
@@ -255,28 +239,6 @@
                 </div>
 
                 <div class="col-span-6" v-if="tabs[currentTab] == 'details'">
-                    <div class="mb-3">
-                        <InputLabel for="start_date" value="Start Date" />
-                        <TextInput
-                            id="start_date"
-                            v-model="form.start_date"
-                            type="datetime-local"
-                            class="mt-1 block w-full"
-                        />
-                        <InputError :message="form.errors.start_date" class="mt-2" />
-                    </div>
-
-                    <div class="mb-3">
-                        <InputLabel for="end_date" value="End Date" />
-                        <input
-                            id="end_date"
-                            v-model="form.end_date"
-                            type="datetime-local"
-                            class="mt-1 block w-full border-2 border-grayop-700 bg-grayop-900 text-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
-                        />
-                        <InputError :message="form.errors.end_date" class="mt-2" />
-                    </div>
-
                     <div class="mb-3">
                         <InputLabel for="rules" value="Rules" />
                         <ckeditor

@@ -1,6 +1,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3';
     import Tournament from '@/Pages/Tournaments/Tournament.vue';
+    import { useForm } from '@inertiajs/vue3';
 
     const props = defineProps({
         tournament: Object,
@@ -61,6 +62,11 @@
             condition: props.myroles.includes('admin') || props.myroles.includes('validator')
         },
         {
+            text: 'Publish Tournament',
+            condition: props.myroles.includes('admin'),
+            publish: true
+        },
+        {
             text: 'Delete Tournament',
             route: route('tournaments.delete.index', props.tournament.id),
             condition: props.myroles.includes('admin'),
@@ -68,15 +74,30 @@
         }
     ];
 
+    const form = useForm({
+        _method: 'POST'
+    });
+
+    const publishTournament = () => {
+        form.post(route('tournaments.publish', props.tournament.id));
+    }
+
 </script>
 
 <template>
     <Tournament :tournament="tournament" tab="ManageTournament">
+        <div class="text-center w-full mb-5 text-lg text-white">
+            The tournament is <span v-if="tournament.published" class="text-green-500">published</span><span v-else class="text-red-500">not published</span>.
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between gap-3">
             <div v-for="button in buttons" :key="button.text" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg" :class="{'text-red-500': button.del}">
-                <Link v-if="button.condition" :href="button.route" class="block p-3">
+                <Link v-if="button.condition && ! button.publish" :href="button.route" class="block p-3">
                     {{ button.text }}
                 </Link>
+                <span v-else-if="button.condition && button.publish" @click="publishTournament" class="block p-3">
+                    {{ tournament.published ? 'Unpublish Tournament' : 'Publish Tournament' }}
+                </span>
             </div>
         </div>
     </Tournament>

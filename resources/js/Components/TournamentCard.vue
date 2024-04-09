@@ -4,18 +4,6 @@
     const props = defineProps({
         tournament: Object
     });
-
-    const started = () => {
-        const now = new Date();
-
-        const startDate = new Date(props.tournament.start_date);
-
-        if (startDate > now) {
-            return false
-        }
-
-        return true
-    }
 </script>
 
 <template>
@@ -32,9 +20,6 @@
     
                 <div class="flex justify-between">
                     <div class="text-blue-400">{{ tournament.rounds.length }} Rounds</div>
-                    <div class="text-blue-400">
-                        {{ started() ? 'Started ' + timeSince(tournament.start_date) + ' ago' : 'Starts ' + tournament.start_date }}
-                    </div>
                 </div>
             </div>
         </Link>

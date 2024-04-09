@@ -69,7 +69,7 @@ class ClansController extends Controller {
             return redirect()->route('clans.index')->withDanger('You are not allowed to do that');
         }
 
-        if ($request->user()->clan()->first()->admin_id === $request->user()->id) {
+        if ($request->user()->clan() && $request->user()->clan()->first()->admin_id === $request->user()->id) {
             return redirect()->route('clans.index')->withDanger('You are the admin of another clan, you need to either transfer ownership or dismantle your current clan before joining another one.');
         }
 

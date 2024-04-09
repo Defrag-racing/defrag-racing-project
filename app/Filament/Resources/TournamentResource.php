@@ -23,7 +23,12 @@ class TournamentResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255)
             ]);
     }
 
@@ -31,7 +36,11 @@ class TournamentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
             ])
             ->filters([
                 //

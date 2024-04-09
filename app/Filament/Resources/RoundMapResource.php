@@ -23,7 +23,23 @@ class RoundMapResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('round_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('download_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('pk3')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('crc')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Toggle::make('external')
+                    ->required()
             ]);
     }
 
@@ -31,7 +47,19 @@ class RoundMapResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('round_id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('download_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('pk3')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('crc')
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('external')
+                    ->boolean()
             ])
             ->filters([
                 //

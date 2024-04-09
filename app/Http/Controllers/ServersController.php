@@ -12,9 +12,14 @@ class ServersController extends Controller
     public function index() {
         $servers = Server::where('offline', false)
             ->where('visible', true)
-            ->with(['mapdata', 'onlinePlayers.spectators'])
+            ->with(['onlinePlayers.spectators'])
             ->orderBy('plain_name', 'asc')
             ->get();
+
+        $servers->each(function ($server) {
+            $server->map = strtolower($server->map);
+            $server->load('mapdata');
+        });
 
         $servers = $this->sortServers($servers);
 

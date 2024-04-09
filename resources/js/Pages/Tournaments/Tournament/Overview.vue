@@ -136,17 +136,19 @@
         </div>
 
         <!-- Related Tournaments -->
-        <h1 class="font-black text-3xl dark:text-white my-5">Related Tournaments</h1>
+        <div v-if="tournament.related_tournaments > 0">
+            <h1 class="font-black text-3xl dark:text-white my-5">Related Tournaments</h1>
 
-        <div class="tech-line-overview"></div>
+            <div class="tech-line-overview"></div>
 
-        <div class="w-full flex flex-wrap">
-            <div v-for="relatedTournament in tournament.related_tournaments" :key="relatedTournament.id" class="mr-5 mb-4">
-                <Link :href="route('tournaments.show', relatedTournament.tournament.id)"  class="flex items-end mb-1 border-gray-800 border-4 rounded-lg" :style="'min-height: 200px; width: 300px; background-image: url(\'/storage/' + relatedTournament.tournament.image + '\'); background-size: cover;'">
-                    <div class="w-full px-5 py-3 rounded-b-lg" style="background-color: #000000b9;">
-                        <div class="text-md font-bold hover:underline text-white">{{ relatedTournament.tournament.name }}</div>
-                    </div>
-                </Link>
+            <div class="w-full flex flex-wrap">
+                <div v-for="relatedTournament in tournament.related_tournaments" :key="relatedTournament.id" class="mr-5 mb-4">
+                    <Link :href="route('tournaments.show', relatedTournament.tournament.id)"  class="flex items-end mb-1 border-gray-800 border-4 rounded-lg" :style="'min-height: 200px; width: 300px; background-image: url(\'/storage/' + relatedTournament.tournament.image + '\'); background-size: cover;'">
+                        <div class="w-full px-5 py-3 rounded-b-lg" style="background-color: #000000b9;">
+                            <div class="text-md font-bold hover:underline text-white">{{ relatedTournament.tournament.name }}</div>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </div>
     </Tournament>

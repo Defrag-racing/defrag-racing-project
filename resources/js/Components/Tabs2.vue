@@ -5,11 +5,7 @@
     const props = defineProps({
         tabs: Array,
         activeTab: String,
-        onClick: Function,
-        condition: {
-            type: Boolean,
-            default: true
-        }
+        onClick: Function
     });
 
     const toggleTab = (tab) => {
@@ -18,10 +14,10 @@
 </script>
 
 <template>
-    <div class="mb-5 text-sm font-medium text-center" v-if="condition">
+    <div class="mb-5 text-sm font-medium text-center">
         <ul class="mr-5 w-full flex flex-wrap justify-center">
             <li v-for="tab in tabs">
-                <NavLink class="mr-5 mb-3" v-if="tab.link" :href="route(tab.route, tab.params)" :active="activeTab == tab.name">
+                <NavLink class="mr-5 mb-3" v-if="tab.link && tab.condition" :href="route(tab.route, tab.params)" :active="activeTab == tab.name">
                     {{ tab.label }}
                 </NavLink>
             </li>

@@ -19,35 +19,40 @@
             label: 'Overview',
             link: true,
             route: 'tournaments.show',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'Rounds',
             label: 'Rounds',
             link: true,
             route: 'tournaments.rounds.index',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'News',
             label: 'News',
             link: true,
             route: 'tournaments.news.index',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'Standings',
             label: 'Standings',
             link: true,
             route: 'tournaments.standings.index',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'Rules',
             label: 'Rules',
             link: true,
             route: 'tournaments.rules',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'Teams',
@@ -71,14 +76,16 @@
             link: true,
             route: 'tournaments.donations',
             params: { tournament: props.tournament.id },
-            condition: props.tournament.has_donations
+            condition: props.tournament.has_donations,
+            condition: true
         },
         {
             name: 'FAQs',
             label: 'FAQs',
             link: true,
             route: 'tournaments.faqs',
-            params: { tournament: props.tournament.id }
+            params: { tournament: props.tournament.id },
+            condition: true
         },
         {
             name: 'ManageTournament',
@@ -86,7 +93,7 @@
             link: true,
             route: 'tournaments.manage',
             params: { tournament: props.tournament.id },
-            condition: props.tournament.admin_id === page.props?.auth?.user?.id
+            condition: props.tournament.creator === page.props?.auth?.user?.id
         },
 
     ];

@@ -17,7 +17,7 @@ class TournamentAccessMiddleware
     {
         $tournament = $request->route('tournament');
 
-        if ($tournament->isOrganizer($request->user()->id)) {
+        if ($request->user() && $tournament->isOrganizer($request->user()->id)) {
             return $next($request);
         }
 

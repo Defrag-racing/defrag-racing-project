@@ -225,6 +225,8 @@ class ManageClanController extends Controller {
         }
 
         ClanPlayer::where('clan_id', $myClan->id)->delete();
+
+        ClanInvitation::where('clan_id', $myClan->id)->delete();
         
         $myClan->delete();
 

@@ -291,4 +291,12 @@ class RoundController extends Controller {
 
         return back()->withSuccess('Demo uploaded successfully');
     }
+
+    public function delete(Tournament $tournament, Demo $demo, Request $request) {
+        if ($demo->user_id != $request->user()->id) {
+            return back()->withDanger('You can only delete your own demos');
+        }
+
+        $demo->delete();
+    }
 }

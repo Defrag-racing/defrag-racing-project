@@ -35,7 +35,7 @@
             </div>
 
 
-            <MyDemoEntry v-for="demo in round.vq3_demos" :demo="demo" :key="demo.id" />
+            <MyDemoEntry v-for="demo in round.vq3_demos" :demo="demo" :key="demo.id" :tournament="tournament" />
 
             <div v-if="round.vq3_demos?.length == 0">
                 <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
@@ -47,7 +47,7 @@
                 <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
             </div>
 
-            <MyDemoEntry v-for="demo in round.cpm_demos" :demo="demo" :key="demo.id" />
+            <MyDemoEntry v-for="demo in round.cpm_demos" :demo="demo" :key="demo.id" :tournament="tournament" />
 
             <div v-if="round.cpm_demos?.length == 0">
                 <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>

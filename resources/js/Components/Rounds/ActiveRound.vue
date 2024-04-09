@@ -112,7 +112,7 @@
             v-if="round.results && type === 'teams'"
         />
 
-        <MySubmissions :round="round" />
+        <MySubmissions :round="round" :tournament="tournament" />
 
         <CommentSection :tournament="tournament" :comments="round.comments" :url="route('tournaments.rounds.comment', {tournament: tournament.id, round: round.id})" />
     </div>

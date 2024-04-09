@@ -13,7 +13,7 @@
                 <div class="text-2xl font-bold hover:underline text-white">{{ tournament.name }}</div>
     
                 <div class="flex justify-between">
-                    <div class="text-blue-400">7 Rounds</div>
+                    <div class="text-blue-400">{{ tournament.rounds.length }} Rounds</div>
                     <div class="text-blue-400">Started {{ timeSince(tournament.start_date) }} ago</div>
                 </div>
             </div>

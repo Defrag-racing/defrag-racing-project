@@ -13,6 +13,7 @@ class TournamentsController extends Controller {
         $tournaments = Tournament::query()
             ->where('published', true)
             ->orWhere('creator', $request->user()->id)
+            ->with('rounds')
             ->get();
 
         $activeTournaments = Tournament::whereHas('rounds', function ($query) {
@@ -21,6 +22,7 @@ class TournamentsController extends Controller {
         })
         ->where('published', true)
         ->orWhere('creator', $request->user()->id)
+        ->with('rounds')
         ->get();
 
         $upcomingTournaments = Tournament::whereHas('rounds', function ($query) {
@@ -28,6 +30,7 @@ class TournamentsController extends Controller {
         })
         ->where('published', true)
         ->orWhere('creator', $request->user()->id)
+        ->with('rounds')
         ->get();
 
         $pastTournaments = Tournament::whereDoesntHave('rounds', function ($query) {
@@ -35,6 +38,7 @@ class TournamentsController extends Controller {
         })
         ->where('published', true)
         ->orWhere('creator', $request->user()->id)
+        ->with('rounds')
         ->get();
 
         return Inertia::render('Tournaments/Index')

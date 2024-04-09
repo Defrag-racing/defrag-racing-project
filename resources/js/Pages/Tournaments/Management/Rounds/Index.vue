@@ -41,7 +41,7 @@
                     <img :src="'/storage/' + round.image" style="width: 200px;" class="border-2 rounded-md border-grayop-500">
                     
                     <div v-if="round.published" class="text-lg text-green-500 mt-3">Published</div>
-                    <div v-else class="text-lg text-red-500 mt-3">Unpublished</div>
+                    <div v-else class="text-lg text-yellow-500 mt-3">Unpublished</div>
                 </div>
 
                 <div class="ml-5">
@@ -59,11 +59,11 @@
                         Edit Maps
                     </Link>
 
-                    <div @click="publishRound(round)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                    <div @click="publishRound(round)" class="font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3" :class="{'text-yellow-500': round.published, 'text-green-500': ! round.published,}">
                         {{ round.published ? 'Unpublish Round' : 'Publish Round' }}
                     </div>
 
-                    <div @click="deleteRound(round)" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
+                    <div @click="deleteRound(round)" class="text-red-500 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg p-3 mr-4 mb-3">
                         Delete Round
                     </div>
                 </div>

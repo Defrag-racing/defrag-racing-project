@@ -141,7 +141,7 @@ class Tournament extends Model
 
         usort($clan_results_vq3, function($a, $b) {
             if ($a['points'] == $b['points']) {
-                return $a['rank'] - $b['rank'];
+                return $a['points'] - $b['points'];
             }
 
             return $b['points'] - $a['points'];
@@ -149,7 +149,7 @@ class Tournament extends Model
 
         usort($clan_results_cpm, function($a, $b) {
             if ($a['points'] == $b['points']) {
-                return $a['rank'] - $b['rank'];
+                return $a['points'] - $b['points'];
             }
 
             return $b['points'] - $a['points'];

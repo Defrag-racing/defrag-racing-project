@@ -31,16 +31,16 @@ class TournamentManagementController extends Controller {
     }
 
     public function create(Request $request) {
-        if (Record::where('user_id', $request->user()->id)->count() < 200) {
-            return back()->withDanger('You need to have at least 200 records to create a tournament.');
+        if (Record::where('user_id', $request->user()->id)->count() < 50) {
+            return back()->withDanger('You need to have at least 50 records to create a tournament.');
         }
 
         return Inertia::render('Tournaments/Create');
     }
 
     public function store(Request $request) {
-        if (Record::where('user_id', $request->user()->id)->count() < 200) {
-            return back()->withDanger('You need to have at least 200 records to create a tournament.');
+        if (Record::where('user_id', $request->user()->id)->count() < 50) {
+            return back()->withDanger('You need to have at least 50 records to create a tournament.');
         }
 
         $request->validate([

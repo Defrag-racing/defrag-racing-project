@@ -45,7 +45,7 @@
     <div>
         <div @click="showSection = !showSection" class="flex justify-center items-center cursor-pointer text-center text-xl font-medium text-gray-300 bg-blackop-30 p-2 rounded-md hover:text-white">
             <div>
-                {{ showSection ? 'Hide Comments' : 'Show Comments' }}
+                {{ showSection ? 'Hide Comments' : 'Show Comments' }} ({{ comments.length }})
             </div>
         </div>
 

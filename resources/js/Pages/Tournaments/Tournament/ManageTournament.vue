@@ -60,17 +60,6 @@
             text: 'Validate Demos',
             route: route('tournaments.validation.index', props.tournament.id),
             condition: props.myroles.includes('admin') || props.myroles.includes('validator')
-        },
-        {
-            text: 'Publish Tournament',
-            condition: props.myroles.includes('admin'),
-            publish: true
-        },
-        {
-            text: 'Delete Tournament',
-            route: route('tournaments.delete.index', props.tournament.id),
-            condition: props.myroles.includes('admin'),
-            del: true
         }
     ];
 
@@ -96,6 +85,22 @@
                     {{ button.text }}
                 </Link>
                 <span v-else-if="button.condition && button.publish" @click="publishTournament" class="block p-3">
+                    {{ tournament.published ? 'Unpublish Tournament' : 'Publish Tournament' }}
+                </span>
+            </div>
+        </div>
+
+        <div style="height: 1px; width: 100%;" class="bg-gray-600 mt-10"></div>
+
+        <div class="flex gap-2 justify-center mt-10">
+            <div class="text-red-500 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg">
+                <Link v-if="myroles.includes('admin')" :href="route('tournaments.delete.index', tournament.id)" class="block p-3">
+                    Delete Tournament
+                </Link>
+            </div>
+
+            <div class="font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg" :class="{'text-green-500': ! tournament.published, 'text-yellow-500': tournament.published}">
+                <span v-if="props.myroles.includes('admin')" @click="publishTournament" class="block p-3">
                     {{ tournament.published ? 'Unpublish Tournament' : 'Publish Tournament' }}
                 </span>
             </div>

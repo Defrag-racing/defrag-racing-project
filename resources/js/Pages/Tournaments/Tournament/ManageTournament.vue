@@ -59,6 +59,12 @@
             text: 'Validate Demos',
             route: route('tournaments.validation.index', props.tournament.id),
             condition: props.myroles.includes('admin') || props.myroles.includes('validator')
+        },
+        {
+            text: 'Delete Tournament',
+            route: route('tournaments.delete.index', props.tournament.id),
+            condition: props.myroles.includes('admin'),
+            del: true
         }
     ];
 
@@ -67,7 +73,7 @@
 <template>
     <Tournament :tournament="tournament" tab="ManageTournament">
         <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between gap-3">
-            <div v-for="button in buttons" :key="button.text" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg">
+            <div v-for="button in buttons" :key="button.text" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg" :class="{'text-red-500': button.del}">
                 <Link v-if="button.condition" :href="button.route" class="block p-3">
                     {{ button.text }}
                 </Link>

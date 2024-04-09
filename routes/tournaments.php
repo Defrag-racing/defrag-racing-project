@@ -21,6 +21,8 @@ use App\Http\Controllers\StandingsController;
 Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
+
+
 Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
 Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules')->middleware('tournaments.news.pinned');
 Route::get('/tournaments/{tournament}/donations', [TournamentsController::class, 'donations'])->name('tournaments.donations')->middleware('tournaments.news.pinned');
@@ -63,6 +65,9 @@ Route::post('/tournaments/{tournament}/suggestions/create', [SuggestionControlle
 
 Route::middleware(['tournaments.management'])->prefix('/tournaments/manage/{tournament}')->group(function () {
     Route::get('/', [TournamentManagementController::class, 'manage'])->name('tournaments.manage');
+
+    Route::get('/delete', [TournamentsController::class, 'delete'])->name('tournaments.delete.index');
+    Route::post('/delete', [TournamentsController::class, 'destroy'])->name('tournaments.delete.destroy');
 
     Route::get('/suggestions', [SuggestionController::class, 'index'])->name('tournaments.suggestions.index');
     Route::get('/suggestions/{suggestion}/delete', [SuggestionController::class, 'destroy'])->name('tournaments.suggestions.destroy');

@@ -92,4 +92,27 @@ class TournamentsController extends Controller {
         return Inertia::render('Tournaments/Tournament/Faqs')
             ->with('tournament', $tournament);
     }
+
+    public function delete(Tournament $tournament, Request $request) {
+        if ($tournament->creator !== $request->user()->id) {
+            return back()->withDanger('You are not the admin of the tournament !!');
+        }
+
+        return Inertia::render('Tournaments/Tournament/Delete')
+            ->with('tournament', $tournament);
+    }
+
+    public function destroy(Tournament $tournament, Request $request) {
+        $request->validate([
+            'name' => 'required|in:'.$tournament->name,
+        ]);
+
+        if ($tournament->creator !== $request->user()->id) {
+            return back()->withDanger('You are not the admin of the tournament !!');
+        }
+        
+        $tournament->delete();
+
+        return redirect('/tournaments')->withSuccess('Tournament deleted successfully !!');
+    }
 }

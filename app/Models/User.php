@@ -150,8 +150,23 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         return $this->hasMany(TeamInvite::class, 'user_id', 'id');
     }
 
-    public function systemNotify() {
+    public function tournamentNotify($type, $before, $headline, $after, $url) {
+        if (Notification::where('user_id', $this->id)->where('type', $type)->where('headline', $headline)->exists()) {
+            return;
+        }
 
+        if (! $this->tournament_news) {
+            return;
+        }
+
+        $notification = new Notification();
+        $notification->user_id = $this->id;
+        $notification->type = $type;
+        $notification->before = $before;
+        $notification->headline = $headline;
+        $notification->after = $after;
+        $notification->url = $url;
+        $notification->save();
     }
 
     public function recordsNotify() {

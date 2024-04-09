@@ -31,36 +31,26 @@
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-grayop-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <div v-for="notification in notifications.data">
-                        <div class="mb-1 flex items-center text-gray-400 p-2 hover:bg-blackop-30 rounded-md">
+                        <div class="flex items-center text-gray-400 p-2 hover:bg-blackop-30 rounded-md">
                             <div class="mr-5 text-orange-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3" />
                                 </svg>
                             </div>
                             <div>
-                                <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${notification.country}.png`" class="w-5 inline mr-2 mb-0.5">
+                                <span> {{ notification.before }} </span>
 
-                                <span class="font-bold" v-html="q3tohtml(notification.name)"></span>
+                                <Link class="inline text-blue-400 hover:text-blue-300 font-bold mx-1" :href="notification.url">
+                                    {{ notification.headline }}
+                                </Link>
 
-                                <span> broke your </span>
+                                <span> {{ notification.after }} </span>
 
-                                <div class="inline text-white rounded-full text-xs px-2 py-0.5 uppercase ml-0.5 font-bold" :class="{'bg-green-700': notification.physics.includes('cpm'), 'bg-blue-600': !notification.physics.includes('cpm')}">
-                                    <span>{{ notification.physics }}</span>
-                                </div>
-
-                                <span> time on </span>
-
-                                <Link class="inline text-blue-400 hover:text-blue-300 font-bold" :href="route('maps.map', notification.mapname)"> {{ notification.mapname }} </Link>
-
-                                <span> with time <span class="font-bold">{{ formatTime(notification.time) }}</span> </span>
-
-                                <span>
-                                    (<span class="text-green-500">+{{ formatTime(timeDiff(notification.my_time, notification.time)) }}</span>)
-                                </span>
-
-                                <span class="text-sm text-gray-500"> {{ timeSince(notification.date_set) }} ago </span>
+                                
                             </div>
                         </div>
+
+                        <hr class="my-2 text-gray-600 border-gray-600 bg-gray-600">
                     </div>
                     
                     <div class="flex justify-center" v-if="notifications.total > notifications.per_page">

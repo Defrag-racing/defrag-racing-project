@@ -124,7 +124,7 @@
                         </div>
 
                         <div class="flex justify-center items-center">
-                            <Link :href="route('notifications.index')" class="font-bold text-blue-300 hover:text-blue-200 cursor-pointer text-center">
+                            <Link :href="route('notifications.system.index')" class="font-bold text-blue-300 hover:text-blue-200 cursor-pointer text-center">
                                 View all notifications
                             </Link>
                         </div>

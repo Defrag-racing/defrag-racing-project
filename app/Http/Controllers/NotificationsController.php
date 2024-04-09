@@ -34,7 +34,7 @@ class NotificationsController extends Controller
         return Inertia::render('SystemNotificationsView')->with('notifications', $notifications);
     }
 
-    public function systemsclear (Request $request) {
+    public function systemclear (Request $request) {
         $notifications = Notification::where('user_id', $request->user()->id)->update([
             'read'  =>  true
         ]);

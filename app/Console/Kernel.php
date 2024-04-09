@@ -20,6 +20,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ScrapeRecords)->withoutOverlapping()->evenInMaintenanceMode()->everyThirtySeconds();
 
         $schedule->command('scrape:maps')->everyTwoMinutes();
+
+        $schedule->command('tournaments:notifications-send')->everyTwoMinutes();
     }
 
     /**

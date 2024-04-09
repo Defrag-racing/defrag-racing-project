@@ -38,10 +38,18 @@ class RoundMapController extends Controller {
             'pk3'           =>      'required'
         ]);
 
+        $file = $request->file('pk3');
+
+        if ($file->getClientOriginalExtension() !== 'pk3') {
+            return redirect()->back()->withError('Invalid file extension !');
+        }
+
+        $filename = \Str::random(40) . '.' . $file->getClientOriginalExtension();
+
         $round = $round->maps()->create([
             'name'          =>      $request->name,
             'download_name' =>      $request->name . '.pk3',
-            'pk3'           =>      $request->file('pk3')->store('tournaments/rounds/maps'),
+            'pk3'           =>      $request->file('pk3')->storeAs('tournaments/rounds/maps', $filename),
             'crc'           =>      $request->crc ?? ''
         ]);
 

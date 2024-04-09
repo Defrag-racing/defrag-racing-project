@@ -16,7 +16,7 @@ class ProfileController extends Controller {
         $user = User::query()
             ->where('id', $userId)
             ->with('clan')
-            ->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country', 'color']);
+            ->first(['id', 'mdd_id', 'name', 'profile_photo_path', 'country', 'color', 'discord_name', 'twitch_name', 'twitter_name']);
 
         if (! $user) {
             return redirect()->route('profile.mdd', $userId);

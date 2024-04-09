@@ -1,6 +1,6 @@
 <script setup>
     import { ref, watch, computed } from 'vue';
-    import { Head, router } from '@inertiajs/vue3';
+    import { Head, router, Link } from '@inertiajs/vue3';
     import ProfileRecord from '@/Components/ProfileRecord.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
 
@@ -198,13 +198,20 @@
                             </div>
                             <div class="text-2xl font-medium text-gray-100" v-html="q3tohtml(user?.name ?? profile.name)"></div>
                         </div>
+
+                        <div class="flex items-center justify-center mt-3" v-if="user?.clan">
+                            <Link :href="route('clans.show', user.clan.id)" class="flex items-center text-lg font-medium text-gray-300">
+                                <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-blue-900 text-blue-300">CLAN</span>
+                                <span class="hover:underline" v-html="q3tohtml(user.clan.name)"></span>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-5 mx-5 lg:mx-0">
                 <div class="col-span-2 lg:col-span-1 mt-10 lg:mt-0 order-0 lg:order-0">
-                    <div class="text-center text-xl font-medium text-gray-900 dark:text-gray-100">CPM</div>
+                    <div class="text-center text-xl font-medium text-gray-100">CPM</div>
                     <div class="tech-line-cpm mb-4"></div>
 
                     <div class="text-gray-400 text-sm"> 

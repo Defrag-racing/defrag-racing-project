@@ -63,7 +63,7 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center flex-wrap">
+                <div class="flex flex-col items-center md:items-stretch md:justify-between md:flex-row flex-wrap">
                     <h2 class="font-semibold text-3xl text-gray-200 leading-tight">
                         Tournaments
                     </h2>
@@ -85,7 +85,7 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-2" v-if="records < 200">
+                <div class="flex justify-center mt-2" v-if="records < 200">
                     <div class="text-yellow-500 text-sm">
                         You cannot create tournaments because you have less than 200 records. You now have {{ records }} records.
                     </div>

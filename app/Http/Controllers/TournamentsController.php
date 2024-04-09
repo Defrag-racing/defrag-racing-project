@@ -11,11 +11,15 @@ use Carbon\Carbon;
 
 class TournamentsController extends Controller {
     public function index(Request $request) {
-        $records = Record::where('user_id', $request->user()->id)->count();
+        if (! $request->user()) {
+            $records = 0;
+        } else {
+            $records = Record::where('user_id', $request->user()->id)->count();
+        }
 
         $tournaments = Tournament::query()
             ->where('published', true)
-            ->orWhere('creator', $request->user()->id)
+            ->orWhere('creator', $request->user()?->id)
             ->with('rounds')
             ->get();
 
@@ -24,7 +28,7 @@ class TournamentsController extends Controller {
                 ->where('end_date', '>=', Carbon::now());
         })
         ->where('published', true)
-        ->orWhere('creator', $request->user()->id)
+        ->orWhere('creator', $request->user()?->id)
         ->with('rounds')
         ->get();
 
@@ -32,7 +36,7 @@ class TournamentsController extends Controller {
             $query->where('start_date', '>', Carbon::now());
         })
         ->where('published', true)
-        ->orWhere('creator', $request->user()->id)
+        ->orWhere('creator', $request->user()?->id)
         ->with('rounds')
         ->get();
 
@@ -40,7 +44,7 @@ class TournamentsController extends Controller {
             $query->where('end_date', '>', Carbon::now());
         })
         ->where('published', true)
-        ->orWhere('creator', $request->user()->id)
+        ->orWhere('creator', $request->user()?->id)
         ->with('rounds')
         ->get();
 
@@ -98,7 +102,7 @@ class TournamentsController extends Controller {
     }
 
     public function delete(Tournament $tournament, Request $request) {
-        if ($tournament->creator !== $request->user()->id) {
+        if ($tournament->creator !== $request->user()?->id) {
             return back()->withDanger('You are not the admin of the tournament !!');
         }
 
@@ -111,7 +115,7 @@ class TournamentsController extends Controller {
             'name' => 'required|in:'.$tournament->name,
         ]);
 
-        if ($tournament->creator !== $request->user()->id) {
+        if ($tournament->creator !== $request->user()?->id) {
             return back()->withDanger('You are not the admin of the tournament !!');
         }
         

@@ -244,7 +244,7 @@ class RoundController extends Controller {
         } catch(\Exception $e) {
             \Log::error($e->getMessage());
 
-            return back()->withDanger("Demo validation failed");
+            return back()->withDanger("Demo validation failed: " . $e->getMessage());
         }
 
         if ($demo_data == null) {

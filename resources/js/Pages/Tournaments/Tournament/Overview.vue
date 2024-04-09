@@ -88,8 +88,12 @@
             </div>
         </div>
 
+        <div class="w-full flex justify-center">
+            <img :src="'/storage/' + tournament.image" class="object-cover rounded-md" />
+        </div>
+
         <!-- Live Streamers -->
-        <div>
+        <div v-if="tournament.streamers.length > 0">
             <h1 class="font-black text-3xl text-white my-5">Live Streamers</h1>
 
             <div class="tech-line-overview"></div>

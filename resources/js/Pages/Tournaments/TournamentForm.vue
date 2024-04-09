@@ -225,7 +225,7 @@
                         <div v-if="photoPreview" class="mt-2">
                             <span
                                 class="block rounded-lg bg-cover bg-no-repeat bg-center"
-                                :style="'background-image: url(\'' + photoPreview + '\'); width: 100%; height: 200px;'"
+                                :style="'background-image: url(\'' + photoPreview + '\'); width: 100%; height: 400px;'"
                             />
                         </div>
 

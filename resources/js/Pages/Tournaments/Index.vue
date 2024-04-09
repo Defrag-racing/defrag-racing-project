@@ -88,6 +88,10 @@
                 <div class="flex justify-center mt-2" v-if="records < 200">
                     <div class="text-yellow-500 text-sm">
                         You cannot create tournaments because you have less than 200 records. You now have {{ records }} records.
+        
+                        <span v-if="! $page.props.auth?.user?.mdd_id">
+                            You need to link your account to Q3DF.org from the <Link class="text-orange-400 hover hover:text-orange-200" :href="route('profile.show')">Settings</Link>.
+                        </span>
                     </div>
                 </div>
 

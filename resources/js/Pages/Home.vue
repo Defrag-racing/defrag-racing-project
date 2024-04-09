@@ -31,7 +31,10 @@
 
                 <div class="px-4 mx-auto max-w-screen-xl text-center py-10">
                     <Link :href="route('announcements')" class="inline-flex justify-between items-center py-1 px-1 pe-4 mb-3 text-sm text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800">
-                        <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">Latest News</span>
+                        <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 me-3">
+                            <span class="font-bold">Latest News - </span>
+                            <span class="text-gray-300">{{ timeSince(announcement.created_at) }} ago</span>
+                        </span>
                         <span class="text-sm font-medium">
                             {{ announcement.title }}
                         </span> 

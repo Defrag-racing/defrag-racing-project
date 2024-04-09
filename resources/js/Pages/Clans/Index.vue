@@ -72,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="p-5" v-if="myClan">
+                <div v-if="myClan">
                     <h2 class="font-semibold text-xl text-gray-200 leading-tight">
                         My Clan
                     </h2>

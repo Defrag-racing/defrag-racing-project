@@ -50,7 +50,7 @@ class ChangelogResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('text')
-                    ->searchable(),
+                    ->searchable()->html(),
             ])
             ->filters([
                 //

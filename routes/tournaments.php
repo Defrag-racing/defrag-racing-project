@@ -19,8 +19,8 @@ use App\Http\Controllers\DemoDownloadController;
 use App\Http\Controllers\StandingsController;
 use App\Http\Controllers\MapDownloadController;
 
-Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
-Route::get('/tournaments/maps/{map}/storage/download', [MapDownloadController::class, 'download'])->name('tournaments.maps.download');
+// Route::get('/tournaments/demos/{demo}/storage/download', [DemoDownloadController::class, 'download'])->name('tournaments.demos.download');
+// Route::get('/tournaments/maps/{map}/storage/download', [MapDownloadController::class, 'download'])->name('tournaments.maps.download');
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'create'])->name('tournaments.create');

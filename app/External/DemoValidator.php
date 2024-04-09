@@ -8,7 +8,7 @@ class DemoValidator {
     private $data = [];
 
     public function __construct($filename) {
-        $result = Process::run(base_path() . '/tools/UDT_json -c ' . storage_path('app/' . $filename));
+        $result = Process::run(base_path() . '/storage/app/tools/UDT_json -c ' . storage_path('app/' . $filename));
 
         if ($result->failed()) {
             throw new \Exception("Couldn't validate demo, if you are confident about the demo file, please contact the admins.");

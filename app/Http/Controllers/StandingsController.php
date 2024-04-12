@@ -21,8 +21,8 @@ class StandingsController extends Controller {
         $cpm_demos = Demo::whereIn('round_id', $rounds)
             ->where('physics', 'cpm')
             ->where('rejected', false)
+            ->where('best', true)
             ->groupBy('user_id')
-            ->orderBy('points', 'desc')
             ->with('user')
             ->get();
 
@@ -39,17 +39,15 @@ class StandingsController extends Controller {
             }
         }
 
-        $cpm_standings->sortByDesc(function (array $demo, int $key) {
-            return $demo['points'];
-        });
+        $cpm_standings = $cpm_standings->sortByDesc('points', SORT_REGULAR);
 
         $vq3_standings = collect([]);
 
         $vq3_demos = Demo::whereIn('round_id', $rounds)
             ->where('physics', 'vq3')
             ->where('rejected', false)
+            ->where('best', true)
             ->groupBy('user_id')
-            ->orderBy('points', 'desc')
             ->with('user')
             ->get();
 
@@ -67,15 +65,13 @@ class StandingsController extends Controller {
             }
         }
 
-        $vq3_standings->sortByDesc(function (array $demo, int $key) {
-            return $demo['points'];
-        });
+        $vq3_standings = $vq3_standings->sortByDesc('points', SORT_REGULAR);
 
 
         return Inertia::render('Tournaments/Tournament/Standings')
             ->with('tournament', $tournament)
-            ->with('vq3_standings', $vq3_standings)
-            ->with('cpm_standings', $cpm_standings);
+            ->with('vq3_standings', $vq3_standings->values())
+            ->with('cpm_standings', $cpm_standings->values());
     }
 
     public function clans(Request $request, Tournament $tournament) {

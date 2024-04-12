@@ -17,6 +17,8 @@ class TournamentCalculationsJob implements ShouldQueue
 
     private $force;
 
+    public $timeout = 1200;
+
     /**
      * Create a new job instance.
      */
@@ -67,6 +69,8 @@ class TournamentCalculationsJob implements ShouldQueue
                     $news->content = $round->mapname;
                     $news->type = 'round_start';
                     $news->save();
+
+                    $user->tournamentNotify('round_start', $round->name . ' of Tournament ', $round->tournament->name, ' has started.', '/tournaments/' . $round->tournament->id . '/rounds');
                 }
             }
 
@@ -83,6 +87,8 @@ class TournamentCalculationsJob implements ShouldQueue
                     $news->content = $round->mapname;
                     $news->type = 'round_end';
                     $news->save();
+
+                    $user->tournamentNotify('round_end', $round->name . ' of Tournament ', $round->tournament->name, ' has ended.', '/tournaments/' . $round->tournament->id . '/rounds');
                 }
             }
         }

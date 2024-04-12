@@ -172,4 +172,40 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
     public function recordsNotify() {
         
     }
+
+    public function demos() {
+        return $this->hasMany(Demo::class);
+    }
+
+    public function check_demos($round_id) {
+        $demos = $this->demos()
+            ->where('round_id', $round_id)
+            ->where('rejected', false)
+            ->where('physics', 'vq3')
+            ->orderBy('time', 'asc');
+
+        $demos->update(['best' => false]);
+
+        $best_demo = $demos->first();
+
+        if ($best_demo) {
+            $best_demo->best = true;
+            $best_demo->save();
+        }
+
+        $demos = $this->demos()
+            ->where('round_id', $round_id)
+            ->where('rejected', false)
+            ->where('physics', 'cpm')
+            ->orderBy('time', 'asc');
+
+        $demos->update(['best' => false]);
+
+        $best_demo = $demos->first();
+
+        if ($best_demo) {
+            $best_demo->best = true;
+            $best_demo->save();
+        }
+    }
 }

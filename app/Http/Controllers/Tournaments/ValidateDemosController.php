@@ -60,6 +60,9 @@ class ValidateDemosController extends Controller {
         $demo->rejected = false;
         $demo->save();
 
+        $demo->user->check_demos($round->id);
+        $round->calculateResults();
+
         return back();
     }
 
@@ -68,6 +71,9 @@ class ValidateDemosController extends Controller {
         $demo->rejected = true;
         $demo->reason = $request->reason ?? '';
         $demo->save();
+
+        $demo->user->check_demos($round->id);
+        $round->calculateResults();
 
         return back();
     }

@@ -60,7 +60,7 @@
                         Upload
                     </div>
     
-                    <form @submit.prevent="submitForm" class="text-gray-900 dark:text-white flex-grow rounded-md">
+                    <form @submit.prevent="submitForm" class="text-white flex-grow rounded-md">
                         <div class="flex">
                             <input accept=".dm_68" type="file" name="file" id="demo" class="hidden" @change="changeUploadFileName">
                             <label for="demo" class="rounded-md cursor-pointer flex-grow flex items-center bg-blackop-30">

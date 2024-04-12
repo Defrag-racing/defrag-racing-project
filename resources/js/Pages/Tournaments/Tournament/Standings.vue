@@ -23,8 +23,8 @@
         <div class="grid sm:grid-cols-2 gap-4 mt-10">
             <div class="m-1 w-full p-2 pt-0 mr-6">
                 <!-- Heading -->
-                <div class="w-full flex items-center rounded-md bg-blue-900 dark:bg-opacity-25 bg-opacity-15 p-2 shadow-md">
-                    <div class="uppercase font-black text-2xl dark:text-blue-200 text-center w-full">vq3</div>
+                <div class="w-full flex items-center rounded-md bg-blue-900 bg-opacity-25 bg-opacity-15 p-2 shadow-md">
+                    <div class="uppercase font-black text-2xl text-blue-200 text-center w-full">vq3</div>
                 </div>
     
     
@@ -36,8 +36,8 @@
             </div>
     
             <div class="m-1 w-full p-2 pt-0">
-                <div class="w-full flex items-center rounded-md bg-green-900 dark:bg-opacity-25 bg-opacity-15 p-2 shadow-md">
-                    <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
+                <div class="w-full flex items-center rounded-md bg-green-900 bg-opacity-25 bg-opacity-15 p-2 shadow-md">
+                    <div class="uppercase font-black text-2xl text-green-200 text-center w-full">CPM</div>
                 </div>
     
                 <StandingsEntry physics="cpm" v-for="(demo, index) in cpm_standings" :demo="demo" :key="demo.id" :rank="index+1" />

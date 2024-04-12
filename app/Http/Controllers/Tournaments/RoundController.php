@@ -43,6 +43,7 @@ class RoundController extends Controller {
             ->with('cpm_results.user')
             ->get();
 
+
         return Inertia::render('Tournaments/Tournament/Rounds')
                 ->with('tournament', $tournament)
                 ->with('rounds', $rounds);
@@ -290,6 +291,8 @@ class RoundController extends Controller {
 
         $newDemo->save();
 
+        $request->user()->check_demos($round->id);
+
         return back()->withSuccess('Demo uploaded successfully');
     }
 
@@ -297,6 +300,8 @@ class RoundController extends Controller {
         if ($demo->user_id != $request->user()->id) {
             return back()->withDanger('You can only delete your own demos');
         }
+
+        $request->user()->check_demos($round->id);
 
         $demo->delete();
     }

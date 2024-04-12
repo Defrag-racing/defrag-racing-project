@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Round extends Model
 {
@@ -49,6 +50,7 @@ class Round extends Model
         return $this->hasMany(Demo::class)
             ->where('physics', 'vq3')
             ->where('rejected', false)
+            ->where('best', true)
             ->groupBy('user_id')
             ->orderBy('time', 'asc');
     }
@@ -57,6 +59,7 @@ class Round extends Model
         return $this->hasMany(Demo::class)
             ->where('physics', 'cpm')
             ->where('rejected', false)
+            ->where('best', true)
             ->groupBy('user_id')
             ->orderBy('time', 'asc');
     }
@@ -70,12 +73,11 @@ class Round extends Model
     }
 
     private function calculate_physics_results($physics) {
-        $demos = Demo::where('round_id', $this->id)
-            ->where('physics', $physics)
-            ->where('rejected', false)
-            ->groupBy('user_id')
-            ->orderBy('time', 'asc')
-            ->get();
+        if ($physics == 'vq3') {
+            $demos = $this->vq3_results;
+        } else {
+            $demos = $this->cpm_results;
+        }
 
         if ($demos->count() == 0) {
             return;

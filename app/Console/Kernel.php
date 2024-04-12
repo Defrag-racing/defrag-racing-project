@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 use App\Jobs\ScrapeRecords;
+use App\Jobs\TournamentCalculationsJob;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,7 +20,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->job(new ScrapeRecords)->withoutOverlapping()->evenInMaintenanceMode()->everyThirtySeconds();
 
-        $schedule->command('scrape:maps')->everyTwoMinutes();
+        $schedule->command('scrape:maps')->evenInMaintenanceMode()->everyTwoMinutes();
+
+        $schedule->job(new TournamentCalculationsJob)->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
 
         $schedule->command('tournaments:notifications-send')->everyTwoMinutes();
     }

@@ -27,6 +27,9 @@ use App\Http\Controllers\ChangelogController;
 */
 
 Route::get('/', [WebController::class, 'home'])->name('home');
+Route::get('/getting-started', [WebController::class, 'gettingstarted'])->name('getting.started');
+
+
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
 Route::get('/servers', [ServersController::class, 'index'])->name('servers');

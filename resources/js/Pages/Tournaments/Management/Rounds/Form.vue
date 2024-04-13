@@ -170,10 +170,31 @@
         start_date: props.item?.start_date || '',
         end_date: props.item?.end_date || '',
         author: props.item?.author || '',
-        weapons: props.item?.weapons || {},
-        items: props.item?.items || {},
-        functions: props.item?.functions || {},
+        weapons: {},
+        items: props.item?.items.split(',') || {},
+        functions: props.item?.functions.split(',') || {},
     });
+
+    if (props.item?.weapons) {
+        form.weapons = {
+            'exclude': [],
+            'include': props.item.weapons.split(',')
+        }
+    }
+
+    if (props.item?.items) {
+        form.items = {
+            'exclude': [],
+            'include': props.item.items.split(',')
+        }
+    }
+
+    if (props.item?.functions) {
+        form.functions = {
+            'exclude': [],
+            'include': props.item.functions.split(',')
+        }
+    }
 
     const imagePreview = ref(null);
     const imageInput = ref(null);
@@ -344,6 +365,11 @@
 
                     <div class="mb-3">
                         <InputLabel value="Weapons" />
+                        <div class="flex">
+                            <span v-for="element in form.weapons?.include">
+                                <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                            </span>
+                        </div>
                         <ItemsChoices
                             :options="weapons"
                             :multi="false"
@@ -356,6 +382,11 @@
 
                     <div class="mb-3">
                         <InputLabel value="Items" />
+                        <div class="flex">
+                            <span v-for="element in form.items?.include">
+                                <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                            </span>
+                        </div>
                         <ItemsChoices
                             :options="items"
                             :multi="false"
@@ -368,6 +399,11 @@
 
                     <div class="mb-3">
                         <InputLabel value="Functions" />
+                        <div class="flex">
+                            <span v-for="element in form.functions?.include">
+                                <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                            </span>
+                        </div>
                         <ItemsChoices
                             :options="functions"
                             :multi="false"

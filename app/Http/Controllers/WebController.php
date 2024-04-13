@@ -82,4 +82,8 @@ class WebController extends Controller
 
         abort(404);
     }
+
+    public function gettingstarted() {
+        return Inertia::render('GettingStarted');
+    }
 }

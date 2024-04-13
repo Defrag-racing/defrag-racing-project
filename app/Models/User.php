@@ -180,6 +180,21 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         $notification->save();
     }
 
+    public function systemNotifyAnnouncement($type, $before, $headline, $after, $url) {
+        if (! $this->defrag_news) {
+            return;
+        }
+
+        $notification = new Notification();
+        $notification->user_id = $this->id;
+        $notification->type = $type;
+        $notification->before = $before;
+        $notification->headline = $headline;
+        $notification->after = $after;
+        $notification->url = $url;
+        $notification->save();
+    }
+
     public function recordsNotify() {
         
     }

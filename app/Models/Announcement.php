@@ -14,4 +14,10 @@ class Announcement extends Model
         'text',
         'type'
     ];
+
+    protected static function booted(): void {
+        static::created(function (Announcement $announcement) {
+            User::all()->each->systemNotifyAnnouncement('announcement', 'A new Announcement has been created', $announcement->title, '', '/announcements');
+        });
+    }
 }

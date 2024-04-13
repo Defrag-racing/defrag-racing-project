@@ -65,7 +65,7 @@
                             <input accept=".dm_68" type="file" name="file" id="demo" class="hidden" @change="changeUploadFileName">
                             <label for="demo" class="rounded-md cursor-pointer flex-grow flex items-center bg-blackop-30">
                                 <div class="flex justify-between items-center w-full rounded-md px-4">
-                                    <div class="truncate" style="max-width: 250px;" :title="uploadFileName">
+                                    <div class="break-all" :title="uploadFileName">
                                         {{ uploadFileName }}
                                     </div>
                                 </div>

@@ -17,7 +17,7 @@
                         </svg>
                     </div>
                     <template #content>
-                        <div class="py-2 px-3 bg-grayop-500 rounded-md" style="max-width: 300px;">
+                        <div class="py-2 px-3 bg-gray-700 rounded-md" style="max-width: 300px;">
                             <div class="text-gray-400">
                                 This demo is from an Organizer, therefore it doesn't count into the results, and the rank doesn't affect the leaderboard.
                             </div>

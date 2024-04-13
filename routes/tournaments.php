@@ -18,7 +18,6 @@ use App\Http\Controllers\Tournaments\ValidateDemosController;
 use App\Http\Controllers\DemoDownloadController;
 use App\Http\Controllers\StandingsController;
 use App\Http\Controllers\MapDownloadController;
-use App\Http\Controllers\ResultsDownloadController;
 
 Route::get('/tournaments', [TournamentsController::class, 'index'])->name('tournaments.index');
 Route::get('/tournaments/manage/tournament/create', [TournamentManagementController::class, 'create'])->name('tournaments.create');
@@ -26,8 +25,6 @@ Route::post('/tournaments/manage/tournament/create', [TournamentManagementContro
 
 
 Route::middleware(['tournaments.tournamentaccess'])->group(function () {
-    Route::get('/tournaments/{tournament}/{round}/results/download', [ResultsDownloadController::class, 'results'])->name('tournaments.results.download');
-    Route::get('/tournaments/{tournament}/{round}/results/download/anonymous', [ResultsDownloadController::class, 'anonymous'])->name('tournaments.results.anonymous.download');
 
     Route::get('/tournaments/{tournament}', [TournamentsController::class, 'show'])->name('tournaments.show');
     Route::get('/tournaments/{tournament}/rules', [TournamentsController::class, 'rules'])->name('tournaments.rules')->middleware('tournaments.news.pinned');

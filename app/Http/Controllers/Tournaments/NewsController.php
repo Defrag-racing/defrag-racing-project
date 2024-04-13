@@ -46,4 +46,12 @@ class NewsController extends Controller {
 
         return back();
     }
+
+    public function edit (Request $request, Tournament $tournament, Comment $comment) {
+        $comment->update([
+            'comment'       =>      $request->comment
+        ]);
+
+        return back();
+    }
 }

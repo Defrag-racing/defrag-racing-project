@@ -37,7 +37,7 @@ class Tournament extends Model
             ->where('user_id', $userId)
             ->pluck('role');
 
-        return $organizer->contains('admin') || $organizer->contains('organizer');
+        return $organizer->contains('admin') || $organizer->contains('organizer') || $this->creator == $userId;
     }
 
     public function isValidator ($userId) {

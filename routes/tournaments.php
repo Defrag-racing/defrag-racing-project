@@ -49,6 +49,7 @@ Route::middleware(['tournaments.tournamentaccess'])->group(function () {
     Route::post('/tournaments/{tournament}/news/{new}/comment', [NewsController::class, 'comment'])->name('tournaments.news.comment');
 
     Route::post('/tournaments/{tournament}/comments/{comment}/reply', [NewsController::class, 'reply'])->name('tournaments.comments.reply');
+    Route::post('/tournaments/{tournament}/comments/{comment}/edit', [NewsController::class, 'edit'])->name('tournaments.comments.edit');
 
     Route::prefix('/tournaments/{tournament}/teams')->middleware('tournaments.news.pinned')->group(function () {
         Route::get('/index', [TeamController::class, 'index'])->name('tournaments.teams.index');

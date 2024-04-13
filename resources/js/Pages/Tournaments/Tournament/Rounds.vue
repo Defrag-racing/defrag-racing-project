@@ -7,22 +7,6 @@
         rounds: Array
     });
 
-    const status = (round) => {
-        const date = new Date();
-        const start = new Date(round.start_date);
-        const end = new Date(round.end_date);
-
-        if (date < start) {
-            return 'Upcoming';
-        }
-
-        if (date > end) {
-            return 'Completed';
-        }
-
-        return 'Active';
-    }
-
 </script>
 
 <template>
@@ -30,7 +14,7 @@
         <div v-for="round in rounds" :key="round.id">
             <ActiveRound
                 :tournament="tournament"
-                :active="status(round) === 'Active'"
+                :active="round.active"
                 :round="round"
             />
         </div>

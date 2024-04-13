@@ -24,6 +24,9 @@ class RoundController extends Controller {
     public function index (Tournament $tournament, Request $request) {
         $rounds = Round::where('tournament_id', $tournament->id)
                 ->where('start_date', '<=', Carbon::now())
+                ->addSelect([
+                    'active' => Round::selectRaw('CASE WHEN start_date <= ? AND end_date >= ? THEN true ELSE false END', [Carbon::now(), Carbon::now()])
+                ])
                 ->orderBy('start_date', 'DESC')
                 ->with('maps')
                 ->with(['comments' => function ($query) {

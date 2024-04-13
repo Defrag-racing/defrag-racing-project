@@ -65,9 +65,9 @@
 
                 <div class="flex justify-center px-5 py-2" v-if="player.profile?.clan">
                     <Link :href="route('clans.show', player.profile.clan.id)" class="flex items-center text-lg font-medium text-gray-300">
-                        <img class="h-6 w-6 rounded-full object-cover mr-4" :src="`/storage/${player.profile.clan.image}`">
+                        <img class="h-8 w-8 rounded-full object-cover mr-4" :src="`/storage/${player.profile.clan.image}`">
 
-                        <span class="text-sm" v-html="q3tohtml(player.profile.clan.name)"></span>
+                        <span class="text-md" v-html="q3tohtml(player.profile.clan.name)"></span>
                     </Link>
                 </div>
             </template>

@@ -171,28 +171,28 @@
         end_date: props.item?.end_date || '',
         author: props.item?.author || '',
         weapons: {},
-        items: props.item?.items.split(',') || {},
-        functions: props.item?.functions.split(',') || {},
+        items: {},
+        functions: {},
     });
 
     if (props.item?.weapons) {
         form.weapons = {
             'exclude': [],
-            'include': props.item.weapons.split(',')
+            'include': props.item.weapons?.split(',') || []
         }
     }
 
     if (props.item?.items) {
         form.items = {
             'exclude': [],
-            'include': props.item.items.split(',')
+            'include': props.item.items?.split(',') || []
         }
     }
 
     if (props.item?.functions) {
         form.functions = {
             'exclude': [],
-            'include': props.item.functions.split(',')
+            'include': props.item.functions?.split(',') || []
         }
     }
 

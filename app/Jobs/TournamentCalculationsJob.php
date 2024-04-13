@@ -72,7 +72,9 @@ class TournamentCalculationsJob implements ShouldQueue
                     $news->type = 'round_start';
                     $news->save();
 
-                    $user->tournamentNotify('round_start', $round->name . ' of Tournament ', $round->tournament->name, ' has started.', '/tournaments/' . $round->tournament->id . '/rounds');
+                    User::all()->each(function ($user) use ($round) {
+                        $user->tournamentNotify('round_start', $round->name . ' of Tournament ', $round->tournament->name, ' has started.', '/tournaments/' . $round->tournament->id . '/rounds');
+                    });
                 }
             }
 
@@ -90,7 +92,9 @@ class TournamentCalculationsJob implements ShouldQueue
                     $news->type = 'round_end';
                     $news->save();
 
-                    $user->tournamentNotify('round_end', $round->name . ' of Tournament ', $round->tournament->name, ' has ended.', '/tournaments/' . $round->tournament->id . '/rounds');
+                    User::all()->each(function ($user) use ($round) {
+                        $user->tournamentNotify('round_end', $round->name . ' of Tournament ', $round->tournament->name, ' has ended.', '/tournaments/' . $round->tournament->id . '/rounds');
+                    });
                 }
             }
         }

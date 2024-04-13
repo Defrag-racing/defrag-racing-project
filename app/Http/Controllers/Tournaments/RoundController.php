@@ -24,9 +24,6 @@ class RoundController extends Controller {
     public function index (Tournament $tournament, Request $request) {
         $rounds = Round::where('tournament_id', $tournament->id)
                 ->where('start_date', '<=', Carbon::now())
-                ->addSelect([
-                    'active' => Round::selectRaw('CASE WHEN start_date <= ? AND end_date >= ? THEN true ELSE false END', [Carbon::now(), Carbon::now()])
-                ])
                 ->orderBy('start_date', 'DESC')
                 ->with('maps')
                 ->with(['comments' => function ($query) {
@@ -45,6 +42,10 @@ class RoundController extends Controller {
         $rounds = $rounds->with('vq3_results.user')
             ->with('cpm_results.user')
             ->get();
+
+        foreach($rounds as $round) {
+            $round->active = $round->start_date < Carbon::now() && $round->end_date > Carbon::now();
+        }
 
 
         return Inertia::render('Tournaments/Tournament/Rounds')

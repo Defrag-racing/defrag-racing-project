@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use \App\Models\Round;
 use \App\Models\TournamentNew;
+use \App\Models\User;
 
 
 class TournamentCalculationsJob implements ShouldQueue

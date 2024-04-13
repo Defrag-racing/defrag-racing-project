@@ -105,6 +105,8 @@ class ManageClanController extends Controller {
         $invite->clan_id = $myClan->id;
         $invite->user_id = $player->id;
 
+        $player->systemNotify('clan_invite', 'The Clan ', $myClan->name, ' has invited you to join their clan.', route('clans.show', $myClan));
+
         $invite->save();
 
         return redirect()->back()->withSuccess('The player has been invited to the clan.');
@@ -144,6 +146,8 @@ class ManageClanController extends Controller {
 
         $clanPlayer->delete();
 
+        $player->systemNotify('clan_kick', 'You have been kicked out of the ', $myClan->name, ' Clan.', route('clans.show', $myClan));
+
         return redirect()->back()->withSuccess('The player has been kicked from the clan.');
     }
 
@@ -165,6 +169,8 @@ class ManageClanController extends Controller {
         }
 
         $clanPlayer->delete();
+
+        $myClan->admin->systemNotify('clan_leave', 'The player ', $request->user()->name, ' Has left your clan.', route('profile.index', $request->user()));
 
         return redirect()->back()->withSuccess('You have left the clan.');
     }
@@ -203,6 +209,8 @@ class ManageClanController extends Controller {
 
         $myClan->admin_id = $player->id;
         $myClan->save();
+
+        $player->systemNotify('clan_transfer', 'You are now the admin of clan ', $myClan->name, ' .', route('clans.show', $myClan));
 
         return redirect()->back()->withSuccess('Ownership of the clan has been transferred.');
     }

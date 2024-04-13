@@ -87,6 +87,8 @@ class ClansController extends Controller {
 
         $clanPlayer->save();
 
+        $invitation->clan->admin->systemNotify('clan_accept', 'The player ', $request->user()->name, ' Has Accepted the clan invitation, and is now a member of your clan.', route('profile.index', $request->user()));
+
         return redirect()->route('clans.index')->withSuccess('You have joined the clan');
     }
 

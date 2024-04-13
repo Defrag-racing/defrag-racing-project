@@ -51,11 +51,11 @@ Route::post('/settings/mdd/verify', [SettingsController::class, 'verify'])->name
 Route::post('/settings/notifications', [SettingsController::class, 'notifications'])->name('settings.notifications');
 
 
-Route::get('/notifications/records', [NotificationsController::class, 'records'])->name('notifications.index');
-Route::post('/notifications/records', [NotificationsController::class, 'recordsclear'])->name('notifications.clear');
+Route::get('/notifications/records', [NotificationsController::class, 'records'])->middleware('auth')->name('notifications.index');
+Route::post('/notifications/records', [NotificationsController::class, 'recordsclear'])->middleware('auth')->name('notifications.clear');
 
-Route::get('/notifications/system', [NotificationsController::class, 'system'])->name('notifications.system.index');
-Route::post('/notifications/system', [NotificationsController::class, 'systemclear'])->name('notifications.system.clear');
+Route::get('/notifications/system', [NotificationsController::class, 'system'])->middleware('auth')->name('notifications.system.index');
+Route::post('/notifications/system', [NotificationsController::class, 'systemclear'])->middleware('auth')->name('notifications.system.clear');
 
 Route::get('/profile/{userId}', [ProfileController::class, 'index'])->name('profile.index');
 Route::get('/profile/mdd/{userId}', [ProfileController::class, 'mdd'])->name('profile.mdd');

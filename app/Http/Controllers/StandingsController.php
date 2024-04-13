@@ -22,6 +22,7 @@ class StandingsController extends Controller {
             ->where('physics', 'cpm')
             ->where('rejected', false)
             ->where('best', true)
+            ->where('counted', true)
             ->groupBy('user_id')
             ->with('user')
             ->get();
@@ -47,6 +48,7 @@ class StandingsController extends Controller {
             ->where('physics', 'vq3')
             ->where('rejected', false)
             ->where('best', true)
+            ->where('counted', true)
             ->groupBy('user_id')
             ->with('user')
             ->get();

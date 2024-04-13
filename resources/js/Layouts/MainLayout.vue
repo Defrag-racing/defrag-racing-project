@@ -344,23 +344,23 @@
                 <!-- Responsive Navigation Menu -->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="md:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('login')" :active="route().current('login')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" v-if="! $page.props.auth?.user" :href="route('login')" :active="route().current('login')">
                             Login
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('register')" :active="route().current('register')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" v-if="! $page.props.auth?.user" :href="route('register')" :active="route().current('register')">
                             Register
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('home')" :active="route().current('home')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('home')" :active="route().current('home')">
                             Home
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('servers')" :active="route().current('servers')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('servers')" :active="route().current('servers')">
                             Servers
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('maps')" :active="route().current('maps')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('maps')" :active="route().current('maps')">
                             Maps
                         </ResponsiveNavLink>
 
@@ -368,19 +368,19 @@
                             Ranking
                         </ResponsiveNavLink> -->
 
-                        <ResponsiveNavLink :href="route('records')" :active="route().current('records')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('records')" :active="route().current('records')">
                             Records
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('bundles')" :active="route().current('bundles')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('bundles')" :active="route().current('bundles')">
                             Bundles
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('clans.index')" :active="route().current('clans.index')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('clans.index')" :active="route().current('clans.index')">
                             Clans
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('tournaments.index')" :active="route().current('tournaments.index')">
+                        <ResponsiveNavLink @click="showingNavigationDropdown = false" :href="route('tournaments.index')" :active="route().current('tournaments.index')">
                             Tournaments
                         </ResponsiveNavLink>
                     </div>
@@ -474,7 +474,7 @@
             </main>
         </div>
 
-        <div class="group fixed bottom-0 right-0 p-2  flex items-end justify-end w-24 h-24">
+        <div class="group fixed bottom-0 right-0 p-2  flex items-end justify-end w-60 h-24">
             <!-- main -->
             <div class="text-white shadow-xl flex items-center justify-center p-3 rounded-full bg-gradient-to-r from-blue-700 to-blue-900 z-50 absolute cursor-pointer">
                 <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 group-hover:scale-150 transition  transition-all duration-[0.3s]">
@@ -490,7 +490,7 @@
             </a>
 
             <!-- sub top -->
-            <a target="_blank" href="https://youtube.com/defraglegends" class="absolute rounded-full transition-all duration-[0.2s] ease-out scale-x-0 group-hover:scale-x-100 group-hover:-translate-y-16  flex  p-2 hover:p-3 bg-red-600 hover:bg-red-700 text-white">
+            <a target="_blank" href="https://youtube.com/defraglegends" class="absolute rounded-full transition-all duration-[0.2s] ease-out scale-x-0 group-hover:scale-x-100 group-hover:-translate-x-32  flex  p-2 hover:p-3 bg-red-600 hover:bg-red-700 text-white">
                 <svg class="w-6 h-6" width="800px" height="800px" viewBox="0 -3 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <g id="Dribbble-Light-Preview" transform="translate(-300.000000, -7442.000000)" fill="#ffffff">
@@ -501,8 +501,9 @@
                     </g>
                 </svg>
             </a>
+
             <!-- sub middle -->
-            <a target="_blank" href="https://twitch.tv/defraglive" class="absolute rounded-full transition-all duration-[0.2s] ease-out scale-x-0 group-hover:scale-x-100 group-hover:-translate-y-14 group-hover:-translate-x-14 flex p-2 hover:p-3 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
+            <a target="_blank" href="https://twitch.tv/defraglive" class="absolute rounded-full transition-all duration-[0.2s] ease-out scale-x-0 group-hover:scale-x-100 group-hover:-translate-x-48 flex p-2 hover:p-3 bg-purple-600 hover:bg-purple-700 text-white cursor-pointer">
                 <svg class="w-6 h-6" width="800px" height="800px" viewBox="-0.5 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <g id="Dribbble-Light-Preview" transform="translate(-141.000000, -7399.000000)" fill="#ffffff">

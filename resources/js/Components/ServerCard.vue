@@ -27,7 +27,7 @@
 
 <template>
     <div>
-        <div class="mt-5 mb-10 mx-4 group bg-grayop-700 text-gray-300 rounded-md shadow-sm" style="width: 400px; max-width: 100%;">
+        <div class="mt-5 mb-10 mx-4 group bg-grayop-700 text-gray-300 rounded-md shadow-sm" style="width: 400px; max-width: 90vw;">
             <div class="p-3 rounded-md" >
                 <div class="rounded-md" :class="{'cpm-gradiant-2': server.defrag.includes('cpm'), 'vq3-gradiant-2': !server.defrag.includes('cpm')}">
                     <!-- Top Bar -->

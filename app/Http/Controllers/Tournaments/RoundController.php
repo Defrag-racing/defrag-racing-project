@@ -79,6 +79,10 @@ class RoundController extends Controller {
             $clans_vq3 = [];
 
             foreach($vq3_results as $demo) {
+                if (! $demo->counted) {
+                    continue;
+                }
+
                 if (! $demo->user->clan) {
                     continue;
                 }
@@ -98,6 +102,10 @@ class RoundController extends Controller {
             }
 
             foreach($cpm_results as $demo) {
+                if (! $demo->counted) {
+                    continue;
+                }
+
                 if (! $demo->user->clan) {
                     continue;
                 }
@@ -173,8 +181,8 @@ class RoundController extends Controller {
     
         foreach($rounds as $round) {
             foreach($teams as $team) {
-                $vq3_results = $round->vq3_results->where('user_id', $team->vq3_player_id)->first();
-                $cpm_results = $round->cpm_results->where('user_id', $team->cpm_player_id)->first();
+                $vq3_results = $round->vq3_results->where('user_id', $team->vq3_player_id)->where('counted', true)->first();
+                $cpm_results = $round->cpm_results->where('user_id', $team->cpm_player_id)->where('counted', true)->first();
 
                 if ($vq3_results) {
                     if (! isset($team->vq3_points)) {

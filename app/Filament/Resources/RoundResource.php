@@ -26,6 +26,9 @@ class RoundResource extends Resource
                 Forms\Components\TextInput::make('id')
                     ->required()
                     ->numeric(),
+                Forms\Components\TextInput::make('tournament_id')
+                    ->required()
+                    ->numeric(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
@@ -37,6 +40,9 @@ class RoundResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tournament_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')

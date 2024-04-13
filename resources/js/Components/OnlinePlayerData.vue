@@ -60,6 +60,16 @@
                         <div class="inline text-lg" v-html="q3tohtml(player.profile.name)"></div>
                     </div>
                 </div>
+
+                <div style="height: 1px; width: 100%;" class="bg-gray-700"></div>
+
+                <div class="flex justify-center px-5 py-2" v-if="player.profile?.clan">
+                    <Link :href="route('clans.show', player.profile.clan.id)" class="flex items-center text-lg font-medium text-gray-300">
+                        <img class="h-6 w-6 rounded-full object-cover mr-4" :src="`/storage/${player.profile.clan.image}`">
+
+                        <span class="text-sm" v-html="q3tohtml(player.profile.clan.name)"></span>
+                    </Link>
+                </div>
             </template>
         </Popper>
     </div>

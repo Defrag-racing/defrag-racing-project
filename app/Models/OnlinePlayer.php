@@ -9,7 +9,7 @@ class OnlinePlayer extends Model
 {
     use HasFactory;
 
-    protected $with = ['profile'];
+    protected $with = ['profile.clan'];
 
     protected $fillable = [
         'name',

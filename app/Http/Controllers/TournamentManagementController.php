@@ -86,8 +86,8 @@ class TournamentManagementController extends Controller {
         $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
         $uploadPath = public_path('storage/tournaments');
 
-        if ($width > 640 || $height > 360) {
-            $image = Image::make($image)->fit(640, 360);
+        if ($width > 600 || $height > 400) {
+            $image = Image::make($image)->fit(600, 400);
             $image->save($uploadPath . '/' . $imageName);
             $file = 'tournaments/' . $imageName;
         } else {
@@ -167,8 +167,8 @@ class TournamentManagementController extends Controller {
             $imageName = uniqid() . '.' . $image->getClientOriginalExtension();
             $uploadPath = public_path('storage/tournaments');
 
-            if ($width > 640 || $height > 360) {
-                $image = Image::make($image)->fit(640, 360);
+            if ($width > 600 || $height > 400) {
+                $image = Image::make($image)->fit(600, 400);
                 $image->save($uploadPath . '/' . $imageName);
                 $file = 'tournaments/' . $imageName;
             } else {

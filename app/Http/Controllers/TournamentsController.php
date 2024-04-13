@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Tournament;
 use App\Models\Organizer;
 use App\Models\Record;
+use App\Models\Round;
 use Carbon\Carbon;
 
 class TournamentsController extends Controller {

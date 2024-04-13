@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class Round extends Model
 {
@@ -118,5 +119,84 @@ class Round extends Model
                 $rank--;
             }
         }
+    }
+
+    public function rankPadding($rank) {
+        return str_pad($rank, 6, '0', STR_PAD_LEFT);
+    }
+
+    public function buildResultsZip($anonymous = false) {
+        $zip_name = 'results_' . $this->tournament_id . '_' . $this->id;
+
+        if ($anonymous) {
+            $zip_name .= '_anonymous';
+        }
+
+        $zip_name .= '.zip';
+
+        if (! $this->published || ! $this->results) {
+            return false;
+        }
+
+        if (Storage::exists('results/' . $zip_name)) {
+            return $zip_name;
+        }
+
+        $zip = new \ZipArchive();
+        $zip_path = storage_path('app/results/' . $zip_name);
+
+        if ($zip->open($zip_path, \ZipArchive::CREATE) !== TRUE) {
+            return false;
+        }
+
+        $vq3_demos = $this->vq3_results;
+        $cpm_demos = $this->cpm_results;
+
+        $counter = 1;
+        $files = [];
+
+        foreach ($vq3_demos as $demo) {
+            $filename = $this->rankPadding($demo->rank);
+
+            if (in_array($filename, $files)) {
+                $filename .= '_' . $counter;
+                $counter++;
+            } else {
+                $files[] = $filename;
+            }
+
+            if ($anonymous) {
+                $filename .= '.dm_68';
+            } else {
+                $filename .= '_' . $demo->filename;
+            }
+
+            $zip->addFile(storage_path('app/' . $demo->file), 'vq3/' . $filename);
+        }
+
+        $files = [];
+        $counter = 1;
+        foreach ($cpm_demos as $demo) {
+            $filename = $this->rankPadding($demo->rank);
+
+            if (in_array($filename, $files)) {
+                $filename .= '_' . $counter;
+                $counter++;
+            } else {
+                $files[] = $filename;
+            }
+
+            if ($anonymous) {
+                $filename .= '.dm_68';
+            } else {
+                $filename .= '_' . $demo->filename;
+            }
+
+            $zip->addFile(storage_path('app/' . $demo->file), 'cpm/' . $filename);
+        }
+
+        $zip->close();
+
+        return $zip_name;
     }
 }

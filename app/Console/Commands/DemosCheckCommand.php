@@ -39,6 +39,8 @@ class DemosCheckCommand extends Command
             foreach ($users as $user) {
                 $user->check_demos($round->id);
             }
+
+            $round->calculateResults();
         }
     }
 }

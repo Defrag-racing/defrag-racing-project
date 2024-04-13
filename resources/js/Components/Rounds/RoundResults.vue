@@ -24,6 +24,8 @@
         visibilityIndex.value = props.round.vq3_results.length > props.round.cpm_results.length ? props.round.vq3_results.length : props.round.cpm_results.length;
     
         revealerWorking.value = false;
+        slider.value = 0;
+        speed.value = 2;
 
         if (revealer.value) {
             clearInterval(revealer.value);
@@ -61,11 +63,12 @@
         return 'min-height: 300px; filter: blur(20px);'
     }
 
-    const changeRevealer = () => {
+    const controlRevealer = () => {
         revealerWorking.value = !revealerWorking.value
 
         if (revealerWorking.value == true) {
-            revealer.value = setInterval(RevealerInterval, speed.value * 1000);
+            RevealerInterval();
+            revealer.value = setInterval(RevealerInterval, (3.5 - speed.value) * 1000);
         } else {
             if (revealer.value) {
                 clearInterval(revealer.value);
@@ -88,14 +91,30 @@
         } else if (visibilityIndex.value >= maxResults.value) {
             slider.value = 0;
         } else {
-            slider.value = (500 * visibilityIndex.value) * maxResults.value;
+            slider.value = (500 * (maxResults.value - visibilityIndex.value - 1)) / maxResults.value;
         }
-
-        // console.log(slider.value)
     }
 
     const SliderMouseEvent = (event) => {
-        // console.log(event)
+        const sliderElement = event.currentTarget;
+        const sliderWidth = sliderElement.clientWidth;
+        const clickPosition = event.clientX - sliderElement.getBoundingClientRect().left;
+        let percentage = (clickPosition / sliderWidth) * 100;
+        
+        percentage = percentage < 0 ? 0 : percentage;
+        percentage = Math.ceil(percentage);
+
+        if (percentage < 2) {
+            percentage = 0;
+        }
+        
+        if (percentage > 98) {
+            percentage = 100;
+        }
+
+        visibilityIndex.value = maxResults.value - Math.floor((percentage * maxResults.value) / 100) - 1;
+
+        slider.value = (percentage * 500) / 100;
     }
 </script>
 
@@ -108,9 +127,14 @@
 
     <div class="tech-line-overview my-4"></div>
 
+    <div class="mb-5 pt-5 rounded-md flex justify-between px-3">
+        <a :href="route('tournaments.results.anonymous.download', {tournament: tournament.id, round: round.id})" class="bg-white hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded-lg">Download Anonymous Results</a>
+        <a :href="route('tournaments.results.download', {tournament: tournament.id, round: round.id})" class="bg-black hover:bg-white hover:text-black text-white font-bold py-2 px-4 rounded-lg">Download Results</a>
+    </div>
+
     <div class="p-4 rounded-lg bg-blackop-30 my-5 flex flex-col justify-center items-center" v-if="revealOneByOne">
         <div class="flex justify-between mb-5">
-            <button id="revealer-change-button" @click="changeRevealer" class="text-white bg-black hover:bg-gray-600 dark:bg-white dark:hover:bg-black dark:hover:text-white dark:text-black font-bold py-2 px-4 rounded-lg">
+            <button id="revealer-change-button" @click="controlRevealer" class="text-white bg-black hover:bg-gray-600 dark:bg-white dark:hover:bg-black dark:hover:text-white dark:text-black font-bold py-2 px-4 rounded-lg">
                 {{ revealerWorking ? 'Stop' : 'Start' }}
             </button>
     
@@ -183,7 +207,9 @@
                 <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
             </div>
 
-            <DemoResultEntry v-for="(demo, index) in round.cpm_results" :demo="demo" :key="demo.id" v-show="index > visibilityIndex" />
+            <div v-for="(demo, index) in round.cpm_results" :key="demo.id">
+                <DemoResultEntry :demo="demo" v-show="index > visibilityIndex" />
+            </div>
 
             <div v-if="round.cpm_results?.length == 0">
                 <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>

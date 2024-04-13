@@ -349,6 +349,7 @@
                             type="datetime-local"
                             class="mt-1 block w-full"
                         />
+                        <div class="text-sm text-gray-500">Dates are in UTC timezone</div>
                         <InputError :message="form.errors.start_date" class="mt-2" />
                     </div>
 
@@ -360,6 +361,7 @@
                             type="datetime-local"
                             class="mt-1 block w-full border-2 border-grayop-700 bg-grayop-900 text-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-md shadow-sm"
                         />
+                        <div class="text-sm text-gray-500">Dates are in UTC timezone</div>
                         <InputError :message="form.errors.end_date" class="mt-2" />
                     </div>
 

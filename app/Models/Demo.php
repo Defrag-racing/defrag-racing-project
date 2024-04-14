@@ -24,6 +24,8 @@ class Demo extends Model {
         'reason',
     ];
 
+    protected $width = ['user'];
+
     public function user() {
         return $this->belongsTo(User::class);
     }

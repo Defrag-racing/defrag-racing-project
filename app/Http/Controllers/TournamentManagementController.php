@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Tournament;
 use App\Models\Organizer;
 use App\Models\Record;
+use App\Models\Demo;
 
 use App\Rules\YouTubeUrl;
 use Intervention\Image\Facades\Image;
@@ -23,11 +24,19 @@ class TournamentManagementController extends Controller {
             ->where('user_id', $request->user()->id)
             ->pluck('role');
 
+        $rounds = $tournament->rounds()->where('start_date', '<=', now())->pluck('id');
+
+        $unvalidatedDemos = Demo::whereIn('round_id', $rounds)
+            ->where('rejected', false)
+            ->where('approved', false)
+            ->count();
+
         return Inertia::render('Tournaments/Tournament/ManageTournament')
                 ->with('tournament', $tournament)
                 ->with('donations', $donations)
                 ->with('suggestions', $suggestions)
-                ->with('myroles', $myroles);
+                ->with('myroles', $myroles)
+                ->with('unvalidatedDemos', $unvalidatedDemos);
     }
 
     public function create(Request $request) {

@@ -7,7 +7,8 @@
         tournament: Object,
         donations: Number,
         suggestions: Number,
-        myroles: Array
+        myroles: Array,
+        unvalidatedDemos: Number
     });
 
     const buttons = [
@@ -19,7 +20,8 @@
         {
             text: 'Manage Donations',
             route: route('tournaments.donations.manage', props.tournament.id),
-            condition: props.myroles.includes('admin') || props.myroles.includes('organizer')
+            condition: props.myroles.includes('admin') || props.myroles.includes('organizer'),
+            number: props.donations
         },
         {
             text: 'Manage Faqs',
@@ -39,7 +41,8 @@
         {
             text: 'View Suggestions',
             route: route('tournaments.suggestions.index', props.tournament.id),
-            condition: props.myroles.includes('admin') || props.myroles.includes('organizer')
+            condition: props.myroles.includes('admin') || props.myroles.includes('organizer'),
+            number: props.suggestions
         },
         {
             text: 'Manage Rounds',
@@ -59,7 +62,8 @@
         {
             text: 'Validate Demos',
             route: route('tournaments.validation.index', props.tournament.id),
-            condition: props.myroles.includes('admin') || props.myroles.includes('validator')
+            condition: props.myroles.includes('admin') || props.myroles.includes('validator'),
+            number: props.unvalidatedDemos
         }
     ];
 
@@ -81,12 +85,12 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 justify-between gap-3">
             <div v-for="button in buttons" :key="button.text" class="text-gray-300 font-bold bg-grayop-700 cursor-pointer hover:bg-grayop-600 text-center rounded-lg" :class="{'text-red-500': button.del}">
-                <Link v-if="button.condition && ! button.publish" :href="button.route" class="block p-3">
+                <Link v-if="button.condition" :href="button.route" class="block p-3 relative">
                     {{ button.text }}
+                    <span v-if="button.number" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                        {{ button.number }}
+                    </span>
                 </Link>
-                <span v-else-if="button.condition && button.publish" @click="publishTournament" class="block p-3">
-                    {{ tournament.published ? 'Unpublish Tournament' : 'Publish Tournament' }}
-                </span>
             </div>
         </div>
 

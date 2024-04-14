@@ -1,11 +1,41 @@
 <script setup>
-    import { ref } from 'vue';
+    import { ref, reactive, onMounted } from 'vue';
     import { Link } from '@inertiajs/vue3';
     import moment from 'moment';
 
-    defineProps({
+    const props = defineProps({
         round: Object,
         title: String
+    });
+
+    let seconds = ref(0);
+
+    const showCountdown = ref(false);
+
+    const countdownData = reactive({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+    })
+
+    const countdownTimer = ref(null);
+
+    const initCountdown = () => {
+        if (props.round.active) {
+            seconds.value = props.round.seconds_till_finish ?? 0;
+            countdown();
+            showCountdown.value = true;
+
+            setInterval(() => {
+                seconds.value--;
+                countdown();
+            }, 1000);
+        }
+    }
+
+    onMounted(() => {
+        initCountdown();
     });
 
     const displayTime = ref('UTC')
@@ -17,6 +47,36 @@
         const localDate = inputDate.clone().local();
 
         return displayTime.value === 'Local' ? localDate.format("YYYY-MM-DD HH:mm") : inputDate.format("YYYY-MM-DD HH:mm");
+    }
+
+    function countdown() {
+        let secs = seconds.value;
+
+        if (seconds.value < 0) {
+            countdownData.days = 0;
+            countdownData.hours = 0;
+            countdownData.minutes = 0;
+            countdownData.seconds = 0;
+            return;
+        }
+
+        const oneMinute = 60;
+        const oneHour = oneMinute * 60;
+        const oneDay = oneHour * 24;
+
+        const days = Math.floor(secs / oneDay);
+        secs %= oneDay;
+
+        const hours = Math.floor(secs / oneHour);
+        secs %= oneHour;
+
+        const minutes = Math.floor(secs / oneMinute);
+        secs %= oneMinute;
+
+        countdownData.days = days;
+        countdownData.hours = hours;
+        countdownData.minutes = minutes;
+        countdownData.seconds = secs;
     }
 
     const changeDisplayTime = () => {
@@ -47,6 +107,41 @@
     
             <div class="p-2 rounded-lg flex-grow ml-3">
                 <div class="w-full text-left text-sm rounded-lg">
+                    <div class="flex flex-col items-center" v-if="showCountdown">
+                        <div class="font-semibold text-lg text-white uppercase tracking-widest mb-2">FINISHES AT</div>
+                        <div class="font-semibold text-lg text-white">
+                            <div class="grid grid-flow-col gap-5 text-center auto-cols-max">
+                                <div class="flex flex-col">
+                                    <span class="countdown font-mono text-5xl">
+                                        {{ countdownData.days }}
+                                    </span>
+                                    <span>DAYS</span>
+                                </div>
+                            
+                                <div class="flex flex-col">
+                                    <span class="countdown font-mono text-5xl">
+                                        {{ countdownData.hours }}
+                                    </span>
+                                    <span>HOURS</span>
+                                </div> 
+                                <div class="flex flex-col">
+                                    <span class="countdown font-mono text-5xl">
+                                        {{ countdownData.minutes }}
+                                    </span>
+                                    <span>MIN</span>
+                                </div> 
+                                <div class="flex flex-col">
+                                    <span class="countdown font-mono text-5xl">
+                                        {{ countdownData.seconds }}
+                                    </span>
+                                    <span>SEC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
+
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
                             Start
@@ -60,7 +155,7 @@
                         </div>
                     </div>
     
-                    <div class="my-3" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
     
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
@@ -75,7 +170,7 @@
                         </div>
                     </div>
     
-                    <div class="my-3" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
 
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
@@ -86,7 +181,7 @@
                         </div>
                     </div>
     
-                    <div class="my-3" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
 
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
@@ -104,7 +199,7 @@
                         </div>
                     </div>
     
-                    <div class="my-3" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
     
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
@@ -127,7 +222,7 @@
                         </div>
                     </div>
 
-                    <div class="my-3" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
 
                     <slot name="additional" />
                 </div>

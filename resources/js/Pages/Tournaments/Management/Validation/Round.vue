@@ -7,7 +7,9 @@
         tournament: Object,
         round: Object,
         unvalidated_vq3: Number,
-        unvalidated_cpm: Number
+        unvalidated_cpm: Number,
+        vq3_demos: Array,
+        cpm_demos: Array
     });
 </script>
 
@@ -28,9 +30,9 @@
                 </div>
 
 
-                <DemoValidationEntry v-for="demo in round.vq3_demos" :demo="demo" :round="round" :tournament="tournament" :key="demo.id" />
+                <DemoValidationEntry v-for="demo in vq3_demos" :demo="demo" :round="round" :tournament="tournament" :key="demo.id" />
 
-                <div v-if="round.vq3_demos?.length == 0">
+                <div v-if="vq3_demos?.length == 0">
                     <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
                 </div>
             </div>
@@ -43,9 +45,9 @@
                     </div>
                 </div>
 
-                <DemoValidationEntry v-for="demo in round.cpm_demos" :demo="demo" :round="round" :tournament="tournament" :key="demo.id" />
+                <DemoValidationEntry v-for="demo in cpm_demos" :demo="demo" :round="round" :tournament="tournament" :key="demo.id" />
 
-                <div v-if="round.cpm_demos?.length == 0">
+                <div v-if="cpm_demos?.length == 0">
                     <div class="text-xl text-white mt-5 text-center">No Demos Submitted</div>
                 </div>
             </div>

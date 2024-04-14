@@ -33,8 +33,19 @@ class ValidateDemosController extends Controller {
             return redirect()->route('tournaments.validation.index', $tournament);
         }
 
-        $round->load('vq3_demos.user');
-        $round->load('cpm_demos.user');
+        $vq3_demos = Demo::where('round_id', $round->id)
+            ->where('physics', 'vq3')
+            ->orderBy('approved')
+            ->orderBy('rejected')
+            ->with('user')
+            ->get();
+    
+        $cpm_demos = Demo::where('round_id', $round->id)
+            ->where('physics', 'cpm')
+            ->orderBy('approved')
+            ->orderBy('rejected')
+            ->with('user')
+            ->get();
 
         $unvalidated_vq3 = Demo::where('round_id', $round->id)
             ->where('physics', 'vq3')
@@ -52,7 +63,9 @@ class ValidateDemosController extends Controller {
                 ->with('tournament', $tournament)
                 ->with('round', $round)
                 ->with('unvalidated_vq3', $unvalidated_vq3)
-                ->with('unvalidated_cpm', $unvalidated_cpm);
+                ->with('unvalidated_cpm', $unvalidated_cpm)
+                ->with('vq3_demos', $vq3_demos)
+                ->with('cpm_demos', $cpm_demos);
     }
 
     public function approve(Tournament $tournament, Round $round, Demo $demo) {

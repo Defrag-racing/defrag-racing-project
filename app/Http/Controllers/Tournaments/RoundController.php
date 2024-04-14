@@ -45,8 +45,10 @@ class RoundController extends Controller {
 
         foreach($rounds as $round) {
             $round->active = $round->start_date < Carbon::now() && $round->end_date > Carbon::now();
+            $round->upcoming = $round->start_date > Carbon::now();
+            $round->seconds_till_finish = Carbon::parse($round->end_date)->diffInSeconds(Carbon::now());
+            $round->seconds_till_start = Carbon::now()->diffInSeconds(Carbon::parse($round->start_date));
         }
-
 
         return Inertia::render('Tournaments/Tournament/Rounds')
                 ->with('tournament', $tournament)

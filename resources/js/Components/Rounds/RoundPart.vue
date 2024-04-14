@@ -8,10 +8,10 @@
         title: String
     });
 
-    const displayTime = ref('CET')
+    const displayTime = ref('UTC')
 
     const getDate = (date) => {
-        moment.tz.setDefault("CET");
+        moment.tz.setDefault("UTC");
         const inputDate = moment(date, 'YYYY-MM-DD HH:mm:ss');
 
         const localDate = inputDate.clone().local();
@@ -20,7 +20,7 @@
     }
 
     const changeDisplayTime = () => {
-        displayTime.value = displayTime.value === 'Local' ? 'CET' : 'Local';
+        displayTime.value = displayTime.value === 'Local' ? 'UTC' : 'Local';
     }
 </script>
 

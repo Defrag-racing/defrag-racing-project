@@ -205,7 +205,7 @@
                             @change="updatePhotoPreview"
                         >
         
-                        <InputLabel for="photo" value="Tournament Image" />
+                        <InputLabel for="photo" value="Tournament Image  [600 x 400] px" />
 
                         <div v-if="photoPreview" class="mt-2">
                             <span

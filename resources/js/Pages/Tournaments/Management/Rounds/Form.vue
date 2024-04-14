@@ -319,7 +319,7 @@
                             @change="updateImagePreview"
                         >
         
-                        <InputLabel for="image" value="Round Image" />
+                        <InputLabel for="image" value="Round Image [600 x 400] px" />
 
                         <div v-if="imagePreview" class="mt-2">
                             <span

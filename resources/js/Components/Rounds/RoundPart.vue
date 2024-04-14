@@ -46,7 +46,7 @@
 
         const localDate = inputDate.clone().local();
 
-        return displayTime.value === 'Local' ? localDate.format("YYYY-MM-DD HH:mm") : inputDate.format("YYYY-MM-DD HH:mm");
+        return displayTime.value === 'Local' ? localDate.format("DD MMM YYYY [ ] HH:mm ") : inputDate.format("DD MMM YYYY [ ] HH:mm");
     }
 
     function countdown() {

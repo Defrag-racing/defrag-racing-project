@@ -25,7 +25,7 @@
             <h2 class="text-lg text-gray-300 mb-2">
                 <span class="mr-3" v-html="q3tohtml(getName)"></span>
                 <span>Donated</span>
-                <span class="mx-1 text-blue-500">{{ props.donation.amount }}{{ props.donation.currency }}</span>
+                <span class="mx-1 text-blue-500">{{ props.donation.currency }}{{ props.donation.amount }}</span>
                 <span>Saying</span>
 
                 <span class="ml-1 italic text-gray-500">{{ props.donation.message }}</span>

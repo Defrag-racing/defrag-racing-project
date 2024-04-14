@@ -195,6 +195,10 @@
         form.get(route('maps.filters'))
     }
 
+    const RemoveElement = (key, inc, index) => {
+        form[key][inc].splice(index, 1);
+    }
+
 </script>
 
 <template>
@@ -288,6 +292,21 @@
                 <div class="flex justify-between">
                     <div class="text-sm text-gray-400">Weapons</div>
                 </div>
+                <div class="flex flex-wrap items-center text-gray-300 text-sm mb-2" v-if="form.weapons?.include?.length > 0 || form.weapons?.exclude?.length > 0">
+                    <span v-for="(element, index) in form.weapons?.include" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(50, 255, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('weapons', 'include', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
+
+                    <span v-for="(element, index) in form.weapons?.exclude" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(255, 50, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('weapons', 'exclude', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
+                </div>
 
                 <div>
                     <ItemsSelect
@@ -307,6 +326,22 @@
                     <div class="text-sm text-gray-400">Functions</div>
                 </div>
 
+                <div class="flex flex-wrap items-center text-gray-300 text-sm mb-2" v-if="form.functions?.include?.length > 0 || form.functions?.exclude?.length > 0">
+                    <span v-for="(element, index) in form.functions?.include" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(50, 255, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('functions', 'include', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
+
+                    <span v-for="(element, index) in form.functions?.exclude" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(255, 50, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('functions', 'exclude', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
+                </div>
+
                 <div>
                     <ItemsSelect
                         :options="functions"
@@ -321,6 +356,22 @@
             <div class="sm:pr-2 sm:w-1/2 mb-2 sm:mb-0">
                 <div class="flex justify-between">
                     <div class="text-sm text-gray-400">Items</div>
+                </div>
+
+                <div class="flex flex-wrap items-center text-gray-300 text-sm mb-2" v-if="form.items?.include?.length > 0 || form.items?.exclude?.length > 0">
+                    <span v-for="(element, index) in form.items?.include" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(50, 255, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('items', 'include', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
+
+                    <span v-for="(element, index) in form.items?.exclude" class="relative group w-7 h-7 flex justify-center items-center rounded-full cursor-pointer" style="background-color: rgba(255, 50, 36, 0.20);">
+                        <div :class="`sprite-items sprite-${element} w-4 h-4 flex-shrink-0 mx-1`"></div>
+                        <span @click="RemoveElement('items', 'exclude', index)" class="hidden group-hover:block absolute top-50% right-50% bg-black flex text-center opacity-90 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs">
+                            X
+                        </span>
+                    </span>
                 </div>
 
                 <div>

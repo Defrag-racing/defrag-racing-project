@@ -8,7 +8,7 @@
         tournament: Object
     })
 
-    const maxResults = ref(props.round.vq3_results.length > props.round.cpm_results.length ? props.round.vq3_results.length : props.round.cpm_results.length)
+    const maxResults = ref(props.round.vq3_results?.length > props.round.cpm_results?.length ? props.round.vq3_results?.length : props.round.cpm_results?.length)
     const visibilityIndex = ref(maxResults.value)
     const revealed = ref(false)
     const revealOneByOne = ref(false)
@@ -21,7 +21,7 @@
     const AttachSpoiler = () => {
         revealed.value = false;
         revealOneByOne.value = false;
-        visibilityIndex.value = props.round.vq3_results.length > props.round.cpm_results.length ? props.round.vq3_results.length : props.round.cpm_results.length;
+        visibilityIndex.value = props.round.vq3_results?.length > props.round.cpm_results?.length ? props.round.vq3_results?.length : props.round.cpm_results?.length;
     
         revealerWorking.value = false;
         slider.value = 0;

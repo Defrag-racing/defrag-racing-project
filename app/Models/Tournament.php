@@ -92,8 +92,8 @@ class Tournament extends Model
                 ->where('start_date', '<=', Carbon::now())
                 ->where('end_date', '<=', Carbon::now())
                 ->orderBy('start_date', 'DESC')
-                ->with('vq3_results.user.clan')
-                ->with('cpm_results.user.clan')
+                ->with(['vq3_results.user:id,name,profile_photo_path,country', 'vq3_results.user.clan'])
+                ->with(['cpm_results.user:id,name,profile_photo_path,country', 'cpm_results.user.clan'])
                 ->get();
 
         $clan_results_vq3 = [];
@@ -168,8 +168,8 @@ class Tournament extends Model
                 ->where('start_date', '<=', Carbon::now())
                 ->orderBy('start_date', 'DESC')
                 ->with('maps')
-                ->with('vq3_results.user')
-                ->with('cpm_results.user')
+                ->with(['vq3_results.user:id,name,profile_photo_path,country'])
+                ->with(['cpm_results.user:id,name,profile_photo_path,country'])
                 ->get();
 
         $teams = Team::where('tournament_id', $this->id)

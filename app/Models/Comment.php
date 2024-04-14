@@ -16,7 +16,7 @@ class Comment extends Model
         'comment',
     ];
 
-    protected $with=['user', 'comments'];
+    protected $with=['user:id,name,profile_photo_path,country', 'comments'];
 
     public function commentable()
     {

@@ -18,7 +18,7 @@ use Carbon\Carbon;
 
 class StreamerController extends Controller {
     public function index (Tournament $tournament) {
-        $tournament->load('streamers.user');
+        $tournament->load('streamers.user:id,name,profile_photo_path,country,twitch_name');
 
         return Inertia::render('Tournaments/Management/Streamers/Index')
                 ->with('tournament', $tournament);

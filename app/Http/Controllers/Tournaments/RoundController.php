@@ -38,16 +38,18 @@ class RoundController extends Controller {
                 $query->where('user_id', $request->user()->id);
             }]);
         }
-                
-        $rounds = $rounds->with('vq3_results.user')
-            ->with('cpm_results.user')
-            ->get();
+     
+        $rounds = $rounds->get();
 
         foreach($rounds as $round) {
             $round->active = $round->start_date < Carbon::now() && $round->end_date > Carbon::now();
             $round->upcoming = $round->start_date > Carbon::now();
             $round->seconds_till_finish = Carbon::parse($round->end_date)->diffInSeconds(Carbon::now());
             $round->seconds_till_start = Carbon::now()->diffInSeconds(Carbon::parse($round->start_date));
+
+            if (! $round->upcoming && !$round->active) {
+                $round->load('vq3_results.user:id,name,profile_photo_path,country')->load('cpm_results.user:id,name,profile_photo_path,country');
+            }
         }
 
         return Inertia::render('Tournaments/Tournament/Rounds')
@@ -73,8 +75,8 @@ class RoundController extends Controller {
             }]);
         } 
 
-        $rounds = $rounds->with('vq3_results.user.clan')
-        ->with('cpm_results.user.clan')
+        $rounds = $rounds->with(['vq3_results.user:id,name,profile_photo_path,country', 'vq3_results.user.clan'])
+        ->with(['cpm_results.user:id,name,profile_photo_path,country', 'cpm_results.user.clan'])
         ->get();
     
         foreach($rounds as $round) {
@@ -174,8 +176,8 @@ class RoundController extends Controller {
         }
                 
 
-        $rounds = $rounds->with('vq3_results.user')
-        ->with('cpm_results.user')
+        $rounds = $rounds->with('vq3_results.user:id,name,profile_photo_path,country')
+        ->with('cpm_results.user:id,name,profile_photo_path,country')
         ->get();
 
         $teams = Team::where('tournament_id', $tournament->id)

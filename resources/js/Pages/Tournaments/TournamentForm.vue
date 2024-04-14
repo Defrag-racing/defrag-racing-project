@@ -172,7 +172,7 @@
             </template>
     
             <template #form>
-                <div class="col-span-6" v-if="tabs[currentTab] == 'basic'">
+                <div class="col-span-6" v-show="tabs[currentTab] == 'basic'">
                     <div class="mb-3">
                         <InputLabel for="name" value="Name" />
                         <TextInput
@@ -239,7 +239,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-6" v-if="tabs[currentTab] == 'details'">
+                <div class="col-span-6" v-show="tabs[currentTab] == 'details'">
                     <div class="mb-3">
                         <InputLabel for="rules" value="Rules" />
                         <ckeditor
@@ -254,7 +254,7 @@
                     </div>
                 </div>
 
-                <div class="col-span-6" v-if="tabs[currentTab] == 'options'">
+                <div class="col-span-6" v-show="tabs[currentTab] == 'options'">
                     <div class="mb-3">
                         <div class="flex">
                             <input

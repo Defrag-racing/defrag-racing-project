@@ -140,7 +140,7 @@
                         </div>
                     </div>
 
-                    <div class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
+                    <div v-if="showCountdown" class="my-1.5" style="width: 100%; height: 1px; background-color: #72727244"></div>
 
                     <div class="flex">
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">

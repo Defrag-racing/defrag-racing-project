@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Process;
 class DemoValidator {
     private $data = [];
     private $start_date;
+    private $originalFilename;
 
-    public function __construct($filename) {
+    public function __construct($filename, $originalFilename) {
         $result = Process::run(base_path() . '/storage/app/tools/UDT_json -c ' . storage_path('app/' . $filename));
 
         if ($result->failed()) {
@@ -25,6 +26,8 @@ class DemoValidator {
         }
 
         $this->data = $json;
+
+        $this->originalFilename = $originalFilename;
     }
 
     public function getRawData() {
@@ -68,20 +71,49 @@ class DemoValidator {
         return $this->get_time_span($demo_time);
     }
 
+    public function get_filename_time() {
+        // 64k_p00nie[df.cpm]00.19.184(HEJAZI.Egypt).dm_68
+        $filename = $this->originalFilename;
+
+        $pattern = '/\d{2}\.\d{2}\.\d{3}/';
+        $time = '';
+
+        // Using preg_match to extract the first match of the pattern
+        if (preg_match($pattern, $filename, $matches)) {
+            $time = $matches[0];
+        }
+
+        return $time;
+    }
+
     public function get_time() {
         $rawCommands = $this->data->rawCommands;
 
+        $fileTime = $this->get_time_span(str_replace('.', ':', $this->get_filename_time()));
+
+        $times = [];
+
         foreach ($rawCommands as $command) {
             if (strpos($command->rawCommand, 'print "Time performed by') === 0) {
-                return $this->parse_time($command->rawCommand);
+                $times[] = $this->parse_time($command->rawCommand);
             } elseif (strpos($command->rawCommand, 'print "Time performed by') === 0) {
-                return $this->parse_time($command->rawCommand);
+                $times[] = $this->parse_time($command->rawCommand);
             } elseif (strpos($command->rawCommand, 'print "^3Time Performed') === 0) {
-                return $this->parse_time($command->rawCommand);
+                $times[] = $this->parse_time($command->rawCommand);
             } elseif (strpos($command->rawCommand, 'print "') === 0 && strpos($command->rawCommand, 'reached the finish line in') !== false) {
-                return $this->parse_time_online($command->rawCommand);
+                $times[] = $this->parse_time_online($command->rawCommand);
             } elseif (strpos($command->rawCommand, 'print "') === 0 && strpos($command->rawCommand, 'reached the finish line in') !== false) {
-                return $this->parse_time_online($command->rawCommand);
+                $times[] = $this->parse_time_online($command->rawCommand);
+            }
+        }
+
+        if (count($times) == 0) {
+            throw new \Exception("Couldn't find the time of the demo. CODE DT-T-1");
+        }
+
+        foreach($times as $time) {
+            if ($time == $fileTime) {
+                return $time;
             }
         }
 

@@ -276,7 +276,7 @@ class RoundController extends Controller {
 
         $demo_data = null;
         try {
-            $demoValidator = new DemoValidator($file);
+            $demoValidator = new DemoValidator($file, $originalFilename);
 
             $demoValidator->validate();
 

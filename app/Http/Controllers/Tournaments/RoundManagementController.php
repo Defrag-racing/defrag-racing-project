@@ -12,6 +12,7 @@ use App\Rules\YouTubeUrl;
 use App\Http\Controllers\Controller;
 
 use App\Models\Round;
+use App\Models\RoundMap;
 use Intervention\Image\Facades\Image;
 
 use Carbon\Carbon;
@@ -184,6 +185,16 @@ class RoundManagementController extends Controller {
     }
 
     public function publish(Tournament $tournament, Round $round) {
+        if (! $round->published) {
+            $roundsMaps = RoundMap::query()
+                ->where('round_id', $round->id)
+                ->count();
+
+            if ($roundsMaps < 1) {
+                return back()->withDanger('You must add at least one map to the round before publishing it.');
+            }
+        }
+
         $round->update([
             'published'     =>      ! $round->published
         ]);

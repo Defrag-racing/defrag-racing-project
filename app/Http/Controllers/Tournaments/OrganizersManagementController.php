@@ -69,6 +69,10 @@ class OrganizersManagementController extends Controller {
             'role'    => 'required|string|max:255'
         ]);
 
+        if ($organizer->role === 'admin') {
+            return redirect()->back()->withDanger('Cannot edit admin');
+        }
+
         $organizer->user_id = $request->user_id;
         $organizer->role = $request->role;
 

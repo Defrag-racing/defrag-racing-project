@@ -68,9 +68,6 @@ class Round extends Model
     public function calculateResults() {
         $this->calculate_physics_results('vq3');
         $this->calculate_physics_results('cpm');
-
-        $this->results = true;
-        $this->save();
     }
 
     private function calculate_physics_results($physics) {

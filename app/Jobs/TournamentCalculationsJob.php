@@ -50,6 +50,10 @@ class TournamentCalculationsJob implements ShouldQueue
 
         foreach ($rounds as $round) {
             $round->calculateResults();
+
+            $round->results = true;
+            $round->save();
+
             $round->buildResultsZip(false);
             $round->buildResultsZip(true);
         }

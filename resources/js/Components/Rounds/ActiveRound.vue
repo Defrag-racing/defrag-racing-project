@@ -97,19 +97,23 @@
             </template>
         </RoundPart>
 
-        <RoundResults :tournament="tournament" :round="round" v-if="round.results && type === 'single'" />
+        <RoundResults
+            :tournament="tournament"
+            :round="round"
+            v-if="round.finished && round.results && type === 'single'"
+        />
 
         <RoundResultsClans
             :round="round"
             :tournament="tournament"
-            v-if="round.results && type === 'clans'"
+            v-if="round.finished && round.results && type === 'clans'"
         />
 
         <RoundResultsTeams
             :round="round"
             :tournament="tournament"
             :teams="teams"
-            v-if="round.results && type === 'teams'"
+            v-if="round.finished && round.results && type === 'teams'"
         />
 
         <MySubmissions :round="round" :tournament="tournament" />

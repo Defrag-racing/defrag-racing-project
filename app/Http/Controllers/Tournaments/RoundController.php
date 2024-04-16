@@ -50,6 +50,8 @@ class RoundController extends Controller {
             if (! $round->upcoming && !$round->active) {
                 $round->load('vq3_results.user:id,name,profile_photo_path,country')->load('cpm_results.user:id,name,profile_photo_path,country');
             }
+
+            $round->finished = $round->end_date < Carbon::now();
         }
 
         return Inertia::render('Tournaments/Tournament/Rounds')

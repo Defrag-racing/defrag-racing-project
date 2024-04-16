@@ -247,10 +247,13 @@ class RoundController extends Controller {
         if (! $request->demo) {
             return back()->withDanger('You must upload a demo');
         }
+        
+        if (! $request->has('demo_date') || Carbon::parse($request->demo_date) < $round->start_date) {
+            return back()->withDanger('The demo has been created before the round started !');
+        }
 
         $demo = $request->file('demo');
         $originalFilename = $demo->getClientOriginalName();
-        // check demo filetype
         
         if ($demo->getClientOriginalExtension() !== 'dm_68') {
             return back()->withDanger('Demo must be a dm_68 file');
@@ -275,7 +278,7 @@ class RoundController extends Controller {
         try {
             $demoValidator = new DemoValidator($file);
 
-            // $demoValidator->validate();
+            $demoValidator->validate();
 
             $demoValidator->validate_maps($round);
 

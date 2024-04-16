@@ -24,7 +24,8 @@
     });
 
     const form = useForm({
-        demo: null
+        demo: null,
+        demo_date: 0,
     })
 
     const uploadFileName = ref('Select Demo to upload...')
@@ -33,6 +34,8 @@
         uploadFileName.value = e.target.files[0].name;
 
         form.demo = e.target.files[0];
+
+        form.demo_date = new Date(form.demo.lastModified);
     }
 
     const submitForm = () => {

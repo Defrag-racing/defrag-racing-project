@@ -14,6 +14,8 @@ class DemoDownloadController extends Controller {
         $round = $demo->round;
         $user = $demo->user;
 
+        $me = $request->user()?->id;
+
         if ($round->start_date > Carbon::now()) {
             return redirect()->route('tournaments.index');
         }
@@ -22,13 +24,11 @@ class DemoDownloadController extends Controller {
             return Storage::download($demo->file, $demo->filename);
         }
 
-        if ($request->user()?->id === $user->id) {
+        if ($me && $me === $user->id) {
             return Storage::download($demo->file, $demo->filename);
-        } else {
-            return redirect()->route('tournaments.index');
         }
 
-        if ($round->tournament->isOrganizer($request->user()->id) || $round->tournament->isValidator($request->user()->id)) {
+        if ($me && $round->tournament->isOrganizer($me) || $round->tournament->isValidator($me)) {
             return Storage::download($demo->file, $demo->filename);
         }
 

@@ -2,10 +2,14 @@
 
 namespace App\External;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Process;
 
 class DemoValidator {
     private $data = [];
+    private $start_date;
 
     public function __construct($filename) {
         $result = Process::run(base_path() . '/storage/app/tools/UDT_json -c ' . storage_path('app/' . $filename));
@@ -146,13 +150,12 @@ class DemoValidator {
         }
 
         $rules = [
-            'df_mp_interferenceoff' => '3',
             'g_speed' => '320',
             'sv_cheats' => '0',
             'timescale' => '1',
             'g_gravity' => '800',
             'g_knockback' => '1000',
-            'pmove_fixed' => '1'
+            // 'pmove_fixed' => '1'
         ];
 
         foreach ($rules as $rule => $value) {

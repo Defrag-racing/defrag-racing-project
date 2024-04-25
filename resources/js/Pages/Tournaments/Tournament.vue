@@ -93,7 +93,7 @@
             link: true,
             route: 'tournaments.manage',
             params: { tournament: props.tournament.id },
-            condition: props.tournament.creator === page.props?.auth?.user?.id
+            condition: props.tournament.isOrganizer || props.tournament.isValidator
         },
 
     ];

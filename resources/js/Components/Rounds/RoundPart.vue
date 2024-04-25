@@ -187,11 +187,19 @@
                         <div scope="row" class="text-lg text-gray-400" style="min-width: 150px;">
                             Download
                         </div>
-                        <div class="text-lg text-white flex-grow">
-                            <div v-for="pk3 in round.maps">
-                                <a v-if="pk3.external" :download="pk3.download_name" :href="'https://dl.defrag.racing/downloads/maps/' + pk3.pk3.split('/').pop()" class="text-indigo-400 hover:underline mr-3">
-                                    {{ pk3.name }}
-                                </a>
+                        <div class="text-lg text-white flex flex-grow">
+                            <div v-for="pk3 in round.maps" class="flex flex-wrap">
+                                <div v-if="pk3.external" class="flex px-2">
+                                    <Link :href="route('maps.map', pk3.name)" class="text-indigo-400 hover:underline mr-3">
+                                        {{ pk3.name }}
+                                    </Link>
+                                    <a :download="pk3.download_name" :href="'https://dl.defrag.racing/downloads/maps/' + pk3.pk3.split('/').pop()" class="text-indigo-400 hover:text-indigo-300 hover:underline mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                        </svg>
+                                    </a>
+                                </div>
+                                
                                 <a v-else target="_blank" :href="route('tournaments.maps.download', pk3.id)" class="text-indigo-400 hover:underline mr-3">
                                     {{ pk3.name }}
                                 </a>

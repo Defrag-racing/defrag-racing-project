@@ -119,7 +119,7 @@
 </script>
 
 <template>
-    <h1 class="font-black text-3xl dark:text-white mb-3">Results</h1>
+    <h1 class="font-black text-3xl text-white mb-3">Results</h1>
 
     <div class="tech-line-overview my-4"></div>
 
@@ -134,7 +134,7 @@
 
     <div class="p-4 rounded-lg bg-blackop-30 my-5 flex flex-col justify-center items-center" v-if="revealOneByOne">
         <div class="flex justify-between mb-5">
-            <button id="revealer-change-button" @click="controlRevealer" class="text-white bg-black hover:bg-gray-600 dark:bg-white dark:hover:bg-black dark:hover:text-white dark:text-black font-bold py-2 px-4 rounded-lg">
+            <button id="revealer-change-button" @click="controlRevealer" class="text-white bg-black hover:bg-gray-600 bg-white hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded-lg">
                 {{ revealerWorking ? 'Stop' : 'Start' }}
             </button>
     
@@ -152,7 +152,7 @@
                 </div>
             </div>
         
-            <div @click="AttachSpoiler" class="text-white rounded-lg px-2 py-1 flex items-center ml-5 hover:bg-grayop-400 dark:hover:bg-grayop-700 cursor-pointer">
+            <div @click="AttachSpoiler" class="text-white rounded-lg px-2 py-1 flex items-center ml-5 hover:bg-grayop-700 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 24px; height: 24px;">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
                 </svg>
@@ -190,8 +190,8 @@
     <div class="grid sm:grid-cols-2 gap-4 mt-10" :style="getStyle()">
         <div class="m-1 w-full p-2 pt-0 mr-6">
             <!-- Heading -->
-            <div class="w-full flex items-center rounded-md bg-blue-900 dark:bg-opacity-25 bg-opacity-15 p-2 shadow-md">
-                <div class="uppercase font-black text-2xl dark:text-blue-200 text-center w-full">vq3</div>
+            <div class="w-full flex items-center rounded-md bg-blue-900 bg-opacity-25 bg-opacity-15 p-2 shadow-md">
+                <div class="uppercase font-black text-2xl text-blue-200 text-center w-full">vq3</div>
             </div>
 
 
@@ -203,8 +203,8 @@
         </div>
 
         <div class="m-1 w-full p-2 pt-0">
-            <div class="w-full flex items-center rounded-md bg-green-900 dark:bg-opacity-25 bg-opacity-15 p-2 shadow-md">
-                <div class="uppercase font-black text-2xl dark:text-green-200 text-center w-full">CPM</div>
+            <div class="w-full flex items-center rounded-md bg-green-900 bg-opacity-25 bg-opacity-15 p-2 shadow-md">
+                <div class="uppercase font-black text-2xl text-green-200 text-center w-full">CPM</div>
             </div>
 
             <div v-for="(demo, index) in round.cpm_results" :key="demo.id">

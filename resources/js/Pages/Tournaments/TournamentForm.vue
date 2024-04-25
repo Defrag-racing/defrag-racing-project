@@ -157,7 +157,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="mb-10">
         <FormSection @submitted="finishBasicInformation">
             <template #title>
                 <div v-if="tabs[currentTab] == 'basic'">Basic Information</div>

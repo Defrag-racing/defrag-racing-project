@@ -146,7 +146,7 @@
             </span>
         </Banner>
 
-        <div class="min-h-screen bg-gray-900 main-background" :style="'background-image: url(\'' + $state.globalBackgroundImage + '\')'">
+        <div class="min-h-screen bg-gray-900 main-background">
             <nav class="border-b border-grayop-700">
                 <!-- Top Bar -->
                 <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8">
@@ -520,7 +520,7 @@
 
 <style>
     .main-background {
-        background-color: #111827;
+        background-color: #10151e;
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: center;

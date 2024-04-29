@@ -25,9 +25,7 @@
     <div>
         <Popper arrow hover :disabled="player.profile == null" style="z-index: 100;">
             <Link :href="getProfile" v-if="player.mdd_id">
-                <img :class="{'opacity-70 group-hover:opacity-90': spectator}" onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${player.country}.png`" :title="player.country" class="w-5 inline mr-2 mb-0.5">
-    
-                <div :class="{'opacity-70 group-hover:opacity-90': spectator}" class="font-bold inline" v-html="q3tohtml(player.name)"></div>
+                <div :class="{'opacity-70 group-hover:opacity-90': spectator}" class="font-bold inline online-player-name-text" v-html="q3tohtml(player.name)"></div>
     
                 <svg v-if="player.profile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="mb-0.5 ml-1 text-green-500 w-4 h-4 inline">
                     <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clip-rule="evenodd" />
@@ -35,9 +33,7 @@
             </Link>
 
             <div v-else>
-                <img :class="{'opacity-70 group-hover:opacity-90': spectator}" onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${player.country}.png`" :title="player.country" class="w-5 inline mr-2 mb-0.5">
-    
-                <div :class="{'opacity-70 group-hover:opacity-90': spectator}" class="font-bold inline" v-html="q3tohtml(player.name)"></div>
+                <div :class="{'opacity-70 group-hover:opacity-90': spectator}" class="font-bold inline online-player-name-text" v-html="q3tohtml(player.name)"></div>
     
                 <svg v-if="player.profile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="mb-0.5 ml-1 text-green-500 w-4 h-4 inline">
                     <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clip-rule="evenodd" />
@@ -85,5 +81,11 @@
         --popper-theme-border-radius: 6px;
         --popper-theme-padding: 10px 100px 10px 10px;
         --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+    }
+</style>
+
+<style scoped>
+    .online-player-name-text{
+        font-size: 14px;
     }
 </style>

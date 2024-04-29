@@ -70,13 +70,11 @@
                 </div>
 
                 <div class="py-2">
-                    <div class="flex items-center mb-5">
-                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
-                        <div class="text-white text-xl mx-2">Latest Servers</div>
-                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                    <div class="flex items-center mb-5 justify-center">
+                        <div class="text-white sub-header">Latest Servers</div>
                     </div>
                     
-                    <div class="flex flex-wrap justify-center items-center gap-4">
+                    <div class="grid servers-wrapper mt-4">
                         <div v-for="server in servers" :key="server.id">
                             <ServerCard :server="server" />
                         </div>
@@ -84,12 +82,9 @@
                 </div>
 
                 <div class="py-2">
-                    <div class="flex items-center mb-5">
-                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
-                        <div class="text-white text-xl mx-2">Latest Maps</div>
-                        <div style="height: 1px;" class="flex-grow bg-gray-700"></div>
+                    <div class="flex items-center mb-5 justify-center">
+                        <div class="text-white sub-header">Latest Maps</div>
                     </div>
-                    
                     <div class="flex flex-wrap justify-center items-center gap-4">
                         <div v-for="map in maps">
                             <MapCardSmall :map="map" :mapname="map.name" :key="map.id" />
@@ -100,3 +95,22 @@
         </div>
     </div>
 </template>
+
+<style scoped>
+.servers-wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+}
+.sub-header{
+    font-size: 48px;
+    font-weight: 800;
+    text-align: center;
+}
+@media screen and (max-width:1279px) {
+    .servers-wrapper {
+        grid-template-columns: 1fr;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+</style>

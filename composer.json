@@ -1,12 +1,12 @@
 {
-    "name": "laravel/laravel",
+    "name": "neyoneit/defrag-racing-project",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "defrag.racing website source code.",
     "keywords": [
-        "laravel",
-        "framework"
+        "defrag",
+        "quake"
     ],
-    "license": "MIT",
+    "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.1",
         "aws/aws-sdk-php": "^3.297",

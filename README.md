@@ -1,5 +1,12 @@
 # The Defrag Racing Project
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+# License
+This project is licensed under the GNU Affero General Public License v3 (AGPLv3), which applies to all past and future contributions.
+[AGPLv3](LICENSE)
+
+# About
 This is an early attempt to rewrite defrag racing in Laravel, this will help improve the speed of development, and allow us to add more new features in very little time.
 
 ## Automated Deployment
@@ -37,3 +44,4 @@ Meaning by simply changing the `current` symlink, we can make the website run on
 #### Other Notes
 - A `.env` and a `storage` symlinks must be created in every `releases` clone, and they should point to the `deploy` folder.
 - Because of the folder structure, we should be able to deploy more than just one version (e.g production, staging, testing, beta, etc...)
+

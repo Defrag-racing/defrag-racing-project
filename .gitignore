@@ -23,3 +23,6 @@ frankenphp
 frankenphp-worker.php
 rr
 .rr.yaml
+
+local_devel/*.zip
+local_devel/dummy_data/

@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('egipt')
+            ->path('defraghq')
             ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Blue,

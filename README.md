@@ -16,6 +16,7 @@
 <p align="center">
   <a href="#sparkles-about">About</a> •
   <a href="#hammer_and_wrench-getting-started">Getting Started</a> •
+  <a href="#heart-support-us">Support Us</a> •
   <a href="#handshake-contribution">Contribution</a> •
   <a href="#scroll-license">License</a>
 </p>
@@ -96,6 +97,16 @@ To clone and run this application, you'll need:
     ```bash
     ./vendor/bin/sail stop
     ```
+
+## :heart: Support Us
+
+We hope you've enjoyed using using defrag.racing.
+
+If you'd like to contribute to the ongoing development and maintenance of this project, as well as our other initiatives like defraglive and demome, please consider making a donation.
+
+You can do so through [![PayPal Donation](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=WH6GY4PDGU8FA).
+
+Your support allows us to continue improving these projects for the benefit of all Defragers. Thank you!
 
 ## :handshake: Contribution
 

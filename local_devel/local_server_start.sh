@@ -23,9 +23,32 @@ composer update laravel/sail
 ./vendor/bin/sail build --no-cache
 ./vendor/bin/sail up -d
 
-./vendor/bin/sail artisan key:generate
-./vendor/bin/sail artisan migrate
+# Wait for Sail to start
+sleep 5
 
+# Generate application key
+./vendor/bin/sail artisan key:generate
+
+# Wait for MySQL to be "healthy"
+# Check every 2 seconds for 5 minutes
+end=$((SECONDS+300))
+success=false
+while [ $SECONDS -lt $end ]; do
+    if ./vendor/bin/sail ps | grep -q -P 'mysql.*healthy'; then
+        success=true
+        break
+    fi
+    echo "Waiting for MySQL to load..."
+    sleep 2
+done
+
+if [ "$success" = false ]; then
+    echo "Error: MySQL did not load properly! Exit!"
+    exit 1
+fi
+
+# Run rest of the Sail commands to finish setup
+./vendor/bin/sail artisan migrate
 ./vendor/bin/sail npm install
 ./vendor/bin/sail npm run build
 ./vendor/bin/sail artisan storage:link --force

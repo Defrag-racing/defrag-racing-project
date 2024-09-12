@@ -2,17 +2,10 @@ import os
 import subprocess
 
 PROJECT_PATH = "/var/www/defrag-racing-project/production"
-REPOSITORY = "github.com/neyoneit/defrag-racing-project"
+REPOSITORY_URL = "https://github.com/Defrag-racing/defrag-racing-project.git"
 PROJECT_NAME = "defrag-racing-project"
 
-def get_github_token():
-    data = ''
-    with open(PROJECT_PATH + '/deploy/github.txt', 'r') as file:
-        data = file.read().replace('\n', '')
-
-    return data
-
-def get_id():
+def get_next_id():
 	result = 0
 	for file in os.listdir(f"{PROJECT_PATH}/releases"):
 		if file.startswith(PROJECT_NAME) == False:
@@ -25,18 +18,13 @@ def get_id():
 
 	return result + 1
 
-def get_name():
-    id = get_id()
+def get_next_release_name():
+    id = get_next_id()
 
     return PROJECT_NAME + "-" + str(id)
 
-def get_git_cmd(name):
-    token = get_github_token()
-
-    url = "https://" + token + "@" + REPOSITORY
-
-    # return ['cd', f"{PROJECT_PATH}/releases", '&&', 'git', 'clone', url, name]
-    return f"git clone {url} {name}"
+def get_git_clone_cmd(name):
+    return f"git clone {REPOSITORY_URL} {name}"
 
 def pipeline_cmds(name):
     cmds = [
@@ -62,16 +50,17 @@ def pipeline_cmds(name):
     return cmds
 
 def deploy():
-    name = get_name()
+    name = get_next_release_name()
 
-    clone = get_git_cmd(name)
+    git_clone_cmd = get_git_clone_cmd(name)
 
     cmds = pipeline_cmds(name)
 
-    subprocess.run(clone, shell=True, cwd=f"{PROJECT_PATH}/releases")
+    subprocess.run(git_clone_cmd, shell=True, cwd=f"{PROJECT_PATH}/releases")
 
     for cmd in cmds:
         subprocess.run(cmd, shell=True, cwd=f"{PROJECT_PATH}/releases/{name}")
 
 if __name__ == "__main__":
     deploy()
+

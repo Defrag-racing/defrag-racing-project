@@ -75,7 +75,7 @@ To clone and run this application, you'll need:
 
     Script below contains all steps to setup, install and start local server.
     ```bash
-    ./local_devel/local_server_start.sh
+    ./local_devel/start_local_server.sh
     ```
 
 4. **Go to [localhost](http://localhost)**

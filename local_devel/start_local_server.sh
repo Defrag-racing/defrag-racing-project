@@ -1,18 +1,26 @@
 #!/bin/sh
 
-# Check if Docker is running
-if ! docker info >/dev/null 2>&1; then
-    echo "Docker does not seem to be running, start Docker first and re-run the script"
+# Check if the run from the top-level directory
+if [ ! -f "./artisan" ]; then
+    echo "Error: This script should be run from the top-level project directory"
     exit 1
 fi
 
-# Stop current Sail containers and remove defrag related files
+# Check if Docker is running
+if ! docker info >/dev/null 2>&1; then
+    echo "Error: Docker does not seem to be running, start Docker first and re-run the script"
+    exit 1
+fi
+
+PROJECT_ROOT_DIR=$(basename "$(pwd)")
+
+# Stop current Sail containers and remove defrag related docker files
 ./vendor/bin/sail stop
-docker rm defrag-racing-project-laravel.test-1
-docker rm defrag-racing-project-mysql-1
-docker rm defrag-racing-project-typesense-1
-docker volume rm defrag-racing-project_sail-mysql
-docker volume rm defrag-racing-project_sail-typesense
+docker rm "${PROJECT_ROOT_DIR}-laravel.test-1"
+docker rm "${PROJECT_ROOT_DIR}-mysql-1"
+docker rm "${PROJECT_ROOT_DIR}-typesense-1"
+docker volume rm "${PROJECT_ROOT_DIR}_sail-mysql"
+docker volume rm "${PROJECT_ROOT_DIR}_sail-typesense"
 
 # Copy nessessary files to start Sail
 cp -v ./local_devel/.env.local_devel .env

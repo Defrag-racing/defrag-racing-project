@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('round_maps', function (Blueprint $table) {
-            $table->string('download_name')->default('map.pk3');
+            $table->string('download_name')->default('map.pk3')->change();
             $table->boolean('external')->default(false);
         });
     }

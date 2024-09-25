@@ -67,7 +67,7 @@
         if (! showResultsSection.value) {
             return;
         }
-        
+
         if (! searchSection.value.contains(event.target)) {
             showResultsSection.value = false;
         }
@@ -112,7 +112,7 @@
 
             <!-- Google tag (gtag.js) -->
             <component :is="'script'" async src="https://www.googletagmanager.com/gtag/js?id=G-FMC55XYK1K">
-                
+
             </component>
             <component :is="'script'">
                 window.dataLayer = window.dataLayer || [];
@@ -134,17 +134,6 @@
                 {{ $page.props.success }}
             </AlertBanner>
         </div>
-
-        <Banner :show="true" styling="success" handle="dfracing2024-announcement">
-            <span>
-                <span class="font-bold">Anouncement:</span> 2024 new beginnings ... 
-                <span class="font-bold italic hover:underline">
-                    <Link :href="route('home')">
-                        Read More
-                    </Link>
-                </span>
-            </span>
-        </Banner>
 
         <div class="min-h-screen bg-gray-900 main-background">
             <nav class="border-b border-grayop-700">

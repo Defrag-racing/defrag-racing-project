@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use App\Models\PlayersRatings;
 
 class RankingController extends Controller
 {
     public function index() {
-        return Inertia::render('Ranking');
+
+        $players_ratings = PlayersRatings::query();
+
+        $players_ratings = $players_ratings->paginate(30)->withQueryString();
+
+        return Inertia::render('Ranking')
+            ->with('players_ratings', $players_ratings);
     }
 }

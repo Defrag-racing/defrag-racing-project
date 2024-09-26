@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new TournamentCalculationsJob)->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
 
         $schedule->command('tournaments:notifications-send')->everyTwoMinutes();
+
+        $schedule->command('run:calculate-ratings')->everyTwoMinutes();
     }
 
     /**

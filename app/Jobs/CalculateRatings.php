@@ -20,8 +20,8 @@ class CalculateRatings implements ShouldQueue
     const MIN_MAP_TOTAL_PARTICIPATORS = 5;
     const MIN_TOP1_TIME = 500;
     const MIN_TOP_RELTIME = 0.6;
-    const MIN_TOTAL_RECORDS = 50;
-    const ACTIVE_PLAYERS_MONTHS = 3; //keep in sync with one in RankingController.php
+    const MIN_TOTAL_RECORDS = 10;
+    const ACTIVE_PLAYERS_MONTHS = 3; // keep in sync with one in RankingController.php
     const BANNED_MAPS = ['map1', 'map2', 'map3']; // to be filled with banned map names
 
     // map score configs
@@ -34,7 +34,7 @@ class CalculateRatings implements ShouldQueue
     // player rating configs
     const CFG_D = 0.02; // growth rate for map scores weights
 
-    public $timeout = 3600;
+    public $timeout = 7200;
 
     public function handle(): void
     {

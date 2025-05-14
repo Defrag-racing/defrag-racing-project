@@ -27,7 +27,11 @@ cp -v ./local_devel/.env.local_devel .env
 cp -v ./local_devel/docker-compose.yml.local_devel docker-compose.yml
 
 # Build and start Sail
-composer update laravel/sail --no-autoloader --no-scripts
+SAIL_NO_CACHE=false
+COMPOSER_OUTPUT=$(composer update laravel/sail --no-autoloader --no-scripts 2>&1)
+if echo "$COMPOSER_OUTPUT" | grep -q "Upgrading laravel/sail"; then
+    SAIL_NO_CACHE=true
+fi
 
 # Hotfix of incompatible packages pestphp vs termwind
 # Check if required tools are installed
@@ -45,7 +49,12 @@ if [ "$CURRENT_CRC" = "$PATCH_FROM_CRC" ]; then
 fi
 
 composer dump-autoload
-./vendor/bin/sail build --no-cache
+
+if SAIL_NO_CACHE; then
+    ./vendor/bin/sail build --no-cache
+else
+    ./vendor/bin/sail build
+fi
 ./vendor/bin/sail up -d
 
 # Wait for Sail to start

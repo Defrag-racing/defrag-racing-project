@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 export function useClipboard() {
-    const state = ref(false);
+    const copyState = ref(false);
 
     const copy = (arg) => {
         const textarea = document.createElement('textarea');
@@ -10,15 +10,15 @@ export function useClipboard() {
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        state.value = true;
+        copyState.value = true;
 
         setTimeout(() => {
-            state.value = false;
+            copyState.value = false;
         }, 1000);
     };
 
     return {
         copy,
-        state,
+        copyState,
     };
 }

@@ -49,6 +49,7 @@ if [ "$CURRENT_CRC" = "$PATCH_FROM_CRC" ]; then
 fi
 
 composer dump-autoload
+composer run-script post-update-cmd
 
 if SAIL_NO_CACHE; then
     ./vendor/bin/sail build --no-cache

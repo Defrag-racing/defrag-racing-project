@@ -31,6 +31,21 @@ composer update laravel/sail
 ./vendor/bin/sail build --no-cache
 ./vendor/bin/sail up -d
 
+# Hotfix of incompatible packages pestphp vs termwind
+# Check if required tools are installed
+command -v cksum >/dev/null 2>&1 || { echo "Error: cksum is required but not installed."; exit 1; }
+command -v patch >/dev/null 2>&1 || { echo "Error: patch is required but not installed."; exit 1; }
+
+PATCH_TARGET_FILE="./vendor/nunomaduro/termwind/src/HtmlRenderer.php"
+PATCH_FILE="./local_devel/termwind_HtmlRenderer.patch"
+PATCH_FROM_CRC="3545166925"
+CURRENT_CRC=$(cksum "$TARGET_FILE" | awk '{print toupper($1)}')
+
+if [ "$CURRENT_CRC" = "$PATCH_FROM_CRC" ]; then
+    echo "Hotfixing nunomaduro/termwind..."
+    patch "$PATCH_TARGET_FILE" < "$PATCH_FILE"
+fi
+
 # Wait for Sail to start
 sleep 5
 

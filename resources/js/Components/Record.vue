@@ -2,6 +2,9 @@
     import { Link } from '@inertiajs/vue3';
     import { computed } from 'vue';
     import MapCard from './MapCard.vue';
+    import { useClipboard } from '@/Composables/useClipboard';
+
+    const { copy, copyState } = useClipboard();
 
     const props = defineProps({
         record: Object
@@ -27,7 +30,7 @@
 
 <template>
     <div>
-        <div class="flex justify-between rounded-md p-2 items-center">
+        <div class="flex justify-between rounded-md p-2 items-center group">
             <div class="mr-4 flex items-center">
                 <div class="font-bold text-white text-lg w-11">{{ record.rank }}</div>
                 <img class="h-10 w-10 rounded-full object-cover" :src="record.user?.profile_photo_path ? '/storage/' + record.user?.profile_photo_path : '/images/null.jpg'" :alt="record.user?.name ?? record.name">
@@ -59,6 +62,23 @@
                                 <Link class="flex-grow font-bold text-blue-400 hover:underline hover:text-blue-300" :href="route('maps.map', record.mapname)">
                                     <span>{{  record.mapname }}</span>
                                 </Link>
+                                <Popper :closeDelay="300" hover style="z-index: 3;" >
+                                    <div class="transition-all duration-500 ease-in-out opacity-0 group-hover:opacity-100 cursor-pointer text-gray-400 hover:text-green-500 ml-2" @click="copy(record.mapname)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 8.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v8.25A2.25 2.25 0 0 0 6 16.5h2.25m8.25-8.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-7.5A2.25 2.25 0 0 1 8.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 0 0-2.25 2.25v6" />
+                                        </svg>                      
+                                    </div>
+                            
+                            
+                                    <template #content>
+                                        <div class="copy-text px-4 py-2 rounded-md bg-blackop-80">
+                                            <div class="text-gray-400">
+                                                <span v-if="!copyState">Copy</span>
+                                                <span v-else class="text-green-400">Copied!</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </Popper>
                             </div>
                     
                     
@@ -90,3 +110,11 @@
         <hr class="my-2 text-gray-700 border-gray-700 bg-gray-700">
     </div>
 </template>
+
+<style scoped>
+.copy-text{
+    font-size: 14px;
+    font-weight: 400;
+    z-index: 999;
+}
+</style> 

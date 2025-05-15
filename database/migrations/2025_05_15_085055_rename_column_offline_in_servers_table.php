@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::table('servers', function (Blueprint $table) {
             $table->renameColumn('offline', 'online');
         });
+
+        DB::table('servers')->update([
+            'online' => DB::raw('NOT online')
+        ]);
     }
 
     /**
@@ -24,5 +28,9 @@ return new class extends Migration
         Schema::table('servers', function (Blueprint $table) {
             $table->renameColumn('online', 'offline');
         });
+
+        DB::table('servers')->update([
+            'offline' => DB::raw('NOT offline')
+        ]);
     }
 };

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ServerResource\Pages;
 use App\Filament\Resources\ServerResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListServers extends ListRecords
 {
@@ -16,4 +17,10 @@ class ListServers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getMaxContentWidth(): string | null
+    {
+        return 'full';
+    }
+
 }

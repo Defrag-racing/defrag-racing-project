@@ -13,6 +13,14 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+
 class ServerResource extends Resource
 {
     protected static ?string $model = Server::class;
@@ -25,45 +33,60 @@ class ServerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('ip')
+                TextInput::make('ip')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('port')
+                TextInput::make('port')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('location')
+                TextInput::make('location')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('type')
+                TextInput::make('type')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('admin_name')
+                TextInput::make('admin_name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('admin_contact')
+                TextInput::make('admin_contact')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('ping_url')
+                TextInput::make('ping_url')
                     ->maxLength(255),
-                Forms\Components\Toggle::make('offline')
+                Toggle::make('offline')
                     ->required(),
-                Forms\Components\Toggle::make('visible')
+                Toggle::make('visible')
                     ->required(),
-                Forms\Components\TextInput::make('map')
+                TextInput::make('map')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('defrag')
+                TextInput::make('defrag')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('defrag_gametype')
+                TextInput::make('defrag_gametype')
                     ->required()
                     ->maxLength(255)
                     ->default(5),
-                Forms\Components\TextInput::make('rconpassword')
-                    ->password()
-                    ->maxLength(255),
+                Group::make()->schema([
+                    TextInput::make('rconpassword')
+                        ->password()
+                        ->nullable()
+                        ->maxLength(255)
+                        ->helperText(function ($component) {
+                            $record = $component->getContainer()->getLivewire()->record ?? null;
+                            return ($record && !is_null($record->rconpassword))
+                                ? 'Is set.'
+                                : null;
+                        }),
+                    Toggle::make('clear_rconpassword')
+                        ->default(false)
+                        ->visible(function ($component) {
+                            $record = $component->getContainer()->getLivewire()->record ?? null;
+                            return $record && !is_null($record->rconpassword);
+                        })
+                ])
             ]);
     }
 
@@ -72,7 +95,8 @@ class ServerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->formatStateUsing(fn (string $state): string => UserResource::q3tohtml($state))->html()
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('ip')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('port')
@@ -107,6 +131,7 @@ class ServerResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('name', 'asc')
             ->filters([
                 //
             ])

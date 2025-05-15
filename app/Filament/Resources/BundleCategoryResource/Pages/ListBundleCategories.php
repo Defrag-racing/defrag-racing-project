@@ -16,4 +16,9 @@ class ListBundleCategories extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getMaxContentWidth(): string | null
+    {
+        return 'full';
+    }
 }

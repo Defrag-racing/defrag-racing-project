@@ -16,4 +16,9 @@ class ListRecords extends BaseListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getMaxContentWidth(): string | null
+    {
+        return 'full';
+    }
 }

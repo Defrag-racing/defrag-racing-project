@@ -38,6 +38,10 @@ class DefragServer
 
         $read = socket_read($this->socket, 8192);
 
+        if(empty($read)){
+            return 'Rcon not usable';
+        }
+
         while($read) {
             $data .= $read;
             $read = socket_read($this->socket, 8192);

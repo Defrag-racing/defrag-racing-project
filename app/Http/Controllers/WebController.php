@@ -27,7 +27,7 @@ class WebController extends Controller
             ->limit(3)
             ->get();
 
-        $servers = Server::where('offline', false)
+        $servers = Server::where('online', true)
             ->where('visible', true)
             ->with(['mapdata', 'onlinePlayers.spectators'])
             ->orderBy('plain_name', 'asc')

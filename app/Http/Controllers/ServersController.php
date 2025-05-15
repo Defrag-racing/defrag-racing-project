@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class ServersController extends Controller
 {
     public function index() {
-        $servers = Server::where('offline', false)
+        $servers = Server::where('online', true)
             ->where('visible', true)
             ->with(['onlinePlayers.spectators'])
             ->orderBy('plain_name', 'asc')

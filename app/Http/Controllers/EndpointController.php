@@ -8,7 +8,7 @@ use App\Models\Server;
 
 class EndpointController extends Controller {
     public function index() {
-        $servers = Server::where('offline', false)
+        $servers = Server::where('online', true)
             ->where('visible', true)
             ->with(['mapdata', 'onlinePlayers.spectators'])
             ->get();

@@ -55,7 +55,7 @@ class ServerResource extends Resource
                     ->maxLength(255),
                 TextInput::make('ping_url')
                     ->maxLength(255),
-                Toggle::make('offline')
+                Toggle::make('online')
                     ->required(),
                 Toggle::make('visible')
                     ->required(),
@@ -112,7 +112,7 @@ class ServerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('ping_url')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('offline')
+                Tables\Columns\IconColumn::make('online')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('visible')
                     ->boolean(),

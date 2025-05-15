@@ -30,7 +30,7 @@ class Server extends Model
         'admin_name',
         'admin_contact',
         'ping_url',
-        'offline',
+        'online',
         'visible',
         'map',
         'defrag',

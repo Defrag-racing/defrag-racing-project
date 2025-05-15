@@ -19,7 +19,7 @@ class ScrapeServers extends Command
      *
      * @var string
      */
-    protected $signature = 'scrape:servers {all=0}';
+    protected $signature = 'scrape:servers {offline=0}';
 
     /**
      * The console command description.
@@ -32,15 +32,9 @@ class ScrapeServers extends Command
      * Execute the console command.
      */
     public function handle() {
-        $all = ($this->argument('all') == 1) ? true : false;
+        $online = ($this->argument('offline') == 1) ? false : true;
 
-        $servers = Server::where('visible', true);
-
-        if (! $all) {
-            $servers = $servers->where('offline', false);
-        }
-
-        $servers = $servers->get();
+        $servers = Server::where('visible', true)->where('online', $online)->get();
 
         $noDataServers = [];
 
@@ -85,7 +79,7 @@ class ScrapeServers extends Command
             }
 
             if ($server['data'] === null) {
-                $server['server']->offline = true;
+                $server['server']->online = false;
                 $server['server']->save();
                 continue;
             }
@@ -108,6 +102,11 @@ class ScrapeServers extends Command
             }
 
             if ($result == 'Bad rconpassword') {
+                $this->info('Bad rconpassword ' . $server->ip . ':' . $server->port);
+                $result = $connection->getData();
+            }
+            if ($result == 'Rcon not usable') {
+                $this->info('Rcon not usable (missing rs_id ?) ' . $server->ip . ':' . $server->port);
                 $result = $connection->getData();
             }
         } catch (\Exception $e) {
@@ -130,6 +129,7 @@ class ScrapeServers extends Command
         }
     }
 
+    // there is presumtion that we got some data, therefore the server is considered online
     public function updateServer($server, $data) {
         $this->info('Updating ' . $server->ip . ':' . $server->port);
         $this->info('Found ' . count($data['players']) . ' players');
@@ -143,7 +143,7 @@ class ScrapeServers extends Command
 
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
-        $server->offline = false;
+        $server->online = true;
 
         $bestTime = Record::query()
             ->where('mapname', $server->map)
@@ -204,7 +204,7 @@ class ScrapeServers extends Command
         }
     }
 
-
+    // there is presumtion that we got some data, therefore the server is considered online
     public function updateServer2($server, $data) {
         $server->name = trim($data['hostname']);
 
@@ -215,7 +215,7 @@ class ScrapeServers extends Command
 
         $server->defrag = trim($data['defrag']);
         $server->map = strtolower(trim($data['map']));
-        $server->offline = false;
+        $server->online = true;
 
         $bestTime = Record::query()
             ->where('mapname', $server->map)

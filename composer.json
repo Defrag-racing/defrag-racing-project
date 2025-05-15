@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "aws/aws-sdk-php": "^3.297",
-        "doctrine/dbal": "^3.9",
         "filament/filament": "^3.2",
         "flowframe/laravel-trend": "^0.1.5",
         "guzzlehttp/guzzle": "^7.8",

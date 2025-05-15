@@ -1,0 +1,17 @@
+--- ./HtmlRenderer.php	2024-11-21 11:36:35.000000000 +0100
++++ ./HtmlRenderer-patched.php	2025-05-15 10:01:38.576892914 +0200
+@@ -35,7 +35,13 @@
+             return Termwind::span($html);
+         }
+ 
+-        $html = '<?xml encoding="UTF-8">'.trim($html);
++        $html = trim($html);
++
++        if(strpos($html, '<body') === false){
++            $html = '<body>'.$html.'</body>';
++        }
++
++        $html = '<?xml encoding="UTF-8">'.$html;
+         $dom->loadHTML($html, LIBXML_NOERROR | LIBXML_COMPACT | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS | LIBXML_NOXMLDECL);
+ 
+         /** @var DOMNode $body */

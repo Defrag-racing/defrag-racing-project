@@ -35,4 +35,9 @@ class IdeasBoard extends KanbanBoard
                 ])
             ];
     }
+
+    public function getMaxContentWidth(): string | null
+    {
+        return 'full';
+    }
 }

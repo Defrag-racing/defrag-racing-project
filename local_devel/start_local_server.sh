@@ -33,7 +33,7 @@ if echo "$COMPOSER_OUTPUT" | grep -q "Upgrading laravel/sail"; then
     SAIL_NO_CACHE=true
 fi
 
-./apply_patch.sh
+./local_devel/apply_patch.sh
 
 composer dump-autoload
 composer run-script post-update-cmd

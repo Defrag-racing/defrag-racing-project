@@ -296,6 +296,10 @@ class ScrapeServers extends Command
             $name = substr($name, 0, -1);
         }
 
+        if(strlen($name) > 30){
+            $name = substr($name, 0, 30) . '...';
+        }
+
         return $name;
     }
 }

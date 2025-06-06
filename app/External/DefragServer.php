@@ -64,6 +64,8 @@ class DefragServer
 
                 // Associating player info with scores directly from $data array
                 list($playerInfo, $scores) = $this->getPlayerInfo($player, $rconpass, $scores);
+
+                $players[$player['clientId']]['name'] = isset($playerInfo['name']) ? $playerInfo['name'] : $player['name'];
     
                 $players[$player['clientId']]['country'] = isset($playerInfo['tld']) ? $playerInfo['tld'] : '_404';
     

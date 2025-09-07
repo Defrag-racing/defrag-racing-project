@@ -5,7 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
-use App\Jobs\ScrapeRecords;
+use App\Jobs\GetLastMddRecords;
 use App\Jobs\TournamentCalculationsJob;
 
 class Kernel extends ConsoleKernel
@@ -14,13 +14,10 @@ class Kernel extends ConsoleKernel
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void {
-        $schedule->command('scrape:servers')->everyMinute();
-
-        $schedule->command('scrape:servers 1')->everyFiveMinutes()->runInBackground();
-
-        $schedule->job(new ScrapeRecords)->withoutOverlapping()->evenInMaintenanceMode()->everyThirtySeconds();
-
-        $schedule->command('scrape:maps')->evenInMaintenanceMode()->everyTwoMinutes();
+        // mdd scrapes...
+        $schedule->command('scrape:servers')->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
+        $schedule->job(new GetLastMddRecords)->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
+        $schedule->command('scrape:maps')->withoutOverlapping()->evenInMaintenanceMode()->everyTwoMinutes();
 
         $schedule->job(new TournamentCalculationsJob)->withoutOverlapping()->evenInMaintenanceMode()->everyMinute();
 

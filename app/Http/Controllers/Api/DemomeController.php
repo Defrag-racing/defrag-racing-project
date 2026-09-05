@@ -8,6 +8,7 @@ use App\Models\Record;
 use App\Models\UploadedDemo;
 use App\Models\SiteSetting;
 use App\Services\DemoProcessorService;
+use App\Services\JokeMaps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -1215,7 +1216,14 @@ class DemomeController extends Controller
         $skipped = [];
 
         foreach ($videos as $video) {
-            $renderable = (bool) ($video->demo_url || $video->demo_id);
+            // A blocked map is not put back in the queue. The row would sit
+            // there as `pending` for ever, because the queue skips blocked maps
+            // when it picks what to render next. Two of the first videos found
+            // gone were on `chile` and `1strank4free`, both blocked, so this is
+            // the ordinary case and not a corner of one.
+            $blocked = JokeMaps::isJoke($video->map_name, $video->physics);
+
+            $renderable = ! $blocked && ($video->demo_url || $video->demo_id);
 
             // Named, not counted. A run that resets rows has to say which rows,
             // or there is no way to tell a good pass from a bad one afterwards.
@@ -1244,9 +1252,11 @@ class DemomeController extends Controller
                 'publish_approved' => false,
                 'render_duration_seconds' => null,
                 'video_file_size' => null,
-                'failure_reason' => $renderable
-                    ? null
-                    : 'Video gone from YouTube and no demo left to render it from.',
+                'failure_reason' => match (true) {
+                    $renderable => null,
+                    $blocked => 'Video gone from YouTube. The map gets no video, so it was not queued again.',
+                    default => 'Video gone from YouTube and no demo left to render it from.',
+                },
             ]);
         }
 

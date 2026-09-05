@@ -101,10 +101,13 @@ class MapRenderBlocks extends Page
             'from' => $total ? ($page - 1) * $this->perPage + 1 : 0,
             'to' => min($total, $page * $this->perPage),
             'allowed' => collect(JokeMaps::allowed())->map(fn ($row, $key) => $row + ['key' => $key])->values(),
-            'queued' => RenderedVideo::where('status', 'pending')->get(['id', 'map_name', 'physics'])
-                ->filter(fn ($v) => JokeMaps::isJoke($v->map_name, $v->physics))->count(),
-            'rendered' => RenderedVideo::whereNotNull('youtube_video_id')->get(['id', 'map_name', 'physics'])
-                ->filter(fn ($v) => JokeMaps::isJoke($v->map_name, $v->physics))->count(),
+            // Counted in the database. Both of these read every rendered video
+            // into memory first, on every render of the page, which is tens of
+            // thousands of rows to answer with one number.
+            'queued' => RenderedVideo::where('status', 'pending')
+                ->whereRaw(self::jokeOnlySql())->count(),
+            'rendered' => RenderedVideo::whereNotNull('youtube_video_id')
+                ->whereRaw(self::jokeOnlySql())->count(),
         ];
     }
 
@@ -175,11 +178,9 @@ class MapRenderBlocks extends Page
      */
     public function cleanQueue(): void
     {
-        $ids = RenderedVideo::where('status', 'pending')->get(['id', 'map_name', 'physics'])
-            ->filter(fn ($v) => JokeMaps::isJoke($v->map_name, $v->physics))
-            ->pluck('id');
-
-        $dropped = RenderedVideo::whereIn('id', $ids)->delete();
+        $dropped = RenderedVideo::where('status', 'pending')
+            ->whereRaw(self::jokeOnlySql())
+            ->delete();
 
         Notification::make()
             ->title("Dropped {$dropped} queued render(s)")
@@ -215,6 +216,20 @@ class MapRenderBlocks extends Page
     public function updatedSearch(): void
     {
         $this->page = 1;
+    }
+
+    /** The barred maps only, the other way round from JokeMaps::excludeSql(). */
+    private static function jokeOnlySql(): string
+    {
+        $pairs = array_keys(JokeMaps::pairs());
+
+        if (! $pairs) {
+            return '1=0';
+        }
+
+        $quoted = implode(',', array_map(fn ($pair) => \Illuminate\Support\Facades\DB::getPdo()->quote($pair), $pairs));
+
+        return "CONCAT(LOWER(map_name), '|', LOWER(physics)) IN ({$quoted})";
     }
 
     /** @return array{0: string, 1: string} */

@@ -139,7 +139,7 @@
                             <a class="mrb-map" href="https://defrag.racing/maps/{{ urlencode($row['map']) }}" target="_blank" rel="noopener">{{ $row['map'] }}</a>
                             <div class="mrb-physics" style="font-size: .75rem;">{{ $row['physics'] }}</div>
                         </div>
-                        <x-filament::button wire:click="revoke('{{ $row['key'] }}')" color="gray" size="xs">
+                        <x-filament::button wire:click="revoke({{ \Illuminate\Support\Js::from($row['key']) }})" color="gray" size="xs">
                             Undo
                         </x-filament::button>
                     </div>
@@ -215,11 +215,11 @@
                                 </td>
                                 <td style="text-align: right;">
                                     @if($row['source'] === 'admin')
-                                        <x-filament::button wire:click="revoke('{{ $row['key'] }}')" color="gray" size="xs">
+                                        <x-filament::button wire:click="revoke({{ \Illuminate\Support\Js::from($row['key']) }})" color="gray" size="xs">
                                             Unblock
                                         </x-filament::button>
                                     @else
-                                        <x-filament::button wire:click="allow('{{ $row['key'] }}')" color="success" size="xs">
+                                        <x-filament::button wire:click="allow({{ \Illuminate\Support\Js::from($row['key']) }})" color="success" size="xs">
                                             Render anyway
                                         </x-filament::button>
                                     @endif

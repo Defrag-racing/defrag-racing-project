@@ -299,6 +299,12 @@ class JokeMaps
     public static function forget(): void
     {
         Cache::forget(self::CACHE_KEY);
+
+        // The playlist panel counts are worked out from this list and kept for
+        // ten minutes. Without this, blocking a map left that panel showing
+        // the old numbers and no amount of reloading changed them, which reads
+        // as the block having done nothing.
+        Cache::forget('demome:control_playlist_buttons');
     }
 
     private static function key(string $mapName, string $physics, string $mode): string

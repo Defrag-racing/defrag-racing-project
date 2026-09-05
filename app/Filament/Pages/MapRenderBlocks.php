@@ -29,11 +29,11 @@ class MapRenderBlocks extends Page
 
     protected static string $view = 'filament.pages.map-render-blocks';
 
-    public string $tiedLimit = '3';
+    public string $tiedLimit = '';
 
-    public string $shortLimit = '2';
+    public string $shortLimit = '';
 
-    public string $shortMs = '1000';
+    public string $shortMs = '';
 
     public string $search = '';
 
@@ -59,6 +59,15 @@ class MapRenderBlocks extends Page
 
     public function getViewData(): array
     {
+        // Seeded here and not only in mount(). Whatever emptied these boxes -
+        // a re-render Livewire started on its own, a state round trip that
+        // dropped them - mount() only runs once and could not put them back,
+        // and the page then reads as though no rule is set at all. This runs on
+        // every render, so a blank box is filled before it can be shown.
+        $this->tiedLimit = $this->tiedLimit !== '' ? $this->tiedLimit : (string) JokeMaps::limit();
+        $this->shortLimit = $this->shortLimit !== '' ? $this->shortLimit : (string) JokeMaps::shortLimit();
+        $this->shortMs = $this->shortMs !== '' ? $this->shortMs : (string) JokeMaps::shortMs();
+
         $blocked = collect(JokeMaps::detail())
             ->map(fn ($row, $key) => $row + ['key' => $key])
             ->values();

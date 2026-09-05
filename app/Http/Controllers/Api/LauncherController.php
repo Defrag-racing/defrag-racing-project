@@ -727,6 +727,14 @@ class LauncherController extends Controller
             ], 429);
         }
 
+        // A map that plays itself is worth no render. Same rule the automatic
+        // queue uses, so a person cannot ask for what the queue would refuse.
+        if (\App\Services\JokeMaps::isJoke($demo->map_name, $demo->physics)) {
+            return response()->json([
+                'error' => 'This map is not eligible for rendering: too many players share its record time.',
+            ], 422);
+        }
+
         $demoUrl = config('app.url') . "/api/demome/download-demo/{$demo->id}";
 
         $video = RenderedVideo::create([

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\RenderedVideo;
 use App\Models\YoutubePlaylist;
 use App\Services\Comps\MapClassifier;
+use App\Services\JokeMaps;
 use App\Services\Comps\MapEligibilityTagger;
 use Illuminate\Support\Facades\DB;
 
@@ -249,6 +250,12 @@ class YoutubePlaylistService
                     }
 
                     if ($row->map_id !== null && ($barred[$row->map_id] ?? null) === $physics) {
+                        continue;
+                    }
+
+                    // A playlist of the fastest run on each map has no use for
+                    // a map where a hundred people share the fastest run.
+                    if (JokeMaps::isJoke($row->map_name, $physics)) {
                         continue;
                     }
 

@@ -1211,37 +1211,52 @@ class DemomeController extends Controller
 
         $videos = RenderedVideo::whereIn('youtube_video_id', $data['youtube_video_ids'])->get();
 
-        $requeued = 0;
+        $requeued = [];
         $skipped = [];
 
         foreach ($videos as $video) {
-            // No demo, nothing to render from. Cleared anyway, because the
-            // link is dead either way, but said out loud rather than counted
-            // as work done.
-            if (! $video->demo_url && ! $video->demo_id) {
-                $skipped[] = $video->youtube_video_id;
+            $renderable = (bool) ($video->demo_url || $video->demo_id);
+
+            // Named, not counted. A run that resets rows has to say which rows,
+            // or there is no way to tell a good pass from a bad one afterwards.
+            $named = [
+                'id' => $video->id,
+                'youtube_video_id' => $video->youtube_video_id,
+                'map' => $video->map_name,
+                'player' => $video->player_name,
+                'physics' => $video->physics,
+                'time_ms' => $video->time_ms,
+            ];
+
+            if ($renderable) {
+                $requeued[] = $named;
+            } else {
+                // No demo, nothing to render from. Cleared anyway, because the
+                // link is dead either way.
+                $skipped[] = $named;
             }
 
             $video->update([
-                'status' => ($video->demo_url || $video->demo_id) ? 'pending' : 'failed',
+                'status' => $renderable ? 'pending' : 'failed',
                 'youtube_video_id' => null,
                 'youtube_url' => null,
                 'published_at' => null,
                 'publish_approved' => false,
                 'render_duration_seconds' => null,
                 'video_file_size' => null,
-                'failure_reason' => ($video->demo_url || $video->demo_id)
+                'failure_reason' => $renderable
                     ? null
                     : 'Video gone from YouTube and no demo left to render it from.',
             ]);
-
-            $requeued++;
         }
 
         return response()->json([
-            'requeued' => $requeued - count($skipped),
+            'requeued' => $requeued,
             'no_demo' => $skipped,
-            'not_found' => count($data['youtube_video_ids']) - $videos->count(),
+            'not_found' => array_values(array_diff(
+                $data['youtube_video_ids'],
+                $videos->pluck('youtube_video_id')->all()
+            )),
         ]);
     }
 

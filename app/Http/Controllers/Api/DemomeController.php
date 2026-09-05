@@ -1104,12 +1104,20 @@ class DemomeController extends Controller
      * and the bot has to see the entire list before it can work out what to
      * add and what to take out.
      */
-    public function playlistsToSync()
+    public function playlistsToSync(Request $request)
     {
         $service = new \App\Services\YoutubePlaylistService();
         $definitions = $service->definitions();
 
-        $playlists = \App\Models\YoutubePlaylist::where('sync_queued', true)->orderBy('key')->get();
+        // `?all=1` hands back every playlist that has been created, queued or
+        // not. The recovery pass needs the full wanted list to compare against
+        // what YouTube actually holds, and a finished playlist has already
+        // left the queue.
+        $playlists = \App\Models\YoutubePlaylist::query()
+            ->when(! $request->boolean('all'), fn ($q) => $q->where('sync_queued', true))
+            ->when($request->boolean('all'), fn ($q) => $q->whereNotNull('youtube_playlist_id'))
+            ->orderBy('key')
+            ->get();
 
         $out = [];
 
@@ -1176,6 +1184,65 @@ class DemomeController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Put a video back in the render queue because YouTube no longer has it.
+     *
+     * Everything YouTube gave us is cleared: the id, the url and the published
+     * date. Leaving the id on the row would keep the site pointing at a video
+     * nobody can open, and would keep the playlists trying to add it.
+     *
+     * The demo stays, and it is the whole point - the row goes back to pending
+     * with the demo it was made from, so the bot renders it again from scratch.
+     *
+     * The caller must have checked with videos.list first. One 404 from an
+     * insert is not proof: the API answers nothing for a video that is fine
+     * often enough that youtubeweb.py waits for five in a row before it
+     * believes it, and a reset on a single refusal would re-render thousands
+     * of videos that are sitting on the channel.
+     */
+    public function videoGone(Request $request)
+    {
+        $data = $request->validate([
+            'youtube_video_ids' => 'required|array|max:500',
+            'youtube_video_ids.*' => 'string|max:20',
+        ]);
+
+        $videos = RenderedVideo::whereIn('youtube_video_id', $data['youtube_video_ids'])->get();
+
+        $requeued = 0;
+        $skipped = [];
+
+        foreach ($videos as $video) {
+            // No demo, nothing to render from. Cleared anyway, because the
+            // link is dead either way, but said out loud rather than counted
+            // as work done.
+            if (! $video->demo_url && ! $video->demo_id) {
+                $skipped[] = $video->youtube_video_id;
+            }
+
+            $video->update([
+                'status' => ($video->demo_url || $video->demo_id) ? 'pending' : 'failed',
+                'youtube_video_id' => null,
+                'youtube_url' => null,
+                'published_at' => null,
+                'publish_approved' => false,
+                'render_duration_seconds' => null,
+                'video_file_size' => null,
+                'failure_reason' => ($video->demo_url || $video->demo_id)
+                    ? null
+                    : 'Video gone from YouTube and no demo left to render it from.',
+            ]);
+
+            $requeued++;
+        }
+
+        return response()->json([
+            'requeued' => $requeued - count($skipped),
+            'no_demo' => $skipped,
+            'not_found' => count($data['youtube_video_ids']) - $videos->count(),
+        ]);
     }
 
     public function publishCountsToday()

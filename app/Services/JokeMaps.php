@@ -39,28 +39,43 @@ use Illuminate\Support\Facades\DB;
  */
 class JokeMaps
 {
+    /** The ordinary defrag record. The rest of the column is fastcap. */
+    public const MODE = 'run';
+
     private const CACHE_KEY = 'demome:joke_map_pairs';
 
     /** An hour. The records behind this move slowly and a stale answer for a
      *  few minutes only means one more or one fewer video. */
     private const CACHE_TTL = 3600;
 
-    /** Tied players that make a map a joke whatever the time is. */
+    /**
+     * Players sharing the record, for the main test. Their time must also be
+     * under maxMs().
+     */
     public static function limit(): int
     {
         return max(2, (int) SiteSetting::get('demome:tied_wr_limit', 3));
     }
 
-    /** Tied players that make a map a joke when the time is also absurd. */
-    public static function shortLimit(): int
+    /** The time the main test will not look past, in ms. */
+    public static function maxMs(): int
     {
-        return max(2, (int) SiteSetting::get('demome:tied_wr_short_limit', 2));
+        return max(0, (int) SiteSetting::get('demome:tied_wr_max_ms', 1000));
     }
 
-    /** The time below which nobody is really running anything, in ms. */
-    public static function shortMs(): int
+    /**
+     * Players sharing the record with no time test at all. Off by default.
+     *
+     * A map with a long record is left alone however many people are on it,
+     * which is the whole point of the time: the list is meant to be maps that
+     * finish in a moment. `run-afk` hands the same 56 minutes to everyone who
+     * loads it and is not caught, and that is on purpose. Raise this above 0
+     * only to go after maps of that shape, and expect to check what it takes
+     * with it.
+     */
+    public static function crowdLimit(): int
     {
-        return max(0, (int) SiteSetting::get('demome:tied_wr_short_ms', 1000));
+        return max(0, (int) SiteSetting::get('demome:tied_wr_crowd_limit', 0));
     }
 
     /**
@@ -83,43 +98,49 @@ class JokeMaps
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
             $limit = self::limit();
-            $shortLimit = self::shortLimit();
-            $shortMs = self::shortMs();
+            $maxMs = self::maxMs();
+            $crowd = self::crowdLimit();
 
             // The map's best time per physics, then how many people are on it.
             // Counted by mdd_id, because the same person holding two rows must
             // not read as two people.
+            // Every leaderboard on its own: a map's ctf2 record is not its
+            // record, and people sharing one say nothing about the others.
             $best = DB::table('records')
                 ->whereNull('deleted_at')
-                ->selectRaw('mapname, physics, MIN(time) as t')
-                ->groupBy('mapname', 'physics');
+                ->selectRaw('mapname, physics, mode, MIN(time) as t')
+                ->groupBy('mapname', 'physics', 'mode');
 
-            // Either test is enough, and neither covers the other. A handful of
-            // people on an eight millisecond record is a map that finishes the
-            // moment you spawn. A crowd on an ordinary looking time is a map
-            // that runs itself more slowly: `run-afk` is 56 minutes with thirty
-            // people on it and `gvn_jumppad` 10.2 seconds with nineteen, so a
-            // time test on its own would wave both of those through.
+            // Either test is enough. The main one is a count and a time
+            // together, so a map with a long record is left alone however many
+            // people are on it. The second has no time at all and exists only
+            // for the maps that hand the same long time to everyone; its count
+            // is set high enough that no real map comes near it, and 0 turns it
+            // off completely.
             $rows = DB::table('records as r')
                 ->whereNull('r.deleted_at')
                 ->joinSub($best, 'b', fn ($join) => $join
                     ->on('b.mapname', '=', 'r.mapname')
                     ->on('b.physics', '=', 'r.physics')
+                    ->on('b.mode', '=', 'r.mode')
                     ->on('b.t', '=', 'r.time'))
-                ->selectRaw('r.mapname, r.physics, r.time, COUNT(DISTINCT r.mdd_id) as players')
-                ->groupBy('r.mapname', 'r.physics', 'r.time')
+                ->selectRaw('r.mapname, r.physics, r.mode, r.time, COUNT(DISTINCT r.mdd_id) as players')
+                ->groupBy('r.mapname', 'r.physics', 'r.mode', 'r.time')
                 ->havingRaw(
-                    'COUNT(DISTINCT r.mdd_id) >= ? OR (COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?)',
-                    [$limit, $shortLimit, $shortMs]
+                    $crowd > 0
+                        ? '(COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?) OR COUNT(DISTINCT r.mdd_id) >= ?'
+                        : '(COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?) AND ? > 0',
+                    [$limit, $maxMs, $crowd > 0 ? $crowd : 1]
                 )
                 ->get();
 
             $out = [];
 
             foreach ($rows as $row) {
-                $out[self::key($row->mapname, $row->physics)] = [
+                $out[self::key($row->mapname, $row->physics, $row->mode)] = [
                     'map' => $row->mapname,
                     'physics' => $row->physics,
+                    'mode' => $row->mode,
                     'time' => (int) $row->time,
                     'players' => (int) $row->players,
                     'source' => 'rule',
@@ -133,7 +154,7 @@ class JokeMaps
             // first place can sit just under the bar. Moving the number to fix
             // one map moves every other map with it.
             foreach (MapRenderOverride::all() as $override) {
-                $key = self::key($override->map_name, $override->physics);
+                $key = self::key($override->map_name, $override->physics, $override->gamemode ?: self::MODE);
 
                 if ($override->mode === MapRenderOverride::ALLOW) {
                     unset($out[$key]);
@@ -144,6 +165,7 @@ class JokeMaps
                 $out[$key] = [
                     'map' => $override->map_name,
                     'physics' => $override->physics,
+                    'mode' => $override->gamemode ?: self::MODE,
                     'time' => $out[$key]['time'] ?? 0,
                     'players' => $out[$key]['players'] ?? 0,
                     'source' => 'admin',
@@ -177,13 +199,53 @@ class JokeMaps
         return $out;
     }
 
+    /**
+     * A stored physics string split into the physics and the leaderboard it
+     * belongs to.
+     *
+     * `CPM` and `VQ3` are ordinary runs. `CPM.TR` is still an ordinary run,
+     * only recorded under the timereset ruleset. A number after the dot is a
+     * fastcap, and the number is which CTF mode: `VQ3.2` is vq3 ctf2, which is
+     * its own leaderboard with its own record.
+     *
+     * Getting this wrong is what put `ut_zomg` on the blocked list. Its three
+     * CTF modes were read as one, the smallest time across all of them became
+     * its "record", and four people who share a ctf2 time were counted as four
+     * people sharing the map's record. The site shows its real vq3 record as
+     * 0.344s held by one person.
+     *
+     * @return array{0: string, 1: string}|null physics and mode, or null
+     */
+    public static function readPhysics(?string $stored): ?array
+    {
+        $parts = explode('.', strtolower(trim((string) $stored)));
+        $physics = $parts[0] ?? '';
+
+        if (! in_array($physics, ['cpm', 'vq3'], true)) {
+            return null;
+        }
+
+        $suffix = $parts[1] ?? '';
+
+        return [$physics, ctype_digit($suffix) ? 'ctf' . (int) $suffix : self::MODE];
+    }
+
+    /**
+     * @param  string|null  $physics  as stored, so `CPM`, `VQ3.TR` or `CPM.2`
+     */
     public static function isJoke(?string $mapName, ?string $physics): bool
     {
-        if (! $mapName || ! $physics) {
+        if (! $mapName) {
             return false;
         }
 
-        return isset(self::pairs()[self::key($mapName, $physics)]);
+        $read = self::readPhysics($physics);
+
+        if ($read === null) {
+            return false;
+        }
+
+        return isset(self::pairs()[self::key($mapName, $read[0], $read[1])]);
     }
 
     /**
@@ -207,7 +269,23 @@ class JokeMaps
 
         $quoted = implode(',', array_map(fn ($pair) => DB::getPdo()->quote($pair), $pairs));
 
-        return "CONCAT(LOWER({$mapColumn}), '|', LOWER({$physicsColumn})) NOT IN ({$quoted})";
+        return self::keySql($mapColumn, $physicsColumn) . " NOT IN ({$quoted})";
+    }
+
+    /**
+     * The same key readPhysics() makes, built in SQL from a stored physics
+     * string: `CPM` and `CPM.TR` are runs, `CPM.2` is ctf2.
+     */
+    public static function keySql(string $mapColumn, string $physicsColumn): string
+    {
+        $suffix = "SUBSTRING_INDEX({$physicsColumn}, '.', -1)";
+
+        return "CONCAT("
+            . "LOWER({$mapColumn}), '|', "
+            . "LOWER(SUBSTRING_INDEX({$physicsColumn}, '.', 1)), '|', "
+            . "CASE WHEN {$physicsColumn} LIKE '%.%' AND {$suffix} REGEXP '^[0-9]+$' "
+            . "THEN CONCAT('ctf', CAST({$suffix} AS UNSIGNED)) ELSE '" . self::MODE . "' END"
+            . ")";
     }
 
     public static function forget(): void
@@ -215,9 +293,9 @@ class JokeMaps
         Cache::forget(self::CACHE_KEY);
     }
 
-    private static function key(string $mapName, string $physics): string
+    private static function key(string $mapName, string $physics, string $mode): string
     {
         // `CPM` on rendered_videos, `cpm` on records. Same map either way.
-        return strtolower(trim($mapName)) . '|' . strtolower(trim($physics));
+        return strtolower(trim($mapName)) . '|' . strtolower(trim($physics)) . '|' . strtolower(trim($mode));
     }
 }

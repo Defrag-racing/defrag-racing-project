@@ -31,9 +31,9 @@ class MapRenderBlocks extends Page
 
     public string $tiedLimit = '';
 
-    public string $shortLimit = '';
+    public string $maxMs = '';
 
-    public string $shortMs = '';
+    public string $crowdLimit = '';
 
     public string $search = '';
 
@@ -53,8 +53,8 @@ class MapRenderBlocks extends Page
     public function mount(): void
     {
         $this->tiedLimit = (string) JokeMaps::limit();
-        $this->shortLimit = (string) JokeMaps::shortLimit();
-        $this->shortMs = (string) JokeMaps::shortMs();
+        $this->maxMs = (string) JokeMaps::maxMs();
+        $this->crowdLimit = (string) JokeMaps::crowdLimit();
     }
 
     public function getViewData(): array
@@ -65,8 +65,8 @@ class MapRenderBlocks extends Page
         // and the page then reads as though no rule is set at all. This runs on
         // every render, so a blank box is filled before it can be shown.
         $this->tiedLimit = $this->tiedLimit !== '' ? $this->tiedLimit : (string) JokeMaps::limit();
-        $this->shortLimit = $this->shortLimit !== '' ? $this->shortLimit : (string) JokeMaps::shortLimit();
-        $this->shortMs = $this->shortMs !== '' ? $this->shortMs : (string) JokeMaps::shortMs();
+        $this->maxMs = $this->maxMs !== '' ? $this->maxMs : (string) JokeMaps::maxMs();
+        $this->crowdLimit = $this->crowdLimit !== '' ? $this->crowdLimit : (string) JokeMaps::crowdLimit();
 
         $blocked = collect(JokeMaps::detail())
             ->map(fn ($row, $key) => $row + ['key' => $key])
@@ -114,8 +114,8 @@ class MapRenderBlocks extends Page
     public function saveLimits(): void
     {
         SiteSetting::set('demome:tied_wr_limit', (string) max(2, (int) $this->tiedLimit));
-        SiteSetting::set('demome:tied_wr_short_limit', (string) max(2, (int) $this->shortLimit));
-        SiteSetting::set('demome:tied_wr_short_ms', (string) max(0, (int) $this->shortMs));
+        SiteSetting::set('demome:tied_wr_max_ms', (string) max(0, (int) $this->maxMs));
+        SiteSetting::set('demome:tied_wr_crowd_limit', (string) max(0, (int) $this->crowdLimit));
         JokeMaps::forget();
 
         $this->mount();

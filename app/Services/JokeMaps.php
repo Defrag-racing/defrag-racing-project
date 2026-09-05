@@ -45,22 +45,34 @@ class JokeMaps
      *  few minutes only means one more or one fewer video. */
     private const CACHE_TTL = 3600;
 
-    /** Tied players that make a map a joke whatever the time is. */
+    /**
+     * Players sharing the record, for the main test. Their time must also be
+     * under maxMs().
+     */
     public static function limit(): int
     {
         return max(2, (int) SiteSetting::get('demome:tied_wr_limit', 3));
     }
 
-    /** Tied players that make a map a joke when the time is also absurd. */
-    public static function shortLimit(): int
+    /** The time the main test will not look past, in ms. */
+    public static function maxMs(): int
     {
-        return max(2, (int) SiteSetting::get('demome:tied_wr_short_limit', 2));
+        return max(0, (int) SiteSetting::get('demome:tied_wr_max_ms', 1000));
     }
 
-    /** The time below which nobody is really running anything, in ms. */
-    public static function shortMs(): int
+    /**
+     * Players sharing the record with no time test at all. Off by default.
+     *
+     * A map with a long record is left alone however many people are on it,
+     * which is the whole point of the time: the list is meant to be maps that
+     * finish in a moment. `run-afk` hands the same 56 minutes to everyone who
+     * loads it and is not caught, and that is on purpose. Raise this above 0
+     * only to go after maps of that shape, and expect to check what it takes
+     * with it.
+     */
+    public static function crowdLimit(): int
     {
-        return max(0, (int) SiteSetting::get('demome:tied_wr_short_ms', 1000));
+        return max(0, (int) SiteSetting::get('demome:tied_wr_crowd_limit', 0));
     }
 
     /**
@@ -83,8 +95,8 @@ class JokeMaps
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
             $limit = self::limit();
-            $shortLimit = self::shortLimit();
-            $shortMs = self::shortMs();
+            $maxMs = self::maxMs();
+            $crowd = self::crowdLimit();
 
             // The map's best time per physics, then how many people are on it.
             // Counted by mdd_id, because the same person holding two rows must
@@ -94,12 +106,12 @@ class JokeMaps
                 ->selectRaw('mapname, physics, MIN(time) as t')
                 ->groupBy('mapname', 'physics');
 
-            // Either test is enough, and neither covers the other. A handful of
-            // people on an eight millisecond record is a map that finishes the
-            // moment you spawn. A crowd on an ordinary looking time is a map
-            // that runs itself more slowly: `run-afk` is 56 minutes with thirty
-            // people on it and `gvn_jumppad` 10.2 seconds with nineteen, so a
-            // time test on its own would wave both of those through.
+            // Either test is enough. The main one is a count and a time
+            // together, so a map with a long record is left alone however many
+            // people are on it. The second has no time at all and exists only
+            // for the maps that hand the same long time to everyone; its count
+            // is set high enough that no real map comes near it, and 0 turns it
+            // off completely.
             $rows = DB::table('records as r')
                 ->whereNull('r.deleted_at')
                 ->joinSub($best, 'b', fn ($join) => $join
@@ -109,8 +121,10 @@ class JokeMaps
                 ->selectRaw('r.mapname, r.physics, r.time, COUNT(DISTINCT r.mdd_id) as players')
                 ->groupBy('r.mapname', 'r.physics', 'r.time')
                 ->havingRaw(
-                    'COUNT(DISTINCT r.mdd_id) >= ? OR (COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?)',
-                    [$limit, $shortLimit, $shortMs]
+                    $crowd > 0
+                        ? '(COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?) OR COUNT(DISTINCT r.mdd_id) >= ?'
+                        : '(COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?) AND ? > 0',
+                    [$limit, $maxMs, $crowd > 0 ? $crowd : 1]
                 )
                 ->get();
 

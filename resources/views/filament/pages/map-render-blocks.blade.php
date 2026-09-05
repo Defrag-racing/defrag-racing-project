@@ -69,16 +69,18 @@
              the rule did with them. --}}
         <p class="mrb-rule">
             A map gets no video when
-            <span class="mrb-strong">{{ (int) $this->tiedLimit }}</span> or more players share its record time,
-            or when
-            <span class="mrb-strong">{{ (int) $this->shortLimit }}</span> or more share it
-            and that time is under
-            <span class="mrb-strong">{{ number_format((int) $this->shortMs / 1000, 3) }}s</span>.
+            <span class="mrb-strong">{{ (int) $this->tiedLimit }}</span> or more players share its record time
+            <span class="mrb-strong">and that time is under {{ number_format((int) $this->maxMs / 1000, 3) }}s</span>.
+            @if((int) $this->crowdLimit > 0)
+                It also gets none when <span class="mrb-strong">{{ (int) $this->crowdLimit }}</span> or more
+                players share it, however long the time is.
+            @endif
         </p>
         <p class="mrb-hint" style="margin-bottom: 1rem;">
             CPM and VQ3 are counted apart. Nothing is deleted: the map keeps its page, its records
             and its demos. It stops getting videos rendered and stays out of the YouTube playlists.
-            <strong>stumpf</strong> is here because 133 people all finish it in 0.008s.
+            The second test exists for <strong>run-afk</strong>, which hands the same 56 minutes to
+            all thirty people who have finished it. Set it to 0 to switch it off.
         </p>
 
         <div class="mrb-grid">
@@ -87,21 +89,21 @@
                 <x-filament::input.wrapper>
                     <x-filament::input type="number" min="2" wire:model.live.debounce.500ms="tiedLimit" />
                 </x-filament::input.wrapper>
-                <p class="mrb-hint">The first number in the sentence. Any time counts.</p>
+                <p class="mrb-hint">The main test.</p>
             </div>
             <div class="mrb-field">
-                <label class="mrb-label">Players, when the time is silly</label>
+                <label class="mrb-label">...and the time is under (ms)</label>
                 <x-filament::input.wrapper>
-                    <x-filament::input type="number" min="2" wire:model.live.debounce.500ms="shortLimit" />
+                    <x-filament::input type="number" min="0" step="100" wire:model.live.debounce.500ms="maxMs" />
                 </x-filament::input.wrapper>
-                <p class="mrb-hint">The second number. Fewer people are enough.</p>
+                <p class="mrb-hint">1000 is one second. A longer record is left alone.</p>
             </div>
             <div class="mrb-field">
-                <label class="mrb-label">A silly time is under (ms)</label>
+                <label class="mrb-label">Or this many players, any time</label>
                 <x-filament::input.wrapper>
-                    <x-filament::input type="number" min="0" step="100" wire:model.live.debounce.500ms="shortMs" />
+                    <x-filament::input type="number" min="0" wire:model.live.debounce.500ms="crowdLimit" />
                 </x-filament::input.wrapper>
-                <p class="mrb-hint">1000 is one second. Nobody runs anything that fast.</p>
+                <p class="mrb-hint">For run-afk and its kind. 0 switches it off.</p>
             </div>
             <div class="mrb-field">
                 <x-filament::button wire:click="saveLimits" icon="heroicon-o-check">

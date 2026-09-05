@@ -21,6 +21,9 @@
         font-size: .875rem; color: #374151;
     }
     .mrb-strong { font-weight: 700; color: #111827; }
+    .mrb-rule { font-size: 1rem; line-height: 1.6; color: #374151; margin-bottom: .5rem; }
+    .mrb-sort { cursor: pointer; user-select: none; background: none; border: 0; padding: 0; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; }
+    .mrb-sort:hover { color: #2563eb; }
     .mrb-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
     .mrb-table th {
         text-align: left; padding: .5rem .75rem .5rem 0; font-size: .6875rem;
@@ -50,6 +53,8 @@
     .dark .mrb-input { background: #1f2937; border-color: #4b5563; color: #f9fafb; }
     .dark .mrb-note { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); color: #d1d5db; }
     .dark .mrb-strong { color: #fff; }
+    .dark .mrb-rule { color: #d1d5db; }
+    .dark .mrb-sort:hover { color: #60a5fa; }
     .dark .mrb-table th { color: #9ca3af; border-bottom-color: rgba(255,255,255,.1); }
     .dark .mrb-table td { color: #d1d5db; border-bottom-color: rgba(255,255,255,.06); }
     .dark .mrb-map { color: #60a5fa; }
@@ -60,27 +65,40 @@
 <x-filament-panels::page>
 
     <x-filament::section>
-        <x-slot name="heading">When a map gets no video</x-slot>
-        <x-slot name="description">
-            Either test is enough. Nothing is deleted: the map keeps its page, its records and its demos.
-            It stops getting videos rendered, and it stays out of the YouTube playlists.
-        </x-slot>
+        <x-slot name="heading">The rule</x-slot>
+
+        {{-- The whole rule as one sentence with the live numbers in it. Three
+             labelled boxes said what each number was called and never said what
+             the rule did with them. --}}
+        <p class="mrb-rule">
+            A map gets no video when
+            <span class="mrb-strong">{{ (int) $this->tiedLimit }}</span> or more players share its record time,
+            or when
+            <span class="mrb-strong">{{ (int) $this->shortLimit }}</span> or more share it
+            and that time is under
+            <span class="mrb-strong">{{ number_format((int) $this->shortMs / 1000, 3) }}s</span>.
+        </p>
+        <p class="mrb-hint" style="margin-bottom: 1rem;">
+            CPM and VQ3 are counted apart. Nothing is deleted: the map keeps its page, its records
+            and its demos. It stops getting videos rendered and stays out of the YouTube playlists.
+            <strong>stumpf</strong> is here because 133 people all finish it in 0.008s.
+        </p>
 
         <div class="mrb-grid">
             <div class="mrb-field">
-                <label class="mrb-label">Players on one time</label>
-                <input type="number" min="2" wire:model="tiedLimit" class="mrb-input">
-                <p class="mrb-hint">At any time. This is the main test.</p>
+                <label class="mrb-label">Players sharing the record</label>
+                <input type="number" min="2" wire:model.live="tiedLimit" class="mrb-input">
+                <p class="mrb-hint">The first number in the sentence. Any time counts.</p>
             </div>
             <div class="mrb-field">
-                <label class="mrb-label">Players, short time</label>
-                <input type="number" min="2" wire:model="shortLimit" class="mrb-input">
-                <p class="mrb-hint">Fewer are enough when the time is absurd.</p>
+                <label class="mrb-label">Players, when the time is silly</label>
+                <input type="number" min="2" wire:model.live="shortLimit" class="mrb-input">
+                <p class="mrb-hint">The second number. Fewer people are enough.</p>
             </div>
             <div class="mrb-field">
-                <label class="mrb-label">Short time is under (ms)</label>
-                <input type="number" min="0" step="100" wire:model="shortMs" class="mrb-input">
-                <p class="mrb-hint">Nobody runs anything in under a second.</p>
+                <label class="mrb-label">A silly time is under (ms)</label>
+                <input type="number" min="0" step="100" wire:model.live="shortMs" class="mrb-input">
+                <p class="mrb-hint">1000 is one second. Nobody runs anything that fast.</p>
             </div>
             <div class="mrb-field">
                 <x-filament::button wire:click="saveLimits" icon="heroicon-o-check">
@@ -160,11 +178,14 @@
             <div class="mrb-scroll">
                 <table class="mrb-table">
                     <thead>
+                        @php
+                            $arrow = fn ($col) => $this->sort === $col ? ($this->direction === 'asc' ? ' &uarr;' : ' &darr;') : '';
+                        @endphp
                         <tr>
-                            <th>Map</th>
-                            <th>Physics</th>
-                            <th class="mrb-num">Players on the time</th>
-                            <th class="mrb-num">Record time</th>
+                            <th><button type="button" class="mrb-sort" wire:click="sortBy('map')">Map{!! $arrow('map') !!}</button></th>
+                            <th><button type="button" class="mrb-sort" wire:click="sortBy('physics')">Physics{!! $arrow('physics') !!}</button></th>
+                            <th class="mrb-num"><button type="button" class="mrb-sort" wire:click="sortBy('players')">Players on the time{!! $arrow('players') !!}</button></th>
+                            <th class="mrb-num"><button type="button" class="mrb-sort" wire:click="sortBy('time')">Record time{!! $arrow('time') !!}</button></th>
                             <th>Why</th>
                             <th></th>
                         </tr>
@@ -202,7 +223,7 @@
 
             @if($pages > 1)
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
-                    <span class="mrb-hint">Page {{ $page }} of {{ $pages }}</span>
+                    <span class="mrb-hint">Showing {{ $from }} to {{ $to }} of {{ number_format($blocked_total) }} &middot; page {{ $page }} of {{ $pages }}</span>
                     <div style="display: flex; gap: .5rem;">
                         <x-filament::button wire:click="goToPage({{ $page - 1 }})" :disabled="$page <= 1" color="gray" size="sm">
                             Back

@@ -10,11 +10,6 @@
     .mrb-field { display: block; }
     .mrb-label { display: block; font-size: .8125rem; font-weight: 600; margin-bottom: .25rem; color: #374151; }
     .mrb-hint { margin-top: .25rem; font-size: .75rem; color: #6b7280; }
-    .mrb-input {
-        width: 100%; padding: .5rem .75rem; border-radius: .5rem;
-        border: 1px solid #d1d5db; background: #fff; color: #111827; font-size: .875rem;
-    }
-    .mrb-input:focus { outline: 2px solid #f59e0b; outline-offset: -1px; }
     .mrb-note {
         margin-top: 1rem; padding: .75rem; border-radius: .5rem;
         background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.08);
@@ -50,7 +45,6 @@
     }
     .dark .mrb-label { color: #d1d5db; }
     .dark .mrb-hint, .dark .mrb-why, .dark .mrb-physics { color: #9ca3af; }
-    .dark .mrb-input { background: #1f2937; border-color: #4b5563; color: #f9fafb; }
     .dark .mrb-note { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); color: #d1d5db; }
     .dark .mrb-strong { color: #fff; }
     .dark .mrb-rule { color: #d1d5db; }
@@ -87,17 +81,23 @@
         <div class="mrb-grid">
             <div class="mrb-field">
                 <label class="mrb-label">Players sharing the record</label>
-                <input type="number" min="2" wire:model.live="tiedLimit" class="mrb-input">
+                <x-filament::input.wrapper>
+                    <x-filament::input type="number" min="2" wire:model.live.debounce.500ms="tiedLimit" />
+                </x-filament::input.wrapper>
                 <p class="mrb-hint">The first number in the sentence. Any time counts.</p>
             </div>
             <div class="mrb-field">
                 <label class="mrb-label">Players, when the time is silly</label>
-                <input type="number" min="2" wire:model.live="shortLimit" class="mrb-input">
+                <x-filament::input.wrapper>
+                    <x-filament::input type="number" min="2" wire:model.live.debounce.500ms="shortLimit" />
+                </x-filament::input.wrapper>
                 <p class="mrb-hint">The second number. Fewer people are enough.</p>
             </div>
             <div class="mrb-field">
                 <label class="mrb-label">A silly time is under (ms)</label>
-                <input type="number" min="0" step="100" wire:model.live="shortMs" class="mrb-input">
+                <x-filament::input.wrapper>
+                    <x-filament::input type="number" min="0" step="100" wire:model.live.debounce.500ms="shortMs" />
+                </x-filament::input.wrapper>
                 <p class="mrb-hint">1000 is one second. Nobody runs anything that fast.</p>
             </div>
             <div class="mrb-field">
@@ -155,16 +155,22 @@
         <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: .75rem; margin-bottom: 1rem;">
             <div class="mrb-field" style="flex: 1 1 220px;">
                 <label class="mrb-label">Find a map</label>
-                <input type="text" wire:model.live.debounce.400ms="search" placeholder="map name" class="mrb-input">
+                <x-filament::input.wrapper>
+                    <x-filament::input type="text" wire:model.live.debounce.400ms="search" placeholder="map name" />
+                </x-filament::input.wrapper>
             </div>
             <div class="mrb-field">
                 <label class="mrb-label">Block one by hand</label>
                 <div style="display: flex; gap: .5rem;">
-                    <input type="text" wire:model="newMap" placeholder="map name" class="mrb-input" style="width: 12rem;">
-                    <select wire:model="newPhysics" class="mrb-input" style="width: 6rem;">
-                        <option value="cpm">cpm</option>
-                        <option value="vq3">vq3</option>
-                    </select>
+                    <x-filament::input.wrapper style="width: 12rem;">
+                        <x-filament::input type="text" wire:model="newMap" placeholder="map name" />
+                    </x-filament::input.wrapper>
+                    <x-filament::input.wrapper style="width: 7rem;">
+                        <x-filament::input.select wire:model="newPhysics">
+                            <option value="cpm">cpm</option>
+                            <option value="vq3">vq3</option>
+                        </x-filament::input.select>
+                    </x-filament::input.wrapper>
                     <x-filament::button wire:click="block" color="danger" icon="heroicon-o-no-symbol">
                         Block
                     </x-filament::button>

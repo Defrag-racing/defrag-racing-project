@@ -1,62 +1,65 @@
 {{--
-    Every style on this page is written out below rather than put on the
-    elements as Tailwind classes. Tailwind does not scan app/ or these views,
-    so a class like `bg-gray-800` here compiles to nothing: the first version
-    of this page had white text in white boxes and links that did not look like
-    links. Filament's own components keep their own styling and are used
-    wherever one exists.
---}}
-<style>
-    .mrb-field { display: block; }
-    .mrb-label { display: block; font-size: .8125rem; font-weight: 600; margin-bottom: .25rem; color: #374151; }
-    .mrb-hint { margin-top: .25rem; font-size: .75rem; color: #6b7280; }
-    .mrb-note {
-        margin-top: 1rem; padding: .75rem; border-radius: .5rem;
-        background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.08);
-        font-size: .875rem; color: #374151;
-    }
-    .mrb-strong { font-weight: 700; color: #111827; }
-    .mrb-rule { font-size: 1rem; line-height: 1.6; color: #374151; margin-bottom: .5rem; }
-    .mrb-sort { cursor: pointer; user-select: none; background: none; border: 0; padding: 0; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; }
-    .mrb-sort:hover { color: #2563eb; }
-    .mrb-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
-    .mrb-table th {
-        text-align: left; padding: .5rem .75rem .5rem 0; font-size: .6875rem;
-        text-transform: uppercase; letter-spacing: .05em; color: #6b7280;
-        border-bottom: 1px solid rgba(0,0,0,.1); white-space: nowrap;
-    }
-    .mrb-table td { padding: .5rem .75rem .5rem 0; border-bottom: 1px solid rgba(0,0,0,.06); color: #374151; }
-    .mrb-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .mrb-map { color: #2563eb; text-decoration: underline; font-weight: 600; }
-    .mrb-map:hover { color: #1d4ed8; }
-    .mrb-physics { text-transform: uppercase; color: #6b7280; }
-    .mrb-why { font-size: .75rem; color: #6b7280; }
-    .mrb-row {
-        display: flex; align-items: center; justify-content: space-between; gap: .5rem;
-        padding: .5rem .75rem; border-radius: .5rem;
-        background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.08);
-    }
-    .mrb-scroll { overflow-x: auto; }
-    .mrb-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
-    .mrb-cards { display: grid; gap: .5rem; grid-template-columns: 1fr; }
-    @media (min-width: 768px) {
-        .mrb-grid { grid-template-columns: repeat(4, 1fr); align-items: end; }
-        .mrb-cards { grid-template-columns: repeat(3, 1fr); }
-    }
-    .dark .mrb-label { color: #d1d5db; }
-    .dark .mrb-hint, .dark .mrb-why, .dark .mrb-physics { color: #9ca3af; }
-    .dark .mrb-note { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); color: #d1d5db; }
-    .dark .mrb-strong { color: #fff; }
-    .dark .mrb-rule { color: #d1d5db; }
-    .dark .mrb-sort:hover { color: #60a5fa; }
-    .dark .mrb-table th { color: #9ca3af; border-bottom-color: rgba(255,255,255,.1); }
-    .dark .mrb-table td { color: #d1d5db; border-bottom-color: rgba(255,255,255,.06); }
-    .dark .mrb-map { color: #60a5fa; }
-    .dark .mrb-map:hover { color: #93c5fd; }
-    .dark .mrb-row { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); }
-</style>
+    The stylesheet is INSIDE the page component, not before it. A Livewire
+    component must have one root element, and a <style> tag sitting beside that
+    root broke every wire:click on the page at once: no button did anything,
+    paging included, with nothing in the console to say why.
 
+    The styles are written out rather than put on elements as Tailwind classes
+    because Tailwind does not scan app/ or these views, so `bg-gray-800` here
+    compiles to nothing. Filament's own components carry their own styling and
+    are used wherever one exists.
+--}}
 <x-filament-panels::page>
+
+    <style>
+        .mrb-field { display: block; }
+        .mrb-label { display: block; font-size: .8125rem; font-weight: 600; margin-bottom: .25rem; color: #374151; }
+        .mrb-hint { margin-top: .25rem; font-size: .75rem; color: #6b7280; }
+        .mrb-note {
+            margin-top: 1rem; padding: .75rem; border-radius: .5rem;
+            background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.08);
+            font-size: .875rem; color: #374151;
+        }
+        .mrb-strong { font-weight: 700; color: #111827; }
+        .mrb-rule { font-size: 1rem; line-height: 1.6; color: #374151; margin-bottom: .5rem; }
+        .mrb-sort { cursor: pointer; user-select: none; background: none; border: 0; padding: 0; font: inherit; color: inherit; text-transform: inherit; letter-spacing: inherit; }
+        .mrb-sort:hover { color: #2563eb; }
+        .mrb-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+        .mrb-table th {
+            text-align: left; padding: .5rem .75rem .5rem 0; font-size: .6875rem;
+            text-transform: uppercase; letter-spacing: .05em; color: #6b7280;
+            border-bottom: 1px solid rgba(0,0,0,.1); white-space: nowrap;
+        }
+        .mrb-table td { padding: .5rem .75rem .5rem 0; border-bottom: 1px solid rgba(0,0,0,.06); color: #374151; }
+        .mrb-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .mrb-map { color: #2563eb; text-decoration: underline; font-weight: 600; }
+        .mrb-map:hover { color: #1d4ed8; }
+        .mrb-physics { text-transform: uppercase; color: #6b7280; }
+        .mrb-why { font-size: .75rem; color: #6b7280; }
+        .mrb-row {
+            display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+            padding: .5rem .75rem; border-radius: .5rem;
+            background: rgba(0,0,0,.03); border: 1px solid rgba(0,0,0,.08);
+        }
+        .mrb-scroll { overflow-x: auto; }
+        .mrb-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+        .mrb-cards { display: grid; gap: .5rem; grid-template-columns: 1fr; }
+        @media (min-width: 768px) {
+            .mrb-grid { grid-template-columns: repeat(4, 1fr); align-items: end; }
+            .mrb-cards { grid-template-columns: repeat(3, 1fr); }
+        }
+        .dark .mrb-label { color: #d1d5db; }
+        .dark .mrb-hint, .dark .mrb-why, .dark .mrb-physics { color: #9ca3af; }
+        .dark .mrb-note { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); color: #d1d5db; }
+        .dark .mrb-strong { color: #fff; }
+        .dark .mrb-rule { color: #d1d5db; }
+        .dark .mrb-sort:hover { color: #60a5fa; }
+        .dark .mrb-table th { color: #9ca3af; border-bottom-color: rgba(255,255,255,.1); }
+        .dark .mrb-table td { color: #d1d5db; border-bottom-color: rgba(255,255,255,.06); }
+        .dark .mrb-map { color: #60a5fa; }
+        .dark .mrb-map:hover { color: #93c5fd; }
+        .dark .mrb-row { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.1); }
+    </style>
 
     <x-filament::section>
         <x-slot name="heading">The rule</x-slot>

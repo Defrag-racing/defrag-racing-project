@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\MapRenderOverride;
 use App\Models\SiteSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -69,6 +70,17 @@ class JokeMaps
      */
     public static function pairs(): array
     {
+        return array_map(fn () => true, self::detail());
+    }
+
+    /**
+     * The same, with why: how many players are tied and on what time, and
+     * whether a person put it there or took the rule's word for it.
+     *
+     * @return array<string, array{map: string, physics: string, time: int, players: int, source: string, note: ?string}>
+     */
+    public static function detail(): array
+    {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
             $limit = self::limit();
             $shortLimit = self::shortLimit();
@@ -94,7 +106,7 @@ class JokeMaps
                     ->on('b.mapname', '=', 'r.mapname')
                     ->on('b.physics', '=', 'r.physics')
                     ->on('b.t', '=', 'r.time'))
-                ->selectRaw('r.mapname, r.physics')
+                ->selectRaw('r.mapname, r.physics, r.time, COUNT(DISTINCT r.mdd_id) as players')
                 ->groupBy('r.mapname', 'r.physics', 'r.time')
                 ->havingRaw(
                     'COUNT(DISTINCT r.mdd_id) >= ? OR (COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?)',
@@ -105,11 +117,64 @@ class JokeMaps
             $out = [];
 
             foreach ($rows as $row) {
-                $out[self::key($row->mapname, $row->physics)] = true;
+                $out[self::key($row->mapname, $row->physics)] = [
+                    'map' => $row->mapname,
+                    'physics' => $row->physics,
+                    'time' => (int) $row->time,
+                    'players' => (int) $row->players,
+                    'source' => 'rule',
+                    'note' => null,
+                ];
+            }
+
+            // A person's decision beats the count, in both directions. The rule
+            // reads a number and a number is wrong both ways: a hard map can
+            // end up with three people on one time, and a map built to hand out
+            // first place can sit just under the bar. Moving the number to fix
+            // one map moves every other map with it.
+            foreach (MapRenderOverride::all() as $override) {
+                $key = self::key($override->map_name, $override->physics);
+
+                if ($override->mode === MapRenderOverride::ALLOW) {
+                    unset($out[$key]);
+
+                    continue;
+                }
+
+                $out[$key] = [
+                    'map' => $override->map_name,
+                    'physics' => $override->physics,
+                    'time' => $out[$key]['time'] ?? 0,
+                    'players' => $out[$key]['players'] ?? 0,
+                    'source' => 'admin',
+                    'note' => $override->note,
+                ];
             }
 
             return $out;
         });
+    }
+
+    /**
+     * Maps the rule caught that a person has let through. Shown in the admin
+     * beside the barred ones, or an override becomes invisible the moment it
+     * works.
+     *
+     * @return array<string, array{map: string, physics: string, note: ?string}>
+     */
+    public static function allowed(): array
+    {
+        $out = [];
+
+        foreach (MapRenderOverride::where('mode', MapRenderOverride::ALLOW)->get() as $override) {
+            $out[self::key($override->map_name, $override->physics)] = [
+                'map' => $override->map_name,
+                'physics' => $override->physics,
+                'note' => $override->note,
+            ];
+        }
+
+        return $out;
     }
 
     public static function isJoke(?string $mapName, ?string $physics): bool

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\RenderedVideo;
 use App\Models\UploadedDemo;
+use App\Services\JokeMaps;
 use Illuminate\Support\Facades\DB;
 
 class RenderQueueService
@@ -122,9 +123,13 @@ class RenderQueueService
      */
     private static function autoEligibleSql(string $d): string
     {
+        // A map that plays itself is worth no video whatever the demo says
+        // about it, so the bar sits here beside the queue rules rather than
+        // being remembered at each of the seven places that make a row.
         return "EXISTS (SELECT 1 FROM demos_top_ranks dtr"
             . " WHERE dtr.uploaded_demo_id = {$d}.id"
-            . " AND dtr.auto_render_eligible = 1)";
+            . " AND dtr.auto_render_eligible = 1)"
+            . " AND " . JokeMaps::excludeSql("{$d}.map_name", "{$d}.physics");
     }
 
     /**

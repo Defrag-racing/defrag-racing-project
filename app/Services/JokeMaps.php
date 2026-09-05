@@ -39,6 +39,9 @@ use Illuminate\Support\Facades\DB;
  */
 class JokeMaps
 {
+    /** The ordinary defrag record. The rest of the column is fastcap. */
+    public const MODE = 'run';
+
     private const CACHE_KEY = 'demome:joke_map_pairs';
 
     /** An hour. The records behind this move slowly and a stale answer for a
@@ -101,10 +104,12 @@ class JokeMaps
             // The map's best time per physics, then how many people are on it.
             // Counted by mdd_id, because the same person holding two rows must
             // not read as two people.
+            // Every leaderboard on its own: a map's ctf2 record is not its
+            // record, and people sharing one say nothing about the others.
             $best = DB::table('records')
                 ->whereNull('deleted_at')
-                ->selectRaw('mapname, physics, MIN(time) as t')
-                ->groupBy('mapname', 'physics');
+                ->selectRaw('mapname, physics, mode, MIN(time) as t')
+                ->groupBy('mapname', 'physics', 'mode');
 
             // Either test is enough. The main one is a count and a time
             // together, so a map with a long record is left alone however many
@@ -117,9 +122,10 @@ class JokeMaps
                 ->joinSub($best, 'b', fn ($join) => $join
                     ->on('b.mapname', '=', 'r.mapname')
                     ->on('b.physics', '=', 'r.physics')
+                    ->on('b.mode', '=', 'r.mode')
                     ->on('b.t', '=', 'r.time'))
-                ->selectRaw('r.mapname, r.physics, r.time, COUNT(DISTINCT r.mdd_id) as players')
-                ->groupBy('r.mapname', 'r.physics', 'r.time')
+                ->selectRaw('r.mapname, r.physics, r.mode, r.time, COUNT(DISTINCT r.mdd_id) as players')
+                ->groupBy('r.mapname', 'r.physics', 'r.mode', 'r.time')
                 ->havingRaw(
                     $crowd > 0
                         ? '(COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?) OR COUNT(DISTINCT r.mdd_id) >= ?'
@@ -131,9 +137,10 @@ class JokeMaps
             $out = [];
 
             foreach ($rows as $row) {
-                $out[self::key($row->mapname, $row->physics)] = [
+                $out[self::key($row->mapname, $row->physics, $row->mode)] = [
                     'map' => $row->mapname,
                     'physics' => $row->physics,
+                    'mode' => $row->mode,
                     'time' => (int) $row->time,
                     'players' => (int) $row->players,
                     'source' => 'rule',
@@ -147,7 +154,7 @@ class JokeMaps
             // first place can sit just under the bar. Moving the number to fix
             // one map moves every other map with it.
             foreach (MapRenderOverride::all() as $override) {
-                $key = self::key($override->map_name, $override->physics);
+                $key = self::key($override->map_name, $override->physics, $override->gamemode ?: self::MODE);
 
                 if ($override->mode === MapRenderOverride::ALLOW) {
                     unset($out[$key]);
@@ -158,6 +165,7 @@ class JokeMaps
                 $out[$key] = [
                     'map' => $override->map_name,
                     'physics' => $override->physics,
+                    'mode' => $override->gamemode ?: self::MODE,
                     'time' => $out[$key]['time'] ?? 0,
                     'players' => $out[$key]['players'] ?? 0,
                     'source' => 'admin',
@@ -191,13 +199,53 @@ class JokeMaps
         return $out;
     }
 
+    /**
+     * A stored physics string split into the physics and the leaderboard it
+     * belongs to.
+     *
+     * `CPM` and `VQ3` are ordinary runs. `CPM.TR` is still an ordinary run,
+     * only recorded under the timereset ruleset. A number after the dot is a
+     * fastcap, and the number is which CTF mode: `VQ3.2` is vq3 ctf2, which is
+     * its own leaderboard with its own record.
+     *
+     * Getting this wrong is what put `ut_zomg` on the blocked list. Its three
+     * CTF modes were read as one, the smallest time across all of them became
+     * its "record", and four people who share a ctf2 time were counted as four
+     * people sharing the map's record. The site shows its real vq3 record as
+     * 0.344s held by one person.
+     *
+     * @return array{0: string, 1: string}|null physics and mode, or null
+     */
+    public static function readPhysics(?string $stored): ?array
+    {
+        $parts = explode('.', strtolower(trim((string) $stored)));
+        $physics = $parts[0] ?? '';
+
+        if (! in_array($physics, ['cpm', 'vq3'], true)) {
+            return null;
+        }
+
+        $suffix = $parts[1] ?? '';
+
+        return [$physics, ctype_digit($suffix) ? 'ctf' . (int) $suffix : self::MODE];
+    }
+
+    /**
+     * @param  string|null  $physics  as stored, so `CPM`, `VQ3.TR` or `CPM.2`
+     */
     public static function isJoke(?string $mapName, ?string $physics): bool
     {
-        if (! $mapName || ! $physics) {
+        if (! $mapName) {
             return false;
         }
 
-        return isset(self::pairs()[self::key($mapName, $physics)]);
+        $read = self::readPhysics($physics);
+
+        if ($read === null) {
+            return false;
+        }
+
+        return isset(self::pairs()[self::key($mapName, $read[0], $read[1])]);
     }
 
     /**
@@ -221,7 +269,23 @@ class JokeMaps
 
         $quoted = implode(',', array_map(fn ($pair) => DB::getPdo()->quote($pair), $pairs));
 
-        return "CONCAT(LOWER({$mapColumn}), '|', LOWER({$physicsColumn})) NOT IN ({$quoted})";
+        return self::keySql($mapColumn, $physicsColumn) . " NOT IN ({$quoted})";
+    }
+
+    /**
+     * The same key readPhysics() makes, built in SQL from a stored physics
+     * string: `CPM` and `CPM.TR` are runs, `CPM.2` is ctf2.
+     */
+    public static function keySql(string $mapColumn, string $physicsColumn): string
+    {
+        $suffix = "SUBSTRING_INDEX({$physicsColumn}, '.', -1)";
+
+        return "CONCAT("
+            . "LOWER({$mapColumn}), '|', "
+            . "LOWER(SUBSTRING_INDEX({$physicsColumn}, '.', 1)), '|', "
+            . "CASE WHEN {$physicsColumn} LIKE '%.%' AND {$suffix} REGEXP '^[0-9]+$' "
+            . "THEN CONCAT('ctf', CAST({$suffix} AS UNSIGNED)) ELSE '" . self::MODE . "' END"
+            . ")";
     }
 
     public static function forget(): void
@@ -229,9 +293,9 @@ class JokeMaps
         Cache::forget(self::CACHE_KEY);
     }
 
-    private static function key(string $mapName, string $physics): string
+    private static function key(string $mapName, string $physics, string $mode): string
     {
         // `CPM` on rendered_videos, `cpm` on records. Same map either way.
-        return strtolower(trim($mapName)) . '|' . strtolower(trim($physics));
+        return strtolower(trim($mapName)) . '|' . strtolower(trim($physics)) . '|' . strtolower(trim($mode));
     }
 }

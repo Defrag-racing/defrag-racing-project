@@ -92,6 +92,16 @@ class YoutubePlaylistService
 
         $split('combo', 'Combo', 'Style');
 
+        // Fastcaps are a different game on the same geometry: capture the flag
+        // against the clock, scored on its own leaderboard per CTF mode. They
+        // have no business among ordinary runs, and each mode has its own
+        // record, so each gets its own shelf.
+        $split('fastcap', 'Fastcaps', 'Fastcaps');
+
+        for ($ctf = 1; $ctf <= 7; $ctf++) {
+            $split('fastcap_ctf' . $ctf, 'Fastcaps CTF' . $ctf, 'Fastcaps');
+        }
+
         foreach (self::TIME_BUCKETS as $bucket) {
             $out['time_' . $bucket['key']] = [
                 'title' => self::PREFIX . $bucket['title'],
@@ -241,13 +251,16 @@ class YoutubePlaylistService
             ->orderBy('rendered_videos.id')
             ->chunk(2000, function ($rows) use (&$out, $classifier, $strafeTagged) {
                 foreach ($rows as $row) {
-                    // `CPM.TR`, `vq3-fastcap`: only the first word is the
-                    // physics, the rest says which ruleset the run was under.
-                    $physics = strtolower((string) preg_split('/[.\-_ ]/', (string) $row->physics)[0]);
+                    // `CPM`, `CPM.TR` and `CPM.2` are three different things:
+                    // the last is a ctf2 fastcap, its own leaderboard with its
+                    // own record, and it belongs in its own playlist.
+                    $read = JokeMaps::readPhysics($row->physics);
 
-                    if (! in_array($physics, ['cpm', 'vq3'], true)) {
+                    if ($read === null) {
                         continue;
                     }
+
+                    [$physics, $mode] = $read;
 
                     if ($row->map_id !== null && ($barred[$row->map_id] ?? null) === $physics) {
                         continue;
@@ -255,7 +268,7 @@ class YoutubePlaylistService
 
                     // A playlist of the fastest run on each map has no use for
                     // a map where a hundred people share the fastest run.
-                    if (JokeMaps::isJoke($row->map_name, $physics)) {
+                    if (JokeMaps::isJoke($row->map_name, $row->physics)) {
                         continue;
                     }
 
@@ -268,6 +281,7 @@ class YoutubePlaylistService
                         'id' => (int) $row->id,
                         'map' => (string) $row->map_name,
                         'physics' => $physics,
+                        'mode' => $mode,
                         'time_ms' => (int) $row->time_ms,
                         'tier' => (int) $row->quality_tier,
                         'category' => $verdict['category'],
@@ -286,6 +300,19 @@ class YoutubePlaylistService
         }
 
         $base = preg_replace('/_(cpm|vq3)$/', '', $key);
+
+        $isFastcap = str_starts_with($base, 'fastcap');
+
+        // A fastcap never appears in a playlist of runs and a run never in a
+        // playlist of fastcaps. Nothing else below has to know they exist.
+        if ($isFastcap !== ($video['mode'] !== JokeMaps::MODE)) {
+            return false;
+        }
+
+        if ($isFastcap) {
+            // `fastcap` takes every mode, `fastcap_ctf2` only that one.
+            return $base === 'fastcap' || $video['mode'] === substr($base, strlen('fastcap_'));
+        }
 
         if ($base === 'wr') {
             return $video['tier'] === \App\Services\RenderQueueService::TIER_ONLINE_WR;
@@ -336,7 +363,7 @@ class YoutubePlaylistService
         $best = [];
 
         foreach ($videos as $video) {
-            $slot = $video['map'] . '|' . $video['physics'];
+            $slot = $video['map'] . '|' . $video['physics'] . '|' . $video['mode'];
             $held = $best[$slot] ?? null;
 
             if ($held === null

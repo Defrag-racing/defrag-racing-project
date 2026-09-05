@@ -50,6 +50,9 @@ class MapRenderBlocks extends Page
 
     public string $newPhysics = 'cpm';
 
+    /** run, or ctf1 to ctf7 for a fastcap leaderboard. */
+    public string $newMode = 'run';
+
     public function mount(): void
     {
         $this->tiedLimit = (string) JokeMaps::limit();
@@ -79,7 +82,7 @@ class MapRenderBlocks extends Page
 
         // Worst first by default: the more people on one time, the less of a
         // run it is. Any column can be sorted from its header.
-        $key = in_array($this->sort, ['map', 'physics', 'players', 'time'], true) ? $this->sort : 'players';
+        $key = in_array($this->sort, ['map', 'physics', 'mode', 'players', 'time'], true) ? $this->sort : 'players';
         $blocked = $this->direction === 'asc'
             ? $blocked->sortBy($key, SORT_NATURAL | SORT_FLAG_CASE)->values()
             : $blocked->sortByDesc($key, SORT_NATURAL | SORT_FLAG_CASE)->values();
@@ -126,10 +129,10 @@ class MapRenderBlocks extends Page
     /** Render this map after all, whatever the count says. */
     public function allow(string $key): void
     {
-        [$map, $physics] = $this->split($key);
+        [$map, $physics, $gamemode] = $this->split($key);
 
         MapRenderOverride::updateOrCreate(
-            ['map_name' => $map, 'physics' => $physics],
+            ['map_name' => $map, 'physics' => $physics, 'gamemode' => $gamemode],
             ['mode' => MapRenderOverride::ALLOW, 'created_by' => auth()->id()]
         );
 
@@ -150,7 +153,7 @@ class MapRenderBlocks extends Page
         }
 
         MapRenderOverride::updateOrCreate(
-            ['map_name' => $map, 'physics' => strtolower($this->newPhysics)],
+            ['map_name' => $map, 'physics' => strtolower($this->newPhysics), 'gamemode' => $this->newMode],
             ['mode' => MapRenderOverride::BLOCK, 'created_by' => auth()->id()]
         );
 
@@ -163,9 +166,10 @@ class MapRenderBlocks extends Page
     /** Undo a decision made here, and let the rule speak again. */
     public function revoke(string $key): void
     {
-        [$map, $physics] = $this->split($key);
+        [$map, $physics, $gamemode] = $this->split($key);
 
-        MapRenderOverride::where('map_name', $map)->where('physics', $physics)->delete();
+        MapRenderOverride::where('map_name', $map)->where('physics', $physics)
+            ->where('gamemode', $gamemode)->delete();
         JokeMaps::forget();
 
         Notification::make()->title("{$map} ({$physics}) follows the rule again")->success()->send();
@@ -197,7 +201,7 @@ class MapRenderBlocks extends Page
     /** Press a header once to sort by it, again to turn it round. */
     public function sortBy(string $column): void
     {
-        if (! in_array($column, ['map', 'physics', 'players', 'time'], true)) {
+        if (! in_array($column, ['map', 'physics', 'mode', 'players', 'time'], true)) {
             return;
         }
 
@@ -229,14 +233,14 @@ class MapRenderBlocks extends Page
 
         $quoted = implode(',', array_map(fn ($pair) => \Illuminate\Support\Facades\DB::getPdo()->quote($pair), $pairs));
 
-        return "CONCAT(LOWER(map_name), '|', LOWER(physics)) IN ({$quoted})";
+        return JokeMaps::keySql('map_name', 'physics') . " IN ({$quoted})";
     }
 
-    /** @return array{0: string, 1: string} */
+    /** @return array{0: string, 1: string, 2: string} */
     private function split(string $key): array
     {
-        $parts = explode('|', $key, 2);
+        $parts = explode('|', $key, 3);
 
-        return [$parts[0] ?? '', $parts[1] ?? ''];
+        return [$parts[0] ?? '', $parts[1] ?? '', $parts[2] ?? 'run'];
     }
 }

@@ -77,7 +77,8 @@
             @endif
         </p>
         <p class="mrb-hint" style="margin-bottom: 1rem;">
-            CPM and VQ3 are counted apart. Nothing is deleted: the map keeps its page, its records
+            Every leaderboard is counted on its own: CPM apart from VQ3, and each fastcap
+            mode apart from ordinary runs. A map's ctf2 record is not its record. Nothing is deleted: the map keeps its page, its records
             and its demos. It stops getting videos rendered and stays out of the YouTube playlists.
             The second test exists for <strong>run-afk</strong>, which hands the same 56 minutes to
             all thirty people who have finished it. Set it to 0 to switch it off.
@@ -139,7 +140,7 @@
                     <div class="mrb-row">
                         <div style="min-width: 0;">
                             <a class="mrb-map" href="https://defrag.racing/maps/{{ urlencode($row['map']) }}" target="_blank" rel="noopener">{{ $row['map'] }}</a>
-                            <div class="mrb-physics" style="font-size: .75rem;">{{ $row['physics'] }}</div>
+                            <div class="mrb-physics" style="font-size: .75rem;">{{ $row['physics'] }} {{ $row['mode'] ?? 'run' }}</div>
                         </div>
                         <x-filament::button wire:click="revoke({{ \Illuminate\Support\Js::from($row['key']) }})" color="gray" size="xs">
                             Undo
@@ -170,10 +171,18 @@
                     <x-filament::input.wrapper style="width: 12rem;">
                         <x-filament::input type="text" wire:model="newMap" placeholder="map name" />
                     </x-filament::input.wrapper>
-                    <x-filament::input.wrapper style="width: 7rem;">
+                    <x-filament::input.wrapper style="width: 6rem;">
                         <x-filament::input.select wire:model="newPhysics">
                             <option value="cpm">cpm</option>
                             <option value="vq3">vq3</option>
+                        </x-filament::input.select>
+                    </x-filament::input.wrapper>
+                    <x-filament::input.wrapper style="width: 7rem;">
+                        <x-filament::input.select wire:model="newMode">
+                            <option value="run">run</option>
+                            @for($m = 1; $m <= 7; $m++)
+                                <option value="ctf{{ $m }}">ctf{{ $m }} (fastcap)</option>
+                            @endfor
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
                     <x-filament::button wire:click="block" color="danger" icon="heroicon-o-no-symbol">
@@ -195,6 +204,7 @@
                         <tr>
                             <th><button type="button" class="mrb-sort" wire:click="sortBy('map')">Map{!! $arrow('map') !!}</button></th>
                             <th><button type="button" class="mrb-sort" wire:click="sortBy('physics')">Physics{!! $arrow('physics') !!}</button></th>
+                            <th><button type="button" class="mrb-sort" wire:click="sortBy('mode')">Mode{!! $arrow('mode') !!}</button></th>
                             <th class="mrb-num"><button type="button" class="mrb-sort" wire:click="sortBy('players')">Players on the time{!! $arrow('players') !!}</button></th>
                             <th class="mrb-num"><button type="button" class="mrb-sort" wire:click="sortBy('time')">Record time{!! $arrow('time') !!}</button></th>
                             <th>Why</th>
@@ -209,6 +219,7 @@
                                        target="_blank" rel="noopener">{{ $row['map'] }}</a>
                                 </td>
                                 <td class="mrb-physics">{{ $row['physics'] }}</td>
+                                <td class="mrb-physics">{{ $row['mode'] ?? 'run' }}</td>
                                 <td class="mrb-num">{{ $row['players'] ?: '-' }}</td>
                                 <td class="mrb-num">{{ $row['time'] ? number_format($row['time'] / 1000, 3) . 's' : '-' }}</td>
                                 <td class="mrb-why">

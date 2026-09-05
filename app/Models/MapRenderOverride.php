@@ -9,7 +9,7 @@ class MapRenderOverride extends Model
     public const ALLOW = 'allow';
     public const BLOCK = 'block';
 
-    protected $fillable = ['map_name', 'physics', 'mode', 'note', 'created_by'];
+    protected $fillable = ['map_name', 'physics', 'mode', 'gamemode', 'note', 'created_by'];
 
     public function author()
     {

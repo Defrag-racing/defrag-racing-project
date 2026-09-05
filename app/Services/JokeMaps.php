@@ -182,16 +182,24 @@ class JokeMaps
      * beside the barred ones, or an override becomes invisible the moment it
      * works.
      *
-     * @return array<string, array{map: string, physics: string, note: ?string}>
+     * @return array<string, array{map: string, physics: string, mode: string, note: ?string}>
      */
     public static function allowed(): array
     {
         $out = [];
 
         foreach (MapRenderOverride::where('mode', MapRenderOverride::ALLOW)->get() as $override) {
-            $out[self::key($override->map_name, $override->physics)] = [
+            // The leaderboard belongs in the key, the same as everywhere else.
+            // Leaving it out took the third argument off a call that has no
+            // default for it, and the page died the moment the first override
+            // existed - and only then, because until one does this loop never
+            // runs. It also made a key Undo could not split back apart.
+            $mode = $override->gamemode ?: self::MODE;
+
+            $out[self::key($override->map_name, $override->physics, $mode)] = [
                 'map' => $override->map_name,
                 'physics' => $override->physics,
+                'mode' => $mode,
                 'note' => $override->note,
             ];
         }

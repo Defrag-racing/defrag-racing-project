@@ -49,6 +49,11 @@ class Kernel extends ConsoleKernel
         // Cache WR/Top3 counts for clan statistics (updates cached_wr_count and cached_top3_count on users table)
         $schedule->command('rankings:cache')->withoutOverlapping()->hourly();
 
+        // More often than the counts are kept for, so the Demome Control page
+        // always finds them ready. They take about nine seconds to work out
+        // and the page used to pay that itself.
+        $schedule->command('demome:warm-control')->withoutOverlapping()->everyFifteenMinutes();
+
         // Check Twitch live status every 2 minutes
         $schedule->command('twitch:check-live-status')->withoutOverlapping()->everyTwoMinutes();
 

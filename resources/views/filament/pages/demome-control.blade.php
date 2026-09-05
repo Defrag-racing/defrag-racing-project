@@ -229,6 +229,13 @@
                 </x-filament::button>
             @endif
 
+            {{-- The counts below are kept for ten minutes, and the blocked map
+                 list they depend on is changed on another page. After blocking
+                 a map, press this. --}}
+            <x-filament::button wire:click="refreshPlaylistCounts" color="gray" icon="heroicon-o-arrow-path">
+                Recount
+            </x-filament::button>
+
             <a href="https://console.cloud.google.com/apis/api/youtube.googleapis.com/quotas"
                target="_blank" rel="noopener"
                class="text-sm text-primary-400 hover:text-primary-300 underline">

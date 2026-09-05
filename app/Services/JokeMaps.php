@@ -15,10 +15,19 @@ use Illuminate\Support\Facades\DB;
  * machine time for a video of nobody doing anything, and putting them in a
  * playlist of fastest runs makes the playlist a joke too.
  *
- * The test is how many people hold the map's best time in one physics. Nothing
- * else was needed: `gvn_jumppad` has a perfectly ordinary looking 10.2 seconds
- * and nineteen people on it, so a time threshold would have let it through
- * while the count catches it.
+ * Two tests, and either is enough.
+ *
+ * Three or more people on the same record time in one physics. Times step in
+ * 8ms at 125fps, so a tie is not impossible on a short map, but three people
+ * landing on the same one is already the mark of a map with a single fixed
+ * outcome rather than a run.
+ *
+ * Or two people, when the time is under a second. Nobody runs anything in
+ * under a second; a record like that is the map handing it to you.
+ *
+ * A time test alone would not do. `run-afk` is 56 minutes with thirty people
+ * on it and `gvn_jumppad` 10.2 seconds with nineteen, and both play
+ * themselves.
  *
  * Not `rank`. Ties there are numbered 1, 2, 3 and so on rather than all being
  * 1, so counting rank 1 finds 23 of these maps and misses 72 - stumpf, the
@@ -35,9 +44,22 @@ class JokeMaps
      *  few minutes only means one more or one fewer video. */
     private const CACHE_TTL = 3600;
 
+    /** Tied players that make a map a joke whatever the time is. */
     public static function limit(): int
     {
-        return max(2, (int) SiteSetting::get('demome:tied_wr_limit', 10));
+        return max(2, (int) SiteSetting::get('demome:tied_wr_limit', 3));
+    }
+
+    /** Tied players that make a map a joke when the time is also absurd. */
+    public static function shortLimit(): int
+    {
+        return max(2, (int) SiteSetting::get('demome:tied_wr_short_limit', 2));
+    }
+
+    /** The time below which nobody is really running anything, in ms. */
+    public static function shortMs(): int
+    {
+        return max(0, (int) SiteSetting::get('demome:tied_wr_short_ms', 1000));
     }
 
     /**
@@ -49,6 +71,8 @@ class JokeMaps
     {
         return Cache::remember(self::CACHE_KEY, self::CACHE_TTL, function () {
             $limit = self::limit();
+            $shortLimit = self::shortLimit();
+            $shortMs = self::shortMs();
 
             // The map's best time per physics, then how many people are on it.
             // Counted by mdd_id, because the same person holding two rows must
@@ -58,6 +82,12 @@ class JokeMaps
                 ->selectRaw('mapname, physics, MIN(time) as t')
                 ->groupBy('mapname', 'physics');
 
+            // Either test is enough, and neither covers the other. A handful of
+            // people on an eight millisecond record is a map that finishes the
+            // moment you spawn. A crowd on an ordinary looking time is a map
+            // that runs itself more slowly: `run-afk` is 56 minutes with thirty
+            // people on it and `gvn_jumppad` 10.2 seconds with nineteen, so a
+            // time test on its own would wave both of those through.
             $rows = DB::table('records as r')
                 ->whereNull('r.deleted_at')
                 ->joinSub($best, 'b', fn ($join) => $join
@@ -65,8 +95,11 @@ class JokeMaps
                     ->on('b.physics', '=', 'r.physics')
                     ->on('b.t', '=', 'r.time'))
                 ->selectRaw('r.mapname, r.physics')
-                ->groupBy('r.mapname', 'r.physics')
-                ->havingRaw('COUNT(DISTINCT r.mdd_id) >= ?', [$limit])
+                ->groupBy('r.mapname', 'r.physics', 'r.time')
+                ->havingRaw(
+                    'COUNT(DISTINCT r.mdd_id) >= ? OR (COUNT(DISTINCT r.mdd_id) >= ? AND r.time < ?)',
+                    [$limit, $shortLimit, $shortMs]
+                )
                 ->get();
 
             $out = [];

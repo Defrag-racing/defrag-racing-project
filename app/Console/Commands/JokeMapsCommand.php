@@ -18,7 +18,9 @@ class JokeMapsCommand extends Command
 {
     protected $signature = 'demome:joke-maps
                             {--limit= : try a different number of tied players without saving it}
-                            {--set= : save a new number and use it from now on}
+                            {--short-ms= : try a different "nobody runs this" time in ms, without saving it}
+                            {--set= : save a new number of tied players and use it from now on}
+                            {--set-short-ms= : save a new "nobody runs this" time in ms}
                             {--clean : drop the pending queue rows for these maps}
                             {--show=30 : how many to print}';
 
@@ -32,20 +34,38 @@ class JokeMapsCommand extends Command
             $this->info("Saved: a map is a joke when {$set} or more players share its record time.");
         }
 
+        if ($setShort = $this->option('set-short-ms')) {
+            SiteSetting::set('demome:tied_wr_short_ms', (string) (int) $setShort);
+            JokeMaps::forget();
+            $this->info("Saved: two players sharing a time under {$setShort}ms is enough on its own.");
+        }
+
         // A trial number must not be left behind in the cache for the queue to
         // pick up, so it is put back whatever happens below.
         $trial = $this->option('limit');
-        $saved = SiteSetting::get('demome:tied_wr_limit', 10);
+        $trialMs = $this->option('short-ms');
+        $saved = SiteSetting::get('demome:tied_wr_limit', 3);
+        $savedMs = SiteSetting::get('demome:tied_wr_short_ms', 1000);
 
         if ($trial) {
             SiteSetting::set('demome:tied_wr_limit', (string) (int) $trial);
+        }
+
+        if ($trialMs) {
+            SiteSetting::set('demome:tied_wr_short_ms', (string) (int) $trialMs);
+        }
+
+        if ($trial || $trialMs) {
             JokeMaps::forget();
         }
 
         try {
             $pairs = array_keys(JokeMaps::pairs());
 
-            $this->line('Tied players needed: ' . JokeMaps::limit());
+            $this->line('A map is a joke when either holds:');
+            $this->line('  ' . JokeMaps::limit() . '+ players share its record time, at any time');
+            $this->line('  ' . JokeMaps::shortLimit() . '+ players share it and the time is under ' . JokeMaps::shortMs() . 'ms');
+            $this->newLine();
             $this->line('Maps barred:         ' . count($pairs) . ' (map and physics counted apart)');
 
             $rendered = RenderedVideo::whereNotNull('youtube_video_id')->get(['id', 'map_name', 'physics'])
@@ -73,7 +93,7 @@ class JokeMapsCommand extends Command
             }
 
             if ($this->option('clean')) {
-                if ($trial) {
+                if ($trial || $trialMs) {
                     $this->error('Not cleaning against a trial number. Save it with --set first.');
 
                     return self::FAILURE;
@@ -90,8 +110,9 @@ class JokeMapsCommand extends Command
                 $this->warn('Run again with --clean to drop those ' . $pending->count() . ' queued renders.');
             }
         } finally {
-            if ($trial) {
+            if ($trial || $trialMs) {
                 SiteSetting::set('demome:tied_wr_limit', (string) $saved);
+                SiteSetting::set('demome:tied_wr_short_ms', (string) $savedMs);
                 JokeMaps::forget();
             }
         }

@@ -409,6 +409,27 @@ class DemomeControl extends Page
         Notification::make()->title("Queue cleared ({$cleared} playlists)")->success()->send();
     }
 
+    /**
+     * Work the planned counts out again, on demand.
+     *
+     * They are kept for ten minutes because working them out walks every
+     * rendered video against all 59 definitions, which is not a price to pay
+     * on an ordinary page load. But the counts also depend on the blocked map
+     * list, and that is changed on another page, so after blocking a map this
+     * panel shows the numbers from before and reloading does not help. This is
+     * the way to ask for them again.
+     */
+    public function refreshPlaylistCounts(): void
+    {
+        Cache::forget('demome:control_playlist_buttons');
+
+        Notification::make()
+            ->title('Playlist counts worked out again')
+            ->body('They now take the blocked map list as it stands.')
+            ->success()
+            ->send();
+    }
+
     private function flushDemomeViewCache(): void
     {
         Cache::forget('demome:control_stats');

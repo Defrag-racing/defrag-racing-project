@@ -150,6 +150,7 @@ Route::prefix('demome')->middleware('demome.token')->withoutMiddleware('throttle
     Route::get('/playlists-to-sync', [\App\Http\Controllers\Api\DemomeController::class, 'playlistsToSync']);
     Route::post('/playlist-created', [\App\Http\Controllers\Api\DemomeController::class, 'playlistCreated']);
     Route::post('/playlist-synced', [\App\Http\Controllers\Api\DemomeController::class, 'playlistSynced']);
+    Route::post('/video-gone', [\App\Http\Controllers\Api\DemomeController::class, 'videoGone']);
     Route::get('/video-metadata/{renderedVideo}', [\App\Http\Controllers\Api\DemomeController::class, 'videoMetadata']);
     Route::get('/local-file-candidates', [\App\Http\Controllers\Api\DemomeController::class, 'localFileCandidates']);
     Route::get('/videos-needing-metadata-update', [\App\Http\Controllers\Api\DemomeController::class, 'videosNeedingMetadataUpdate']);

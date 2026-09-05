@@ -41,6 +41,11 @@ class MapRenderBlocks extends Page
 
     public int $perPage = 40;
 
+    /** Column to sort by: map, physics, players or time. */
+    public string $sort = 'players';
+
+    public string $direction = 'desc';
+
     public string $newMap = '';
 
     public string $newPhysics = 'cpm';
@@ -63,18 +68,29 @@ class MapRenderBlocks extends Page
             $blocked = $blocked->filter(fn ($row) => str_contains(strtolower($row['map']), $needle));
         }
 
-        // Worst first: the more people on one time, the less of a run it is.
-        $blocked = $blocked->sortByDesc('players')->values();
+        // Worst first by default: the more people on one time, the less of a
+        // run it is. Any column can be sorted from its header.
+        $key = in_array($this->sort, ['map', 'physics', 'players', 'time'], true) ? $this->sort : 'players';
+        $blocked = $this->direction === 'asc'
+            ? $blocked->sortBy($key, SORT_NATURAL | SORT_FLAG_CASE)->values()
+            : $blocked->sortByDesc($key, SORT_NATURAL | SORT_FLAG_CASE)->values();
 
         $total = $blocked->count();
         $pages = max(1, (int) ceil($total / $this->perPage));
-        $page = min(max(1, $this->page), $pages);
+
+        // Clamped onto the property and not only into the view. A page number
+        // past the end left sitting on the component meant the next press of
+        // Back counted down from a page never shown, so the list looked stuck.
+        $this->page = min(max(1, $this->page), $pages);
+        $page = $this->page;
 
         return [
             'blocked' => $blocked->slice(($page - 1) * $this->perPage, $this->perPage)->values(),
             'blocked_total' => $total,
             'page' => $page,
             'pages' => $pages,
+            'from' => $total ? ($page - 1) * $this->perPage + 1 : 0,
+            'to' => min($total, $page * $this->perPage),
             'allowed' => collect(JokeMaps::allowed())->map(fn ($row, $key) => $row + ['key' => $key])->values(),
             'queued' => RenderedVideo::where('status', 'pending')->get(['id', 'map_name', 'physics'])
                 ->filter(fn ($v) => JokeMaps::isJoke($v->map_name, $v->physics))->count(),
@@ -166,6 +182,25 @@ class MapRenderBlocks extends Page
     public function goToPage(int $page): void
     {
         $this->page = max(1, $page);
+    }
+
+    /** Press a header once to sort by it, again to turn it round. */
+    public function sortBy(string $column): void
+    {
+        if (! in_array($column, ['map', 'physics', 'players', 'time'], true)) {
+            return;
+        }
+
+        if ($this->sort === $column) {
+            $this->direction = $this->direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sort = $column;
+            // Numbers read worst first, names read A to Z. Either way the
+            // first press shows something worth looking at.
+            $this->direction = in_array($column, ['players', 'time'], true) ? 'desc' : 'asc';
+        }
+
+        $this->page = 1;
     }
 
     public function updatedSearch(): void

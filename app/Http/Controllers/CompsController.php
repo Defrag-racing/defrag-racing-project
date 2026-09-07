@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comp;
+use App\Models\User;
 use App\Models\CompCandidate;
 use App\Models\CompDemoReport;
 use App\Models\CompPayout;
@@ -67,6 +68,7 @@ class CompsController extends Controller
             'playing' => $playing ? $this->playingPayload($playing, $request) : null,
             'voting' => $voting ? $this->votingPayload($voting, $request) : null,
             'history' => $this->history(),
+            'leaderboard' => $this->leaderboard(),
             'me' => $request->user() ? $this->myStanding($request->user()->id) : null,
             // Demos of theirs comps is holding back without having entered
             // them. Outside `playing` on purpose: a demo can be on hold for a
@@ -747,6 +749,83 @@ class CompsController extends Controller
     }
 
     /** Finished comps, most recent first, with their winners. */
+    /**
+     * Every finished comp's points added up per player, one table per year
+     * and one for all time. The history list says who won each week; this
+     * says who has been winning. The points are the ones each result row
+     * already carries, the season scale, so a win is 25 and finishing is 1.
+     *
+     * @return array{periods: list<array{key:string,label:string}>, rows: array<string, list<array>>}
+     */
+    private function leaderboard(): array
+    {
+        $rows = CompResult::query()
+            ->join('comp_rounds', 'comp_rounds.id', '=', 'comp_results.comp_round_id')
+            ->join('comps', 'comps.id', '=', 'comp_rounds.comp_id')
+            ->where('comps.status', 'finished')
+            ->selectRaw('YEAR(comps.ends_at) as year, comp_results.user_id, comp_results.physics')
+            ->selectRaw('COUNT(DISTINCT comps.id) as comps, SUM(comp_results.rank = 1) as wins, SUM(comp_results.points) as points')
+            ->groupBy('year', 'comp_results.user_id', 'comp_results.physics')
+            ->get();
+
+        $users = User::whereIn('id', $rows->pluck('user_id')->unique())
+            ->get(['id', 'name', 'country', 'profile_photo_path', 'name_effect', 'color'])
+            ->keyBy('id');
+
+        $tables = [];
+        foreach ($rows as $r) {
+            foreach ([(string) $r->year, 'all'] as $period) {
+                $t = &$tables[$period][$r->user_id];
+                $t['comps'] = ($t['comps'] ?? 0) + (int) $r->comps;
+                $t['wins'] = ($t['wins'] ?? 0) + (int) $r->wins;
+                $t['points_' . $r->physics] = ($t['points_' . $r->physics] ?? 0) + (float) $r->points;
+                unset($t);
+            }
+        }
+
+        $periods = collect(array_keys($tables))->filter(fn ($k) => $k !== 'all')->sortDesc()->values()
+            ->map(fn ($y) => ['key' => $y, 'label' => $y])
+            ->push(['key' => 'all', 'label' => 'All time'])
+            ->all();
+
+        $out = [];
+        foreach ($tables as $period => $byUser) {
+            $list = collect($byUser)->map(function ($t, $userId) use ($users) {
+                $u = $users[$userId] ?? null;
+                $cpm = round($t['points_cpm'] ?? 0, 1);
+                $vq3 = round($t['points_vq3'] ?? 0, 1);
+
+                return [
+                    'id' => $u?->id,
+                    'name' => $u?->name,
+                    'country' => $u?->country,
+                    'photo' => $u?->profile_photo_path,
+                    'name_effect' => $u?->name_effect,
+                    'color' => $u?->color,
+                    // One comp with both physics entered is one comp, so
+                    // the per-physics count is capped by the distinct comps.
+                    'comps' => $t['comps'],
+                    'wins' => $t['wins'],
+                    'points_cpm' => $cpm,
+                    'points_vq3' => $vq3,
+                    'points' => round($cpm + $vq3, 1),
+                ];
+            })
+            ->sortBy([['points', 'desc'], ['wins', 'desc'], ['comps', 'asc'], ['name', 'asc']])
+            ->values();
+
+            // Equal points share a rank, as everywhere else in comps.
+            $rank = 0; $last = null;
+            $out[$period] = $list->map(function ($row, $i) use (&$rank, &$last) {
+                if ($row['points'] !== $last) { $rank = $i + 1; $last = $row['points']; }
+                $row['rank'] = $rank;
+                return $row;
+            })->all();
+        }
+
+        return ['periods' => $periods, 'rows' => $out];
+    }
+
     private function history(int $limit = 12): array
     {
         $comps = Comp::where('status', 'finished')

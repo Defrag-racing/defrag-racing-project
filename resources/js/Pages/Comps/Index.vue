@@ -21,6 +21,7 @@ export default {
     import CompsDonors from '@/Components/Comps/CompsDonors.vue';
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
     import CompsPayoutBadge from '@/Components/Comps/CompsPayoutBadge.vue';
+    import CompsLeaderboard from '@/Components/Comps/CompsLeaderboard.vue';
     import DemoSettingsCheck from '@/Components/DemoSettingsCheck.vue';
     import ConfigModal from '@/Components/Comps/ConfigModal.vue';
 
@@ -34,6 +35,7 @@ export default {
         playing: { type: Object, default: null },
         voting: { type: Object, default: null },
         history: { type: Array, default: () => [] },
+        leaderboard: { type: Object, default: () => ({ periods: [], rows: {} }) },
         me: { type: Object, default: null },
         pointsTable: { type: Array, default: () => [] },
         pointsForFinishing: { type: Number, default: 1 },
@@ -1348,6 +1350,8 @@ export default {
                 </Link>
             </div>
         </section>
+
+        <CompsLeaderboard v-if="leaderboard.periods.length" :periods="leaderboard.periods" :rows="leaderboard.rows" />
 
         <div v-if="!playing && !voting && !history.length" class="rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-6 py-12 text-center">
             <p class="text-gray-400">{{ $t('No comps have run yet. The first one starts as soon as it is switched on.') }}</p>

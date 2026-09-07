@@ -4370,5 +4370,11 @@
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Jeder Lauf aus der Wertung, eine Datei pro Lauf, benannt nach Platz und Zeit. Anonym lässt die Namen weg, damit du raten kannst, wer was gelaufen ist.",
     "Back to comps": "Zurück zu den Comps",
     ":count comp|:count comps": ":count Comp|:count Comps",
-    "View comp": "Comp ansehen"
+    "View comp": "Comp ansehen",
+    "Overall leaderboard": "Gesamtwertung",
+    "Points from every finished comp, added up: 25 for a win, 18 for second, 15 for third, down to 1 for finishing.": "Punkte aus jedem beendeten Comp, zusammengezählt: 25 für einen Sieg, 18 für den zweiten Platz, 15 für den dritten, bis hinunter zu 1 fürs Ankommen.",
+    "All time": "Gesamt",
+    "Wins": "Siege",
+    "Show less": "Weniger anzeigen",
+    "Show all :count": "Alle :count anzeigen"
 }

@@ -14,21 +14,26 @@
     const period = ref(props.periods[0]?.key);
     const expanded = ref(false);
 
-    // As many rows as the screen has room for, measured, not a fixed ten:
-    // the box sticks beside the history and should use the height it has.
-    // Show all appears only when there are more rows than fit. Below the
-    // lg breakpoint nothing sticks and every row is shown.
+    // As many rows as the history beside it is tall, measured, not a fixed
+    // ten: the two columns should end together. Show all appears only when
+    // there are more rows than that. Below the lg breakpoint the columns
+    // stack and every row is shown.
     const root = ref(null);
     const firstRow = ref(null);
     const fit = ref(10);
+    let observer = null;
+
+    const neighbour = () => root.value?.parentElement?.firstElementChild;
 
     const measure = () => {
         if (typeof window === 'undefined') return;
         if (window.innerWidth < 1024) { fit.value = Infinity; return; }
+        const left = neighbour();
+        if (!left || left === root.value) return;
         const rowHeight = firstRow.value?.getBoundingClientRect().height || 44;
         const box = root.value?.getBoundingClientRect();
         const chrome = (box?.height ?? 0) - (firstRow.value ? visible.value.length * rowHeight : 0);
-        const room = window.innerHeight - 32 - chrome;
+        const room = left.getBoundingClientRect().height - chrome;
         fit.value = Math.max(5, Math.floor(room / rowHeight));
     };
 
@@ -36,8 +41,16 @@
     const visible = computed(() => expanded.value ? all.value : all.value.slice(0, fit.value));
     const overflows = computed(() => all.value.length > fit.value);
 
-    onMounted(() => { nextTick(measure); window.addEventListener('resize', measure); });
-    onBeforeUnmount(() => window.removeEventListener('resize', measure));
+    onMounted(() => {
+        nextTick(measure);
+        window.addEventListener('resize', measure);
+        // The history grows as its map pictures load; follow it.
+        if (typeof ResizeObserver !== 'undefined' && neighbour()) {
+            observer = new ResizeObserver(() => measure());
+            observer.observe(neighbour());
+        }
+    });
+    onBeforeUnmount(() => { window.removeEventListener('resize', measure); observer?.disconnect(); });
     watch(period, () => nextTick(measure));
 
     const RANK_STYLE = {
@@ -50,12 +63,7 @@
 </script>
 
 <template>
-    <!-- Ten rows stick to the top of the screen while the history beside
-         them scrolls. Unfolded it stops sticking and stands on the page like
-         the history does: a sticky box taller than the screen cannot be
-         scrolled to its own bottom, and a scrollbar inside it is worse. -->
-    <section ref="root" class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden"
-             :class="expanded ? '' : 'lg:sticky lg:top-4'">
+    <section ref="root" class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden">
         <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 bg-white/[0.04] px-4 py-3">
             <div>
                 <h2 class="text-lg font-black text-white">{{ $t('Overall leaderboard') }}</h2>

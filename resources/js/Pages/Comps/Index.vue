@@ -1326,11 +1326,14 @@ export default {
                  who won and in what time, and what became of the prize. A
                  picture above the text made each half tall and narrow and
                  the two weeks next to each other read as four cards. -->
-            <div class="p-4 md:p-5 space-y-4">
+            <div class="p-4 md:p-5 space-y-6">
+                <!-- Each week gets a header in the ballot's blue and a
+                     visible edge, or twelve weeks of grey rows run into one
+                     long table. -->
                 <Link v-for="comp in history" :key="comp.id" :href="route('comps.show', comp.id)"
-                      class="group block rounded-xl border border-white/10 bg-black/30 overflow-hidden transition-all hover:border-blue-400/40 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.5)]">
-                    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-white/10 bg-white/[0.04] px-4 py-2.5">
-                        <span class="text-base font-black text-white group-hover:text-blue-300 transition-colors">{{ comp.title }}</span>
+                      class="group block rounded-xl border border-blue-400/25 bg-black/30 overflow-hidden shadow-[0_0_24px_-14px_rgba(96,165,250,0.5)] transition-all hover:border-blue-400/60 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.6)]">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-blue-400/20 bg-gradient-to-r from-blue-500/[0.18] to-blue-500/[0.04] px-4 py-3">
+                        <span class="text-lg font-black text-white group-hover:text-blue-200 transition-colors">{{ comp.title }}</span>
                         <span v-if="comp.category" class="text-[10px] font-black uppercase tracking-wider text-blue-300/80">
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>

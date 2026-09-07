@@ -28,7 +28,12 @@
 </script>
 
 <template>
-    <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden">
+    <!-- Ten rows stick to the top of the screen while the history beside
+         them scrolls. Unfolded it stops sticking and stands on the page like
+         the history does: a sticky box taller than the screen cannot be
+         scrolled to its own bottom, and a scrollbar inside it is worse. -->
+    <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden"
+             :class="expanded ? '' : 'lg:sticky lg:top-4'">
         <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 bg-white/[0.04] px-4 py-3">
             <div>
                 <h2 class="text-lg font-black text-white">{{ $t('Overall leaderboard') }}</h2>

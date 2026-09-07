@@ -1385,8 +1385,7 @@ export default {
             </div>
         </section>
 
-        <CompsLeaderboard v-if="leaderboard.periods.length" :periods="leaderboard.periods" :rows="leaderboard.rows"
-                          class="min-w-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto" />
+        <CompsLeaderboard v-if="leaderboard.periods.length" :periods="leaderboard.periods" :rows="leaderboard.rows" class="min-w-0" />
         </div>
 
         <div v-if="!playing && !voting && !history.length" class="rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-6 py-12 text-center">

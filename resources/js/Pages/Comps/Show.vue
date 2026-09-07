@@ -153,40 +153,40 @@ export default {
                                  author under it, then how it was chosen. The
                                  physics badge and the "chosen by" used to be
                                  a line of their own above the picture. -->
-                            <div class="flex gap-3.5">
+                            <div class="flex gap-5">
                                 <Link v-if="round.maps?.[physics]?.name" :href="route('maps.map', round.maps[physics].name)"
-                                      class="group flex-shrink-0 block w-28 h-28 rounded-lg overflow-hidden border border-white/10 hover:border-blue-400/50 transition-colors">
+                                      class="group flex-shrink-0 block w-2/5 aspect-square rounded-xl overflow-hidden border border-white/10 hover:border-blue-400/50 transition-colors">
                                     <img v-if="round.maps[physics].thumbnail"
                                          :src="`/storage/${round.maps[physics].thumbnail}`"
                                          :alt="round.maps[physics].name"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                                     <span v-else class="block w-full h-full bg-white/[0.03]"></span>
                                 </Link>
-                                <span v-else class="flex-shrink-0 block w-28 h-28 rounded-lg border border-white/10 bg-white/[0.03]"></span>
+                                <span v-else class="flex-shrink-0 block w-2/5 aspect-square rounded-xl border border-white/10 bg-white/[0.03]"></span>
 
                                 <div class="min-w-0 flex-1 flex flex-col">
                                     <div class="flex items-center gap-2 min-w-0">
-                                        <span class="shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">
+                                        <span class="shrink-0 rounded-md border px-2 py-1 text-xs font-black uppercase tracking-widest" :class="physicsBadge(physics)">
                                             {{ physics }}
                                         </span>
                                         <Link v-if="round.maps?.[physics]?.name" :href="route('maps.map', round.maps[physics].name)"
-                                              class="text-xl font-black text-white hover:text-blue-300 transition-colors truncate">
+                                              class="text-2xl font-black text-white hover:text-blue-300 transition-colors truncate">
                                             {{ round.maps[physics].name }}
                                         </Link>
                                     </div>
-                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-sm text-gray-300 truncate">{{ round.maps[physics].author }}</div>
+                                    <div v-if="round.maps?.[physics]?.author" class="mt-1 text-base text-gray-300 truncate">{{ round.maps[physics].author }}</div>
 
                                     <!-- Who ran and what the winner took, per
                                          physics, right here where the map is.
                                          The header says both for the whole
                                          round; this is the half that matters
                                          under this picture. -->
-                                    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm">
+                                    <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-base">
                                         <span class="font-bold text-gray-200">{{ $tc(':count player|:count players', round.results?.[physics]?.length ?? 0) }}</span>
                                         <span v-if="round.prize_eur > 0" class="font-black text-emerald-300">{{ $t('Winner gets :amount EUR', { amount: round.prize_eur }) }}</span>
                                     </div>
 
-                                    <div v-if="round.maps?.[physics]" class="mt-1 text-xs text-gray-300">
+                                    <div v-if="round.maps?.[physics]" class="mt-2 text-sm text-gray-300">
                                         <template v-if="round.wildcards?.[physics]">
                                             <span class="inline-flex flex-wrap items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                                                 <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>

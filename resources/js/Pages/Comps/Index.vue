@@ -12,7 +12,7 @@ export default {
     import moment from 'moment';
     import { t } from '@/utils/i18n';
     import { formatTime } from '@/utils/time';
-    import { physicsBadge, physicsText } from '@/utils/physics';
+    import { physicsBadge, physicsText, physicsTint } from '@/utils/physics';
 
     import Popper from 'vue3-popper';
 
@@ -1339,7 +1339,7 @@ export default {
                     </div>
 
                     <div class="divide-y divide-white/10">
-                        <div v-for="physics in PHYSICS" :key="physics" class="flex gap-4 p-4 min-w-0">
+                        <div v-for="physics in PHYSICS" :key="physics" class="flex gap-4 p-4 min-w-0" :class="physicsTint(physics)">
                             <div class="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-lg overflow-hidden border border-white/10 bg-white/[0.03]">
                                 <img v-if="comp.map_by_physics?.[physics]?.thumbnail"
                                      :src="`/storage/${comp.map_by_physics[physics].thumbnail}`"

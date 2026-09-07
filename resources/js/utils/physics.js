@@ -14,6 +14,15 @@ export const PHYSICS_TEXT = {
     vq3: 'text-sky-300',
 };
 
+// A tint for a whole box about one physics: faint enough to sit under
+// white text, but enough that the two halves of a week read as two things.
+export const PHYSICS_TINT = {
+    cpm: 'bg-violet-500/[0.06]',
+    vq3: 'bg-sky-500/[0.06]',
+};
+
+export const physicsTint = (physics) => PHYSICS_TINT[physics] ?? '';
+
 export const physicsBadge = (physics) => PHYSICS_BADGE[physics] ?? 'border-white/15 bg-white/10 text-gray-200';
 
 export const physicsText = (physics) => PHYSICS_TEXT[physics] ?? 'text-gray-300';

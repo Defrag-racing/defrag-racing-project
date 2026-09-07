@@ -10,7 +10,7 @@ export default {
     import { Head, Link } from '@inertiajs/vue3';
     import { t } from '@/utils/i18n';
     import { formatTime } from '@/utils/time';
-    import { physicsBadge, physicsText } from '@/utils/physics';
+    import { physicsBadge, physicsText, physicsTint } from '@/utils/physics';
 
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
     import CompsPayoutText from '@/Components/Comps/CompsPayoutText.vue';
@@ -144,7 +144,7 @@ export default {
             <div class="p-5">
                 <div class="rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
                     <div class="grid md:grid-cols-2 md:divide-x md:divide-white/10">
-                        <div v-for="physics in PHYSICS" :key="physics" class="p-4 space-y-4">
+                        <div v-for="physics in PHYSICS" :key="physics" class="p-4 space-y-4" :class="physicsTint(physics)">
 
                             <!-- ---------------- Map ---------------- -->
                             <!-- Everything about the map to the right of its

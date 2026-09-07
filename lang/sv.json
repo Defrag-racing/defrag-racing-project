@@ -4370,7 +4370,6 @@
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Varje lopp från tabellen, en fil per lopp, namngiven efter placering och tid. Anonymt utelämnar namnen så att du kan gissa vem som sprang vad.",
     "Back to comps": "Tillbaka till comps",
     ":count comp|:count comps": ":count comp|:count comps",
-    "View comp": "Visa comp",
     "Overall leaderboard": "Totalställning",
     "Points from every finished comp, added up: 25 for a win, 18 for second, 15 for third, down to 1 for finishing.": "Poäng från varje avslutad comp, sammanlagt: 25 för en vinst, 18 för andra plats, 15 för tredje, ner till 1 för att gå i mål.",
     "All time": "Genom tiderna",

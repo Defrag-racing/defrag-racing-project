@@ -4370,7 +4370,6 @@
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Кожен забіг із таблиці, по файлу на забіг, з місцем і часом у назві. Анонімна версія без імен, щоб можна було вгадати, хто що пробіг.",
     "Back to comps": "Назад до comps",
     ":count comp|:count comps": ":count comp|:count comps",
-    "View comp": "Відкрити comp",
     "Overall leaderboard": "Загальний залік",
     "Points from every finished comp, added up: 25 for a win, 18 for second, 15 for third, down to 1 for finishing.": "Очки за кожен завершений comp, разом: 25 за перемогу, 18 за друге місце, 15 за третє, аж до 1 за фініш.",
     "All time": "За весь час",

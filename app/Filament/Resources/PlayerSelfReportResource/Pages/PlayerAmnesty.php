@@ -42,7 +42,7 @@ class PlayerAmnesty extends ListRecords
 
     public function getSubheading(): ?string
     {
-        return 'MDD #' . $this->mdd . ' - everything this player took down';
+        return 'mDd #' . $this->mdd . ' - everything this player took down';
     }
 
     public function table(Table $table): Table

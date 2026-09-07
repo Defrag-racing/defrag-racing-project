@@ -884,7 +884,7 @@ class CompsController extends Controller
         abort_unless(
             $request->user()->mdd_id,
             403,
-            __('Link your MDD profile to vote in comps.')
+            __('Link your mDd profile to vote in comps.')
         );
     }
 

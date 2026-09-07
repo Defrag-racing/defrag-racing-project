@@ -66,7 +66,7 @@ class PlayerSelfReportResource extends Resource
     {
         $name = PlayerSelfReport::where('mdd_id', $mdd)->value('player_name');
 
-        return trim(preg_replace('/\^[0-9A-Za-z]/', '', $name ?? '')) ?: ('MDD #' . $mdd);
+        return trim(preg_replace('/\^[0-9A-Za-z]/', '', $name ?? '')) ?: ('mDd #' . $mdd);
     }
 
     /**
@@ -163,7 +163,7 @@ class PlayerSelfReportResource extends Resource
                     ->badge()
                     ->color(fn ($state) => $state > 0 ? 'info' : 'gray')
                     ->sortable()
-                    ->tooltip('Waiting for the MDD merge - nothing to do until then'),
+                    ->tooltip('Waiting for the mDd merge - nothing to do until then'),
 
                 Tables\Columns\TextColumn::make('hidden_count')
                     ->label('Hidden')
@@ -361,7 +361,7 @@ class PlayerSelfReportResource extends Resource
                         && (! $record->isProcessed() || $record->wasRestored())
                         && Record::whereKey($record->record_id)->exists())
                     ->requiresConfirmation()
-                    ->modalDescription('Takes the run off the leaderboard here. Until the MDD databases are merged it still stands on q3df.org.')
+                    ->modalDescription('Takes the run off the leaderboard here. Until the mDd databases are merged it still stands on q3df.org.')
                     ->action(function (PlayerSelfReport $record) {
                         $record->hideRun(auth()->id());
 
@@ -390,7 +390,7 @@ class PlayerSelfReportResource extends Resource
                     ->icon('heroicon-o-eye-slash')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalDescription('Takes every selected run off the leaderboard here. Until the MDD databases are merged they still stand on q3df.org.')
+                    ->modalDescription('Takes every selected run off the leaderboard here. Until the mDd databases are merged they still stand on q3df.org.')
                     ->deselectRecordsAfterCompletion()
                     ->action(function ($records) {
                         $done = 0;

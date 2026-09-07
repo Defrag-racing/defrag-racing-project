@@ -164,7 +164,7 @@ class SettingsController extends Controller
         $user = User::where('mdd_id', $id)->first();
 
         if ($user) {
-            return 'There is another user who linked his account to this MDD Profile.';
+            return 'There is another user who linked his account to this mDd Profile.';
         }
 
         $client = new Client();

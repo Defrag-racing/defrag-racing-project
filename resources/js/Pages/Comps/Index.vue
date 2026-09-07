@@ -739,7 +739,7 @@ export default {
             <div class="px-5 pt-4 pb-5">
 
             <div v-if="user && !voting.may_vote" class="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-                {{ $t('Link your MDD profile to vote in comps.') }}
+                {{ $t('Link your mDd profile to vote in comps.') }}
             </div>
             <div v-else-if="!user" class="mb-4 rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm px-4 py-3 text-sm text-gray-400">
                 {{ $t('Sign in to vote.') }}

@@ -162,7 +162,7 @@
             </div>
 
             <div>
-                <InputLabel :value="$t('MDD Profile')" />
+                <InputLabel :value="$t('mDd Profile')" />
                 <div v-if="user.mdd_id && !isNaN(parseInt(user.mdd_id))" class="mt-1 flex items-center gap-2">
                     <div class="flex-1 px-3 py-2 bg-green-500/10 border border-green-500/30 rounded-md text-green-400 text-sm [&_a]:text-blue-400 [&_a:hover]:text-blue-300"
                         v-html="'✓ ' + $t('Connected as <a href=:url target=_blank>User #:id</a>', { url: 'https://q3df.org/profil?id=' + parseInt(user.mdd_id), id: parseInt(user.mdd_id) })"></div>
@@ -172,7 +172,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
                         </svg>
-                        {{ $t('Link MDD Account') }}
+                        {{ $t('Link mDd Account') }}
                     </a>
                 </div>
             </div>

@@ -108,7 +108,7 @@
             <div class="text-center mb-8">
                 <h1 class="text-2xl md:text-3xl font-black text-white mb-3">{{ $t('Link Your Q3DF Profile') }}</h1>
                 <p class="text-lg text-gray-400 max-w-2xl mx-auto">
-                    {{ $t('defrag.racing is built on top of the MDD/Q3DF database. Link your profile to unlock the full experience.') }}
+                    {{ $t('defrag.racing is built on top of the mDd/Q3DF database. Link your profile to unlock the full experience.') }}
                 </p>
             </div>
 
@@ -118,7 +118,7 @@
                 <div class="lg:col-span-2">
                     <div class="bg-black/40 rounded-2xl border border-white/10 shadow-2xl overflow-hidden sticky top-24">
                         <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-b border-white/10 px-6 py-4">
-                            <h2 class="text-lg font-bold text-white">{{ $t('Connect Your MDD Profile') }}</h2>
+                            <h2 class="text-lg font-bold text-white">{{ $t('Connect Your mDd Profile') }}</h2>
                             <p class="text-sm text-gray-400 mt-1">{{ $t('Verify ownership by updating your Q3DF profile image.') }}</p>
                         </div>
 
@@ -131,7 +131,7 @@
                                     </svg>
                                 </div>
                                 <h3 class="text-xl font-bold text-green-400 mb-2">{{ $t('Profile Linked!') }}</h3>
-                                <p class="text-gray-400 text-sm mb-4">{{ $t('Your account is now connected to MDD user #:id.', { id: mddId }) }}</p>
+                                <p class="text-gray-400 text-sm mb-4">{{ $t('Your account is now connected to mDd user #:id.', { id: mddId }) }}</p>
                                 <Link :href="route('profile.index', { userId: user.id })" class="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors">
                                     {{ $t('Go to Profile') }}
                                 </Link>
@@ -141,7 +141,7 @@
                         <!-- Step 1: Enter Profile Link -->
                         <form v-else @submit.prevent="submit" class="p-6 space-y-4">
                             <div v-if="stage === 1">
-                                <label class="block text-sm font-medium text-white mb-2">{{ $t('MDD Profile Link') }}</label>
+                                <label class="block text-sm font-medium text-white mb-2">{{ $t('mDd Profile Link') }}</label>
                                 <input
                                     v-model="profile_link"
                                     type="text"

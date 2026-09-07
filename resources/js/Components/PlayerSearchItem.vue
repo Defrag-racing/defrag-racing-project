@@ -21,7 +21,7 @@
                 <span v-if="player.country">{{ player.country }}</span>
                 <span v-else>{{ $t('Player') }}</span>
                 <span v-if="player.matched_alias" class="text-gray-500"> {{ $t('- alias:') }} <span v-html="q3tohtml(player.matched_alias)"></span></span>
-                <span v-else-if="player.mdd_name" class="text-gray-500"> {{ $t('- MDD:') }} <span v-html="q3tohtml(player.mdd_name)"></span></span>
+                <span v-else-if="player.mdd_name" class="text-gray-500"> {{ $t('- mDd:') }} <span v-html="q3tohtml(player.mdd_name)"></span></span>
             </div>
         </div>
 

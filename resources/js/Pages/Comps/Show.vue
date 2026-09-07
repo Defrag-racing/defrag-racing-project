@@ -125,12 +125,11 @@ export default {
                     <!-- Finished, and when: on the same line as what it was.
                          They hung under the title on their own before and
                          looked like they belonged to nothing. -->
-                    <span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-gray-200">
+                    <span class="text-xs font-black uppercase tracking-wider text-gray-300">
                         {{ $t('Finished') }}
                     </span>
-                    <span v-if="comp.starts_at && comp.ends_at"
-                          class="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/15 px-2.5 py-0.5 text-xs font-bold tabular-nums text-blue-100">
-                        <svg class="w-3.5 h-3.5 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+                    <span v-if="comp.starts_at && comp.ends_at" class="inline-flex items-center gap-1.5 text-sm font-bold tabular-nums text-gray-200">
+                        <svg class="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
                         {{ dateRange(comp.starts_at, comp.ends_at) }}
                     </span>
                 </div>

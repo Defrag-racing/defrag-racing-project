@@ -1303,10 +1303,10 @@ export default {
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-4 border-t border-white/10 px-4 py-2 text-[11px] text-gray-500">
-                        <span>{{ $tc(':count player|:count players', comp.entrants) }}</span>
-                        <span v-if="comp.prize_eur > 0" class="font-bold text-emerald-300/80">{{ comp.prize_eur * 2 }} EUR</span>
-                        <span class="ml-auto font-bold text-blue-300/70 group-hover:text-blue-300 transition-colors">{{ $t('View comp') }} &rsaquo;</span>
+                    <div class="flex items-center gap-5 border-t border-white/10 px-4 py-2.5 text-sm">
+                        <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', comp.entrants) }}</span>
+                        <span v-if="comp.prize_eur > 0" class="font-black text-emerald-300">{{ comp.prize_eur * 2 }} EUR</span>
+                        <span class="ml-auto text-xs font-bold text-blue-300/70 group-hover:text-blue-300 transition-colors">{{ $t('View comp') }} &rsaquo;</span>
                     </div>
                 </Link>
             </div>

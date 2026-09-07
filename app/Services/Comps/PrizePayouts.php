@@ -119,11 +119,7 @@ class PrizePayouts
 
         $amount = (float) $payout->amount;
 
-        return $this->settle($payout, [
-            CompPayout::STATUS_PAID => $status === CompPayout::STATUS_PAID ? $amount : 0,
-            CompPayout::STATUS_DONATED_SITE => $status === CompPayout::STATUS_DONATED_SITE ? $amount : 0,
-            CompPayout::STATUS_DONATED_COMPS => $status === CompPayout::STATUS_DONATED_COMPS ? $amount : 0,
-        ], $options);
+        return $this->settle($payout, [$status => $amount], $options);
     }
 
     /**
@@ -147,20 +143,23 @@ class PrizePayouts
         $paid = round((float) ($parts[CompPayout::STATUS_PAID] ?? 0), 2);
         $site = round((float) ($parts[CompPayout::STATUS_DONATED_SITE] ?? 0), 2);
         $comps = round((float) ($parts[CompPayout::STATUS_DONATED_COMPS] ?? 0), 2);
+        $live = round((float) ($parts[CompPayout::STATUS_DONATED_DEFRAGLIVE] ?? 0), 2);
 
-        if (min($paid, $site, $comps) < 0) {
+        if (min($paid, $site, $comps, $live) < 0) {
             throw new \InvalidArgumentException('A part of a prize cannot be negative.');
         }
 
-        if (abs(($paid + $site + $comps) - (float) $payout->amount) > 0.005) {
+        $sum = $paid + $site + $comps + $live;
+
+        if (abs($sum - (float) $payout->amount) > 0.005) {
             throw new \InvalidArgumentException(sprintf(
                 'The parts add up to %.2f EUR, the prize is %.2f EUR.',
-                $paid + $site + $comps,
+                $sum,
                 (float) $payout->amount
             ));
         }
 
-        $ways = ($paid > 0 ? 1 : 0) + ($site > 0 ? 1 : 0) + ($comps > 0 ? 1 : 0);
+        $ways = count(array_filter([$paid, $site, $comps, $live], fn ($eur) => $eur > 0));
 
         if ($ways === 0) {
             throw new \InvalidArgumentException('Nothing was settled.');
@@ -170,20 +169,24 @@ class PrizePayouts
             $ways > 1 => CompPayout::STATUS_SPLIT,
             $paid > 0 => CompPayout::STATUS_PAID,
             $site > 0 => CompPayout::STATUS_DONATED_SITE,
-            default => CompPayout::STATUS_DONATED_COMPS,
+            $comps > 0 => CompPayout::STATUS_DONATED_COMPS,
+            default => CompPayout::STATUS_DONATED_DEFRAGLIVE,
         };
 
-        return DB::transaction(function () use ($payout, $paid, $site, $comps, $status, $options) {
-            $siteDonation = $site > 0 ? $this->recordDonation($payout, $site, false, $options) : null;
-            $compsDonation = $comps > 0 ? $this->recordDonation($payout, $comps, true, $options) : null;
+        return DB::transaction(function () use ($payout, $paid, $site, $comps, $live, $status, $options) {
+            $siteDonation = $site > 0 ? $this->recordDonation($payout, $site, 'site', $options) : null;
+            $compsDonation = $comps > 0 ? $this->recordDonation($payout, $comps, 'comps', $options) : null;
+            $liveDonation = $live > 0 ? $this->recordDonation($payout, $live, 'defraglive', $options) : null;
 
             $payout->update([
                 'status' => $status,
                 'paid_eur' => $paid,
                 'donated_site_eur' => $site,
                 'donated_comps_eur' => $comps,
+                'donated_defraglive_eur' => $live,
                 'site_donation_id' => $siteDonation?->id,
                 'comps_donation_id' => $compsDonation?->id,
+                'defraglive_donation_id' => $liveDonation?->id,
                 'resolved_at' => now(),
                 'resolved_by' => auth()->id(),
                 'note' => trim((string) ($options['note'] ?? '')) ?: null,
@@ -193,9 +196,16 @@ class PrizePayouts
         });
     }
 
-    /** The donation a given-back part of a prize becomes. */
-    private function recordDonation(CompPayout $payout, float $amount, bool $toComps, array $options): SiteDonation
+    /**
+     * The donation a given-back part of a prize becomes.
+     *
+     * @param  'site'|'comps'|'defraglive'  $to  which pot the money lands in
+     */
+    private function recordDonation(CompPayout $payout, float $amount, string $to, array $options): SiteDonation
     {
+        $toComps = $to === 'comps';
+        $toLive = $to === 'defraglive';
+
         $payout->loadMissing(['user', 'round.comp']);
 
         $number = $payout->round?->comp?->number;
@@ -226,6 +236,10 @@ class PrizePayouts
                 ? (int) ($options['comps_start_comp'] ?? $this->funding->nextFundableComp())
                 : null,
             'comps_note' => $toComps ? 'Donated winnings from ' . $what : null,
+            // The DefragLive pool is the same earmark a contest's own prize
+            // money carries, without a contest: it pays whichever comes next.
+            'defraglive_amount' => $toLive ? $amount : 0,
+            'defraglive_note' => $toLive ? 'Donated winnings from ' . $what : null,
         ]);
     }
 

@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * A prize is not always money leaving the account. Most weeks somebody takes
  * it, some weeks the winner hands it straight back, and handing it back can
- * mean two different things - the hosting bill, or the next weekly's pool.
- * Those are the three endings, and the row exists so that "did we settle
+ * mean three different things - the hosting bill, the next weekly's pool,
+ * or the DefragLive contest pool. Those are the four endings, and the row exists so that "did we settle
  * week 9" is a question with an answer.
  */
 class CompPayout extends Model
@@ -24,6 +24,7 @@ class CompPayout extends Model
     public const STATUS_PAID = 'paid';
     public const STATUS_DONATED_SITE = 'donated_site';
     public const STATUS_DONATED_COMPS = 'donated_comps';
+    public const STATUS_DONATED_DEFRAGLIVE = 'donated_defraglive';
     /** More than one of the above at once: some taken, some given back. */
     public const STATUS_SPLIT = 'split';
 
@@ -32,6 +33,7 @@ class CompPayout extends Model
         self::STATUS_PAID,
         self::STATUS_DONATED_SITE,
         self::STATUS_DONATED_COMPS,
+        self::STATUS_DONATED_DEFRAGLIVE,
         self::STATUS_SPLIT,
     ];
 
@@ -41,6 +43,7 @@ class CompPayout extends Model
         self::STATUS_PAID => 'Paid out',
         self::STATUS_DONATED_SITE => 'Donated to the website',
         self::STATUS_DONATED_COMPS => 'Donated to the next comps',
+        self::STATUS_DONATED_DEFRAGLIVE => 'Donated to DefragLive',
         self::STATUS_SPLIT => 'Split',
     ];
 
@@ -49,6 +52,7 @@ class CompPayout extends Model
         self::STATUS_PAID => 'paid_eur',
         self::STATUS_DONATED_SITE => 'donated_site_eur',
         self::STATUS_DONATED_COMPS => 'donated_comps_eur',
+        self::STATUS_DONATED_DEFRAGLIVE => 'donated_defraglive_eur',
     ];
 
     protected $fillable = [
@@ -59,9 +63,11 @@ class CompPayout extends Model
         'paid_eur',
         'donated_site_eur',
         'donated_comps_eur',
+        'donated_defraglive_eur',
         'status',
         'site_donation_id',
         'comps_donation_id',
+        'defraglive_donation_id',
         'resolved_at',
         'resolved_by',
         'note',
@@ -72,6 +78,7 @@ class CompPayout extends Model
         'paid_eur' => 'decimal:2',
         'donated_site_eur' => 'decimal:2',
         'donated_comps_eur' => 'decimal:2',
+        'donated_defraglive_eur' => 'decimal:2',
         'resolved_at' => 'datetime',
     ];
 
@@ -98,6 +105,11 @@ class CompPayout extends Model
     public function compsDonation(): BelongsTo
     {
         return $this->belongsTo(SiteDonation::class, 'comps_donation_id');
+    }
+
+    public function defragliveDonation(): BelongsTo
+    {
+        return $this->belongsTo(SiteDonation::class, 'defraglive_donation_id');
     }
 
     /**

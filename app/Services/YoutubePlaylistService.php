@@ -86,6 +86,11 @@ class YoutubePlaylistService
         $split('wr', 'World Records', 'Records');
         $split('strafe', 'Strafe', 'Style');
 
+        // Every map that is run with a gun, whichever gun and however many.
+        // Machinegun and gauntlet do not count: a map with nothing else is a
+        // strafe map, and it is the classifier that draws that line.
+        $split('weapon', 'Weapon', 'Style');
+
         foreach (self::WEAPON_TITLES as $gun => $title) {
             $split('weapon_' . $gun, $title, 'Style');
         }
@@ -324,6 +329,10 @@ class YoutubePlaylistService
 
         if ($base === 'combo') {
             return $video['category'] === MapClassifier::COMBO;
+        }
+
+        if ($base === 'weapon') {
+            return $video['category'] !== MapClassifier::STRAFE;
         }
 
         if (str_starts_with($base, 'weapon_')) {

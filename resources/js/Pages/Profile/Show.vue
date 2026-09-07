@@ -235,7 +235,7 @@ const submitAboutMeSettings = () => {
 const savedHidden = user.value.global_profile_preferences?.hidden_sections || [];
 const savedHiddenStatBoxes = user.value.global_profile_preferences?.hidden_stat_boxes || [];
 const savedDateFormat = user.value.global_profile_preferences?.date_format || 'dmY';
-const savedTimeFormat = user.value.global_profile_preferences?.time_format || 'colon';
+const savedTimeFormat = user.value.global_profile_preferences?.time_format || 'dot';
 const globalProfileForm = useForm({
     hidden_sections: [...savedHidden],
     hidden_stat_boxes: [...savedHiddenStatBoxes],

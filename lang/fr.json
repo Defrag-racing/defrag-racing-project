@@ -4365,5 +4365,7 @@
     "Winners, tied": "Vainqueurs, ex aequo",
     "Winner": "Vainqueur",
     "No demos to download for this physics.": "Aucune démo à télécharger pour cette physique.",
-    ":name is streaming on :server": ":name est en direct sur :server"
+    ":name is streaming on :server": ":name est en direct sur :server",
+    "Download the demos": "Télécharger les démos",
+    "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Chaque run du classement, un fichier par run, nommé par rang et temps. Anonyme omet les noms pour deviner qui a fait quoi."
 }

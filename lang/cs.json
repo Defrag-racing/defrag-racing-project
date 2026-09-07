@@ -4365,5 +4365,7 @@
     "Winners, tied": "Vítězové, remíza",
     "Winner": "Vítěz",
     "No demos to download for this physics.": "Pro tuto fyziku nejsou žádná dema ke stažení.",
-    ":name is streaming on :server": ":name streamuje na :server"
+    ":name is streaming on :server": ":name streamuje na :server",
+    "Download the demos": "Stáhnout dema",
+    "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Každý běh z výsledkové listiny, jeden soubor na běh, pojmenovaný podle pořadí a času. Anonymní verze vynechá jména, takže můžeš hádat, kdo co zaběhl."
 }

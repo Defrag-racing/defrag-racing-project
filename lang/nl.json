@@ -4365,5 +4365,7 @@
     "Winners, tied": "Winnaars, gelijk",
     "Winner": "Winnaar",
     "No demos to download for this physics.": "Geen demos om te downloaden voor deze physics.",
-    ":name is streaming on :server": ":name streamt op :server"
+    ":name is streaming on :server": ":name streamt op :server",
+    "Download the demos": "Download de demos",
+    "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Elke run uit de stand, één bestand per run, genoemd naar plaats en tijd. Anoniem laat de namen weg zodat je kunt raden wie wat liep."
 }

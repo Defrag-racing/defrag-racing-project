@@ -4365,5 +4365,7 @@
     "Winners, tied": "Переможці, нічия",
     "Winner": "Переможець",
     "No demos to download for this physics.": "Для цієї фізики немає демок для завантаження.",
-    ":name is streaming on :server": ":name стрімить на :server"
+    ":name is streaming on :server": ":name стрімить на :server",
+    "Download the demos": "Завантажити демки",
+    "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Кожен забіг із таблиці, по файлу на забіг, з місцем і часом у назві. Анонімна версія без імен, щоб можна було вгадати, хто що пробіг."
 }

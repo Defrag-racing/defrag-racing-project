@@ -778,12 +778,26 @@ class CompsController extends Controller
                     ->values();
             }
 
+            // Weekly has one round; season several. The card shows the first
+            // round's category and maps and the detail page shows the rest.
+            $first = $comp->rounds->sortBy('index')->first();
+
             return [
                 'id' => $comp->id,
                 'title' => $comp->title,
                 'type' => $comp->type,
+                'starts_at' => $comp->starts_at,
                 'ends_at' => $comp->ends_at,
+                'category' => $first?->category,
+                'weapon' => $first?->weapon,
+                'prize_eur' => $first?->prize_eur,
+                'rounds' => $comp->rounds->count(),
+                'entrants' => CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))->count(),
                 'maps' => $comp->rounds->flatMap(fn (CompRound $r) => $r->maps->pluck('map.name'))->unique()->values(),
+                'map_by_physics' => ($first?->maps ?? collect())->mapWithKeys(fn ($m) => [$m->physics => [
+                    'name' => $m->map?->name,
+                    'thumbnail' => $m->map?->thumbnail,
+                ]]),
                 'winners' => $winners,
             ];
         })->all();

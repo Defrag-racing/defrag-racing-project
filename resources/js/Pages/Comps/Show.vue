@@ -10,6 +10,7 @@ export default {
     import { Head, Link } from '@inertiajs/vue3';
     import { t } from '@/utils/i18n';
     import { formatTime } from '@/utils/time';
+    import { physicsBadge, physicsText } from '@/utils/physics';
 
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
     import CompsPayoutBadge from '@/Components/Comps/CompsPayoutBadge.vue';
@@ -39,7 +40,7 @@ export default {
     }[by] ?? (() => t('Chosen by vote')))();
 
     const dateRange = (from, to) => {
-        const opts = { day: 'numeric', month: 'short' };
+        const opts = { weekday: 'short', day: 'numeric', month: 'long' };
         const a = from ? new Date(from) : null;
         const b = to ? new Date(to) : null;
         if (!a || !b) return '';
@@ -96,11 +97,18 @@ export default {
                 <div class="mt-2 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
                     <div>
                         <h1 class="text-3xl md:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ comp.title }}</h1>
-                        <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                            <span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gray-200">
+                        <div class="mt-2 flex flex-wrap items-center gap-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                            <span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-gray-200">
                                 {{ $t('Finished') }}
                             </span>
-                            <span v-if="comp.starts_at && comp.ends_at" class="tabular-nums">{{ dateRange(comp.starts_at, comp.ends_at) }}</span>
+                            <!-- When it was played, printed in full. The old
+                                 version said "Aug 16 - Aug 18" in grey small
+                                 print and people asked what week it was. -->
+                            <span v-if="comp.starts_at && comp.ends_at"
+                                  class="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-sm font-bold tabular-nums text-blue-100">
+                                <svg class="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+                                {{ dateRange(comp.starts_at, comp.ends_at) }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -141,7 +149,7 @@ export default {
 
                             <!-- ---------------- Map ---------------- -->
                             <div class="flex items-center justify-between gap-3">
-                                <span class="rounded-md bg-white/[0.07] px-2 py-0.5 text-[11px] font-black uppercase tracking-widest text-gray-300">
+                                <span class="rounded-md border px-2 py-0.5 text-[11px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">
                                     {{ physics }}
                                 </span>
                                 <span v-if="round.maps?.[physics]" class="text-[11px] text-gray-500 text-right">
@@ -172,29 +180,33 @@ export default {
                                     </Link>
                                     <div v-if="round.maps[physics].author" class="text-xs text-gray-500 truncate">{{ round.maps[physics].author }}</div>
 
-                                    <!-- The week's demos, once. Two flavours
-                                         of the same archive: with the names
-                                         in the file names, or with only the
-                                         rank and the time so you can guess. -->
-                                    <div v-if="round.demos?.[physics]" class="mt-3">
-                                        <div class="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-1.5">
-                                            {{ $tc(':count demo|:count demos', round.demos[physics].count) }} · 7z
-                                        </div>
-                                        <div class="flex flex-wrap gap-1.5">
-                                            <a :href="round.demos[physics].anonymized"
-                                               :title="$t('File names carry only the rank and the time, so you can guess who ran what.')"
-                                               class="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.06] px-2.5 py-1 text-xs font-bold text-gray-200 hover:bg-white/10 hover:border-white/25 transition-colors">
-                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" /></svg>
-                                                {{ $t('Anonymized') }}
-                                            </a>
-                                            <a :href="round.demos[physics].revealed"
-                                               :title="$t('Player names in every file name.')"
-                                               class="inline-flex items-center gap-1.5 rounded-lg border border-blue-400/30 bg-blue-500/10 px-2.5 py-1 text-xs font-bold text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/50 transition-colors">
-                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" /></svg>
-                                                {{ $t('Revealed') }}
-                                            </a>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- The week's demos, once. Two flavours of the
+                                 same archive: with the names in the file
+                                 names, or with only the rank and the time so
+                                 you can guess. -->
+                            <div v-if="round.demos?.[physics]" class="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+                                <div class="flex items-baseline justify-between gap-3 mb-1">
+                                    <span class="text-xs font-black uppercase tracking-wider text-gray-300">{{ $t('Download the demos') }}</span>
+                                    <span class="text-xs font-bold tabular-nums" :class="physicsText(physics)">{{ $tc(':count demo|:count demos', round.demos[physics].count) }} · 7z</span>
+                                </div>
+                                <p class="text-[11px] leading-snug text-gray-500 mb-2.5">
+                                    {{ $t('Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.') }}
+                                </p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <a :href="round.demos[physics].anonymized"
+                                       class="flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-2 text-sm font-bold text-gray-100 hover:bg-white/10 hover:border-white/25 transition-colors">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" /></svg>
+                                        {{ $t('Anonymized') }}
+                                    </a>
+                                    <a :href="round.demos[physics].revealed"
+                                       class="flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-bold transition-colors"
+                                       :class="physics === 'cpm' ? 'border-violet-400/40 bg-violet-500/15 text-violet-100 hover:bg-violet-500/25' : 'border-sky-400/40 bg-sky-500/15 text-sky-100 hover:bg-sky-500/25'">
+                                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" /></svg>
+                                        {{ $t('Revealed') }}
+                                    </a>
                                 </div>
                             </div>
 

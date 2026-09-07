@@ -4365,5 +4365,7 @@
     "Winners, tied": "Vinnare, oavgjort",
     "Winner": "Vinnare",
     "No demos to download for this physics.": "Inga demos att ladda ner för den här fysiken.",
-    ":name is streaming on :server": ":name streamar på :server"
+    ":name is streaming on :server": ":name streamar på :server",
+    "Download the demos": "Ladda ner demos",
+    "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Varje lopp från tabellen, en fil per lopp, namngiven efter placering och tid. Anonymt utelämnar namnen så att du kan gissa vem som sprang vad."
 }

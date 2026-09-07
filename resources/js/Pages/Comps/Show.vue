@@ -170,23 +170,23 @@ export default {
                                             {{ physics }}
                                         </span>
                                         <Link v-if="round.maps?.[physics]?.name" :href="route('maps.map', round.maps[physics].name)"
-                                              class="text-lg font-bold text-white hover:text-blue-300 transition-colors truncate">
+                                              class="text-xl font-black text-white hover:text-blue-300 transition-colors truncate">
                                             {{ round.maps[physics].name }}
                                         </Link>
                                     </div>
-                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-xs text-gray-300 truncate">{{ round.maps[physics].author }}</div>
+                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-sm text-gray-300 truncate">{{ round.maps[physics].author }}</div>
 
                                     <!-- Who ran and what the winner took, per
                                          physics, right here where the map is.
                                          The header says both for the whole
                                          round; this is the half that matters
                                          under this picture. -->
-                                    <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs">
-                                        <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', round.results?.[physics]?.length ?? 0) }}</span>
+                                    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm">
+                                        <span class="font-bold text-gray-200">{{ $tc(':count player|:count players', round.results?.[physics]?.length ?? 0) }}</span>
                                         <span v-if="round.prize_eur > 0" class="font-black text-emerald-300">{{ $t('Winner gets :amount EUR', { amount: round.prize_eur }) }}</span>
                                     </div>
 
-                                    <div v-if="round.maps?.[physics]" class="mt-1.5 text-[11px] text-gray-300">
+                                    <div v-if="round.maps?.[physics]" class="mt-1 text-xs text-gray-300">
                                         <template v-if="round.wildcards?.[physics]">
                                             <span class="inline-flex flex-wrap items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                                                 <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
@@ -273,7 +273,7 @@ export default {
                             </p>
 
                             <!-- ---------------- Ballot ---------------- -->
-                            <details v-if="ballotFor(round, physics).length" class="group pt-2 border-t border-white/10">
+                            <details v-if="ballotFor(round, physics).length" open class="group pt-2 border-t border-white/10">
                                 <summary class="cursor-pointer list-none flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-gray-300 hover:text-gray-300 transition-colors">
                                     <span>{{ $t('Voted from') }} · {{ $tc(':count vote|:count votes', votesTotal(round, physics)) }}</span>
                                     <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" /></svg>

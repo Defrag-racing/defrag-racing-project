@@ -1275,7 +1275,13 @@ export default {
         </section>
 
         <!-- =========================== HISTORY ============================ -->
-        <section v-if="history.length" class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden">
+        <!-- Past comps on the left, the leaderboard beside them on the right
+             and staying put while the list scrolls. Under each other the
+             leaderboard sat below twelve weeks of history and nobody found
+             it. A week is one row of the left column, its two physics one
+             above the other, which is what leaves room on the right. -->
+        <div v-if="history.length" class="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)]">
+        <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden min-w-0">
             <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-white/10 bg-white/[0.04] px-5 py-3">
                 <h2 class="text-lg font-black text-white">{{ $t('Past comps') }}</h2>
                 <span class="text-xs text-gray-500">{{ $tc(':count comp|:count comps', history.length) }}</span>
@@ -1299,7 +1305,7 @@ export default {
                         <span class="text-xs font-bold text-blue-300/70 group-hover:text-blue-300 transition-colors">{{ $t('View comp') }} &rsaquo;</span>
                     </div>
 
-                    <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
+                    <div class="divide-y divide-white/10">
                         <div v-for="physics in PHYSICS" :key="physics" class="flex gap-4 p-4 min-w-0">
                             <div class="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-lg overflow-hidden border border-white/10 bg-white/[0.03]">
                                 <img v-if="comp.map_by_physics?.[physics]?.thumbnail"
@@ -1351,7 +1357,9 @@ export default {
             </div>
         </section>
 
-        <CompsLeaderboard v-if="leaderboard.periods.length" :periods="leaderboard.periods" :rows="leaderboard.rows" />
+        <CompsLeaderboard v-if="leaderboard.periods.length" :periods="leaderboard.periods" :rows="leaderboard.rows"
+                          class="min-w-0 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto" />
+        </div>
 
         <div v-if="!playing && !voting && !history.length" class="rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-6 py-12 text-center">
             <p class="text-gray-400">{{ $t('No comps have run yet. The first one starts as soon as it is switched on.') }}</p>

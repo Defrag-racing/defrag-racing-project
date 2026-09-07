@@ -29,7 +29,7 @@
 
 <template>
     <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 bg-white/[0.04] px-5 py-3">
+        <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 bg-white/[0.04] px-4 py-3">
             <div>
                 <h2 class="text-lg font-black text-white">{{ $t('Overall leaderboard') }}</h2>
                 <p class="text-xs text-gray-500">{{ $t('Points from every finished comp, added up: 25 for a win, 18 for second, 15 for third, down to 1 for finishing.') }}</p>
@@ -47,27 +47,27 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-[10px] font-black uppercase tracking-wider text-gray-500">
-                        <th class="px-4 py-2 text-left w-12">#</th>
+                        <th class="px-3 py-2 text-left w-10">#</th>
                         <th class="px-2 py-2 text-left">{{ $t('Player') }}</th>
-                        <th class="px-3 py-2 text-right">{{ $t('Comps') }}</th>
-                        <th class="px-3 py-2 text-right">{{ $t('Wins') }}</th>
-                        <th class="px-3 py-2 text-right" :class="physicsText('cpm')">CPM</th>
-                        <th class="px-3 py-2 text-right" :class="physicsText('vq3')">VQ3</th>
-                        <th class="px-4 py-2 text-right">{{ $t('Points') }}</th>
+                        <th class="px-2 py-2 text-right">{{ $t('Comps') }}</th>
+                        <th class="px-2 py-2 text-right">{{ $t('Wins') }}</th>
+                        <th class="px-2 py-2 text-right" :class="physicsText('cpm')">CPM</th>
+                        <th class="px-2 py-2 text-right" :class="physicsText('vq3')">VQ3</th>
+                        <th class="px-3 py-2 text-right">{{ $t('Points') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     <tr v-for="row in visible" :key="row.id" class="hover:bg-white/[0.03]" :class="row.rank > 3 && 'text-gray-300'">
-                        <td class="px-4 py-2">
+                        <td class="px-3 py-2">
                             <span class="inline-flex w-6 h-6 items-center justify-center rounded-full border text-[11px] font-black"
                                   :class="RANK_STYLE[row.rank] ?? 'border-white/10 bg-white/5 text-gray-400'">{{ row.rank }}</span>
                         </td>
                         <td class="px-2 py-2"><CompsPlayer :player="row" size="sm" /></td>
-                        <td class="px-3 py-2 text-right tabular-nums">{{ row.comps }}</td>
-                        <td class="px-3 py-2 text-right tabular-nums">{{ row.wins }}</td>
-                        <td class="px-3 py-2 text-right tabular-nums text-gray-400">{{ row.points_cpm }}</td>
-                        <td class="px-3 py-2 text-right tabular-nums text-gray-400">{{ row.points_vq3 }}</td>
-                        <td class="px-4 py-2 text-right tabular-nums font-black text-white">{{ row.points }}</td>
+                        <td class="px-2 py-2 text-right tabular-nums">{{ row.comps }}</td>
+                        <td class="px-2 py-2 text-right tabular-nums">{{ row.wins }}</td>
+                        <td class="px-2 py-2 text-right tabular-nums text-gray-400">{{ row.points_cpm }}</td>
+                        <td class="px-2 py-2 text-right tabular-nums text-gray-400">{{ row.points_vq3 }}</td>
+                        <td class="px-3 py-2 text-right tabular-nums font-black text-white">{{ row.points }}</td>
                     </tr>
                 </tbody>
             </table>

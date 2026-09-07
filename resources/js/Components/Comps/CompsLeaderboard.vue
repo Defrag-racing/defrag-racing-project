@@ -92,7 +92,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
-                    <tr v-for="(row, i) in visible" :key="row.id" :ref="(el) => { if (i === 0) firstRow = el; }" class="hover:bg-white/[0.03]" :class="row.rank > 3 && 'text-gray-300'">
+                    <tr v-for="(row, i) in visible" :key="row.id" :ref="(el) => { if (i === 0) firstRow = el; }" class="hover:bg-white/[0.03] text-gray-200">
                         <td class="px-3 py-2.5">
                             <span class="inline-flex w-6 h-6 items-center justify-center rounded-full border text-[11px] font-black"
                                   :class="RANK_STYLE[row.rank] ?? 'border-white/10 bg-white/5 text-gray-300'">{{ row.rank }}</span>

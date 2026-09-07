@@ -1290,27 +1290,30 @@ export default {
                                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                             </div>
 
-                            <div class="flex-1 min-w-0 flex flex-col gap-2">
-                                <div class="flex items-center gap-2 min-w-0">
+                            <div class="flex-1 min-w-0 flex flex-col">
+                                <!-- Map on the left, that physics' prize on the right. -->
+                                <div class="flex items-center gap-2 min-w-0 pb-2 border-b border-white/10">
                                     <span class="shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">{{ physics }}</span>
                                     <span class="text-sm font-black text-white truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
+                                    <span v-if="comp.prize_eur > 0" class="ml-auto shrink-0 text-sm font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
                                 </div>
 
-                                <div v-if="comp.winners?.[physics]?.length" class="space-y-1.5">
-                                    <div v-for="w in comp.winners[physics]" :key="w.id" class="space-y-1" :class="w.rank > 1 && 'opacity-80'">
-                                        <div class="flex items-center gap-2 min-w-0">
-                                            <span class="inline-flex w-5 h-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-black" :class="RANK_STYLE[w.rank] ?? RANK_STYLE[3]">{{ w.rank }}</span>
-                                            <CompsPlayer :player="w" size="sm" />
-                                            <span class="ml-auto text-sm font-black tabular-nums text-white shrink-0">{{ formatTime(w.time) }}</span>
-                                        </div>
-                                        <CompsPayoutBadge v-if="w.payout" :payout="w.payout" />
+                                <!-- The three best, one line each, nothing between the lines. -->
+                                <div v-if="comp.winners?.[physics]?.length" class="py-2 space-y-1">
+                                    <div v-for="w in comp.winners[physics]" :key="w.id" class="flex items-center gap-2 min-w-0" :class="w.rank > 1 && 'opacity-80'">
+                                        <span class="inline-flex w-5 h-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-black" :class="RANK_STYLE[w.rank] ?? RANK_STYLE[3]">{{ w.rank }}</span>
+                                        <CompsPlayer :player="w" size="sm" />
+                                        <span class="ml-auto text-sm font-black tabular-nums text-white shrink-0">{{ formatTime(w.time) }}</span>
                                     </div>
                                 </div>
-                                <div v-else class="text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
+                                <div v-else class="py-2 text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
 
-                                <div class="mt-auto flex items-center gap-4 pt-1 text-sm">
-                                    <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
-                                    <span v-if="comp.prize_eur > 0" class="font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
+                                <!-- What became of the prize, and how many ran. -->
+                                <div class="mt-auto flex items-center gap-3 pt-2 border-t border-white/10">
+                                    <template v-for="w in comp.winners?.[physics] ?? []" :key="'p' + w.id">
+                                        <CompsPayoutBadge v-if="w.payout" :payout="w.payout" />
+                                    </template>
+                                    <span class="ml-auto shrink-0 text-xs font-bold text-gray-400">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
                                 </div>
                             </div>
                         </div>

@@ -103,23 +103,22 @@
                     <svg class="w-6 h-6 text-white ml-1" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
                 </span>
             </button>
-        </div>
 
-        <div class="p-3 flex-1 flex flex-col gap-3">
-            <div class="min-w-0">
+            <!-- Name and author on the picture, top left, over a dark fade so
+                 they read on any levelshot. They had a row of their own under
+                 the picture and the ballot needs the height more than the row. -->
+            <div class="absolute inset-x-0 top-0 bg-gradient-to-b from-black/85 via-black/50 to-transparent px-2.5 pt-2 pb-5 min-w-0 pointer-events-none">
                 <Link
                     :href="route('maps.map', candidate.map)"
-                    class="block font-bold text-white hover:text-blue-300 transition-colors truncate"
+                    class="pointer-events-auto block font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,1)] hover:text-blue-300 transition-colors truncate"
                 >
                     {{ candidate.map }}
                 </Link>
-                <!-- Always a row, even with nobody to name. A card that skips
-                     it is a card whose vote bars sit higher than its
-                     neighbours', which is the whole reason the ballot looked
-                     ragged. -->
-                <div class="h-4 leading-4 text-xs text-gray-500 truncate">{{ candidate.author }}</div>
+                <div v-if="candidate.author" class="text-xs text-gray-300 drop-shadow-[0_1px_3px_rgba(0,0,0,1)] truncate">{{ candidate.author }}</div>
             </div>
+        </div>
 
+        <div class="p-3 flex-1 flex flex-col gap-3">
             <div class="space-y-2 mt-auto">
                 <div v-for="physics in PHYSICS" :key="physics">
                     <!-- Not on this ballot, and it says which one and why. -->

@@ -99,19 +99,6 @@ export default {
                 <div class="mt-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
                     <div>
                         <h1 class="text-3xl md:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ comp.title }}</h1>
-                        <div class="mt-2 flex flex-wrap items-center gap-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                            <span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-gray-200">
-                                {{ $t('Finished') }}
-                            </span>
-                            <!-- When it was played, printed in full. The old
-                                 version said "Aug 16 - Aug 18" in grey small
-                                 print and people asked what week it was. -->
-                            <span v-if="comp.starts_at && comp.ends_at"
-                                  class="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-sm font-bold tabular-nums text-blue-100">
-                                <svg class="w-4 h-4 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
-                                {{ dateRange(comp.starts_at, comp.ends_at) }}
-                            </span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -127,14 +114,25 @@ export default {
                  the same thing seen at different times, and the page should
                  say so. -->
             <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1.5 border-b border-white/10 bg-white/[0.04] backdrop-blur-sm px-5 py-3">
-                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
                     <span v-if="comp.type === 'season'" class="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gray-300">
                         {{ $t('Round :n', { n: round.index }) }}
                     </span>
-                    <span class="text-lg font-black uppercase tracking-wider text-blue-300/90">
+                    <span class="text-lg font-black uppercase tracking-wider text-blue-300/90 self-center">
                         {{ categoryLabel(round.category) }}<template v-if="round.weapon"> · {{ round.weapon }}</template>
                     </span>
                     <span class="text-xs text-gray-500">{{ $tc(':count player|:count players', entrants(round)) }}</span>
+                    <!-- Finished, and when: on the same line as what it was.
+                         They hung under the title on their own before and
+                         looked like they belonged to nothing. -->
+                    <span class="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-gray-200">
+                        {{ $t('Finished') }}
+                    </span>
+                    <span v-if="comp.starts_at && comp.ends_at"
+                          class="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/15 px-2.5 py-0.5 text-xs font-bold tabular-nums text-blue-100">
+                        <svg class="w-3.5 h-3.5 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>
+                        {{ dateRange(comp.starts_at, comp.ends_at) }}
+                    </span>
                 </div>
 
                 <span v-if="round.prize_eur > 0" class="inline-flex items-baseline gap-2">
@@ -150,38 +148,44 @@ export default {
                         <div v-for="physics in PHYSICS" :key="physics" class="p-4 space-y-4">
 
                             <!-- ---------------- Map ---------------- -->
-                            <div class="flex items-center justify-between gap-3">
-                                <span class="rounded-md border px-2 py-0.5 text-[11px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">
-                                    {{ physics }}
-                                </span>
-                                <span v-if="round.maps?.[physics]" class="text-[11px] text-gray-500 text-right">
-                                    <template v-if="round.wildcards?.[physics]">
-                                        <span class="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
-                                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
-                                            {{ $t('Chosen with a wildcard') }}
-                                            <CompsPlayer v-if="round.wildcards[physics].user" :player="round.wildcards[physics].user" size="sm" />
-                                        </span>
-                                    </template>
-                                    <template v-else>{{ decidedLabel(round.maps[physics].decided_by) }}</template>
-                                </span>
-                            </div>
-
-                            <div v-if="round.maps?.[physics]?.name" class="flex gap-3.5">
-                                <Link :href="route('maps.map', round.maps[physics].name)"
-                                      class="group flex-shrink-0 block w-36 h-[6.5rem] rounded-lg overflow-hidden border border-white/10 hover:border-blue-400/50 transition-colors">
+                            <!-- Everything about the map to the right of its
+                                 picture: physics and name on one line, the
+                                 author under it, then how it was chosen. The
+                                 physics badge and the "chosen by" used to be
+                                 a line of their own above the picture. -->
+                            <div class="flex gap-3.5">
+                                <Link v-if="round.maps?.[physics]?.name" :href="route('maps.map', round.maps[physics].name)"
+                                      class="group flex-shrink-0 block w-28 h-28 rounded-lg overflow-hidden border border-white/10 hover:border-blue-400/50 transition-colors">
                                     <img v-if="round.maps[physics].thumbnail"
                                          :src="`/storage/${round.maps[physics].thumbnail}`"
                                          :alt="round.maps[physics].name"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                                     <span v-else class="block w-full h-full bg-white/[0.03]"></span>
                                 </Link>
-                                <div class="min-w-0 flex-1">
-                                    <Link :href="route('maps.map', round.maps[physics].name)"
-                                          class="block text-lg font-bold text-white hover:text-blue-300 transition-colors truncate">
-                                        {{ round.maps[physics].name }}
-                                    </Link>
-                                    <div v-if="round.maps[physics].author" class="text-xs text-gray-500 truncate">{{ round.maps[physics].author }}</div>
+                                <span v-else class="flex-shrink-0 block w-28 h-28 rounded-lg border border-white/10 bg-white/[0.03]"></span>
 
+                                <div class="min-w-0 flex-1 flex flex-col">
+                                    <div class="flex items-center gap-2 min-w-0">
+                                        <span class="shrink-0 rounded-md border px-2 py-0.5 text-[11px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">
+                                            {{ physics }}
+                                        </span>
+                                        <Link v-if="round.maps?.[physics]?.name" :href="route('maps.map', round.maps[physics].name)"
+                                              class="text-lg font-bold text-white hover:text-blue-300 transition-colors truncate">
+                                            {{ round.maps[physics].name }}
+                                        </Link>
+                                    </div>
+                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-xs text-gray-500 truncate">{{ round.maps[physics].author }}</div>
+
+                                    <div v-if="round.maps?.[physics]" class="mt-2 text-[11px] text-gray-500">
+                                        <template v-if="round.wildcards?.[physics]">
+                                            <span class="inline-flex flex-wrap items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
+                                                {{ $t('Chosen with a wildcard') }}
+                                                <CompsPlayer v-if="round.wildcards[physics].user" :player="round.wildcards[physics].user" size="sm" />
+                                            </span>
+                                        </template>
+                                        <template v-else>{{ decidedLabel(round.maps[physics].decided_by) }}</template>
+                                    </div>
                                 </div>
                             </div>
 

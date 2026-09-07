@@ -357,7 +357,6 @@
     "Add": "Dodaj",
     "Add \":tag\"": "Dodaj \":tag\"",
     "Add a note about this member...": "Dodaj notatkę o tym członku...",
-    "Add a wish": "Dodaj życzenie",
     "Add Alias": "Dodaj alias",
     "Add alternative nicknames you've used in Defrag. Aliases help match your demos automatically and make you searchable by any of your past nicknames.": "Dodaj inne nicki, których używałeś w Defragu. Aliasy pomagają automatycznie dopasować twoje dema i sprawiają, że można cię znaleźć po dowolnym dawnym nicku.",
     "Add another server": "Dodaj kolejny serwer",
@@ -710,7 +709,6 @@
     "Bridge": "Most",
     "Briefly describe your changes...": "Krótko opisz swoje zmiany...",
     "Briefly describe your defrag.racing history, why you want to host, anything I should know.": "Opisz krótko swoją historię na defrag.racing, dlaczego chcesz hostować i wszystko, co powinienem wiedzieć.",
-    "Briefly: what it does, and why it would help.": "Krótko: co to robi i dlaczego by pomogło.",
     "broke your time on": "pobił twój czas na mapie",
     "Browse All Demos": "Przeglądaj wszystkie dema",
     "Browse and download custom player and weapon models": "Przeglądaj i pobieraj własne modele graczy i broni",
@@ -2597,7 +2595,6 @@
     "Once you make this maplist public, it <span>cannot be made private again</span>. Everyone will be able to view and use this maplist.": "Gdy upublicznisz tę maplistę, <span>nie da się jej z powrotem ukryć</span>. Każdy będzie mógł ją oglądać i z niej korzystać.",
     "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Po usunięciu konta wszystkie jego zasoby i dane zostaną trwale skasowane. Zanim je usuniesz, pobierz wszystko, co chcesz zachować.",
     "One account per person.": "Jedno konto na osobę.",
-    "One line - what do you want?": "Jedna linijka - czego chcesz?",
     "One line decides nearly every case: <span>a key may do one thing when you press it, and the timing has to be yours.</span> Doing the whole trick yourself is a technique, no matter how hard it is. Having software do part of it for you is not.": "Jedno zdanie rozstrzyga niemal każdy przypadek: <span>klawisz może po naciśnięciu zrobić jedną rzecz, a wyczucie czasu musi być twoje.</span> Zrobienie całego triku samemu to technika, choćby był nie wiadomo jak trudny. Oddanie kawałka roboty programowi - już nie.",
     "One more step to get started": "Jeszcze jeden krok do startu",
     "One on-demo field matches; the rest uses approved aliases.": "Zgadza się jedno pole z dema; reszta opiera się na zatwierdzonych aliasach.",
@@ -3098,7 +3095,6 @@
     "Request YouTube render": "Poproś o render na YouTube",
     "Requesting...": "Wysyłam prośbę...",
     "Requests": "Prośby",
-    "Requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: ask here, it stays written down, and everybody can see what has already been asked for and vote on it.": "Prośby trafiały do mnie w prywatnych wiadomościach na Discordzie i często się w tym gubiłem. Teraz idą tutaj: napisz to tu, zostaje zapisane, a każdy widzi, o co już ktoś prosił, i może na to zagłosować.",
     "Requires": "Wymaga",
     "Resend Verification Email": "Wyślij e-mail weryfikacyjny ponownie",
     "Reset": "Zresetuj",
@@ -4379,5 +4375,10 @@
     "Your votes": "Twoje głosy",
     "Show": "Pokaż",
     "Report a bug": "Zgłoś błąd",
-    "Bugs & Wishlist": "Błędy i życzenia"
+    "Bugs & Wishlist": "Błędy i życzenia",
+    "Donated to DefragLive": "Przekazano na DefragLive",
+    "Bug reports and requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: report a bug or ask for something here, it stays written down, and everybody can see what has already been reported or asked for and vote on it.": "Zgłoszenia błędów i prośby przychodziły do mnie jako prywatne wiadomości na Discordzie i często je gubiłem. Teraz trafiają tutaj: zgłoś błąd albo poproś o coś tutaj, zostaje to zapisane i każdy widzi, co już zgłoszono lub o co poproszono, i może głosować.",
+    "Add a bug or a wish": "Dodaj błąd lub życzenie",
+    "One line - what is broken, or what do you want?": "Jedna linijka - co jest zepsute, albo czego chcesz?",
+    "Briefly: what happens or what it should do, and why it matters.": "Krótko: co się dzieje albo co powinno robić, i dlaczego to ważne."
 }

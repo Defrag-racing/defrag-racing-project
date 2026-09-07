@@ -206,7 +206,7 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(currentLocale())
 </script>
 
 <template>
-    <Head :title="$t('Wishlist')" />
+    <Head :title="$t('Bugs & Wishlist')" />
 
     <div class="">
         <!-- Header Section - same shape as Servers, Records and Ranking: the
@@ -227,7 +227,7 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(currentLocale())
                          it down into the middle of the block and nowhere near
                          where a reader expects to find a page title. -->
                     <h1 class="text-2xl md:text-3xl font-black text-gray-300/90 flex-shrink-0">
-                        {{ $t('Wishlist') }}
+                        {{ $t('Bugs & Wishlist') }}
                     </h1>
 
                     <div class="flex-1 min-w-[20rem] bg-black/40 backdrop-blur-sm rounded-xl border border-white/10 px-4 py-3 shadow-2xl">
@@ -236,7 +236,7 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(currentLocale())
                              vote on it", which is what any board does and says
                              nothing about this one. -->
                         <p class="text-sm leading-relaxed text-gray-300">
-                            {{ $t('Requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: ask here, it stays written down, and everybody can see what has already been asked for and vote on it.') }}
+                            {{ $t('Bug reports and requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: report a bug or ask for something here, it stays written down, and everybody can see what has already been reported or asked for and vote on it.') }}
                         </p>
                         <!-- Said in the brightest text in the panel, because it
                              is the thing that sets the expectation. -->
@@ -270,7 +270,7 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(currentLocale())
 
                     <button v-if="user" @click="showForm = !showForm"
                         class="px-5 py-2.5 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-bold transition-colors flex-shrink-0">
-                        {{ showForm ? $t('Close') : $t('Add a wish') }}
+                        {{ showForm ? $t('Close') : $t('Add a bug or a wish') }}
                     </button>
                     <Link v-else href="/login"
                         class="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-200 font-bold transition-colors flex-shrink-0">
@@ -303,14 +303,14 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleDateString(currentLocale())
                     <label class="block text-sm text-gray-300 mb-1">{{ $t('Title') }}</label>
                     <input v-model="form.title" type="text" maxlength="120"
                         class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400/50"
-                        :placeholder="$t('One line - what do you want?')" />
+                        :placeholder="$t('One line - what is broken, or what do you want?')" />
                     <div v-if="form.errors.title" class="text-red-400 text-sm mt-1">{{ form.errors.title }}</div>
                 </div>
                 <div>
                     <label class="block text-sm text-gray-300 mb-1">{{ $t('Description') }}</label>
                     <textarea v-model="form.body" rows="4" maxlength="2000"
                         class="w-full bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-purple-400/50"
-                        :placeholder="$t('Briefly: what it does, and why it would help.')"></textarea>
+                        :placeholder="$t('Briefly: what happens or what it should do, and why it matters.')"></textarea>
                     <div v-if="form.errors.body" class="text-red-400 text-sm mt-1">{{ form.errors.body }}</div>
                 </div>
 

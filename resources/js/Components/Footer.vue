@@ -70,7 +70,7 @@
                          have an account and does not trust us. -->
                     <div class="space-x-8 md:-my-px md:flex pb-1">
                         <FooterLink :href="route('validation-log')" :active="false" :text="$t('Validation log')" />
-                        <FooterLink :href="route('wishlist.index')" :active="false" text="Wishlist" />
+                        <FooterLink :href="route('wishlist.index')" :active="false" :text="$t('Bugs & Wishlist')" />
                         <FooterLink v-for="page in footerPages || []" :key="page.slug" :href="'/' + page.slug" :active="false" :text="page.title" />
                     </div>
                 </div>

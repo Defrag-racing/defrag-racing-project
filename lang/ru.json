@@ -357,7 +357,6 @@
     "Add": "Добавить",
     "Add \":tag\"": "Добавить \":tag\"",
     "Add a note about this member...": "Добавить заметку об этом участнике...",
-    "Add a wish": "Добавить желание",
     "Add Alias": "Добавить алиас",
     "Add alternative nicknames you've used in Defrag. Aliases help match your demos automatically and make you searchable by any of your past nicknames.": "Добавь альтернативные ники, которые ты использовал в Defrag. Алиасы помогают автоматически сопоставлять демки и позволяют находить тебя по любому из прошлых ников.",
     "Add another server": "Добавить ещё один сервер",
@@ -710,7 +709,6 @@
     "Bridge": "Мост",
     "Briefly describe your changes...": "Кратко опиши свои изменения...",
     "Briefly describe your defrag.racing history, why you want to host, anything I should know.": "Коротко опиши свою историю на defrag.racing, почему хочешь хостить и всё, что мне стоит знать.",
-    "Briefly: what it does, and why it would help.": "Кратко: что это делает и чем это поможет.",
     "broke your time on": "побил твой результат на",
     "Browse All Demos": "Просмотреть все демки",
     "Browse and download custom player and weapon models": "Просмотр и скачивание пользовательских моделей игроков и оружия",
@@ -2597,7 +2595,6 @@
     "Once you make this maplist public, it <span>cannot be made private again</span>. Everyone will be able to view and use this maplist.": "Как только ты сделаешь этот список карт публичным, его <span>нельзя будет снова сделать приватным</span>. Каждый сможет просматривать и использовать этот список карт.",
     "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "После удаления твоего аккаунта все его ресурсы и данные будут удалены безвозвратно. Перед удалением аккаунта скачай все данные или информацию, которые ты хочешь сохранить.",
     "One account per person.": "Один аккаунт на человека.",
-    "One line - what do you want?": "Одной строкой - чего ты хочешь?",
     "One line decides nearly every case: <span>a key may do one thing when you press it, and the timing has to be yours.</span> Doing the whole trick yourself is a technique, no matter how hard it is. Having software do part of it for you is not.": "Почти каждое дело решает одно правило: <span>клавиша может делать только одно действие при нажатии, а тайминг должен быть твоим.</span> Выполнение всего трюка самостоятельно - это техника, насколько бы сложной она ни была. Использование софта, выполняющего часть работы за тебя - нет.",
     "One more step to get started": "Еще один шаг, чтобы начать",
     "One on-demo field matches; the rest uses approved aliases.": "Одно поле в демо совпадает, в остальных используются одобренные алиасы.",
@@ -3098,7 +3095,6 @@
     "Request YouTube render": "Запросить рендер на YouTube",
     "Requesting...": "Отправка запроса...",
     "Requests": "Запросы",
-    "Requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: ask here, it stays written down, and everybody can see what has already been asked for and vote on it.": "Просьбы приходили ко мне в личных сообщениях в Discord, и я часто терял им счёт. Теперь им место здесь: напиши тут, это останется записанным, и все видят, о чём уже просили, и могут за это проголосовать.",
     "Requires": "Требует",
     "Resend Verification Email": "Отправить письмо подтверждения повторно",
     "Reset": "Сбросить",
@@ -4379,5 +4375,10 @@
     "Your votes": "Твои голоса",
     "Show": "Показать",
     "Report a bug": "Сообщить об ошибке",
-    "Bugs & Wishlist": "Ошибки и пожелания"
+    "Bugs & Wishlist": "Ошибки и пожелания",
+    "Donated to DefragLive": "Пожертвовано DefragLive",
+    "Bug reports and requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: report a bug or ask for something here, it stays written down, and everybody can see what has already been reported or asked for and vote on it.": "Сообщения об ошибках и просьбы раньше приходили мне личными сообщениями в Discord, и я часто их терял. Теперь они идут сюда: сообщи об ошибке или попроси что-нибудь здесь, это остаётся записанным, и все видят, что уже сообщили или попросили, и могут голосовать.",
+    "Add a bug or a wish": "Добавить ошибку или пожелание",
+    "One line - what is broken, or what do you want?": "Одна строка - что сломано, или чего ты хочешь?",
+    "Briefly: what happens or what it should do, and why it matters.": "Коротко: что происходит или что должно происходить, и почему это важно."
 }

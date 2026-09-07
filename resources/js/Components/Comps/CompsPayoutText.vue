@@ -10,6 +10,7 @@
         paid: 'text-emerald-300',
         donated_site: 'text-sky-300',
         donated_comps: 'text-violet-300',
+        donated_defraglive: 'text-fuchsia-300',
         split: 'text-teal-200',
         pending: 'text-amber-300',
     };
@@ -18,6 +19,7 @@
         paid: 'Paid out',
         donated_site: 'Donated to the website',
         donated_comps: 'Donated to the next comps',
+        donated_defraglive: 'Donated to DefragLive',
         pending: 'Payout pending',
     };
 </script>

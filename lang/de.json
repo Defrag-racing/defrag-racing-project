@@ -4364,5 +4364,6 @@
     "Revealed": "Mit Namen",
     "Winners, tied": "Sieger, gleichauf",
     "Winner": "Sieger",
-    "No demos to download for this physics.": "Für diese Physik gibt es keine Demos zum Herunterladen."
+    "No demos to download for this physics.": "Für diese Physik gibt es keine Demos zum Herunterladen.",
+    ":name is streaming on :server": ":name streamt auf :server"
 }

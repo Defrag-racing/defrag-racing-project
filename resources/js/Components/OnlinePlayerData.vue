@@ -1,6 +1,7 @@
 <script setup>
     import { Link } from '@inertiajs/vue3';
     import { computed } from 'vue';
+    import { isStreaming, twitchChannel as channelOf } from '@/utils/twitch';
     import Popper from "vue3-popper";
     // FORCE REBUILD v2
     const props = defineProps({
@@ -24,20 +25,9 @@
     // two minutes by twitch:check-live-status; the name is what they typed
     // into their settings, which is sometimes a whole address, so the channel
     // link is built from the last part of it.
-    const isLive = computed(() => Boolean(props.player.profile?.is_live && twitchChannel.value));
+    const isLive = computed(() => isStreaming(props.player));
 
-    const twitchChannel = computed(() => {
-        const raw = (props.player.profile?.twitch_name ?? '').trim();
-
-        if (! raw) {
-            return null;
-        }
-
-        const fromUrl = raw.match(/twitch\.tv\/([^/?#\s]+)/i);
-        const name = (fromUrl ? fromUrl[1] : raw).replace(/^@/, '').replace(/\/+$/, '');
-
-        return /^[a-zA-Z0-9_]{4,25}$/.test(name) ? name : null;
-    });
+    const twitchChannel = computed(() => channelOf(props.player.profile));
 
 </script>
 
@@ -65,15 +55,17 @@
 
             <!-- Streaming right now. Sits outside the profile Link rather
                  than inside it, because it goes somewhere else and an anchor
-                 inside an anchor is not a thing. A plain dot and not the
-                 Twitch glyph: the ask was to spot a streamer at a glance in a
-                 list of names, and at this size a wordmark is a smudge. -->
+                 inside an anchor is not a thing. Used to be a 10px red dot;
+                 in a list of thirty names it was the thing nobody saw. -->
             <a v-if="isLive" :href="`https://www.twitch.tv/${twitchChannel}`"
                target="_blank" rel="noopener noreferrer"
-               class="relative inline-flex shrink-0 w-2.5 h-2.5"
+               class="inline-flex shrink-0 items-center gap-1 rounded-md border border-red-400/50 bg-red-600/80 px-1.5 py-px text-[9px] font-black uppercase tracking-wider text-white shadow-[0_0_10px_-1px_rgba(239,68,68,0.8)] hover:bg-red-500 transition-colors"
                :title="$t('Live on Twitch')" @click.stop>
-                <span class="live-dot-pulse absolute inline-flex w-full h-full rounded-full bg-red-500 opacity-75"></span>
-                <span class="relative inline-flex w-2.5 h-2.5 rounded-full bg-red-500 ring-1 ring-black/40"></span>
+                <span class="relative inline-flex w-1.5 h-1.5">
+                    <span class="live-dot-pulse absolute inline-flex w-full h-full rounded-full bg-white opacity-75"></span>
+                    <span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-white"></span>
+                </span>
+                {{ $t('LIVE') }}
             </a>
             </span>
 

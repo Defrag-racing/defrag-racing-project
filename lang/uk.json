@@ -4364,5 +4364,6 @@
     "Revealed": "З іменами",
     "Winners, tied": "Переможці, нічия",
     "Winner": "Переможець",
-    "No demos to download for this physics.": "Для цієї фізики немає демок для завантаження."
+    "No demos to download for this physics.": "Для цієї фізики немає демок для завантаження.",
+    ":name is streaming on :server": ":name стрімить на :server"
 }

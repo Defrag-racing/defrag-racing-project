@@ -4364,5 +4364,6 @@
     "Revealed": "Se jmény",
     "Winners, tied": "Vítězové, remíza",
     "Winner": "Vítěz",
-    "No demos to download for this physics.": "Pro tuto fyziku nejsou žádná dema ke stažení."
+    "No demos to download for this physics.": "Pro tuto fyziku nejsou žádná dema ke stažení.",
+    ":name is streaming on :server": ":name streamuje na :server"
 }

@@ -4364,5 +4364,6 @@
     "Revealed": "Med namn",
     "Winners, tied": "Vinnare, oavgjort",
     "Winner": "Vinnare",
-    "No demos to download for this physics.": "Inga demos att ladda ner för den här fysiken."
+    "No demos to download for this physics.": "Inga demos att ladda ner för den här fysiken.",
+    ":name is streaming on :server": ":name streamar på :server"
 }

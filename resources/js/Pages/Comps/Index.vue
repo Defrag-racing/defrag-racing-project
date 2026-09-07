@@ -845,18 +845,18 @@ export default {
         </section>
 
         <!-- ============================ PLAYING ============================ -->
-        <section v-if="playing" class="rounded-2xl border border-green-400/25 bg-gradient-to-br from-green-500/[0.10] via-black/40 to-black/40 backdrop-blur-sm overflow-hidden shadow-[0_0_40px_-14px_rgba(34,197,94,0.4)]">
+        <section v-if="playing" class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden">
             <!-- The same row as the ballot's, in green: what it is, what it
                  pays, when it stops. The countdown used to stack its wall
                  clock under itself and push this header to two lines for the
                  sake of one date. -->
-            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1.5 border-b border-green-400/20 bg-green-500/[0.08] backdrop-blur-sm px-5 py-3">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1.5 border-b border-white/10 bg-white/[0.04] backdrop-blur-sm px-5 py-3">
                 <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 min-w-0">
-                    <span class="rounded-full bg-green-500/20 border border-green-500/40 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-green-300">
+                    <span class="text-xs font-black uppercase tracking-wider text-green-300">
                         {{ $t('Playing now') }}
                     </span>
                     <span class="text-lg font-black text-white">{{ playing.comp_title }}</span>
-                    <span class="text-sm font-black uppercase tracking-wider text-green-300/80">
+                    <span class="text-sm font-black uppercase tracking-wider text-gray-300">
                         {{ categoryLabel(playing.category) }}<template v-if="playing.weapon"> · {{ playing.weapon }}</template>
                     </span>
                 </div>
@@ -873,7 +873,7 @@ export default {
 
                     <CompsCountdown :until="playing.ends_at" :label="$t('Ends in')" inline />
                     <button type="button" @click="togglePlaying"
-                            class="inline-flex items-center gap-1.5 rounded-lg border border-green-400/50 bg-green-500/30 px-3 py-1.5 text-xs font-black text-white shadow-[0_0_16px_-4px_rgba(34,197,94,0.7)] hover:bg-green-500/50 transition-colors"
+                            class="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-black text-white hover:bg-white/20 transition-colors"
                             :title="playingFolded ? $t('Show') : $t('Hide')">
                         <svg class="w-4 h-4 transition-transform" :class="playingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
                         {{ playingFolded ? $t('Show') : $t('Hide') }}
@@ -890,7 +890,7 @@ export default {
                     <span class="font-bold text-white">{{ playing.maps?.[physics]?.name ?? '-' }}</span>
                     <span v-if="bestOf(physics) !== null" class="text-gray-500">{{ $t('Your best') }} <span class="font-bold text-white tabular-nums">{{ formatTime(bestOf(physics)) }}</span></span>
                 </span>
-                <span class="ml-auto text-xs text-green-300">{{ $t('Show') }} ▾</span>
+                <span class="ml-auto text-xs text-gray-400">{{ $t('Show') }} ▾</span>
             </button>
 
             <!-- One box, split down the middle, rather than two cards with
@@ -1105,7 +1105,7 @@ export default {
                  somebody came here to DO, and it was a bare file input on a
                  flat panel, hugging the left edge like a field nobody had
                  finished designing. -->
-            <div class="border-t border-green-400/20 lg:border-t-0 lg:border-l bg-black/30 backdrop-blur-sm px-5 py-6 lg:flex lg:flex-col lg:justify-center">
+            <div class="border-t border-white/10 lg:border-t-0 lg:border-l bg-black/30 backdrop-blur-sm px-5 py-6 lg:flex lg:flex-col lg:justify-center">
                 <div class="mx-auto max-w-3xl text-center">
                     <h3 class="text-lg font-black text-white">{{ $t('Enter your run') }}</h3>
                     <p class="mt-1 text-sm text-gray-400">

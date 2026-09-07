@@ -50,6 +50,22 @@ export default {
 
     const PHYSICS = ['cpm', 'vq3'];
 
+    // What became of a prize, as plain coloured text: a badge under the
+    // standings table shouted over the table itself.
+    const PAYOUT_TEXT = {
+        paid: 'text-emerald-300',
+        donated_site: 'text-sky-300',
+        donated_comps: 'text-violet-300',
+        split: 'text-teal-200',
+        pending: 'text-amber-300',
+    };
+    const PAYOUT_LABEL = {
+        paid: 'Paid out',
+        donated_site: 'Donated to the website',
+        donated_comps: 'Donated to the next comps',
+        pending: 'Payout pending',
+    };
+
     // Gold, silver, bronze for the three rows of a past comp.
     const RANK_STYLE = {
         1: 'bg-amber-400/20 border-amber-400/40 text-amber-300',
@@ -1313,9 +1329,15 @@ export default {
                                     <!-- Whose prize it was and how much, or the badge
                                          reads as if everybody in the table gave it away. -->
                                     <template v-for="w in comp.winners?.[physics] ?? []" :key="'p' + w.id">
-                                        <span v-if="w.payout" class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 min-w-0">
+                                        <span v-if="w.payout" class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 min-w-0 text-xs">
                                             <CompsPlayer :player="w" size="sm" />
-                                            <CompsPayoutBadge :payout="w.payout" :amount="w.payout.amount" />
+                                            <span class="text-gray-600">·</span>
+                                            <span class="font-bold" :class="PAYOUT_TEXT[w.payout.status] ?? PAYOUT_TEXT.pending">
+                                                <template v-if="w.payout.status === 'split'">
+                                                    <template v-for="(eur, status, i) in w.payout.parts" :key="status"><span v-if="i" class="text-gray-600"> · </span>{{ eur }} EUR {{ $t(PAYOUT_LABEL[status]).toLowerCase() }}</template>
+                                                </template>
+                                                <template v-else>{{ w.payout.amount }} EUR · {{ $t(PAYOUT_LABEL[w.payout.status] ?? w.payout.label) }}</template>
+                                            </span>
                                         </span>
                                     </template>
                                     <span class="ml-auto shrink-0 text-xs font-bold text-gray-400">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>

@@ -323,7 +323,18 @@ export default {
                             <h1 class="text-2xl md:text-3xl font-black text-gray-300/90">
                                 {{ $t('Comps') }}
                             </h1>
-
+                            <!-- The two things people keep asking about,
+                                 answered beside the title itself: not chips
+                                 in the button row, which is where the
+                                 clickable things are. -->
+                            <span class="inline-flex items-center gap-1.5 text-sm text-sky-100/90">
+                                <svg class="w-4 h-4 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
+                                {{ $t('OverBounces & Time Resets are allowed.') }}
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 text-sm text-sky-100/90">
+                                <svg class="w-4 h-4 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
+                                {{ $t('Online & Offline demos allowed.') }}
+                            </span>
                         </div>
 
                         <!-- Comps invents no ruleset of its own, and the two
@@ -413,32 +424,6 @@ export default {
                                 {{ $t('Config') }}
                             </button>
 
-                            <!-- The two questions that get asked in Discord
-                                 every week. "Same rules as the servers" is a
-                                 true answer to neither, so both are answered
-                                 by name and where they will be seen.
-
-                                 Not green: green is money on this page - the
-                                 pool, the donors, the donate button - and a
-                                 rules note has nothing to do with any of it.
-
-                                 Both are written short on purpose. They are
-                                 chips, not sentences: the pair has to sit on
-                                 one line beside the buttons before it, and a
-                                 full sentence wrapped the row. -->
-                            <span class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-default bg-sky-500/10 text-sky-100/90">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
-                                {{ $t('OverBounces & Time Resets are allowed.') }}
-                            </span>
-
-                            <!-- The second question after overbounces. Comps
-                                 reads nothing off the servers, so a run made
-                                 alone counts exactly as much as one made in
-                                 front of people. -->
-                            <span class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-default bg-sky-500/10 text-sky-100/90">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
-                                {{ $t('Online & Offline demos allowed.') }}
-                            </span>
                         </div>
                     </div>
 

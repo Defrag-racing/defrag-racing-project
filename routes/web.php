@@ -159,6 +159,12 @@ Route::post('/comps/check', [\App\Http\Controllers\DemoCheckController::class, '
     ->middleware('throttle:20,1')
     ->name('comps.check.run');
 Route::get('/comps/{comp}', [\App\Http\Controllers\CompsController::class, 'show'])->name('comps.show');
+// The week's demos in one 7z, once the round is over. Building one is a
+// handful of B2 reads and a 7z run, so the throttle is per archive rather
+// than per click: a built archive is served from disk.
+Route::get('/comps/rounds/{round}/demos/{physics}/{mode}', [\App\Http\Controllers\CompsController::class, 'downloadDemos'])
+    ->middleware('throttle:30,1')
+    ->name('comps.demos');
 
 Route::post('/comps/rounds/{round}/vote', [\App\Http\Controllers\CompsController::class, 'vote'])
     ->middleware(['auth', 'verified', 'throttle:120,60'])

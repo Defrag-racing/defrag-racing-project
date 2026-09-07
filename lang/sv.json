@@ -4355,5 +4355,14 @@
     "Paid out": "Utbetalt",
     "Payout pending": "Utbetalning väntar",
     "Donated to the website": "Donerat till webbplatsen",
-    "Donated to the next comps": "Donerat till nästa comps"
+    "Donated to the next comps": "Donerat till nästa comps",
+    "Finished": "Avslutad",
+    "Played for": "Spelades om",
+    "File names carry only the rank and the time, so you can guess who ran what.": "Filnamnen innehåller bara placering och tid, så du kan gissa vem som sprang vad.",
+    "Player names in every file name.": "Spelarnamn i varje filnamn.",
+    "Anonymized": "Anonymt",
+    "Revealed": "Med namn",
+    "Winners, tied": "Vinnare, oavgjort",
+    "Winner": "Vinnare",
+    "No demos to download for this physics.": "Inga demos att ladda ner för den här fysiken."
 }

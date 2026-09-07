@@ -12,6 +12,7 @@ use App\Models\CompSubmission;
 use App\Models\CompVote;
 use App\Models\CompWildcard;
 use App\Services\Comps\BallotResolver;
+use App\Services\Comps\RoundDemoArchive;
 use App\Services\Comps\CandidateSelector;
 use App\Services\Comps\CompPreviewService;
 use App\Services\Comps\CompSettings;
@@ -187,8 +188,14 @@ class CompsController extends Controller
                     'ends_at' => $r->ends_at,
                     'maps' => $r->maps->mapWithKeys(fn ($m) => [$m->physics => [
                         'name' => $m->map?->name,
+                        'thumbnail' => $m->map?->thumbnail,
+                        'author' => $m->map?->author,
                         'decided_by' => $m->decided_by,
                     ]]),
+                    // The week's demos as one download per physics, in two
+                    // flavours. Only for a round whose standings are frozen:
+                    // until then the demos are private by design.
+                    'demos' => $this->demoArchivesFor($r),
                     // What the week paid, per physics. A finished round that
                     // does not say what was at stake reads like a scoreboard
                     // from a friendly.
@@ -780,6 +787,57 @@ class CompsController extends Controller
                 'winners' => $winners,
             ];
         })->all();
+    }
+
+    /**
+     * Every counting demo of a finished round's physics, as one 7z.
+     *
+     * `anonymized` names the files by rank and time only, for anyone who
+     * wants to watch the week cold and guess who ran what. `revealed` puts
+     * the player's name in every file name.
+     */
+    public function downloadDemos(CompRound $round, string $physics, string $mode, RoundDemoArchive $archive)
+    {
+        abort_unless(in_array($physics, BallotResolver::PHYSICS, true), 404);
+        abort_unless(in_array($mode, RoundDemoArchive::MODES, true), 404);
+        abort_unless($round->demosVisible(), 404);
+
+        $path = $archive->path($round, $physics, $mode);
+
+        abort_if($path === null, 404, __('No demos to download for this physics.'));
+
+        return response()->download($path, $archive->downloadName($round, $physics, $mode), [
+            'Content-Type' => 'application/x-7z-compressed',
+        ]);
+    }
+
+    /**
+     * @return array<string, array{count: int, anonymized: string, revealed: string}>
+     */
+    private function demoArchivesFor(CompRound $round): array
+    {
+        if (! $round->demosVisible()) {
+            return [];
+        }
+
+        $archive = app(RoundDemoArchive::class);
+        $out = [];
+
+        foreach (BallotResolver::PHYSICS as $physics) {
+            $count = $archive->count($round, $physics);
+
+            if ($count === 0) {
+                continue;
+            }
+
+            $out[$physics] = [
+                'count' => $count,
+                'anonymized' => route('comps.demos', [$round->id, $physics, RoundDemoArchive::ANONYMIZED]),
+                'revealed' => route('comps.demos', [$round->id, $physics, RoundDemoArchive::REVEALED]),
+            ];
+        }
+
+        return $out;
     }
 
     /**

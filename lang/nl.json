@@ -4355,5 +4355,14 @@
     "Paid out": "Uitbetaald",
     "Payout pending": "Uitbetaling in behandeling",
     "Donated to the website": "Gedoneerd aan de website",
-    "Donated to the next comps": "Gedoneerd aan de volgende comps"
+    "Donated to the next comps": "Gedoneerd aan de volgende comps",
+    "Finished": "Afgelopen",
+    "Played for": "Gespeeld om",
+    "File names carry only the rank and the time, so you can guess who ran what.": "De bestandsnamen bevatten alleen de plaats en de tijd, zodat je kunt raden wie wat liep.",
+    "Player names in every file name.": "Spelersnamen in elke bestandsnaam.",
+    "Anonymized": "Anoniem",
+    "Revealed": "Met namen",
+    "Winners, tied": "Winnaars, gelijk",
+    "Winner": "Winnaar",
+    "No demos to download for this physics.": "Geen demos om te downloaden voor deze physics."
 }

@@ -4355,5 +4355,14 @@
     "Paid out": "Ausgezahlt",
     "Payout pending": "Auszahlung ausstehend",
     "Donated to the website": "An die Website gespendet",
-    "Donated to the next comps": "An die nächsten Comps gespendet"
+    "Donated to the next comps": "An die nächsten Comps gespendet",
+    "Finished": "Beendet",
+    "Played for": "Gespielt um",
+    "File names carry only the rank and the time, so you can guess who ran what.": "Die Dateinamen enthalten nur Platz und Zeit, damit du raten kannst, wer was gelaufen ist.",
+    "Player names in every file name.": "Spielernamen in jedem Dateinamen.",
+    "Anonymized": "Anonym",
+    "Revealed": "Mit Namen",
+    "Winners, tied": "Sieger, gleichauf",
+    "Winner": "Sieger",
+    "No demos to download for this physics.": "Für diese Physik gibt es keine Demos zum Herunterladen."
 }

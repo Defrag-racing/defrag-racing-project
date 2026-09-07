@@ -4355,5 +4355,14 @@
     "Paid out": "Payé",
     "Payout pending": "Paiement en attente",
     "Donated to the website": "Reversé au site",
-    "Donated to the next comps": "Reversé aux prochaines comps"
+    "Donated to the next comps": "Reversé aux prochaines comps",
+    "Finished": "Terminé",
+    "Played for": "Joué pour",
+    "File names carry only the rank and the time, so you can guess who ran what.": "Les noms de fichiers ne portent que le rang et le temps, pour deviner qui a fait quoi.",
+    "Player names in every file name.": "Les noms des joueurs dans chaque nom de fichier.",
+    "Anonymized": "Anonyme",
+    "Revealed": "Avec les noms",
+    "Winners, tied": "Vainqueurs, ex aequo",
+    "Winner": "Vainqueur",
+    "No demos to download for this physics.": "Aucune démo à télécharger pour cette physique."
 }

@@ -4355,5 +4355,14 @@
     "Paid out": "Vyplaceno",
     "Payout pending": "Výplata čeká",
     "Donated to the website": "Věnováno webu",
-    "Donated to the next comps": "Věnováno dalším comps"
+    "Donated to the next comps": "Věnováno dalším comps",
+    "Finished": "Ukončeno",
+    "Played for": "Hrálo se o",
+    "File names carry only the rank and the time, so you can guess who ran what.": "Názvy souborů nesou jen pořadí a čas, takže můžeš hádat, kdo co zaběhl.",
+    "Player names in every file name.": "Jména hráčů v každém názvu souboru.",
+    "Anonymized": "Anonymně",
+    "Revealed": "Se jmény",
+    "Winners, tied": "Vítězové, remíza",
+    "Winner": "Vítěz",
+    "No demos to download for this physics.": "Pro tuto fyziku nejsou žádná dema ke stažení."
 }

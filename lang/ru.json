@@ -4355,5 +4355,14 @@
     "Paid out": "Выплачено",
     "Payout pending": "Выплата ожидается",
     "Donated to the website": "Пожертвовано сайту",
-    "Donated to the next comps": "Пожертвовано на следующие comps"
+    "Donated to the next comps": "Пожертвовано на следующие comps",
+    "Finished": "Завершено",
+    "Played for": "Играли за",
+    "File names carry only the rank and the time, so you can guess who ran what.": "В именах файлов только место и время, чтобы можно было угадать, кто что пробежал.",
+    "Player names in every file name.": "Имена игроков в каждом имени файла.",
+    "Anonymized": "Анонимно",
+    "Revealed": "С именами",
+    "Winners, tied": "Победители, ничья",
+    "Winner": "Победитель",
+    "No demos to download for this physics.": "Для этой физики нет демок для скачивания."
 }

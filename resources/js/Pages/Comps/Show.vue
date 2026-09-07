@@ -13,7 +13,7 @@ export default {
     import { physicsBadge, physicsText } from '@/utils/physics';
 
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
-    import CompsPayoutBadge from '@/Components/Comps/CompsPayoutBadge.vue';
+    import CompsPayoutText from '@/Components/Comps/CompsPayoutText.vue';
 
     // A finished comp, opened from the history list. Standings only - the
     // ballot, the countdown and the upload form all belonged to a week that is
@@ -222,16 +222,21 @@ export default {
                                 <div class="text-[10px] font-black uppercase tracking-wider text-amber-300/70 mb-2">
                                     {{ winners(round, physics).length > 1 ? $t('Winners, tied') : $t('Winner') }}
                                 </div>
-                                <div v-for="w in winners(round, physics)" :key="w.user.id"
-                                     class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-                                    <div class="flex items-center gap-3 min-w-0">
-                                        <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-black text-sm">1</span>
-                                        <CompsPlayer :player="w.user" />
-                                    </div>
-                                    <div class="flex items-center gap-3">
+                                <!-- The time stays on the right where every
+                                     other row keeps it. What became of the
+                                     prize is a line of its own under the
+                                     name, plain words, no box. -->
+                                <div v-for="w in winners(round, physics)" :key="w.user.id" class="space-y-1">
+                                    <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-black text-sm">1</span>
+                                            <CompsPlayer :player="w.user" />
+                                        </div>
                                         <span class="text-2xl font-black tabular-nums text-white">{{ formatTime(w.time) }}</span>
-                                        <CompsPayoutBadge v-if="w.payout" :payout="w.payout" :amount="w.payout.amount" />
-                                        <span v-else-if="round.prize_eur > 0" class="text-sm font-black text-emerald-300">{{ round.prize_eur }} EUR</span>
+                                    </div>
+                                    <div class="pl-11 text-xs">
+                                        <CompsPayoutText v-if="w.payout" :payout="w.payout" />
+                                        <span v-else-if="round.prize_eur > 0" class="font-bold text-emerald-300">{{ round.prize_eur }} EUR</span>
                                     </div>
                                 </div>
                             </div>

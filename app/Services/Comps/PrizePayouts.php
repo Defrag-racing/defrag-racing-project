@@ -107,33 +107,83 @@ class PrizePayouts
     }
 
     /**
-     * Settle one prize.
-     *
-     * Both donated endings write a real SiteDonation, which is the whole point
-     * of choosing between them here rather than in a note: a prize given back
-     * has to appear in the donations the same way any other money does, or the
-     * person who gave it up does not get counted as having given anything. The
-     * winner's own email goes on it, because donor stats are aggregated by
-     * email match and without it the row belongs to nobody.
+     * Settle one prize with the whole amount going one way.
      *
      * @param  array{comps_start_comp?:int, comps_weeks?:int, note?:string}  $options
      */
     public function resolve(CompPayout $payout, string $status, array $options = []): CompPayout
     {
-        if (! in_array($status, CompPayout::RESOLVED_STATUSES, true)) {
+        if (! isset(CompPayout::PART_OF[$status])) {
             throw new \InvalidArgumentException("Not a settled status: {$status}");
         }
 
-        return DB::transaction(function () use ($payout, $status, $options) {
-            $donation = null;
+        $amount = (float) $payout->amount;
 
-            if ($status !== CompPayout::STATUS_PAID) {
-                $donation = $this->recordDonation($payout, $status, $options);
-            }
+        return $this->settle($payout, [
+            CompPayout::STATUS_PAID => $status === CompPayout::STATUS_PAID ? $amount : 0,
+            CompPayout::STATUS_DONATED_SITE => $status === CompPayout::STATUS_DONATED_SITE ? $amount : 0,
+            CompPayout::STATUS_DONATED_COMPS => $status === CompPayout::STATUS_DONATED_COMPS ? $amount : 0,
+        ], $options);
+    }
+
+    /**
+     * Settle one prize, in parts.
+     *
+     * The parts must add up to the prize: a settlement that leaves a euro
+     * unaccounted for is not settled, and one that hands out more than was
+     * won is a typo. Both given-back parts write a real SiteDonation each,
+     * which is the whole point of choosing between them here rather than in
+     * a note: a prize given back has to appear in the donations the same way
+     * any other money does, or the person who gave it up does not get counted
+     * as having given anything. The winner's own email goes on it, because
+     * donor stats are aggregated by email match and without it the row
+     * belongs to nobody.
+     *
+     * @param  array<string, float>  $parts  status => euro, from PART_OF
+     * @param  array{comps_start_comp?:int, comps_weeks?:int, note?:string}  $options
+     */
+    public function settle(CompPayout $payout, array $parts, array $options = []): CompPayout
+    {
+        $paid = round((float) ($parts[CompPayout::STATUS_PAID] ?? 0), 2);
+        $site = round((float) ($parts[CompPayout::STATUS_DONATED_SITE] ?? 0), 2);
+        $comps = round((float) ($parts[CompPayout::STATUS_DONATED_COMPS] ?? 0), 2);
+
+        if (min($paid, $site, $comps) < 0) {
+            throw new \InvalidArgumentException('A part of a prize cannot be negative.');
+        }
+
+        if (abs(($paid + $site + $comps) - (float) $payout->amount) > 0.005) {
+            throw new \InvalidArgumentException(sprintf(
+                'The parts add up to %.2f EUR, the prize is %.2f EUR.',
+                $paid + $site + $comps,
+                (float) $payout->amount
+            ));
+        }
+
+        $ways = ($paid > 0 ? 1 : 0) + ($site > 0 ? 1 : 0) + ($comps > 0 ? 1 : 0);
+
+        if ($ways === 0) {
+            throw new \InvalidArgumentException('Nothing was settled.');
+        }
+
+        $status = match (true) {
+            $ways > 1 => CompPayout::STATUS_SPLIT,
+            $paid > 0 => CompPayout::STATUS_PAID,
+            $site > 0 => CompPayout::STATUS_DONATED_SITE,
+            default => CompPayout::STATUS_DONATED_COMPS,
+        };
+
+        return DB::transaction(function () use ($payout, $paid, $site, $comps, $status, $options) {
+            $siteDonation = $site > 0 ? $this->recordDonation($payout, $site, false, $options) : null;
+            $compsDonation = $comps > 0 ? $this->recordDonation($payout, $comps, true, $options) : null;
 
             $payout->update([
                 'status' => $status,
-                'site_donation_id' => $donation?->id,
+                'paid_eur' => $paid,
+                'donated_site_eur' => $site,
+                'donated_comps_eur' => $comps,
+                'site_donation_id' => $siteDonation?->id,
+                'comps_donation_id' => $compsDonation?->id,
                 'resolved_at' => now(),
                 'resolved_by' => auth()->id(),
                 'note' => trim((string) ($options['note'] ?? '')) ?: null,
@@ -143,12 +193,11 @@ class PrizePayouts
         });
     }
 
-    /** The donation a given-back prize becomes. */
-    private function recordDonation(CompPayout $payout, string $status, array $options): SiteDonation
+    /** The donation a given-back part of a prize becomes. */
+    private function recordDonation(CompPayout $payout, float $amount, bool $toComps, array $options): SiteDonation
     {
         $payout->loadMissing(['user', 'round.comp']);
 
-        $toComps = $status === CompPayout::STATUS_DONATED_COMPS;
         $number = $payout->round?->comp?->number;
         $url = $payout->round?->comp_id ? url('/comps/' . $payout->round->comp_id) : url('/comps');
 
@@ -159,7 +208,7 @@ class PrizePayouts
             'user_id' => $payout->user_id,
             'donor_email' => $payout->user?->email,
             'donor_name' => $this->plainName($payout) ?: 'Comps winner',
-            'amount' => $payout->amount,
+            'amount' => $amount,
             'currency' => 'EUR',
             'donation_date' => now()->toDateString(),
             'note' => $what,
@@ -171,7 +220,7 @@ class PrizePayouts
             // Zero rather than null on the amount, because the column is NOT
             // NULL with a default of 0 - handing it a null does not mean "no
             // earmark", it throws and the prize is left unsettled.
-            'comps_amount' => $toComps ? $payout->amount : 0,
+            'comps_amount' => $toComps ? $amount : 0,
             'comps_weeks' => $toComps ? max(1, (int) ($options['comps_weeks'] ?? 1)) : null,
             'comps_start_comp' => $toComps
                 ? (int) ($options['comps_start_comp'] ?? $this->funding->nextFundableComp())

@@ -875,6 +875,9 @@ class CompsController extends Controller
                 'status' => $payout->status,
                 'label' => $payout->label(),
                 'amount' => $this->money((float) $payout->amount),
+                // status => euro for each way the money went. One entry for
+                // a whole-amount settlement, two or three for a split.
+                'parts' => array_map(fn ($eur) => $this->money($eur), $payout->parts()),
                 'resolved_at' => $payout->resolved_at?->toIso8601String(),
             ];
         }

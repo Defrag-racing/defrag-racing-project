@@ -24,12 +24,15 @@ class CompPayout extends Model
     public const STATUS_PAID = 'paid';
     public const STATUS_DONATED_SITE = 'donated_site';
     public const STATUS_DONATED_COMPS = 'donated_comps';
+    /** More than one of the above at once: some taken, some given back. */
+    public const STATUS_SPLIT = 'split';
 
     /** Statuses meaning nothing is owed to the winner any more. */
     public const RESOLVED_STATUSES = [
         self::STATUS_PAID,
         self::STATUS_DONATED_SITE,
         self::STATUS_DONATED_COMPS,
+        self::STATUS_SPLIT,
     ];
 
     /** How each ending is written, everywhere it is shown. */
@@ -38,6 +41,14 @@ class CompPayout extends Model
         self::STATUS_PAID => 'Paid out',
         self::STATUS_DONATED_SITE => 'Donated to the website',
         self::STATUS_DONATED_COMPS => 'Donated to the next comps',
+        self::STATUS_SPLIT => 'Split',
+    ];
+
+    /** The amount column each single-ending status fills. */
+    public const PART_OF = [
+        self::STATUS_PAID => 'paid_eur',
+        self::STATUS_DONATED_SITE => 'donated_site_eur',
+        self::STATUS_DONATED_COMPS => 'donated_comps_eur',
     ];
 
     protected $fillable = [
@@ -45,8 +56,12 @@ class CompPayout extends Model
         'physics',
         'user_id',
         'amount',
+        'paid_eur',
+        'donated_site_eur',
+        'donated_comps_eur',
         'status',
         'site_donation_id',
+        'comps_donation_id',
         'resolved_at',
         'resolved_by',
         'note',
@@ -54,6 +69,9 @@ class CompPayout extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'paid_eur' => 'decimal:2',
+        'donated_site_eur' => 'decimal:2',
+        'donated_comps_eur' => 'decimal:2',
         'resolved_at' => 'datetime',
     ];
 
@@ -75,6 +93,30 @@ class CompPayout extends Model
     public function resolver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    public function compsDonation(): BelongsTo
+    {
+        return $this->belongsTo(SiteDonation::class, 'comps_donation_id');
+    }
+
+    /**
+     * Where the money went, as status => euro, only the non-zero parts. A
+     * whole-amount settlement is one entry; a split is two or three.
+     *
+     * @return array<string, float>
+     */
+    public function parts(): array
+    {
+        $out = [];
+
+        foreach (self::PART_OF as $status => $column) {
+            if ((float) $this->{$column} > 0) {
+                $out[$status] = (float) $this->{$column};
+            }
+        }
+
+        return $out;
     }
 
     public function isResolved(): bool

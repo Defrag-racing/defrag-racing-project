@@ -94,7 +94,16 @@ class CompPayoutResource extends Resource
                     ->size('xs')
                     ->alignEnd()
                     ->sortable()
-                    ->formatStateUsing(fn ($state) => number_format((float) $state, 2) . ' EUR'),
+                    ->formatStateUsing(fn ($state) => number_format((float) $state, 2) . ' EUR')
+                    // Where a split went, under the total. One-way rows say
+                    // it in the status already and get nothing here.
+                    ->description(fn (CompPayout $r) => $r->status === CompPayout::STATUS_SPLIT
+                        ? implode(' · ', array_map(
+                            fn ($status, $eur) => number_format($eur, 2) . ' ' . strtolower(CompPayout::LABELS[$status]),
+                            array_keys($r->parts()),
+                            $r->parts()
+                        ))
+                        : null),
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
@@ -102,6 +111,7 @@ class CompPayoutResource extends Resource
                     ->color(fn (string $state) => match ($state) {
                         CompPayout::STATUS_PENDING => 'warning',
                         CompPayout::STATUS_PAID => 'info',
+                        CompPayout::STATUS_SPLIT => 'primary',
                         default => 'success',
                     })
                     ->formatStateUsing(fn (string $state) => CompPayout::LABELS[$state] ?? $state),
@@ -121,7 +131,10 @@ class CompPayoutResource extends Resource
                     ->label('Donation')
                     ->size('xs')
                     ->placeholder('-')
-                    ->formatStateUsing(fn ($state) => $state ? '#' . $state : '-')
+                    ->getStateUsing(fn (CompPayout $r) => implode(' ', array_filter([
+                        $r->site_donation_id ? '#' . $r->site_donation_id : null,
+                        $r->comps_donation_id ? '#' . $r->comps_donation_id : null,
+                    ])) ?: null)
                     ->toggleable(),
             ])
             ->filters([
@@ -155,14 +168,48 @@ class CompPayoutResource extends Resource
                                 CompPayout::STATUS_PAID => CompPayout::LABELS[CompPayout::STATUS_PAID],
                                 CompPayout::STATUS_DONATED_SITE => CompPayout::LABELS[CompPayout::STATUS_DONATED_SITE],
                                 CompPayout::STATUS_DONATED_COMPS => CompPayout::LABELS[CompPayout::STATUS_DONATED_COMPS],
+                                CompPayout::STATUS_SPLIT => 'Split it',
                             ])
                             ->descriptions([
                                 CompPayout::STATUS_DONATED_SITE => 'Records an approved site donation in the winner\'s name, counting towards the hosting goal.',
                                 CompPayout::STATUS_DONATED_COMPS => 'Records the same donation earmarked for comps, so it pays a later weekly instead.',
+                                CompPayout::STATUS_SPLIT => 'Some paid out, the rest given back. The three parts must add up to the prize.',
                             ])
                             ->default(CompPayout::STATUS_PAID)
                             ->required()
                             ->live(),
+
+                        // The three parts of a split. Each one is a plain
+                        // euro figure; the sum is checked on the paid field so
+                        // the complaint sits next to the numbers.
+                        Forms\Components\Grid::make(3)
+                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_SPLIT)
+                            ->schema([
+                                Forms\Components\TextInput::make('split_paid')
+                                    ->label('Paid out')
+                                    ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
+                                    ->default(fn (CompPayout $record) => (float) $record->amount)
+                                    ->live(onBlur: true)
+                                    ->rules([
+                                        fn (CompPayout $record, Forms\Get $get) => function (string $attribute, $value, \Closure $fail) use ($record, $get) {
+                                            $sum = (float) $get('split_paid') + (float) $get('split_site') + (float) $get('split_comps');
+
+                                            if (abs($sum - (float) $record->amount) > 0.005) {
+                                                $fail(sprintf("The parts add up to %.2f EUR, the prize is %.2f EUR.", $sum, (float) $record->amount));
+                                            }
+                                        },
+                                    ]),
+                                Forms\Components\TextInput::make('split_site')
+                                    ->label('To the website')
+                                    ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
+                                    ->default(0)
+                                    ->live(onBlur: true),
+                                Forms\Components\TextInput::make('split_comps')
+                                    ->label('To the next comps')
+                                    ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
+                                    ->default(0)
+                                    ->live(onBlur: true),
+                            ]),
 
                         Forms\Components\TextInput::make('comps_start_comp')
                             ->label('Funds weekly number')
@@ -175,7 +222,8 @@ class CompPayoutResource extends Resource
                             ->default(fn () => app(PrizeFunding::class)->nextFundableComp())
                             ->helperText(fn () => 'The pool is currently paid up through weekly '
                                 . (app(PrizeFunding::class)->fundedThroughComp() ?? 'nothing') . '.')
-                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_DONATED_COMPS),
+                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_DONATED_COMPS
+                                || ($get('resolution') === CompPayout::STATUS_SPLIT && (float) $get('split_comps') > 0)),
 
                         Forms\Components\TextInput::make('comps_weeks')
                             ->label('Spread over how many weeklies')
@@ -183,7 +231,8 @@ class CompPayoutResource extends Resource
                             ->minValue(1)
                             ->default(1)
                             ->required()
-                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_DONATED_COMPS),
+                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_DONATED_COMPS
+                                || ($get('resolution') === CompPayout::STATUS_SPLIT && (float) $get('split_comps') > 0)),
 
                         Forms\Components\TextInput::make('note')
                             ->label('Note')
@@ -191,15 +240,35 @@ class CompPayoutResource extends Resource
                             ->helperText('Admin only. The transfer reference, or why it went where it went.'),
                     ])
                     ->action(function (CompPayout $record, array $data) {
-                        $payout = app(PrizePayouts::class)->resolve($record, $data['resolution'], $data);
+                        $payouts = app(PrizePayouts::class);
+
+                        try {
+                            $payout = $data['resolution'] === CompPayout::STATUS_SPLIT
+                                ? $payouts->settle($record, [
+                                    CompPayout::STATUS_PAID => (float) ($data['split_paid'] ?? 0),
+                                    CompPayout::STATUS_DONATED_SITE => (float) ($data['split_site'] ?? 0),
+                                    CompPayout::STATUS_DONATED_COMPS => (float) ($data['split_comps'] ?? 0),
+                                ], $data)
+                                : $payouts->resolve($record, $data['resolution'], $data);
+                        } catch (\InvalidArgumentException $e) {
+                            Notification::make()->danger()->title('Not settled')->body($e->getMessage())->send();
+
+                            return;
+                        }
+
+                        $lines = [];
+
+                        foreach ($payout->parts() as $status => $eur) {
+                            $lines[] = number_format($eur, 2) . ' EUR ' . strtolower(CompPayout::LABELS[$status]);
+                        }
+
+                        $donations = array_filter([$payout->site_donation_id, $payout->comps_donation_id]);
 
                         Notification::make()
                             ->success()
                             ->title($payout->label())
-                            ->body($payout->site_donation_id
-                                ? 'Site donation #' . $payout->site_donation_id . ' recorded for '
-                                    . number_format((float) $payout->amount, 2) . ' EUR.'
-                                : 'Marked as paid. Nothing else was changed.')
+                            ->body(implode(' · ', $lines)
+                                . ($donations ? ' Donation ' . implode(', ', array_map(fn ($id) => "#{$id}", $donations)) . ' recorded.' : ''))
                             ->send();
                     }),
 
@@ -218,7 +287,11 @@ class CompPayoutResource extends Resource
                     ->action(function (CompPayout $record) {
                         $record->update([
                             'status' => CompPayout::STATUS_PENDING,
+                            'paid_eur' => 0,
+                            'donated_site_eur' => 0,
+                            'donated_comps_eur' => 0,
                             'site_donation_id' => null,
+                            'comps_donation_id' => null,
                             'resolved_at' => null,
                             'resolved_by' => null,
                         ]);

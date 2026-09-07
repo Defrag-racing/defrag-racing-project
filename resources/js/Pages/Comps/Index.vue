@@ -1334,7 +1334,7 @@ export default {
                         <span v-if="comp.category" class="text-[10px] font-black uppercase tracking-wider text-blue-300/80">
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>
-                        <span class="ml-auto text-[11px] tabular-nums text-gray-300">{{ historyDates(comp) }}</span>
+                        <span class="ml-auto text-xs font-bold tabular-nums text-gray-200">{{ historyDates(comp) }}</span>
                         <span class="rounded-lg border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-xs font-black text-blue-200 transition-colors group-hover:border-blue-400/60 group-hover:bg-blue-500/30 group-hover:text-white">{{ $t('Details') }} &rsaquo;</span>
                     </div>
 

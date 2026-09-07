@@ -37,18 +37,18 @@
              nothing written look like they forgot to say something. -->
         <ul class="flex gap-2" :class="rail ? 'flex-col' : 'flex-wrap'">
             <li v-for="d in funders.donors" :key="d.id"
-                class="rounded-lg border border-emerald-400/20 bg-emerald-500/[0.07] px-3 py-1.5"
+                class="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5"
                 :class="rail ? 'block' : (d.note ? 'block max-w-sm' : 'inline-flex items-baseline gap-2')">
                 <div :class="rail ? 'flex flex-col' : (d.note ? 'flex items-baseline gap-2 flex-wrap' : 'contents')">
                     <component :is="d.user_id ? Link : 'span'"
                                :href="d.user_id ? `/profile/${d.user_id}` : undefined"
-                               class="text-sm font-bold text-emerald-100"
+                               class="text-sm font-bold text-gray-100"
                                :class="[d.user_id ? 'hover:underline' : '', rail ? 'truncate' : '']">{{ d.name }}</component>
                     <span class="text-sm font-black text-emerald-300 tabular-nums">{{ d.amount }} EUR</span>
                     <!-- The span, not just the count: "over 10 weeks" and
                          "weeklies 6 to 15" answer different questions and
                          people ask the second one. -->
-                    <span class="text-xs text-emerald-100/50">
+                    <span class="text-xs text-gray-400">
                         {{ $t('over :count weeklies (:from-:to)', { count: d.weeks, from: d.from_comp, to: d.to_comp }) }}
                     </span>
                 </div>
@@ -57,9 +57,9 @@
                      is worth being able to click through to, and there is no
                      column for a URL: it is written into the sentence and the
                      server pulls it back out. -->
-                <p v-if="d.note" class="mt-1 text-xs text-emerald-100/70 italic leading-snug">
+                <p v-if="d.note" class="mt-1 text-xs text-gray-400 italic leading-snug">
                     <a v-if="d.note_url" :href="d.note_url"
-                       class="underline decoration-emerald-100/30 hover:text-emerald-100">{{ d.note }}</a>
+                       class="underline decoration-white/20 hover:text-gray-200">{{ d.note }}</a>
                     <template v-else>{{ d.note }}</template>
                 </p>
             </li>

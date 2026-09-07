@@ -323,7 +323,18 @@ export default {
                             <h1 class="text-2xl md:text-3xl font-black text-gray-300/90">
                                 {{ $t('Comps') }}
                             </h1>
-
+                            <!-- The two things people keep asking about,
+                                 answered beside the title itself: not chips
+                                 in the button row, which is where the
+                                 clickable things are. -->
+                            <span class="inline-flex items-center gap-1.5 text-sm text-sky-100/90">
+                                <svg class="w-4 h-4 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
+                                {{ $t('OverBounces & Time Resets are allowed.') }}
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 text-sm text-sky-100/90">
+                                <svg class="w-4 h-4 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
+                                {{ $t('Online & Offline demos allowed.') }}
+                            </span>
                         </div>
 
                         <!-- Comps invents no ruleset of its own, and the two
@@ -413,32 +424,6 @@ export default {
                                 {{ $t('Config') }}
                             </button>
 
-                            <!-- The two questions that get asked in Discord
-                                 every week. "Same rules as the servers" is a
-                                 true answer to neither, so both are answered
-                                 by name and where they will be seen.
-
-                                 Not green: green is money on this page - the
-                                 pool, the donors, the donate button - and a
-                                 rules note has nothing to do with any of it.
-
-                                 Both are written short on purpose. They are
-                                 chips, not sentences: the pair has to sit on
-                                 one line beside the buttons before it, and a
-                                 full sentence wrapped the row. -->
-                            <span class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-default bg-sky-500/10 text-sky-100/90">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
-                                {{ $t('OverBounces & Time Resets are allowed.') }}
-                            </span>
-
-                            <!-- The second question after overbounces. Comps
-                                 reads nothing off the servers, so a run made
-                                 alone counts exactly as much as one made in
-                                 front of people. -->
-                            <span class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-default bg-sky-500/10 text-sky-100/90">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-sky-400" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
-                                {{ $t('Online & Offline demos allowed.') }}
-                            </span>
                         </div>
                     </div>
 
@@ -1326,11 +1311,14 @@ export default {
                  who won and in what time, and what became of the prize. A
                  picture above the text made each half tall and narrow and
                  the two weeks next to each other read as four cards. -->
-            <div class="p-4 md:p-5 space-y-4">
+            <div class="p-4 md:p-5 space-y-6">
+                <!-- Each week gets a header in the ballot's blue and a
+                     visible edge, or twelve weeks of grey rows run into one
+                     long table. -->
                 <Link v-for="comp in history" :key="comp.id" :href="route('comps.show', comp.id)"
-                      class="group block rounded-xl border border-white/10 bg-black/30 overflow-hidden transition-all hover:border-blue-400/40 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.5)]">
-                    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-white/10 bg-white/[0.04] px-4 py-2.5">
-                        <span class="text-base font-black text-white group-hover:text-blue-300 transition-colors">{{ comp.title }}</span>
+                      class="group block rounded-xl border border-blue-400/25 bg-black/30 overflow-hidden shadow-[0_0_24px_-14px_rgba(96,165,250,0.5)] transition-all hover:border-blue-400/60 hover:shadow-[0_0_30px_-10px_rgba(59,130,246,0.6)]">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-blue-400/20 bg-gradient-to-r from-blue-500/[0.18] to-blue-500/[0.04] px-4 py-3">
+                        <span class="text-lg font-black text-white group-hover:text-blue-200 transition-colors">{{ comp.title }}</span>
                         <span v-if="comp.category" class="text-[10px] font-black uppercase tracking-wider text-blue-300/80">
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>

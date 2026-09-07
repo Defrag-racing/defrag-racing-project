@@ -357,7 +357,6 @@
     "Add": "Přidat",
     "Add \":tag\"": "Přidat \":tag\"",
     "Add a note about this member...": "Napiš poznámku k tomuhle členovi...",
-    "Add a wish": "Přidat přání",
     "Add Alias": "Přidat přezdívku",
     "Add alternative nicknames you've used in Defrag. Aliases help match your demos automatically and make you searchable by any of your past nicknames.": "Přidej si další přezdívky, pod kterými jsi v Defragu hrál. Podle nich se ti automaticky spárují dema a lidi tě najdou i pod starým nickem.",
     "Add another server": "Přidat další server",
@@ -710,7 +709,6 @@
     "Bridge": "Most",
     "Briefly describe your changes...": "Stručně popiš, co jsi změnil...",
     "Briefly describe your defrag.racing history, why you want to host, anything I should know.": "Stručně popiš svou historii na defrag.racing, proč chceš hostovat server a cokoli dalšího, co bych měl vědět.",
-    "Briefly: what it does, and why it would help.": "Stručně: co to dělá a proč by to pomohlo.",
     "broke your time on": "překonal tvůj čas na mapě",
     "Browse All Demos": "Procházet všechna dema",
     "Browse and download custom player and weapon models": "Procházej a stahuj vlastní modely hráčů a zbraní",
@@ -2597,7 +2595,6 @@
     "Once you make this maplist public, it <span>cannot be made private again</span>. Everyone will be able to view and use this maplist.": "Jakmile tenhle maplist zveřejníš, <span>už ho nejde vrátit na soukromý</span>. Bude ho moct zobrazit a používat kdokoli.",
     "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Jakmile účet smažeš, natrvalo zmizí i všechna data, která k němu patří. Než to uděláš, stáhni si prosím všechno, co si chceš nechat.",
     "One account per person.": "Jeden účet na jednoho člověka.",
-    "One line - what do you want?": "Jedna věta - co chceš?",
     "One line decides nearly every case: <span>a key may do one thing when you press it, and the timing has to be yours.</span> Doing the whole trick yourself is a technique, no matter how hard it is. Having software do part of it for you is not.": "Skoro každý případ rozhodne jedna věta: <span>klávesa smí po stisku udělat jednu věc a načasování musí být tvoje.</span> Když celý trik zvládneš sám, je to technika, ať je jakkoli těžký. Když za tebe kus odvede software, není.",
     "One more step to get started": "Ještě jeden krok a můžeš začít",
     "One on-demo field matches; the rest uses approved aliases.": "Souhlasí jeden údaj z dema, zbytek jde přes schválené aliasy.",
@@ -3098,7 +3095,6 @@
     "Request YouTube render": "Požádat o render na YouTube",
     "Requesting...": "Žádám...",
     "Requests": "Žádosti",
-    "Requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: ask here, it stays written down, and everybody can see what has already been asked for and vote on it.": "Požadavky za mnou chodily v soukromých zprávách na Discordu a často jsem v tom ztrácel přehled. Odteď patří sem: napiš to tady, zůstane to zapsané a každý vidí, o co už někdo požádal, a může to podpořit hlasem.",
     "Requires": "Vyžaduje",
     "Resend Verification Email": "Poslat ověřovací e-mail znovu",
     "Reset": "Vynulovat",
@@ -4379,5 +4375,10 @@
     "Your votes": "Tvoje hlasy",
     "Show": "Zobrazit",
     "Report a bug": "Nahlásit chybu",
-    "Bugs & Wishlist": "Chyby a přání"
+    "Bugs & Wishlist": "Chyby a přání",
+    "Donated to DefragLive": "Věnováno DefragLive",
+    "Bug reports and requests used to reach me as private messages on Discord and I often lost track of them. This is where they go now: report a bug or ask for something here, it stays written down, and everybody can see what has already been reported or asked for and vote on it.": "Hlášení chyb a přání mi dřív chodily jako soukromé zprávy na Discordu a často jsem je ztratil. Teď patří sem: nahlas chybu nebo si o něco řekni tady, zůstane to zapsané a všichni vidí, co už bylo nahlášeno nebo o co bylo požádáno, a můžou hlasovat.",
+    "Add a bug or a wish": "Přidat chybu nebo přání",
+    "One line - what is broken, or what do you want?": "Jeden řádek - co je rozbité, nebo co chceš?",
+    "Briefly: what happens or what it should do, and why it matters.": "Stručně: co se děje nebo co by to mělo dělat, a proč na tom záleží."
 }

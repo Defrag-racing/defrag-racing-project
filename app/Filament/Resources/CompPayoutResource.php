@@ -134,6 +134,7 @@ class CompPayoutResource extends Resource
                     ->getStateUsing(fn (CompPayout $r) => implode(' ', array_filter([
                         $r->site_donation_id ? '#' . $r->site_donation_id : null,
                         $r->comps_donation_id ? '#' . $r->comps_donation_id : null,
+                        $r->defraglive_donation_id ? '#' . $r->defraglive_donation_id : null,
                     ])) ?: null)
                     ->toggleable(),
             ])
@@ -168,12 +169,14 @@ class CompPayoutResource extends Resource
                                 CompPayout::STATUS_PAID => CompPayout::LABELS[CompPayout::STATUS_PAID],
                                 CompPayout::STATUS_DONATED_SITE => CompPayout::LABELS[CompPayout::STATUS_DONATED_SITE],
                                 CompPayout::STATUS_DONATED_COMPS => CompPayout::LABELS[CompPayout::STATUS_DONATED_COMPS],
+                                CompPayout::STATUS_DONATED_DEFRAGLIVE => CompPayout::LABELS[CompPayout::STATUS_DONATED_DEFRAGLIVE],
                                 CompPayout::STATUS_SPLIT => 'Split it',
                             ])
                             ->descriptions([
                                 CompPayout::STATUS_DONATED_SITE => 'Records an approved site donation in the winner\'s name, counting towards the hosting goal.',
                                 CompPayout::STATUS_DONATED_COMPS => 'Records the same donation earmarked for comps, so it pays a later weekly instead.',
-                                CompPayout::STATUS_SPLIT => 'Some paid out, the rest given back. The three parts must add up to the prize.',
+                                CompPayout::STATUS_DONATED_DEFRAGLIVE => 'Records the same donation earmarked for DefragLive, so it pays a later contest prize.',
+                                CompPayout::STATUS_SPLIT => 'Some paid out, the rest given back, to any of the three. The parts must add up to the prize.',
                             ])
                             ->default(CompPayout::STATUS_PAID)
                             ->required()
@@ -182,7 +185,7 @@ class CompPayoutResource extends Resource
                         // The three parts of a split. Each one is a plain
                         // euro figure; the sum is checked on the paid field so
                         // the complaint sits next to the numbers.
-                        Forms\Components\Grid::make(3)
+                        Forms\Components\Grid::make(4)
                             ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_SPLIT)
                             ->schema([
                                 Forms\Components\TextInput::make('split_paid')
@@ -192,7 +195,7 @@ class CompPayoutResource extends Resource
                                     ->live(onBlur: true)
                                     ->rules([
                                         fn (CompPayout $record, Forms\Get $get) => function (string $attribute, $value, \Closure $fail) use ($record, $get) {
-                                            $sum = (float) $get('split_paid') + (float) $get('split_site') + (float) $get('split_comps');
+                                            $sum = (float) $get('split_paid') + (float) $get('split_site') + (float) $get('split_comps') + (float) $get('split_live');
 
                                             if (abs($sum - (float) $record->amount) > 0.005) {
                                                 $fail(sprintf("The parts add up to %.2f EUR, the prize is %.2f EUR.", $sum, (float) $record->amount));
@@ -215,11 +218,17 @@ class CompPayoutResource extends Resource
                                     ->default(0)
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (CompPayout $record, Forms\Get $get, Forms\Set $set) => self::fillPaidRemainder($record, $get, $set)),
+                                Forms\Components\TextInput::make('split_live')
+                                    ->label('To DefragLive')
+                                    ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
+                                    ->default(0)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (CompPayout $record, Forms\Get $get, Forms\Set $set) => self::fillPaidRemainder($record, $get, $set)),
                             ]),
                         Forms\Components\Placeholder::make('split_hint')
                             ->hiddenLabel()
                             ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_SPLIT)
-                            ->content('Type what was given back to the website or to comps. Paid out fills itself with the rest of the prize.'),
+                            ->content('Type what was given back to the website, to comps or to DefragLive. Paid out fills itself with the rest of the prize.'),
 
                         Forms\Components\TextInput::make('comps_start_comp')
                             ->label('Funds weekly number')
@@ -258,6 +267,7 @@ class CompPayoutResource extends Resource
                                     CompPayout::STATUS_PAID => (float) ($data['split_paid'] ?? 0),
                                     CompPayout::STATUS_DONATED_SITE => (float) ($data['split_site'] ?? 0),
                                     CompPayout::STATUS_DONATED_COMPS => (float) ($data['split_comps'] ?? 0),
+                                    CompPayout::STATUS_DONATED_DEFRAGLIVE => (float) ($data['split_live'] ?? 0),
                                 ], $data)
                                 : $payouts->resolve($record, $data['resolution'], $data);
                         } catch (\InvalidArgumentException $e) {
@@ -272,7 +282,7 @@ class CompPayoutResource extends Resource
                             $lines[] = number_format($eur, 2) . ' EUR ' . strtolower(CompPayout::LABELS[$status]);
                         }
 
-                        $donations = array_filter([$payout->site_donation_id, $payout->comps_donation_id]);
+                        $donations = array_filter([$payout->site_donation_id, $payout->comps_donation_id, $payout->defraglive_donation_id]);
 
                         Notification::make()
                             ->success()
@@ -300,8 +310,10 @@ class CompPayoutResource extends Resource
                             'paid_eur' => 0,
                             'donated_site_eur' => 0,
                             'donated_comps_eur' => 0,
+                            'donated_defraglive_eur' => 0,
                             'site_donation_id' => null,
                             'comps_donation_id' => null,
+                            'defraglive_donation_id' => null,
                             'resolved_at' => null,
                             'resolved_by' => null,
                         ]);
@@ -322,7 +334,7 @@ class CompPayoutResource extends Resource
     /** Paid out = prize minus what was given back, never below zero. */
     private static function fillPaidRemainder(CompPayout $record, Forms\Get $get, Forms\Set $set): void
     {
-        $rest = (float) $record->amount - (float) $get('split_site') - (float) $get('split_comps');
+        $rest = (float) $record->amount - (float) $get('split_site') - (float) $get('split_comps') - (float) $get('split_live');
         $set('split_paid', number_format(max(0, $rest), 2, '.', ''));
     }
 }

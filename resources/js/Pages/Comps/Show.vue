@@ -91,10 +91,12 @@ export default {
         <!-- Same header shape as the hub and the rest of the site. -->
         <div class="relative bg-gradient-to-b from-black/25 via-black/10 to-transparent pt-6 pb-96 pointer-events-none">
             <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8 pointer-events-auto">
-                <Link :href="route('comps.index')" class="text-sm text-gray-400 hover:text-white transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    &larr; {{ $t('Comps') }}
+                <Link :href="route('comps.index')"
+                      class="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-black/40 backdrop-blur-sm px-3 py-1.5 text-sm font-bold text-gray-200 hover:bg-white/10 hover:text-white hover:border-white/30 transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg>
+                    {{ $t('Back to comps') }}
                 </Link>
-                <div class="mt-2 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+                <div class="mt-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
                     <div>
                         <h1 class="text-3xl md:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ comp.title }}</h1>
                         <div class="mt-2 flex flex-wrap items-center gap-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
@@ -281,6 +283,17 @@ export default {
                 </div>
             </div>
         </section>
+
+        <!-- The same way back as at the top. Somebody who has just read to
+             the bottom of two leaderboards should not have to scroll up to
+             leave. -->
+        <div class="flex justify-center pt-2">
+            <Link :href="route('comps.index')"
+                  class="inline-flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-500/15 px-5 py-2.5 text-sm font-bold text-blue-100 hover:bg-blue-500/25 hover:border-blue-400/50 transition-colors">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg>
+                {{ $t('Back to comps') }}
+            </Link>
+        </div>
         </div>
     </div>
 </template>

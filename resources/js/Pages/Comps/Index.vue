@@ -343,35 +343,35 @@ export default {
                             <Popper arrow hover placement="bottom-start" class="comps-popper" style="z-index: 1000;">
                                 <button type="button"
                                         class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-help border border-dashed border-white/25 bg-white/[0.04] hover:bg-white/10 hover:border-white/40 font-bold text-gray-200">
-                                    <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
                                     </svg>
                                     {{ $t('How comps works') }}
                                 </button>
                                 <template #content>
                                     <div class="px-4 py-3 max-w-md">
-                                        <div class="text-[10px] font-black uppercase tracking-wider text-gray-500 mb-2">{{ $t('How comps works') }}</div>
+                                        <div class="text-[10px] font-black uppercase tracking-wider text-gray-300 mb-2">{{ $t('How comps works') }}</div>
                                         <p class="text-sm text-gray-300 mb-2 leading-snug">
                                             {{ $t('Every week the site draws five maps, everyone votes, and the map winners for both physics are played for a week. Nobody organises it and nobody can forget to.') }}
                                         </p>
-                                        <ul class="space-y-1.5 text-sm text-gray-400">
+                                        <ul class="space-y-1.5 text-sm text-gray-300">
                                             <li class="flex gap-2">
-                                                <span class="text-gray-600">1.</span>
+                                                <span class="text-gray-400">1.</span>
                                                 <span>
                                                     {{ $t('You need a Q3DF.org profile linked to your account to enter a run or to vote.') }}
                                                     <Link v-if="user" :href="route('settings.show')" class="font-bold text-amber-300 underline decoration-amber-400/40 hover:text-amber-100">{{ $t('Open settings') }}</Link>
                                                 </span>
                                             </li>
                                             <li class="flex gap-2">
-                                                <span class="text-gray-600">2.</span>
+                                                <span class="text-gray-400">2.</span>
                                                 <span>{{ $t('There is no sign-up. Record a run on the map being played and it enters by itself.') }}</span>
                                             </li>
                                             <li class="flex gap-2">
-                                                <span class="text-gray-600">3.</span>
+                                                <span class="text-gray-400">3.</span>
                                                 <span>{{ $t('A demo of the map being played, in the physics it is being played in, stays hidden until the round is over. It appears then, together with everyone else\'s.') }}</span>
                                             </li>
                                             <li class="flex gap-2">
-                                                <span class="text-gray-600">4.</span>
+                                                <span class="text-gray-400">4.</span>
                                                 <span>{{ $t('A run made before the vote for the round opened does not count in it.') }}</span>
                                             </li>
                                         </ul>
@@ -386,7 +386,7 @@ export default {
                                  shorter and does not call the page unfinished. -->
                             <Link :href="route('wishlist.index')"
                                   class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-pointer border border-dashed border-white/25 bg-white/[0.04] hover:bg-white/10 hover:border-white/40 font-bold text-gray-200">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0 1 12 12.75Zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 0 1-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 0 0 2.248-2.354M12 12.75a2.25 2.25 0 0 1-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 0 0-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 0 1 .4-2.253M12 8.25a2.25 2.25 0 0 0-2.248 2.146M12 8.25a2.25 2.25 0 0 1 2.248 2.146M8.683 5a3.75 3.75 0 0 1 6.634 0" />
                                 </svg>
                                 {{ $t('Report a bug') }}
@@ -466,10 +466,10 @@ export default {
                             <Popper arrow hover placement="bottom" class="comps-popper" style="z-index: 1000;">
                                 <div class="cursor-help">
                                     <div class="h-6 flex items-center justify-center gap-1">
-                                        <svg class="w-3.5 h-3.5" :class="totalHeld > 0 ? 'text-amber-400' : 'text-gray-600'" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
+                                        <svg class="w-3.5 h-3.5" :class="totalHeld > 0 ? 'text-amber-400' : 'text-gray-400'" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
                                         <span class="text-lg font-black tabular-nums leading-none" :class="totalHeld > 0 ? 'text-amber-300' : 'text-gray-300'">{{ totalHeld }}</span>
                                     </div>
-                                    <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-400 decoration-dotted underline decoration-white/25 underline-offset-2">
+                                    <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-300 decoration-dotted underline decoration-white/25 underline-offset-2">
                                         <!-- Never split by physics any more.
                                              The label used to read "CPM 1",
                                              which was true when a wildcard
@@ -486,7 +486,7 @@ export default {
                                         <p class="text-sm text-gray-300 leading-snug">
                                             {{ $t('A wildcard picks next week\'s map outright and overrules the vote. You earn one for every :count weekly wins in a physics, and it can be spent on either ballot. Whoever spends one first decides that round - everyone else keeps theirs.', { count: winsPerWildcard }) }}
                                         </p>
-                                        <p v-if="totalSpent > 0" class="mt-1.5 text-xs text-gray-500">
+                                        <p v-if="totalSpent > 0" class="mt-1.5 text-xs text-gray-300">
                                             {{ $t('Already spent: :count', { count: totalSpent }) }}
                                         </p>
                                     </div>
@@ -495,38 +495,38 @@ export default {
 
                             <div>
                                 <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none text-white">{{ me.wins.cpm + me.wins.vq3 }}</div>
-                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-400">{{ $t('Weeks won') }}</div>
+                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-300">{{ $t('Weeks won') }}</div>
                             </div>
 
                             <div>
-                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.rounds_entered ? 'text-white' : 'text-gray-600'">{{ me.average_rank ?? '-' }}</div>
-                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-400">{{ $t('Average rank') }}</div>
+                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.rounds_entered ? 'text-white' : 'text-gray-400'">{{ me.average_rank ?? '-' }}</div>
+                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-300">{{ $t('Average rank') }}</div>
                             </div>
 
                             <div>
-                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.best_rank ? 'text-white' : 'text-gray-600'">{{ me.best_rank ?? '-' }}</div>
-                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-400">{{ $t('Best rank') }}</div>
+                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.best_rank ? 'text-white' : 'text-gray-400'">{{ me.best_rank ?? '-' }}</div>
+                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-300">{{ $t('Best rank') }}</div>
                             </div>
 
                             <!-- A cell like the rest of them. It was a sentence
                                  under the panel, which cost a whole row to say
                                  one number that belongs in the row above it. -->
                             <div>
-                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.rounds_entered ? 'text-white' : 'text-gray-600'">{{ me.rounds_entered }}</div>
-                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-400">{{ $t('Participated') }}</div>
+                                <div class="h-6 flex items-center justify-center text-lg font-black tabular-nums leading-none" :class="me.rounds_entered ? 'text-white' : 'text-gray-400'">{{ me.rounds_entered }}</div>
+                                <div class="mt-0.5 text-[10px] uppercase tracking-wider text-gray-300">{{ $t('Participated') }}</div>
                             </div>
                         </div>
 
                         <!-- Progress to the next one, as one bar per physics. -->
                         <div class="mt-2 pt-2 border-t border-white/10 flex flex-wrap items-center gap-x-4 gap-y-1">
-                            <span class="text-[10px] uppercase tracking-wider text-gray-500">{{ $t('Next wildcard') }}</span>
+                            <span class="text-[10px] uppercase tracking-wider text-gray-300">{{ $t('Next wildcard') }}</span>
                             <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-center gap-1.5">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-gray-400">{{ physics }}</span>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-gray-300">{{ physics }}</span>
                                 <span class="w-14 h-1.5 rounded-full bg-black/60 overflow-hidden">
                                     <span class="block h-full rounded-full bg-amber-400"
                                           :style="{ width: (((me.wins[physics] % winsPerWildcard) / winsPerWildcard) * 100) + '%' }"></span>
                                 </span>
-                                <span class="text-[11px] tabular-nums text-gray-400">{{ me.wins[physics] % winsPerWildcard }}/{{ winsPerWildcard }}</span>
+                                <span class="text-[11px] tabular-nums text-gray-300">{{ me.wins[physics] % winsPerWildcard }}/{{ winsPerWildcard }}</span>
                             </span>
                         </div>
                     </section>
@@ -627,7 +627,7 @@ export default {
                                  of them is the one you play for. -->
                             <div v-if="funders?.total" class="text-base whitespace-nowrap">
                                 <span class="font-bold text-emerald-200">{{ $t('This week: :total EUR', { total: prize.total }) }}</span>
-                                <span class="text-gray-400">{{ ' ' }}{{ $t('(:amount EUR per physics)', { amount: prize.eur }) }}</span>
+                                <span class="text-gray-300">{{ ' ' }}{{ $t('(:amount EUR per physics)', { amount: prize.eur }) }}</span>
                             </div>
                         </div>
                     </div>
@@ -636,7 +636,7 @@ export default {
                 <div class="hidden md:block w-px self-stretch bg-emerald-400/15"></div>
 
                 <div class="min-w-0 flex-1 md:min-w-[20rem]">
-                    <p class="text-sm text-gray-500 leading-snug">
+                    <p class="text-sm text-gray-300 leading-snug">
                         <span>{{ donateLine }}</span>
                         <!-- The space is written out: Vue drops whitespace
                              between elements when it contains a newline, which
@@ -647,7 +647,7 @@ export default {
                              language, and a link glued into one word order
                              breaks in the other eight. -->
                         {{ ' ' }}
-                        <Link :href="route('donations.index')" class="text-gray-400 underline decoration-white/20 hover:text-gray-200">{{ $t('See everything donations pay for.') }}</Link>
+                        <Link :href="route('donations.index')" class="text-gray-300 underline decoration-white/20 hover:text-gray-200">{{ $t('See everything donations pay for.') }}</Link>
                     </p>
                 </div>
 
@@ -714,7 +714,7 @@ export default {
                              as a sentence rather than as "then STRAFE": the
                              two words next to a category being voted on right
                              now do not make it obvious which ballot they mean. -->
-                        <span v-if="voting.next_category" class="text-[11px] text-gray-500">
+                        <span v-if="voting.next_category" class="text-xs text-gray-300">
                             {{ $t("Next week's vote will be :category", { category: categoryLabel(voting.next_category) }) }}
                         </span>
                     </div>
@@ -765,14 +765,14 @@ export default {
                      right. -->
                 <button v-if="votingFolded && voting.is_open" type="button" @click="toggleVoting"
                         class="mt-1.5 -mx-2 flex w-[calc(100%+1rem)] flex-wrap items-baseline gap-x-2 rounded-lg px-2 py-1 text-left text-sm text-gray-300 hover:bg-white/5 transition-colors">
-                    <span class="text-gray-500">{{ $t('Your votes') }}:</span>
+                    <span class="text-gray-300">{{ $t('Your votes') }}:</span>
                     <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-1.5 mr-3">
                         <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
                         <span class="font-bold text-white">{{ voting.my_votes?.[physics] ? candidateName(voting.my_votes[physics]) : '-' }}</span>
                     </span>
                     <span class="ml-auto text-xs text-blue-300">{{ $t('Show') }} ▾</span>
                 </button>
-                <p v-else class="mt-1.5 text-sm text-gray-400">
+                <p v-else class="mt-1.5 text-sm text-gray-300">
                     <template v-if="voting.is_open">{{ $t('CPM and VQ3 vote separately, so each physics gets the map its own players picked. You have one vote in each and can move it until the deadline.') }}</template>
                     <template v-else>{{ $t('Voting is over. These are the maps, and the round starts when the countdown runs out.') }}</template>
                 </p>
@@ -783,7 +783,7 @@ export default {
             <div v-if="user && !voting.may_vote" class="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
                 {{ $t('Link your mDd profile to vote in comps.') }}
             </div>
-            <div v-else-if="!user" class="mb-4 rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm px-4 py-3 text-sm text-gray-400">
+            <div v-else-if="!user" class="mb-4 rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm px-4 py-3 text-sm text-gray-300">
                 {{ $t('Sign in to vote.') }}
             </div>
 
@@ -808,9 +808,9 @@ export default {
                     :key="physics"
                     class="rounded-lg border border-white/10 bg-black/40 backdrop-blur-sm px-4 py-3"
                 >
-                    <div class="text-[10px] font-black uppercase tracking-wider text-gray-500">{{ physics }}</div>
+                    <div class="text-[10px] font-black uppercase tracking-wider text-gray-300">{{ physics }}</div>
                     <div class="font-bold text-white">{{ voting.decided?.[physics]?.map ?? '-' }}</div>
-                    <div class="text-[11px] text-gray-500">
+                    <div class="text-[11px] text-gray-300">
                         <template v-if="voting.decided?.[physics]?.decided_by === 'wildcard'">{{ $t('Chosen with a wildcard') }}</template>
                         <template v-else-if="voting.decided?.[physics]?.decided_by === 'carried'">{{ $t('Nobody voted in this physics, so it took the other one\'s map') }}</template>
                         <template v-else-if="voting.decided?.[physics]?.decided_by === 'random'">{{ $t('Nobody voted at all, so it was drawn at random') }}</template>
@@ -822,7 +822,7 @@ export default {
             <!-- The ballot below is history once it has closed, so it says
                  so rather than sitting there looking like it still takes
                  clicks. -->
-            <div v-if="!voting.is_open" class="mb-1.5 text-[11px] font-black uppercase tracking-widest text-gray-500">
+            <div v-if="!voting.is_open" class="mb-1.5 text-[11px] font-black uppercase tracking-widest text-gray-300">
                 {{ $t('Final votes') }}
             </div>
 
@@ -888,9 +888,9 @@ export default {
                 <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-2">
                     <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
                     <span class="font-bold text-white">{{ playing.maps?.[physics]?.name ?? '-' }}</span>
-                    <span v-if="bestOf(physics) !== null" class="text-gray-500">{{ $t('Your best') }} <span class="font-bold text-white tabular-nums">{{ formatTime(bestOf(physics)) }}</span></span>
+                    <span v-if="bestOf(physics) !== null" class="text-gray-300">{{ $t('Your best') }} <span class="font-bold text-white tabular-nums">{{ formatTime(bestOf(physics)) }}</span></span>
                 </span>
-                <span class="ml-auto text-xs text-gray-400">{{ $t('Show') }} ▾</span>
+                <span class="ml-auto text-xs text-gray-300">{{ $t('Show') }} ▾</span>
             </button>
 
             <!-- One box, split down the middle, rather than two cards with
@@ -914,7 +914,7 @@ export default {
                                 <span class="rounded-md bg-white/[0.07] px-2 py-0.5 text-[11px] font-black uppercase tracking-widest text-gray-300">
                                     {{ physics }}
                                 </span>
-                                <span v-if="bestOf(physics) !== null" class="text-xs text-gray-400">
+                                <span v-if="bestOf(physics) !== null" class="text-xs text-gray-300">
                                     {{ $t('Your best') }}
                                     <span class="font-bold text-white tabular-nums ml-1">{{ formatTime(bestOf(physics)) }}</span>
                                 </span>
@@ -946,7 +946,7 @@ export default {
                                     >
                                         {{ playing.maps[physics].name }}
                                     </Link>
-                                    <div v-if="playing.maps[physics].author" class="text-xs text-gray-500 truncate">
+                                    <div v-if="playing.maps[physics].author" class="text-xs text-gray-300 truncate">
                                         {{ playing.maps[physics].author }}
                                     </div>
 
@@ -970,7 +970,7 @@ export default {
                                         class="mt-1.5 inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors"
                                         :class="showBallot
                                             ? 'border-blue-400/40 bg-blue-500/15 text-blue-200'
-                                            : 'border-white/10 bg-white/[0.04] text-gray-400 hover:text-gray-200 hover:border-white/25'"
+                                            : 'border-white/10 bg-white/[0.04] text-gray-300 hover:text-gray-200 hover:border-white/25'"
                                     >
                                         <svg class="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -989,7 +989,7 @@ export default {
                                  live leaderboard would hand everyone else the
                                  answer. -->
                             <div class="mt-3.5 pt-3 border-t border-white/10">
-                                <div class="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                                <div class="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300">
                                     {{ $t('Already uploaded a run') }} ({{ playing.entrants?.[physics]?.length ?? 0 }})
                                 </div>
                                 <div v-if="playing.entrants?.[physics]?.length" class="flex flex-wrap gap-x-3 gap-y-1.5">
@@ -1000,7 +1000,7 @@ export default {
                                         size="sm"
                                     />
                                 </div>
-                                <div v-else class="text-xs text-gray-600">{{ $t('Nobody yet.') }}</div>
+                                <div v-else class="text-xs text-gray-400">{{ $t('Nobody yet.') }}</div>
 
                                 <!-- Runs an admin took out. Kept in the list
                                      rather than deleted from it: dropping them
@@ -1035,7 +1035,7 @@ export default {
                          In the same box as the maps it chose, spanning both
                          halves, because one ballot decided both. -->
                     <div v-if="showBallot && playedBallot" class="border-t border-white/10 bg-black/25 px-4 py-3">
-                        <div class="mb-2.5 text-[10px] font-black uppercase tracking-widest text-gray-500">
+                        <div class="mb-2.5 text-[10px] font-black uppercase tracking-widest text-gray-300">
                             {{ $t('Final votes') }}
                         </div>
 
@@ -1068,12 +1068,12 @@ export default {
                                     <div v-for="physics in ['vq3', 'cpm']" :key="physics"
                                          class="flex items-center gap-1.5">
                                         <span class="w-6 flex-shrink-0 text-[9px] font-black uppercase tracking-wider"
-                                              :class="row.won?.[physics] ? 'text-blue-300' : 'text-gray-500'">
+                                              :class="row.won?.[physics] ? 'text-blue-300' : 'text-gray-300'">
                                             {{ physics }}
                                         </span>
 
                                         <template v-if="row.votes?.[physics] === null">
-                                            <span class="flex-1 text-[9px] text-gray-600 truncate">{{ $t('Not on this ballot') }}</span>
+                                            <span class="flex-1 text-[9px] text-gray-400 truncate">{{ $t('Not on this ballot') }}</span>
                                         </template>
                                         <template v-else>
                                             <span class="flex-1 h-1 rounded-full bg-white/15 overflow-hidden">
@@ -1082,7 +1082,7 @@ export default {
                                                       :style="{ width: ballotShare(physics, row) + '%' }"></span>
                                             </span>
                                             <span class="w-4 flex-shrink-0 text-right text-[10px] font-black tabular-nums"
-                                                  :class="row.won?.[physics] ? 'text-white' : 'text-gray-400'">
+                                                  :class="row.won?.[physics] ? 'text-white' : 'text-gray-300'">
                                                 {{ row.votes[physics] }}
                                             </span>
                                         </template>
@@ -1094,7 +1094,7 @@ export default {
 
                     <!-- Said once for the box. It was printed inside each half,
                          which put the same sentence on screen twice. -->
-                    <div class="border-t border-white/10 px-4 py-2.5 text-[11px] text-gray-400 leading-snug">
+                    <div class="border-t border-white/10 px-4 py-2.5 text-[11px] text-gray-300 leading-snug">
                         {{ $t('Times stay hidden until the round closes, so nobody can be handed the time to beat.') }}
                     </div>
                 </div>
@@ -1108,7 +1108,7 @@ export default {
             <div class="border-t border-white/10 lg:border-t-0 lg:border-l bg-black/30 backdrop-blur-sm px-5 py-6 lg:flex lg:flex-col lg:justify-center">
                 <div class="mx-auto max-w-3xl text-center">
                     <h3 class="text-lg font-black text-white">{{ $t('Enter your run') }}</h3>
-                    <p class="mt-1 text-sm text-gray-400">
+                    <p class="mt-1 text-sm text-gray-300">
                         {{ $t('Upload your demo, online or offline. The physics is read from the file, and the demo stays private until the round ends.') }}
                     </p>
                 </div>
@@ -1138,7 +1138,7 @@ export default {
                     <div class="rounded-xl border border-white/10 bg-black/40 p-4">
                         <div class="flex flex-wrap items-center justify-center gap-3">
                             <label class="inline-flex min-w-0 max-w-full cursor-pointer items-center gap-2 rounded-lg border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm text-gray-200 transition-colors hover:border-white/25 hover:bg-white/10">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
                                 </svg>
                                 <span class="truncate">{{ pickedDemoName || $t('Choose a demo') }}</span>
@@ -1160,13 +1160,13 @@ export default {
                             <label class="inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors"
                                    :class="uploadForm.is_highlight
                                        ? 'border-purple-400/50 bg-purple-500/15 text-purple-200'
-                                       : 'border-white/10 bg-white/[0.03] text-gray-400 hover:border-white/20 hover:text-gray-300'">
+                                       : 'border-white/10 bg-white/[0.03] text-gray-300 hover:border-white/20 hover:text-gray-300'">
                                 <input type="checkbox" v-model="uploadForm.is_highlight" class="rounded border-white/20 bg-black/40 text-purple-500 focus:ring-0" />
                                 {{ $t('Upload as a highlight') }}
                             </label>
                         </div>
 
-                        <p class="mt-3 text-center text-xs text-gray-400">
+                        <p class="mt-3 text-center text-xs text-gray-300">
                             {{ $t('A highlight is shown as a curiosity and is left out of the leaderboard entirely. Use it for a run worth watching rather than a run worth scoring.') }}
                         </p>
 
@@ -1185,11 +1185,11 @@ export default {
                         @click="showCheck = !showCheck"
                         class="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] backdrop-blur-sm px-4 py-2.5 text-xs text-gray-300 transition-colors hover:border-white/20 hover:bg-white/[0.07]"
                     >
-                        <svg class="h-4 w-4 flex-shrink-0 text-gray-400 transition-transform" :class="showCheck ? 'rotate-90' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <svg class="h-4 w-4 flex-shrink-0 text-gray-300 transition-transform" :class="showCheck ? 'rotate-90' : ''" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                         </svg>
                         <span class="text-sm font-black text-gray-100">{{ $t('Demo validator') }}</span>
-                        <span class="hidden text-gray-400 sm:inline">{{ $t('Check your demo settings') }} &middot; {{ $t('Nothing is uploaded.') }}</span>
+                        <span class="hidden text-gray-300 sm:inline">{{ $t('Check your demo settings') }} &middot; {{ $t('Nothing is uploaded.') }}</span>
                     </button>
 
                     <div v-if="showCheck" class="mt-3">
@@ -1200,17 +1200,17 @@ export default {
                 <!-- Your own entries, times and all. Yours are never a secret
                      from you. -->
                 <div v-if="playing.my_entries?.length" class="mt-5">
-                    <div class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">{{ $t('Your entries') }}</div>
+                    <div class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-300">{{ $t('Your entries') }}</div>
                     <div class="space-y-1.5">
                         <div
                             v-for="entry in playing.my_entries"
                             :key="entry.id"
                             class="flex flex-wrap items-center gap-3 rounded-lg border border-white/5 bg-black/40 backdrop-blur-sm px-3 py-2"
                         >
-                            <span class="text-[10px] font-black uppercase tracking-wider text-gray-500 w-8">{{ entry.physics || '-' }}</span>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-gray-300 w-8">{{ entry.physics || '-' }}</span>
 
                             <span v-if="entry.status === 'valid'" class="font-bold tabular-nums text-white">{{ formatTime(entry.time) }}</span>
-                            <span v-else-if="entry.status === 'pending'" class="text-sm text-gray-500">{{ $t('Reading the demo...') }}</span>
+                            <span v-else-if="entry.status === 'pending'" class="text-sm text-gray-300">{{ $t('Reading the demo...') }}</span>
                             <span v-else class="text-sm text-red-400" :title="entry.reason">{{ $t('Rejected') }}</span>
 
                             <!-- Online or offline, read off the demo's gametype
@@ -1227,7 +1227,7 @@ export default {
                                  site and changes nothing about the entry, so it
                                  is stated quietly. -->
                             <span v-if="entry.matched_record"
-                                  class="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400"
+                                  class="rounded bg-white/5 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-300"
                                   :title="$t('This demo was paired with your record on the map.')">
                                 {{ $t('Matched to a record') }}
                             </span>
@@ -1236,14 +1236,14 @@ export default {
                                 {{ $t('Highlight') }}
                             </span>
 
-                            <span v-if="entry.filename" class="hidden md:block truncate text-[11px] text-gray-600 max-w-[16rem]">{{ entry.filename }}</span>
+                            <span v-if="entry.filename" class="hidden md:block truncate text-[11px] text-gray-400 max-w-[16rem]">{{ entry.filename }}</span>
 
                             <!-- A refused entry says why in one sentence, and
                                  the sentence is not always the end of it: a
                                  validity note is a cvar we saw, not a verdict.
                                  This is how somebody disagrees with it. -->
                             <template v-if="entry.status !== 'valid' && entry.status !== 'pending' && entry.demo_id">
-                                <span v-if="entry.reported" class="text-xs text-gray-500">{{ $t('Sent to an admin') }}</span>
+                                <span v-if="entry.reported" class="text-xs text-gray-300">{{ $t('Sent to an admin') }}</span>
                                 <button
                                     v-else
                                     type="button"
@@ -1257,7 +1257,7 @@ export default {
                             <button
                                 type="button"
                                 @click="withdrawTarget = entry"
-                                class="ml-auto text-xs text-gray-600 hover:text-red-400 transition-colors"
+                                class="ml-auto text-xs text-gray-400 hover:text-red-400 transition-colors"
                             >
                                 {{ $t('Withdraw') }}
                             </button>
@@ -1273,21 +1273,21 @@ export default {
                      and a separate section further down the page read as a
                      different subject. -->
                 <div v-if="myNotices.length" class="mt-5">
-                    <div class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">{{ $t('Demos of yours on hold') }}</div>
+                    <div class="mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-300">{{ $t('Demos of yours on hold') }}</div>
                     <div class="space-y-1.5">
                         <div
                             v-for="notice in myNotices"
                             :key="notice.id"
                             class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-white/5 bg-black/40 backdrop-blur-sm px-3 py-2"
                         >
-                            <span class="max-w-full truncate text-[11px] text-gray-600 md:max-w-[16rem]">{{ notice.filename }}</span>
+                            <span class="max-w-full truncate text-[11px] text-gray-400 md:max-w-[16rem]">{{ notice.filename }}</span>
 
                             <span class="text-sm" :class="notice.kind === 'unreadable' ? 'text-red-400' : 'text-gray-300'">{{ notice.note }}</span>
 
                             <!-- An unreadable demo is the one case where the site
                                  cannot say what went wrong, so it hands over the person
                                  who can look at the file. -->
-                            <span v-if="notice.reported" class="text-xs text-gray-500">{{ $t('Sent to an admin') }}</span>
+                            <span v-if="notice.reported" class="text-xs text-gray-300">{{ $t('Sent to an admin') }}</span>
                             <button
                                 v-else
                                 type="button"
@@ -1297,7 +1297,7 @@ export default {
                                 {{ $t('Ask an admin about this demo') }}
                             </button>
 
-                            <span v-if="notice.appears_at" class="ml-auto text-[11px] text-gray-600">
+                            <span v-if="notice.appears_at" class="ml-auto text-[11px] text-gray-400">
                                 {{ $t('Appears :when', { when: appearsAt(notice.appears_at) }) }}
                             </span>
                         </div>
@@ -1317,7 +1317,7 @@ export default {
         <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden min-w-0">
             <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-white/10 bg-white/[0.04] px-5 py-3">
                 <h2 class="text-lg font-black text-white">{{ $t('Past comps') }}</h2>
-                <span class="text-xs text-gray-500">{{ $tc(':count comp|:count comps', history.length) }}</span>
+                <span class="text-xs text-gray-300">{{ $tc(':count comp|:count comps', history.length) }}</span>
             </div>
 
             <!-- One row per week, the full width, both physics side by side
@@ -1334,7 +1334,7 @@ export default {
                         <span v-if="comp.category" class="text-[10px] font-black uppercase tracking-wider text-blue-300/80">
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>
-                        <span class="ml-auto text-[11px] tabular-nums text-gray-500">{{ historyDates(comp) }}</span>
+                        <span class="ml-auto text-[11px] tabular-nums text-gray-300">{{ historyDates(comp) }}</span>
                         <span class="rounded-lg border border-blue-400/30 bg-blue-500/15 px-3 py-1 text-xs font-black text-blue-200 transition-colors group-hover:border-blue-400/60 group-hover:bg-blue-500/30 group-hover:text-white">{{ $t('Details') }} &rsaquo;</span>
                     </div>
 
@@ -1352,7 +1352,7 @@ export default {
                                 <div class="flex items-center gap-2 min-w-0 pb-2 border-b border-white/10">
                                     <span class="shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">{{ physics }}</span>
                                     <span class="text-sm font-black text-white truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
-                                    <span class="shrink-0 text-xs text-gray-500">· {{ $tc(':count player entered|:count players entered', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
+                                    <span class="shrink-0 text-xs text-gray-300">· {{ $tc(':count player entered|:count players entered', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
                                     <span v-if="comp.prize_eur > 0" class="ml-auto shrink-0 text-sm font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
                                 </div>
 
@@ -1364,7 +1364,7 @@ export default {
                                         <span class="ml-auto text-sm font-black tabular-nums text-white shrink-0">{{ formatTime(w.time) }}</span>
                                     </div>
                                 </div>
-                                <div v-else class="py-2 text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
+                                <div v-else class="py-2 text-xs text-gray-400">{{ $t('Nobody entered.') }}</div>
 
                                 <!-- What became of the prize. -->
                                 <div v-if="comp.winners?.[physics]?.some((w) => w.payout)" class="mt-auto flex items-center gap-3 pt-2 border-t border-white/10">
@@ -1373,7 +1373,7 @@ export default {
                                     <template v-for="w in comp.winners?.[physics] ?? []" :key="'p' + w.id">
                                         <span v-if="w.payout" class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 min-w-0 text-xs">
                                             <CompsPlayer :player="w" size="sm" />
-                                            <span class="text-gray-600">·</span>
+                                            <span class="text-gray-400">·</span>
                                             <CompsPayoutText :payout="w.payout" />
                                         </span>
                                     </template>
@@ -1389,7 +1389,7 @@ export default {
         </div>
 
         <div v-if="!playing && !voting && !history.length" class="rounded-xl border border-white/10 bg-black/40 backdrop-blur-sm px-6 py-12 text-center">
-            <p class="text-gray-400">{{ $t('No comps have run yet. The first one starts as soon as it is switched on.') }}</p>
+            <p class="text-gray-300">{{ $t('No comps have run yet. The first one starts as soon as it is switched on.') }}</p>
         </div>
         </div>
 
@@ -1404,7 +1404,7 @@ export default {
                     <p class="mt-3 text-sm text-gray-300">
                         {{ $t('This run will NOT count towards the leaderboard. It is shown as a curiosity and nothing else.') }}
                     </p>
-                    <p class="mt-2 text-sm text-gray-500">
+                    <p class="mt-2 text-sm text-gray-300">
                         {{ $t('Use it only for a run that does not belong on the leaderboard. If you want this time scored, go back and untick the box.') }}
                     </p>
                     <div class="mt-5 flex justify-end gap-2">
@@ -1427,10 +1427,10 @@ export default {
                         <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
                         {{ $t('Use your wildcard?') }}
                     </h3>
-                    <p class="mt-3 text-sm text-gray-400">
+                    <p class="mt-3 text-sm text-gray-300">
                         {{ $t('This makes :map the :physics map for this round, whatever the vote says.', { map: wildcardTarget.map, physics: wildcardTarget.physics.toUpperCase() }) }}
                     </p>
-                    <p class="mt-2 text-sm text-gray-500">
+                    <p class="mt-2 text-sm text-gray-300">
                         {{ $t('You hold one wildcard and spending it uses it up. Whoever spends one first decides the round, so if somebody beats you to it yours stays unspent for another week.') }}
                     </p>
                     <div class="mt-5 flex justify-end gap-2">
@@ -1450,8 +1450,8 @@ export default {
             <div v-if="withdrawTarget" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" @click.self="withdrawTarget = null">
                 <div class="w-full max-w-md rounded-xl border border-white/10 bg-black/70 backdrop-blur-xl p-6">
                     <h3 class="text-lg font-black text-white">{{ $t('Withdraw this run?') }}</h3>
-                    <p class="mt-2 truncate text-[11px] text-gray-600">{{ withdrawTarget.filename }}</p>
-                    <p class="mt-3 text-sm text-gray-400">
+                    <p class="mt-2 truncate text-[11px] text-gray-400">{{ withdrawTarget.filename }}</p>
+                    <p class="mt-3 text-sm text-gray-300">
                         {{ $t('It leaves the round and stops counting, and the same file cannot be entered again. The demo itself stays on the site and appears once the round is over.') }}
                     </p>
 
@@ -1473,8 +1473,8 @@ export default {
             <div v-if="demoReport" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" @click.self="demoReport = null">
                 <div class="w-full max-w-md rounded-xl border border-white/10 bg-black/70 backdrop-blur-xl p-6">
                     <h3 class="text-lg font-black text-white">{{ $t('Ask an admin about this demo') }}</h3>
-                    <p class="mt-2 truncate text-[11px] text-gray-600">{{ demoReport.filename }}</p>
-                    <p class="mt-2 text-sm text-gray-400">
+                    <p class="mt-2 truncate text-[11px] text-gray-400">{{ demoReport.filename }}</p>
+                    <p class="mt-2 text-sm text-gray-300">
                         {{ $t('Say what you expected to happen. An admin opens the file itself and answers you.') }}
                     </p>
 
@@ -1509,7 +1509,7 @@ export default {
             <div v-if="mapReport" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" @click.self="mapReport = null">
                 <div class="w-full max-w-md rounded-xl border border-white/10 bg-black/70 backdrop-blur-xl p-6">
                     <h3 class="text-lg font-black text-white">{{ $t('Report an impossible map') }}</h3>
-                    <p class="mt-2 text-sm text-gray-400">
+                    <p class="mt-2 text-sm text-gray-300">
                         {{ $t('Tell an admin that :map cannot be finished in one of the physics. If it stands, the map leaves that ballot and never enters that pool again.', { map: mapReport.map }) }}
                     </p>
                     <div class="mt-4 flex gap-2">
@@ -1519,7 +1519,7 @@ export default {
                             type="button"
                             @click="mapReport.physics = physics"
                             class="flex-1 rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-wider transition-colors"
-                            :class="mapReport.physics === physics ? 'border-blue-500/50 bg-blue-600/25 text-white' : 'border-white/10 bg-black/40 backdrop-blur-sm text-gray-400 hover:text-white'"
+                            :class="mapReport.physics === physics ? 'border-blue-500/50 bg-blue-600/25 text-white' : 'border-white/10 bg-black/40 backdrop-blur-sm text-gray-300 hover:text-white'"
                         >
                             {{ $t('Impossible in :physics', { physics: physics.toUpperCase() }) }}
                         </button>

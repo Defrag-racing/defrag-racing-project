@@ -126,8 +126,8 @@
                         v-if="blockedIn(physics)"
                         class="flex items-center gap-2 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5 px-2.5 py-1.5"
                     >
-                        <span class="text-[10px] font-black uppercase tracking-wider text-gray-500 w-8">{{ physics }}</span>
-                        <span class="text-[11px] text-gray-500 leading-tight">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-gray-300 w-8">{{ physics }}</span>
+                        <span class="text-[11px] text-gray-300 leading-tight">
                             {{ $t('Cannot be finished in this physics') }}
                         </span>
                     </div>
@@ -150,7 +150,7 @@
                                 ? 'bg-blue-600/30 border-blue-400/60 text-white shadow-[0_0_18px_-6px_rgba(96,165,250,0.6)]'
                                 : (mayVote && isOpen
                                     ? 'cursor-pointer bg-white/[0.04] border-white/20 text-gray-200 hover:bg-blue-500/15 hover:border-blue-400/60'
-                                    : 'bg-black/40 border-white/10 text-gray-400')"
+                                    : 'bg-black/40 border-white/10 text-gray-300')"
                         >
                             <!-- The radio mark. Nothing else on the card says
                                  "one of these two, pick one". -->
@@ -162,7 +162,7 @@
                             </span>
 
                             <span class="text-[10px] font-black uppercase tracking-wider w-8 text-left"
-                                  :class="votedIn(physics) ? 'text-blue-200' : 'text-gray-400'">
+                                  :class="votedIn(physics) ? 'text-blue-200' : 'text-gray-300'">
                                 {{ physics }}
                             </span>
 
@@ -190,7 +190,7 @@
                                 <span class="flex-1 h-1.5 rounded-full bg-black/40"></span>
 
                                 <span class="w-6 text-right text-xs font-bold"
-                                      :class="votedIn(physics) ? 'text-blue-200' : 'text-gray-600'">
+                                      :class="votedIn(physics) ? 'text-blue-200' : 'text-gray-400'">
                                     {{ votedIn(physics) ? '&check;' : '&middot;' }}
                                 </span>
                             </template>
@@ -214,7 +214,7 @@
                 v-if="mayVote && isOpen"
                 type="button"
                 @click="emit('report', { map_id: candidate.map_id, map: candidate.map })"
-                class="text-[10px] text-gray-600 hover:text-gray-400 transition-colors text-left"
+                class="text-[10px] text-gray-400 hover:text-gray-300 transition-colors text-left"
             >
                 {{ $t('Report that this map cannot be finished') }}
             </button>
@@ -238,12 +238,12 @@
                                 type="button"
                                 @click="previewPhysics = physics"
                                 class="rounded px-2 py-0.5 text-[10px] font-black uppercase tracking-wider transition-colors"
-                                :class="previewPhysics === physics ? 'bg-blue-600 text-white' : 'bg-white/10 text-gray-400 hover:text-white'"
+                                :class="previewPhysics === physics ? 'bg-blue-600 text-white' : 'bg-white/10 text-gray-300 hover:text-white'"
                             >
                                 {{ physics }}
                             </button>
                         </div>
-                        <button type="button" @click="showPreview = false" class="text-gray-400 hover:text-white">
+                        <button type="button" @click="showPreview = false" class="text-gray-300 hover:text-white">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>

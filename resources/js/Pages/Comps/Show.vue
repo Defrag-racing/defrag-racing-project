@@ -79,7 +79,7 @@ export default {
         3: 'bg-amber-700/20 text-amber-400 border-amber-600/30',
     };
 
-    const rankStyle = (rank) => RANK_STYLES[rank] ?? 'bg-white/[0.04] text-gray-500 border-white/5';
+    const rankStyle = (rank) => RANK_STYLES[rank] ?? 'bg-white/[0.04] text-gray-300 border-white/5';
 
     const entrants = (round) => PHYSICS.reduce((n, p) => n + (round.results?.[p]?.length ?? 0), 0);
 </script>
@@ -121,7 +121,7 @@ export default {
                     <span class="text-lg font-black uppercase tracking-wider text-blue-300/90 self-center">
                         {{ categoryLabel(round.category) }}<template v-if="round.weapon"> · {{ round.weapon }}</template>
                     </span>
-                    <span class="text-xs text-gray-500">{{ $tc(':count player|:count players', entrants(round)) }}</span>
+                    <span class="text-xs text-gray-300">{{ $tc(':count player|:count players', entrants(round)) }}</span>
                     <!-- Finished, and when: on the same line as what it was.
                          They hung under the title on their own before and
                          looked like they belonged to nothing. -->
@@ -174,7 +174,7 @@ export default {
                                             {{ round.maps[physics].name }}
                                         </Link>
                                     </div>
-                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-xs text-gray-500 truncate">{{ round.maps[physics].author }}</div>
+                                    <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-xs text-gray-300 truncate">{{ round.maps[physics].author }}</div>
 
                                     <!-- Who ran and what the winner took, per
                                          physics, right here where the map is.
@@ -186,7 +186,7 @@ export default {
                                         <span v-if="round.prize_eur > 0" class="font-black text-emerald-300">{{ $t('Winner gets :amount EUR', { amount: round.prize_eur }) }}</span>
                                     </div>
 
-                                    <div v-if="round.maps?.[physics]" class="mt-1.5 text-[11px] text-gray-500">
+                                    <div v-if="round.maps?.[physics]" class="mt-1.5 text-[11px] text-gray-300">
                                         <template v-if="round.wildcards?.[physics]">
                                             <span class="inline-flex flex-wrap items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                                                 <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>
@@ -208,7 +208,7 @@ export default {
                                     <span class="text-xs font-black uppercase tracking-wider text-gray-300">{{ $t('Download the demos') }}</span>
                                     <span class="text-xs font-bold tabular-nums" :class="physicsText(physics)">{{ $tc(':count demo|:count demos', round.demos[physics].count) }} · 7z</span>
                                 </div>
-                                <p class="text-[11px] leading-snug text-gray-500 mb-2.5">
+                                <p class="text-[11px] leading-snug text-gray-300 mb-2.5">
                                     {{ $t('Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.') }}
                                 </p>
                                 <div class="grid grid-cols-2 gap-2">
@@ -262,19 +262,19 @@ export default {
                                         <td class="py-1.5"><CompsPlayer :player="row.user" size="sm" /></td>
                                         <td class="py-1.5 text-right tabular-nums">
                                             <span class="font-bold text-white">{{ formatTime(row.time) }}</span>
-                                            <span v-if="gap(round, physics, row)" class="ml-2 text-[11px] text-gray-500">{{ gap(round, physics, row) }}</span>
+                                            <span v-if="gap(round, physics, row)" class="ml-2 text-[11px] text-gray-300">{{ gap(round, physics, row) }}</span>
                                         </td>
-                                        <td v-if="comp.type === 'season'" class="py-1.5 pl-3 text-right tabular-nums text-gray-400 w-14">{{ row.points }}</td>
+                                        <td v-if="comp.type === 'season'" class="py-1.5 pl-3 text-right tabular-nums text-gray-300 w-14">{{ row.points }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <p v-if="!round.results?.[physics]?.length" class="rounded-lg border border-dashed border-white/10 px-4 py-6 text-center text-sm text-gray-600">
+                            <p v-if="!round.results?.[physics]?.length" class="rounded-lg border border-dashed border-white/10 px-4 py-6 text-center text-sm text-gray-400">
                                 {{ $t('Nobody entered.') }}
                             </p>
 
                             <!-- ---------------- Ballot ---------------- -->
                             <details v-if="ballotFor(round, physics).length" class="group pt-2 border-t border-white/10">
-                                <summary class="cursor-pointer list-none flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-gray-500 hover:text-gray-300 transition-colors">
+                                <summary class="cursor-pointer list-none flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-gray-300 hover:text-gray-300 transition-colors">
                                     <span>{{ $t('Voted from') }} · {{ $tc(':count vote|:count votes', votesTotal(round, physics)) }}</span>
                                     <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6" /></svg>
                                 </summary>
@@ -282,7 +282,7 @@ export default {
                                     <li v-for="c in ballotFor(round, physics)" :key="c.map" class="flex items-center gap-2 text-xs">
                                         <Link :href="route('maps.map', c.map)"
                                               class="w-40 truncate transition-colors"
-                                              :class="c.map === round.maps?.[physics]?.name ? 'font-bold text-white hover:text-blue-300' : 'text-gray-400 hover:text-gray-200'">
+                                              :class="c.map === round.maps?.[physics]?.name ? 'font-bold text-white hover:text-blue-300' : 'text-gray-300 hover:text-gray-200'">
                                             {{ c.map }}
                                         </Link>
                                         <span class="flex-1 h-1.5 rounded-full bg-black/50 overflow-hidden">
@@ -291,7 +291,7 @@ export default {
                                                   :style="{ width: share(round, physics, c) + '%' }"></span>
                                         </span>
                                         <span class="w-6 text-right tabular-nums"
-                                              :class="c.map === round.maps?.[physics]?.name ? 'font-bold text-white' : 'text-gray-500'">
+                                              :class="c.map === round.maps?.[physics]?.name ? 'font-bold text-white' : 'text-gray-300'">
                                             {{ c.votes[physics] }}
                                         </span>
                                     </li>

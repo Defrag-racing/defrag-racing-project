@@ -4369,5 +4369,6 @@
     "Download the demos": "Скачать демки",
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Каждый забег из таблицы, по файлу на забег, с местом и временем в имени. Анонимная версия без имён, чтобы можно было угадать, кто что пробежал.",
     "Back to comps": "Назад к comps",
-    ":count comp|:count comps": ":count comp|:count comps"
+    ":count comp|:count comps": ":count comp|:count comps",
+    "View comp": "Открыть comp"
 }

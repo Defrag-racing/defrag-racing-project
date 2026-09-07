@@ -4369,5 +4369,6 @@
     "Download the demos": "Pobierz dema",
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Każdy przejazd z klasyfikacji, jeden plik na przejazd, nazwany według miejsca i czasu. Wersja anonimowa pomija nazwy, więc możesz zgadywać, kto co przebiegł.",
     "Back to comps": "Wróć do comps",
-    ":count comp|:count comps": ":count comp|:count comps"
+    ":count comp|:count comps": ":count comp|:count comps",
+    "View comp": "Zobacz comp"
 }

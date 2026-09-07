@@ -4369,5 +4369,6 @@
     "Download the demos": "Descargar las demos",
     "Every run from the standings, one file each, named by rank and time. Anonymized leaves the names out so you can guess who ran what.": "Cada carrera de la clasificación, un archivo por carrera, con el puesto y el tiempo en el nombre. Anónimo omite los nombres para que adivines quién corrió qué.",
     "Back to comps": "Volver a comps",
-    ":count comp|:count comps": ":count comp|:count comps"
+    ":count comp|:count comps": ":count comp|:count comps",
+    "View comp": "Ver comp"
 }

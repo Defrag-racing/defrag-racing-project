@@ -1309,7 +1309,8 @@ export default {
                                 <div class="flex items-center gap-2 min-w-0 pb-2 border-b border-white/10">
                                     <span class="shrink-0 rounded-md border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">{{ physics }}</span>
                                     <span class="text-sm font-black text-white truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
-                                    <span v-if="comp.prize_eur > 0" class="ml-auto shrink-0 text-sm font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
+                                    <span class="ml-auto shrink-0 text-xs font-bold text-gray-400">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
+                                    <span v-if="comp.prize_eur > 0" class="shrink-0 text-sm font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
                                 </div>
 
                                 <!-- The three best, one line each, nothing between the lines. -->
@@ -1322,8 +1323,8 @@ export default {
                                 </div>
                                 <div v-else class="py-2 text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
 
-                                <!-- What became of the prize, and how many ran. -->
-                                <div class="mt-auto flex items-center gap-3 pt-2 border-t border-white/10">
+                                <!-- What became of the prize. -->
+                                <div v-if="comp.winners?.[physics]?.some((w) => w.payout)" class="mt-auto flex items-center gap-3 pt-2 border-t border-white/10">
                                     <!-- Whose prize it was and how much, or the badge
                                          reads as if everybody in the table gave it away. -->
                                     <template v-for="w in comp.winners?.[physics] ?? []" :key="'p' + w.id">
@@ -1333,7 +1334,6 @@ export default {
                                             <CompsPayoutText :payout="w.payout" />
                                         </span>
                                     </template>
-                                    <span class="ml-auto shrink-0 text-xs font-bold text-gray-400">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
                                 </div>
                             </div>
                         </div>

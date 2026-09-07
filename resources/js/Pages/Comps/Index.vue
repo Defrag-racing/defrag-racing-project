@@ -748,9 +748,9 @@ export default {
                         <CompsCountdown v-else
                                         :until="voting.starts_at" :label="$t('Starts in')" emphasis inline />
                         <button type="button" @click="toggleVoting"
-                                class="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-blue-400/50 bg-blue-500/30 px-3 py-1.5 text-xs font-black text-white shadow-[0_0_16px_-4px_rgba(96,165,250,0.7)] hover:bg-blue-500/50 transition-colors"
                                 :title="votingFolded ? $t('Show') : $t('Hide')">
-                            <svg class="w-3.5 h-3.5 transition-transform" :class="votingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                            <svg class="w-4 h-4 transition-transform" :class="votingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
                             {{ votingFolded ? $t('Show') : $t('Hide') }}
                         </button>
                     </div>
@@ -760,13 +760,18 @@ export default {
                      panel as a whole, and sitting above the grid it read as a
                      caption on the first row of maps. Folded, the line says
                      what you voted for instead. -->
-                <p v-if="votingFolded && voting.is_open" class="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-sm text-gray-300">
+                <!-- The folded line is the button too: the whole width
+                     unfolds the panel, not only the small button on the
+                     right. -->
+                <button v-if="votingFolded && voting.is_open" type="button" @click="toggleVoting"
+                        class="mt-1.5 -mx-2 flex w-[calc(100%+1rem)] flex-wrap items-baseline gap-x-2 rounded-lg px-2 py-1 text-left text-sm text-gray-300 hover:bg-white/5 transition-colors">
                     <span class="text-gray-500">{{ $t('Your votes') }}:</span>
                     <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-1.5 mr-3">
                         <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
                         <span class="font-bold text-white">{{ voting.my_votes?.[physics] ? candidateName(voting.my_votes[physics]) : '-' }}</span>
                     </span>
-                </p>
+                    <span class="ml-auto text-xs text-blue-300">{{ $t('Show') }} ▾</span>
+                </button>
                 <p v-else class="mt-1.5 text-sm text-gray-400">
                     <template v-if="voting.is_open">{{ $t('CPM and VQ3 vote separately, so each physics gets the map its own players picked. You have one vote in each and can move it until the deadline.') }}</template>
                     <template v-else>{{ $t('Voting is over. These are the maps, and the round starts when the countdown runs out.') }}</template>
@@ -868,9 +873,9 @@ export default {
 
                     <CompsCountdown :until="playing.ends_at" :label="$t('Ends in')" inline />
                     <button type="button" @click="togglePlaying"
-                            class="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                            class="inline-flex items-center gap-1.5 rounded-lg border border-green-400/50 bg-green-500/30 px-3 py-1.5 text-xs font-black text-white shadow-[0_0_16px_-4px_rgba(34,197,94,0.7)] hover:bg-green-500/50 transition-colors"
                             :title="playingFolded ? $t('Show') : $t('Hide')">
-                        <svg class="w-3.5 h-3.5 transition-transform" :class="playingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                        <svg class="w-4 h-4 transition-transform" :class="playingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
                         {{ playingFolded ? $t('Show') : $t('Hide') }}
                     </button>
                 </div>
@@ -878,13 +883,15 @@ export default {
 
             <!-- Folded: one line with your best in each physics, and the maps
                  by name so the fold still says what is being played. -->
-            <div v-if="playingFolded" class="px-5 py-3 text-sm text-gray-300 flex flex-wrap gap-x-6 gap-y-1">
+            <button v-if="playingFolded" type="button" @click="togglePlaying"
+                    class="flex w-full flex-wrap items-baseline gap-x-6 gap-y-1 px-5 py-3 text-left text-sm text-gray-300 hover:bg-white/5 transition-colors">
                 <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-2">
                     <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
                     <span class="font-bold text-white">{{ playing.maps?.[physics]?.name ?? '-' }}</span>
                     <span v-if="bestOf(physics) !== null" class="text-gray-500">{{ $t('Your best') }} <span class="font-bold text-white tabular-nums">{{ formatTime(bestOf(physics)) }}</span></span>
                 </span>
-            </div>
+                <span class="ml-auto text-xs text-green-300">{{ $t('Show') }} ▾</span>
+            </button>
 
             <!-- One box, split down the middle, rather than two cards with
                  a gap. The two halves are the same week and the ballot below

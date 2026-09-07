@@ -858,9 +858,14 @@ export default {
                  The line about times staying hidden used to be printed inside
                  each half, so it was on screen twice saying the same thing. It
                  is the footer of the box now. -->
+            <!-- Maps on the left, entering on the right, half and half on a
+                 wide screen. Under each other the upload sat below the maps
+                 and the two physics side by side left the maps half empty;
+                 one above the other they fill their column. -->
+            <div class="grid lg:grid-cols-2">
             <div class="p-5">
                 <div class="rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
-                    <div class="grid md:grid-cols-2 md:divide-x md:divide-white/10">
+                    <div class="divide-y divide-white/10">
                         <div v-for="physics in PHYSICS" :key="physics" class="p-4">
                             <div class="flex items-center justify-between gap-3 mb-3">
                                 <span class="rounded-md bg-white/[0.07] px-2 py-0.5 text-[11px] font-black uppercase tracking-widest text-gray-300">
@@ -1057,7 +1062,7 @@ export default {
                  somebody came here to DO, and it was a bare file input on a
                  flat panel, hugging the left edge like a field nobody had
                  finished designing. -->
-            <div class="border-t border-green-400/20 bg-black/30 backdrop-blur-sm px-5 py-6">
+            <div class="border-t border-green-400/20 lg:border-t-0 lg:border-l bg-black/30 backdrop-blur-sm px-5 py-6 lg:flex lg:flex-col lg:justify-center">
                 <div class="mx-auto max-w-3xl text-center">
                     <h3 class="text-lg font-black text-white">{{ $t('Enter your run') }}</h3>
                     <p class="mt-1 text-sm text-gray-400">
@@ -1255,6 +1260,7 @@ export default {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
 

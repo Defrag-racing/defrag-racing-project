@@ -762,10 +762,12 @@ class CompsController extends Controller
             foreach (BallotResolver::PHYSICS as $physics) {
                 $winners[$physics] = CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))
                     ->where('physics', $physics)
-                    ->winners()
+                    ->where('rank', '<=', 3)
+                    ->orderBy('rank')->orderBy('time')
                     ->with('user:id,name,country,profile_photo_path,name_effect,color')
                     ->get()
                     ->map(fn (CompResult $r) => [
+                        'rank' => $r->rank,
                         'id' => $r->user?->id,
                         'name' => $r->user?->name,
                         'country' => $r->user?->country,
@@ -793,6 +795,8 @@ class CompsController extends Controller
                 'prize_eur' => $first?->prize_eur,
                 'rounds' => $comp->rounds->count(),
                 'entrants' => CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))->count(),
+                'entrants_by_physics' => CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))
+                    ->selectRaw('physics, count(*) as n')->groupBy('physics')->pluck('n', 'physics'),
                 'maps' => $comp->rounds->flatMap(fn (CompRound $r) => $r->maps->pluck('map.name'))->unique()->values(),
                 'map_by_physics' => ($first?->maps ?? collect())->mapWithKeys(fn ($m) => [$m->physics => [
                     'name' => $m->map?->name,

@@ -50,6 +50,13 @@ export default {
 
     const PHYSICS = ['cpm', 'vq3'];
 
+    // Gold, silver, bronze for the three rows of a past comp.
+    const RANK_STYLE = {
+        1: 'bg-amber-400/20 border-amber-400/40 text-amber-300',
+        2: 'bg-slate-300/15 border-slate-300/40 text-slate-200',
+        3: 'bg-orange-700/25 border-orange-500/40 text-orange-300',
+    };
+
     const historyDates = (comp) => {
         if (!comp.starts_at || !comp.ends_at) return '';
         const a = new Date(comp.starts_at), b = new Date(comp.ends_at);
@@ -1271,6 +1278,7 @@ export default {
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>
                         <span class="ml-auto text-[11px] tabular-nums text-gray-500">{{ historyDates(comp) }}</span>
+                        <span class="text-xs font-bold text-blue-300/70 group-hover:text-blue-300 transition-colors">{{ $t('View comp') }} &rsaquo;</span>
                     </div>
 
                     <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10">
@@ -1288,10 +1296,10 @@ export default {
                                     <span class="text-sm font-black text-white truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
                                 </div>
 
-                                <div v-if="comp.winners?.[physics]?.length" class="space-y-2">
-                                    <div v-for="w in comp.winners[physics]" :key="w.id" class="space-y-1">
+                                <div v-if="comp.winners?.[physics]?.length" class="space-y-1.5">
+                                    <div v-for="w in comp.winners[physics]" :key="w.id" class="space-y-1" :class="w.rank > 1 && 'opacity-80'">
                                         <div class="flex items-center gap-2 min-w-0">
-                                            <span class="inline-flex w-5 h-5 shrink-0 items-center justify-center rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-black text-amber-300">1</span>
+                                            <span class="inline-flex w-5 h-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-black" :class="RANK_STYLE[w.rank] ?? RANK_STYLE[3]">{{ w.rank }}</span>
                                             <CompsPlayer :player="w" size="sm" />
                                             <span class="ml-auto text-sm font-black tabular-nums text-white shrink-0">{{ formatTime(w.time) }}</span>
                                         </div>
@@ -1299,14 +1307,13 @@ export default {
                                     </div>
                                 </div>
                                 <div v-else class="text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
+
+                                <div class="mt-auto flex items-center gap-4 pt-1 text-sm">
+                                    <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
+                                    <span v-if="comp.prize_eur > 0" class="font-black text-emerald-300">{{ comp.prize_eur }} EUR</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="flex items-center gap-5 border-t border-white/10 px-4 py-2.5 text-sm">
-                        <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', comp.entrants) }}</span>
-                        <span v-if="comp.prize_eur > 0" class="font-black text-emerald-300">{{ comp.prize_eur * 2 }} EUR</span>
-                        <span class="ml-auto text-xs font-bold text-blue-300/70 group-hover:text-blue-300 transition-colors">{{ $t('View comp') }} &rsaquo;</span>
                     </div>
                 </Link>
             </div>

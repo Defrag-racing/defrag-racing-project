@@ -1310,8 +1310,13 @@ export default {
 
                                 <!-- What became of the prize, and how many ran. -->
                                 <div class="mt-auto flex items-center gap-3 pt-2 border-t border-white/10">
+                                    <!-- Whose prize it was and how much, or the badge
+                                         reads as if everybody in the table gave it away. -->
                                     <template v-for="w in comp.winners?.[physics] ?? []" :key="'p' + w.id">
-                                        <CompsPayoutBadge v-if="w.payout" :payout="w.payout" />
+                                        <span v-if="w.payout" class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 min-w-0">
+                                            <CompsPlayer :player="w" size="sm" />
+                                            <CompsPayoutBadge :payout="w.payout" :amount="w.payout.amount" />
+                                        </span>
                                     </template>
                                     <span class="ml-auto shrink-0 text-xs font-bold text-gray-400">{{ $tc(':count player|:count players', comp.entrants_by_physics?.[physics] ?? 0) }}</span>
                                 </div>

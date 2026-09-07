@@ -955,7 +955,7 @@
                              a suggestion box nobody walks past is a suggestion
                              box nobody writes in. -->
                         <NavLink :href="route('wishlist.index')" :active="navActive.wishlist">
-                            {{ $t('Wishlist') }}
+                            {{ $t('Bugs & Wishlist') }}
                         </NavLink>
 
                         <!-- 3. Players - visible from md -->

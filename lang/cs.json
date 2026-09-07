@@ -905,7 +905,6 @@
     "Completed Label": "Popisek dokončení",
     "Comps": "Comps",
     "comps hold": "zadrženo comps",
-    "Comps is brand new.": "Comps je uplně nový.",
     "Concrete": "Beton",
     "Conduct": "Chování",
     "Confidence Range": "Rozsah jistoty",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Klid OK",
     "If another user claims a more specific name (e.g.": "Když si jiný uživatel nárokuje konkrétnější jméno (třeba",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "Když bude potřeba, můžeš se odhlásit ze všech ostatních prohlížečů na všech svých zařízeních. Níž je seznam nedávných přihlášení, nemusí ale být úplný. Jestli máš pocit, že se ti někdo dostal do účtu, změň si k tomu i heslo.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Když něco nevypadá správně, napiš prosím <a href=:url>adminovi</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Pokud vypisující odměnu nevyplatil, můžeš podat spor. Má 14 dní na odpověď, pak se zakročí automaticky.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Když se skupina neshodne, jde to na <span>admina</span>, který rozhodne s konečnou platností.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Když si není jistý ani druhý v pořadí, report se otevře <span>všem validátorům najednou</span> a vyřešíte to spolu v interních poznámkách u toho reportu.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Vítěz získá :amount EUR",
     ":count player entered|:count players entered": "zúčastnil se :count hráč|zúčastnili se :count hráči|zúčastnilo se :count hráčů",
     "Your votes": "Tvoje hlasy",
-    "Show": "Zobrazit"
+    "Show": "Zobrazit",
+    "Report a bug": "Nahlásit chybu",
+    "Bugs & Wishlist": "Chyby a přání"
 }

@@ -905,7 +905,6 @@
     "Completed Label": "Метка завершения",
     "Comps": "Comps",
     "comps hold": "удержано comps",
-    "Comps is brand new.": "Comps совсем новый.",
     "Concrete": "Бетон",
     "Conduct": "Поведение",
     "Confidence Range": "Диапазон уверенности",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Ожидание OK",
     "If another user claims a more specific name (e.g.": "Если другой пользователь затребует более точное имя (напр.",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "При необходимости ты можешь выйти из всех остальных сессий браузера на всех своих устройствах. Некоторые из твоих недавних сессий перечислены ниже, однако этот список может быть неполным. Если ты считаешь, что твой аккаунт был взломан, тебе также следует обновить пароль.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Если что-то выглядит не так, напиши <a href=:url>админу</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Если создатель челленджа не выплатил награду, ты можешь подать спор. У создателя есть 14 дней на ответ перед принятием автоматических мер.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Если группа не может прийти к согласию, окончательное решение принимает <span>админ</span>.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Если второй человек тоже не уверен, жалоба открывается для <span>всех валидаторов сразу</span>, и вы разбираетесь вместе во внутренних заметках к этой жалобе.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Победитель получает :amount EUR",
     ":count player entered|:count players entered": "участвовал :count игрок|участвовало :count игрока|участвовало :count игроков",
     "Your votes": "Твои голоса",
-    "Show": "Показать"
+    "Show": "Показать",
+    "Report a bug": "Сообщить об ошибке",
+    "Bugs & Wishlist": "Ошибки и пожелания"
 }

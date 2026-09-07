@@ -42,8 +42,6 @@ export default {
         winsPerWildcard: { type: Number, default: 5 },
         prize: { type: Object, default: null },
         funders: { type: Object, default: null },
-        betaNotice: { type: Boolean, default: false },
-        adminUrl: { type: String, default: '' },
         myNotices: { type: Array, default: () => [] },
     });
 
@@ -79,20 +77,6 @@ export default {
     // which is the thing somebody actually wants.
     const appearsAt = (iso) => moment(iso).format('D MMM, HH:mm');
 
-    // The link lives INSIDE the key, with only the URL passed in.
-    //
-    // It used to be split around a `:admin` placeholder so the link could stay
-    // an Inertia Link, and that worked while the linked word was the sentence's
-    // subject in every language. "Please contact admin" makes it the object,
-    // and an inflected language spells those differently - Czech wants
-    // "admina" here and "admin" in the old phrasing - so one shared link text
-    // cannot serve both. Whole-sentence markup lets each language inflect the
-    // word and put it where its grammar wants it; the cost is a full page load
-    // on click instead of an Inertia visit, which for a profile link nobody
-    // follows twice is not worth a broken sentence in eight languages.
-    const betaLine = computed(() =>
-        t('If something does not look right, please contact <a href=:url>admin</a>.', { url: props.adminUrl }),
-    );
 
     // Who pays is no longer a sentence. It is the list of donors below the
     // number, which says the same thing as a fact and stops saying it on its
@@ -340,22 +324,6 @@ export default {
                                 {{ $t('Comps') }}
                             </h1>
 
-                            <!-- Deliberately quieter than the Rules chip
-                                 beside it. Both were amber, which put a caveat
-                                 about the page and the ruleset it runs on at
-                                 the same volume - and only one of them is
-                                 something you have to read. -->
-                            <span v-if="betaNotice"
-                                  class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-default bg-white/[0.05] text-gray-400">
-                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 21h22L12 2zm0 6l7.5 13h-15L12 8zm-1 3v4h2v-4h-2zm0 5v2h2v-2h-2z" /></svg>
-                                <!-- The space is written out: Vue drops
-                                     whitespace between elements when it
-                                     contains a newline, which ran this
-                                     straight into the sentence before it. -->
-                                <span class="font-bold text-gray-300">{{ $t('Comps is brand new.') }}</span>{{ ' ' }}
-                                <span class="[&_a]:font-bold [&_a]:text-gray-300 [&_a]:underline [&_a]:decoration-white/25 [&_a:hover]:text-white"
-                                      v-html="betaLine"></span>
-                            </span>
                         </div>
 
                         <!-- Comps invents no ruleset of its own, and the two
@@ -410,6 +378,19 @@ export default {
                                     </div>
                                 </template>
                             </Popper>
+
+                            <!-- Where a problem goes. It used to be a grey
+                                 "comps is brand new, tell the admin" line
+                                 under the title; a chip in the row people
+                                 already read, pointing at the board, is
+                                 shorter and does not call the page unfinished. -->
+                            <Link :href="route('wishlist.index')"
+                                  class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-pointer border border-dashed border-white/25 bg-white/[0.04] hover:bg-white/10 hover:border-white/40 font-bold text-gray-200">
+                                <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0 1 12 12.75Zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 0 1-1.152 6.06M12 12.75c-2.883 0-5.647.508-8.208 1.44.125 2.104.52 4.136 1.153 6.06M12 12.75a2.25 2.25 0 0 0 2.248-2.354M12 12.75a2.25 2.25 0 0 1-2.248-2.354M12 8.25c.995 0 1.971-.08 2.922-.236.403-.066.74-.358.795-.762a3.778 3.778 0 0 0-.399-2.25M12 8.25c-.995 0-1.97-.08-2.922-.236-.402-.066-.74-.358-.795-.762a3.734 3.734 0 0 1 .4-2.253M12 8.25a2.25 2.25 0 0 0-2.248 2.146M12 8.25a2.25 2.25 0 0 1 2.248 2.146M8.683 5a3.75 3.75 0 0 1 6.634 0" />
+                                </svg>
+                                {{ $t('Report a bug') }}
+                            </Link>
 
                             <Link :href="route('rules')"
                                   class="inline-flex items-center gap-1.5 h-7 flex-shrink-0 rounded-lg px-2.5 text-xs leading-none transition-colors cursor-pointer border border-amber-400/50 bg-amber-500/15 hover:bg-amber-500/25 hover:border-amber-300/70 font-bold text-amber-200">

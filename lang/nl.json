@@ -905,7 +905,6 @@
     "Completed Label": "Label voltooid",
     "Comps": "Comps",
     "comps hold": "vastgehouden voor comps",
-    "Comps is brand new.": "Comps is gloednieuw.",
     "Concrete": "Beton",
     "Conduct": "Gedrag",
     "Confidence Range": "Betrouwbaarheidsinterval",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Idle OK",
     "If another user claims a more specific name (e.g.": "Als een andere gebruiker een specifiekere naam claimt (bijv.",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "Indien nodig kun je je afmelden bij al je andere browsersessies op al je apparaten. Enkele van je recente sessies staan hieronder vermeld; deze lijst is echter mogelijk niet volledig. Als je het gevoel hebt dat je account is gecompromitteerd, moet je ook je wachtwoord bijwerken.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Klopt er iets niet, neem dan contact op met <a href=:url>de admin</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Als de maker van de uitdaging de beloning niet heeft nagekomen, kun je een geschil indienen. De maker heeft 14 dagen om te reageren voordat er automatische actie wordt ondernomen.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Als de groep het niet eens kan worden, gaat het naar de <span>admin</span> voor een definitief besluit.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Als de tweede persoon het ook niet zeker weet, staat het rapport open voor <span>alle validators tegelijk</span> en werken jullie het samen uit in de interne notities bij dat rapport.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "De winnaar krijgt :amount EUR",
     ":count player entered|:count players entered": ":count speler deed mee|:count spelers deden mee",
     "Your votes": "Jouw stemmen",
-    "Show": "Tonen"
+    "Show": "Tonen",
+    "Report a bug": "Bug melden",
+    "Bugs & Wishlist": "Bugs & wensen"
 }

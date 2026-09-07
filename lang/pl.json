@@ -905,7 +905,6 @@
     "Completed Label": "Etykieta ukończenia",
     "Comps": "Comps",
     "comps hold": "wstrzymane przez comps",
-    "Comps is brand new.": "Comps jest zupełnie nowe.",
     "Concrete": "Beton",
     "Conduct": "Zachowanie",
     "Confidence Range": "Zakres pewności",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Bezruch OK",
     "If another user claims a more specific name (e.g.": "Jeśli inny użytkownik przypisze sobie bardziej precyzyjną nazwę (np.",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "W razie potrzeby możesz wylogować się ze wszystkich pozostałych sesji przeglądarki na wszystkich urządzeniach. Poniżej znajdziesz część ostatnich sesji, ale ta lista może nie być pełna. Jeśli podejrzewasz, że ktoś przejął twoje konto, zmień również hasło.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Jeśli coś nie wygląda dobrze, napisz do <a href=:url>admina</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Jeśli twórca wyzwania nie wypłacił nagrody, możesz złożyć sprzeciw. Twórca ma 14 dni na odpowiedź, zanim system zadziała automatycznie.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Jeśli grupa nie dojdzie do porozumienia, sprawa trafia do <span>admina</span> po ostateczną decyzję.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Jeśli druga osoba też nie jest pewna, zgłoszenie otwiera się dla <span>wszystkich walidatorów naraz</span> i dogadujecie to razem w wewnętrznych notatkach przy tym zgłoszeniu.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Zwycięzca dostaje :amount EUR",
     ":count player entered|:count players entered": "wystartował :count gracz|wystartowało :count graczy|wystartowało :count graczy",
     "Your votes": "Twoje głosy",
-    "Show": "Pokaż"
+    "Show": "Pokaż",
+    "Report a bug": "Zgłoś błąd",
+    "Bugs & Wishlist": "Błędy i życzenia"
 }

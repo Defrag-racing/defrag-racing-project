@@ -905,7 +905,6 @@
     "Completed Label": "Мітка завершення",
     "Comps": "Comps",
     "comps hold": "утримано comps",
-    "Comps is brand new.": "Comps зовсім новий.",
     "Concrete": "Бетон",
     "Conduct": "Поведінка",
     "Confidence Range": "Діапазон впевненості",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Idle ОК",
     "If another user claims a more specific name (e.g.": "Якщо інший користувач претендує на більш конкретне ім'я (наприклад,",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "За потреби ти можеш вийти з усіх інших сесій браузера на всіх своїх пристроях. Деякі з твоїх останніх сесій перераховані нижче; однак цей список може бути неповним. Якщо ти вважаєш, що твій акаунт зламано, тобі також слід оновити свій пароль.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Якщо щось виглядає не так, напиши <a href=:url>адміну</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Якщо creator челенджу не надав нагороду, ти можеш подати диспут. Creator має 14 днів на відповідь до вжиття автоматичних дій.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Якщо група не може дійти згоди, це переходить до <span>адміна</span> для остаточного рішення.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Якщо друга особа також не впевнена, репорт відкривається для <span>усіх валідаторів одразу</span>, і ви вирішуєте це разом у внутрішніх нотатках до цього репорту.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Переможець отримує :amount EUR",
     ":count player entered|:count players entered": "брав участь :count гравець|брали участь :count гравці|брали участь :count гравців",
     "Your votes": "Твої голоси",
-    "Show": "Показати"
+    "Show": "Показати",
+    "Report a bug": "Повідомити про помилку",
+    "Bugs & Wishlist": "Помилки та побажання"
 }

@@ -78,10 +78,6 @@ class CompsController extends Controller
             'pointsTable' => ResultsCalculator::POINTS,
             'pointsForFinishing' => ResultsCalculator::POINTS_FOR_FINISHING,
             'winsPerWildcard' => CompWildcard::WEEKLY_WINS_REQUIRED,
-            'betaNotice' => app(CompSettings::class)->betaNotice(),
-            // Where "tell the admin" goes. Built here rather than in the page
-            // so the id is not a literal sitting in a Vue file.
-            'adminUrl' => route('profile.index', app(CompSettings::class)->contactUserId()),
         ]);
     }
 

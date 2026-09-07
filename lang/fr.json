@@ -905,7 +905,6 @@
     "Completed Label": "Libellé de fin",
     "Comps": "Comps",
     "comps hold": "retenu par comps",
-    "Comps is brand new.": "Comps est tout nouveau.",
     "Concrete": "Béton",
     "Conduct": "Conduite",
     "Confidence Range": "Plage de confiance",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Idle OK",
     "If another user claims a more specific name (e.g.": "Si un autre utilisateur revendique un nom plus spécifique (ex.",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "Si nécessaire, tu peux te déconnecter de toutes tes autres sessions sur l'ensemble de tes appareils. Certaines de tes sessions récentes sont répertoriées ci-dessous ; toutefois, cette liste peut ne pas être exhaustive. Si tu penses que ton compte a été compromis, tu devrais également mettre à jour ton mot de passe.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Si quelque chose ne va pas, contacte <a href=:url>l'admin</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Si le créateur du défi n'a pas délivré la récompense, tu peux ouvrir un litige. Le créateur dispose de 14 jours pour répondre avant le déclenchement d'une action automatique.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Si le groupe ne parvient pas à s'entendre, le dossier est transmis à l'<span>admin</span> pour une décision finale.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Si la seconde personne n'est pas sûre non plus, le signalement est ouvert à <span>tous les validateurs en même temps</span> et vous le résolvez ensemble dans les notes internes de ce signalement.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Le gagnant remporte :amount EUR",
     ":count player entered|:count players entered": ":count joueur a participé|:count joueurs ont participé",
     "Your votes": "Tes votes",
-    "Show": "Afficher"
+    "Show": "Afficher",
+    "Report a bug": "Signaler un bug",
+    "Bugs & Wishlist": "Bugs & souhaits"
 }

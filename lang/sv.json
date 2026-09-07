@@ -905,7 +905,6 @@
     "Completed Label": "Etikett för slutförd",
     "Comps": "Comps",
     "comps hold": "hålls för comps",
-    "Comps is brand new.": "Comps är alldeles nytt.",
     "Concrete": "Betong",
     "Conduct": "Uppförande",
     "Confidence Range": "Säkerhetsintervall",
@@ -1773,7 +1772,6 @@
     "Idle OK": "Idle OK",
     "If another user claims a more specific name (e.g.": "Om en annan användare gör anspråk på ett mer specifikt namn (t.ex.",
     "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "Om det behövs kan du logga ut från alla dina andra webbläsarsessioner på alla dina enheter. Några av dina senaste sessioner listas nedan; denna lista kanske dock inte är fullständig. Om du misstänker att ditt konto har äventyrats bör du också uppdatera ditt lösenord.",
-    "If something does not look right, please contact <a href=:url>admin</a>.": "Om något inte ser rätt ut, kontakta <a href=:url>adminen</a>.",
     "If the challenge creator has not fulfilled the reward, you can file a dispute. The creator has 14 days to respond before automatic action is taken.": "Om utmaningens skapare inte har uppfyllt belöningen kan du starta en tvist. Skaparen har 14 dagar på sig att svara innan automatiska åtgärder vidtas.",
     "If the group cannot agree, it goes to the <span>admin</span> for a final call.": "Om gruppen inte kan komma överens går det till en <span>admin</span> för ett slutgiltigt beslut.",
     "If the second person is not sure either, the report opens to <span>every validator at once</span> and you work it out together in the internal notes on that report.": "Om den andra personen inte heller är säker öppnas rapporten för <span>alla validerare samtidigt</span> och ni löser det tillsammans i de interna anteckningarna för rapporten.",
@@ -4379,5 +4377,7 @@
     "Winner gets :amount EUR": "Vinnaren får :amount EUR",
     ":count player entered|:count players entered": ":count spelare deltog|:count spelare deltog",
     "Your votes": "Dina röster",
-    "Show": "Visa"
+    "Show": "Visa",
+    "Report a bug": "Rapportera en bugg",
+    "Bugs & Wishlist": "Buggar & önskemål"
 }

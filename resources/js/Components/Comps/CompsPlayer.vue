@@ -25,14 +25,14 @@
             :src="`/images/flags/${player.country}.png`"
             :alt="player.country"
             class="flex-shrink-0 rounded-sm"
-            :class="size === 'sm' ? 'w-4 h-3' : 'w-5 h-4'"
+            :class="size === 'sm' ? 'w-4 h-3' : size === 'lg' ? 'w-6 h-[18px]' : 'w-5 h-4'"
         />
         <img
             v-if="player.photo"
             :src="`/storage/${player.photo}`"
             alt=""
             class="flex-shrink-0 rounded-full object-cover"
-            :class="size === 'sm' ? 'w-5 h-5' : 'w-7 h-7'"
+            :class="size === 'sm' ? 'w-5 h-5' : size === 'lg' ? 'w-8 h-8' : 'w-7 h-7'"
         />
         <!-- The name goes through q3tohtml, same as everywhere else: it
              arrives with Quake's ^-codes in it and is a string of literal
@@ -42,7 +42,7 @@
         <span
             class="truncate text-gray-200 group-hover:text-white transition-colors"
             :class="[
-                size === 'sm' ? 'text-xs' : 'text-sm',
+                size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-lg font-bold' : 'text-sm',
                 'name-effect-' + (player.name_effect || 'none'),
                 struck ? 'line-through decoration-red-500/70' : '',
             ]"

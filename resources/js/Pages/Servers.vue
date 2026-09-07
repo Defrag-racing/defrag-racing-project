@@ -8,6 +8,8 @@ import LauncherBanner from '@/Components/LauncherBanner.vue';
 import CheatsBanner from '@/Components/CheatsBanner.vue';
 import PromoRail from '@/Components/PromoRail.vue';
 import FavoriteStar from '@/Components/FavoriteStar.vue';
+import StreamingBadge from '@/Components/StreamingBadge.vue';
+import { streamersOn, twitchChannel, twitchUrl, plainName } from '@/utils/twitch';
 import { t } from '@/utils/i18n';
 import { getWeaponIcon, getWeaponName, getItemIcon, getItemName, getFunctionIcon, getFunctionName } from '@/utils/gameItems';
 const AddToMaplistModal = defineAsyncComponent(() => import('@/Components/Maplists/AddToMaplistModal.vue'));
@@ -252,6 +254,20 @@ const effectiveGametype = (server) => {
  */
 const cheatsAreExpected = (server) => effectiveGametype(server) === 'freestyle';
 
+// Everybody streaming right now, whatever the filters hide. Feeds the bar
+// above the list: a stream on a server you filtered out is still a stream.
+const liveNow = computed(() => {
+    const out = [];
+
+    for (const server of localServers.value ?? []) {
+        for (const player of streamersOn(server)) {
+            out.push({ player, server });
+        }
+    }
+
+    return out;
+});
+
 const filteredAndSortedServers = computed(() => {
     if (!localServers.value || localServers.value.length === 0) return [];
     let result = [...localServers.value];
@@ -331,6 +347,13 @@ const filteredAndSortedServers = computed(() => {
         const starred = (isFavorite(b) ? 1 : 0) - (isFavorite(a) ? 1 : 0);
         if (starred !== 0) {
             return starred;
+        }
+
+        // Then anything being streamed. A stream is the one thing on this
+        // page you can join without launching the game.
+        const streamed = (streamersOn(b).length ? 1 : 0) - (streamersOn(a).length ? 1 : 0);
+        if (streamed !== 0) {
+            return streamed;
         }
 
         let comparison = 0;
@@ -547,6 +570,31 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
         <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8 pb-12" style="margin-top: -22rem;">
             <LauncherBanner variant="servers" />
 
+            <!-- Who is streaming, one line each, above everything. Only
+                 while somebody is: an empty "nobody live" strip would be
+                 the page apologising for itself. -->
+            <div v-if="liveNow.length" class="mb-6 space-y-2">
+                <a v-for="{ player, server } in liveNow" :key="player.id"
+                   :href="twitchUrl(twitchChannel(player.profile))" target="_blank" rel="noopener noreferrer"
+                   class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-purple-400/40 bg-gradient-to-r from-purple-600/30 via-purple-600/15 to-black/40 backdrop-blur-sm px-4 py-2.5 shadow-[0_0_30px_-10px_rgba(168,85,247,0.6)] hover:border-purple-300/60 hover:from-purple-600/40 transition-colors">
+                    <span class="inline-flex items-center gap-1.5 rounded-md bg-red-600 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                        <span class="relative inline-flex w-1.5 h-1.5">
+                            <span class="live-dot-pulse absolute inline-flex w-full h-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-white"></span>
+                        </span>
+                        {{ $t('LIVE') }}
+                    </span>
+                    <span class="text-sm text-purple-100">
+                        {{ $t(':name is streaming on :server', { name: plainName(player.name), server: getServerName(server.name) }) }}
+                    </span>
+                    <span v-if="server.map" class="text-xs text-purple-200/60">{{ server.map }}</span>
+                    <span class="ml-auto inline-flex items-center gap-1.5 text-xs font-bold text-white">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" /></svg>
+                        {{ $t('Watch on Twitch') }}
+                    </span>
+                </a>
+            </div>
+
             <!-- Loading skeleton while deferred data loads -->
             <div v-if="!serversLoaded" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div v-for="i in 6" :key="i" class="bg-black/40 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden animate-pulse">
@@ -604,6 +652,7 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
                             <div :class="['flex items-center gap-2 mb-3 map-hover-fade', hoveredMapServer === server.id ? 'opacity-0 pointer-events-none' : 'opacity-100']">
                                 <img :src="`/images/flags/${server.location}.png`" class="w-5 h-3.5 rounded" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,1)) drop-shadow(0 0 8px rgba(0,0,0,0.8));" :title="server.location" @error="$event.target.style.display='none'">
                                 <h3 class="text-xl font-bold text-white flex-1" style="text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8);" v-html="q3tohtml(server.name)"></h3>
+                                <StreamingBadge :streamers="streamersOn(server)" />
                                 <CopyButton :text="server.ip + ':' + server.port" size="sm" :label="$t('Copy IP')" />
                                 <FavoriteStar :active="isFavorite(server)" @toggle="toggleFavorite(server)" />
                             </div>
@@ -802,7 +851,10 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
                                     <img :src="`/images/flags/${server.location}.png`" class="w-5 h-3.5 rounded shadow-md flex-shrink-0" :title="server.location" @error="$event.target.style.display='none'">
 
                                     <div class="inline-flex flex-col bg-black/40  px-2 py-1 rounded border border-white/20">
-                                        <h3 class="text-base font-bold text-white transition-colors" style="text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8);" v-html="q3tohtml(server.name)"></h3>
+                                        <h3 class="text-base font-bold text-white transition-colors flex items-center gap-2 flex-wrap" style="text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8);">
+                                            <span v-html="q3tohtml(server.name)"></span>
+                                            <StreamingBadge :streamers="streamersOn(server)" size="xs" />
+                                        </h3>
                                         <div class="flex items-center gap-2 text-xs text-gray-300 transition-colors">
                                             <a v-if="server.map" :href="`/maps/${encodeURIComponent(server.map)}`" class="hover:text-blue-400 transition-colors" style="text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.8);">{{ server.map }}</a>
                                         </div>
@@ -914,7 +966,10 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
                                     <img :src="`/images/flags/${server.location}.png`" class="w-5 h-3.5 rounded shadow-md flex-shrink-0" :title="server.location" @error="$event.target.style.display='none'">
 
                                     <div class="inline-flex flex-col bg-black/40  px-2 py-1 rounded border border-white/20">
-                                        <h3 class="text-base font-bold text-white transition-colors" style="text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8);" v-html="q3tohtml(server.name)"></h3>
+                                        <h3 class="text-base font-bold text-white transition-colors flex items-center gap-2 flex-wrap" style="text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8);">
+                                            <span v-html="q3tohtml(server.name)"></span>
+                                            <StreamingBadge :streamers="streamersOn(server)" size="xs" />
+                                        </h3>
                                         <div class="flex items-center gap-2 text-xs text-gray-300 transition-colors">
                                             <a v-if="server.map" :href="`/maps/${encodeURIComponent(server.map)}`" class="hover:text-purple-400 transition-colors" style="text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.8);">{{ server.map }}</a>
                                         </div>
@@ -1026,6 +1081,7 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
                         <img v-if="server.location" :src="`/images/flags/${server.location}.png`" :title="server.location"
                              class="w-5 h-3.5 rounded shrink-0" @error="$event.target.style.display='none'" />
                         <h3 class="font-bold text-sm truncate flex-1" v-html="q3tohtml(server.name)"></h3>
+                        <StreamingBadge :streamers="streamersOn(server)" size="xs" />
                         <FavoriteStar :active="isFavorite(server)" size="xs" @toggle="toggleFavorite(server)" />
                     </div>
 
@@ -1128,6 +1184,12 @@ const serverCount = computed(() => filteredAndSortedServers.value.length);
 </template>
 
 <style scoped>
+.live-dot-pulse { animation: live-dot-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+@keyframes live-dot-pulse {
+    0%, 100% { transform: scale(1); opacity: .75; }
+    50% { transform: scale(2.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .live-dot-pulse { animation: none; } }
 /* Save to Maplist button - same bubble style as CopyButton */
 .save-maplist-btn {
     display: inline-flex;

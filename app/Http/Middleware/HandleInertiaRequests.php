@@ -169,9 +169,10 @@ class HandleInertiaRequests extends Middleware
             'physicsOrder'              =>      $request->user()?->default_physics_order ?? 'vq3_first',
             'canViewRatingBreakdown'    =>      $request->user() ? ($request->user()->admin || (is_array($request->user()->moderator_permissions) && in_array('rating_breakdown', $request->user()->moderator_permissions))) : false,
             'dateFormat'                =>      $request->user()?->global_profile_preferences['date_format'] ?? 'dmY',
-            // Separator before the milliseconds in a run time: 'colon' is
-            // what the engine prints and what the site has always shown.
-            'timeFormat'                =>      $request->user()?->global_profile_preferences['time_format'] ?? 'colon',
+            // Separator before the milliseconds in a run time. 'dot' is the
+            // default since a wish asked for it; 'colon' is what the engine
+            // prints, kept for whoever chose it.
+            'timeFormat'                =>      $request->user()?->global_profile_preferences['time_format'] ?? 'dot',
             // Only the code travels in the payload. The strings themselves are
             // a lazily loaded chunk on the frontend, because shipping a few
             // thousand of them with every single Inertia response would cost

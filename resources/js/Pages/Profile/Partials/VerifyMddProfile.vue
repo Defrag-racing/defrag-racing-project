@@ -122,7 +122,7 @@ const downloadImage = () => {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
                     </svg>
                 </div>
-                <h2 class="text-sm font-bold text-white">{{ $t('MDD Profile') }}</h2>
+                <h2 class="text-sm font-bold text-white">{{ $t('mDd Profile') }}</h2>
             </div>
         </div>
 
@@ -130,7 +130,7 @@ const downloadImage = () => {
             <div v-if="! hasMdd">
                 <div v-if="stage == 1">
                     <div class="text-sm font-medium text-white mb-2">{{ $t('Step 1 - Verify Profile') }}</div>
-                    <InputLabel for="profile_link" :value="$t('MDD Profile Link')" />
+                    <InputLabel for="profile_link" :value="$t('mDd Profile Link')" />
                     <TextInput
                         id="profile_link"
                         v-model="profile_link"
@@ -178,7 +178,7 @@ const downloadImage = () => {
                             </svg>
                         </div>
                         <div>
-                            <div class="text-sm font-medium text-white">{{ $t('MDD Connected') }}</div>
+                            <div class="text-sm font-medium text-white">{{ $t('mDd Connected') }}</div>
                             <a :href="'https://q3df.org/profil?id=' + mddId" target="_blank" class="text-xs text-blue-400 hover:text-blue-300">{{ $t('User #:id', { id: mddId }) }}</a>
                         </div>
                     </div>

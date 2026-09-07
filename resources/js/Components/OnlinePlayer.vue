@@ -1,6 +1,7 @@
 <script setup>
     import { computed } from 'vue';
     import OnlinePlayerData from '@/Components/OnlinePlayerData.vue';
+    import { isStreaming } from '@/utils/twitch';
 
     const props = defineProps({
         player: Object,
@@ -56,7 +57,10 @@
          one level in, so a player who was not drawn still left their wrapper
          behind - the empty row on the server cards was this. -->
     <div class="mb-2" v-if="!isNestedElsewhere">
-        <div class="flex justify-between">
+        <!-- A streamer's row is tinted Twitch purple with a bar down its left
+             edge, so the eye lands on it before it reads a single name. -->
+        <div class="flex justify-between"
+             :class="isStreaming(player) ? 'rounded-md border-l-2 border-purple-400 bg-purple-500/15 pl-2 pr-1 py-0.5 -ml-1' : ''">
             <OnlinePlayerData :player="player" :spectator="false" />
             <div class="font-bold online-time-text text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]" v-if="player.time != 0">
                 {{  formatTime(player.time) }}
@@ -65,7 +69,8 @@
 
         <div v-for="spectator in player.spectators" :key="spectator.id">
             <div class="mt-2" v-if="spectator.server_id == player.server_id">
-                <div class="flex text-sm items-center text-gray-400">
+                <div class="flex text-sm items-center text-gray-400"
+                     :class="isStreaming(spectator) ? 'rounded-md border-l-2 border-purple-400 bg-purple-500/15 pl-1 pr-1 py-0.5' : ''">
                     <OnlinePlayerData :spectator="true" :player="spectator" class="flex-grow ml-2" />
 
                     <div class="font-bold online-time-text text-gray-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]" v-if="spectator.time != 0">

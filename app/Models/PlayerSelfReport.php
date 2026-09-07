@@ -46,7 +46,7 @@ class PlayerSelfReport extends Model
     {
         return [
             'immediate' => __('Hide it here as soon as an admin approves'),
-            'on_merge' => __('Wait for the MDD merge and do both at once'),
+            'on_merge' => __('Wait for the mDd merge and do both at once'),
         ];
     }
 
@@ -104,7 +104,7 @@ class PlayerSelfReport extends Model
 
         return $this->handling === 'immediate'
             ? __('Waiting for an admin')
-            : __('Queued for the MDD merge');
+            : __('Queued for the mDd merge');
     }
 
     /**

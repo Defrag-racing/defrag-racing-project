@@ -49,7 +49,7 @@ class UserAliasResource extends Resource
                             ->helperText('Aliases cannot contain Quake 3 color codes (^).'),
 
                         Forms\Components\TextInput::make('mdd_id')
-                            ->label('MDD ID')
+                            ->label('mDd ID')
                             ->numeric()
                             ->nullable(),
 
@@ -102,7 +102,7 @@ class UserAliasResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('mdd_id')
-                    ->label('MDD ID')
+                    ->label('mDd ID')
                     ->sortable()
                     ->toggleable(),
 

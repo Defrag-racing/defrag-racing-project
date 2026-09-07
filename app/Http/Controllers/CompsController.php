@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comp;
+use App\Models\User;
 use App\Models\CompCandidate;
 use App\Models\CompDemoReport;
+use App\Models\CompPayout;
 use App\Models\CompResult;
 use App\Models\CompRound;
 use App\Models\CompSubmission;
 use App\Models\CompVote;
 use App\Models\CompWildcard;
 use App\Services\Comps\BallotResolver;
+use App\Services\Comps\RoundDemoArchive;
 use App\Services\Comps\CandidateSelector;
 use App\Services\Comps\CompPreviewService;
 use App\Services\Comps\CompSettings;
@@ -65,6 +68,7 @@ class CompsController extends Controller
             'playing' => $playing ? $this->playingPayload($playing, $request) : null,
             'voting' => $voting ? $this->votingPayload($voting, $request) : null,
             'history' => $this->history(),
+            'leaderboard' => $this->leaderboard(),
             'me' => $request->user() ? $this->myStanding($request->user()->id) : null,
             // Demos of theirs comps is holding back without having entered
             // them. Outside `playing` on purpose: a demo can be on hold for a
@@ -74,10 +78,6 @@ class CompsController extends Controller
             'pointsTable' => ResultsCalculator::POINTS,
             'pointsForFinishing' => ResultsCalculator::POINTS_FOR_FINISHING,
             'winsPerWildcard' => CompWildcard::WEEKLY_WINS_REQUIRED,
-            'betaNotice' => app(CompSettings::class)->betaNotice(),
-            // Where "tell the admin" goes. Built here rather than in the page
-            // so the id is not a literal sitting in a Vue file.
-            'adminUrl' => route('profile.index', app(CompSettings::class)->contactUserId()),
         ]);
     }
 
@@ -186,8 +186,14 @@ class CompsController extends Controller
                     'ends_at' => $r->ends_at,
                     'maps' => $r->maps->mapWithKeys(fn ($m) => [$m->physics => [
                         'name' => $m->map?->name,
+                        'thumbnail' => $m->map?->thumbnail,
+                        'author' => $m->map?->author,
                         'decided_by' => $m->decided_by,
                     ]]),
+                    // The week's demos as one download per physics, in two
+                    // flavours. Only for a round whose standings are frozen:
+                    // until then the demos are private by design.
+                    'demos' => $this->demoArchivesFor($r),
                     // What the week paid, per physics. A finished round that
                     // does not say what was at stake reads like a scoreboard
                     // from a friendly.
@@ -706,6 +712,7 @@ class CompsController extends Controller
     private function resultsPayload(CompRound $round): array
     {
         $out = [];
+        $payouts = $this->payoutsFor([$round->id]);
 
         foreach (BallotResolver::PHYSICS as $physics) {
             $out[$physics] = CompResult::where('comp_round_id', $round->id)
@@ -718,6 +725,10 @@ class CompsController extends Controller
                     'rank' => $r->rank,
                     'time' => $r->time,
                     'points' => (float) $r->points,
+                    // What became of the prize. A finished week that shows
+                    // "15 EUR" beside the winner and nothing else reads as
+                    // money still owed, whether it was paid or given back.
+                    'payout' => $payouts[$physics][$r->user_id] ?? null,
                     'user' => [
                         'id' => $r->user?->id,
                         'name' => $r->user?->name,
@@ -734,6 +745,83 @@ class CompsController extends Controller
     }
 
     /** Finished comps, most recent first, with their winners. */
+    /**
+     * Every finished comp's points added up per player, one table per year
+     * and one for all time. The history list says who won each week; this
+     * says who has been winning. The points are the ones each result row
+     * already carries, the season scale, so a win is 25 and finishing is 1.
+     *
+     * @return array{periods: list<array{key:string,label:string}>, rows: array<string, list<array>>}
+     */
+    private function leaderboard(): array
+    {
+        $rows = CompResult::query()
+            ->join('comp_rounds', 'comp_rounds.id', '=', 'comp_results.comp_round_id')
+            ->join('comps', 'comps.id', '=', 'comp_rounds.comp_id')
+            ->where('comps.status', 'finished')
+            ->selectRaw('YEAR(comps.ends_at) as year, comp_results.user_id, comp_results.physics')
+            ->selectRaw('COUNT(DISTINCT comps.id) as comps, SUM(comp_results.rank = 1) as wins, SUM(comp_results.points) as points')
+            ->groupBy('year', 'comp_results.user_id', 'comp_results.physics')
+            ->get();
+
+        $users = User::whereIn('id', $rows->pluck('user_id')->unique())
+            ->get(['id', 'name', 'country', 'profile_photo_path', 'name_effect', 'color'])
+            ->keyBy('id');
+
+        $tables = [];
+        foreach ($rows as $r) {
+            foreach ([(string) $r->year, 'all'] as $period) {
+                $t = &$tables[$period][$r->user_id];
+                $t['comps'] = ($t['comps'] ?? 0) + (int) $r->comps;
+                $t['wins'] = ($t['wins'] ?? 0) + (int) $r->wins;
+                $t['points_' . $r->physics] = ($t['points_' . $r->physics] ?? 0) + (float) $r->points;
+                unset($t);
+            }
+        }
+
+        $periods = collect(array_keys($tables))->filter(fn ($k) => $k !== 'all')->sortDesc()->values()
+            ->map(fn ($y) => ['key' => $y, 'label' => $y])
+            ->push(['key' => 'all', 'label' => 'All time'])
+            ->all();
+
+        $out = [];
+        foreach ($tables as $period => $byUser) {
+            $list = collect($byUser)->map(function ($t, $userId) use ($users) {
+                $u = $users[$userId] ?? null;
+                $cpm = round($t['points_cpm'] ?? 0, 1);
+                $vq3 = round($t['points_vq3'] ?? 0, 1);
+
+                return [
+                    'id' => $u?->id,
+                    'name' => $u?->name,
+                    'country' => $u?->country,
+                    'photo' => $u?->profile_photo_path,
+                    'name_effect' => $u?->name_effect,
+                    'color' => $u?->color,
+                    // One comp with both physics entered is one comp, so
+                    // the per-physics count is capped by the distinct comps.
+                    'comps' => $t['comps'],
+                    'wins' => $t['wins'],
+                    'points_cpm' => $cpm,
+                    'points_vq3' => $vq3,
+                    'points' => round($cpm + $vq3, 1),
+                ];
+            })
+            ->sortBy([['points', 'desc'], ['wins', 'desc'], ['comps', 'asc'], ['name', 'asc']])
+            ->values();
+
+            // Equal points share a rank, as everywhere else in comps.
+            $rank = 0; $last = null;
+            $out[$period] = $list->map(function ($row, $i) use (&$rank, &$last) {
+                if ($row['points'] !== $last) { $rank = $i + 1; $last = $row['points']; }
+                $row['rank'] = $rank;
+                return $row;
+            })->all();
+        }
+
+        return ['periods' => $periods, 'rows' => $out];
+    }
+
     private function history(int $limit = 12): array
     {
         $comps = Comp::where('status', 'finished')
@@ -744,14 +832,17 @@ class CompsController extends Controller
 
         return $comps->map(function (Comp $comp) {
             $winners = [];
+            $payouts = $this->payoutsFor($comp->rounds->pluck('id')->all());
 
             foreach (BallotResolver::PHYSICS as $physics) {
                 $winners[$physics] = CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))
                     ->where('physics', $physics)
-                    ->winners()
+                    ->where('rank', '<=', 3)
+                    ->orderBy('rank')->orderBy('time')
                     ->with('user:id,name,country,profile_photo_path,name_effect,color')
                     ->get()
                     ->map(fn (CompResult $r) => [
+                        'rank' => $r->rank,
                         'id' => $r->user?->id,
                         'name' => $r->user?->name,
                         'country' => $r->user?->country,
@@ -759,19 +850,118 @@ class CompsController extends Controller
                         'name_effect' => $r->user?->name_effect,
                         'color' => $r->user?->color,
                         'time' => $r->time,
+                        'payout' => $payouts[$physics][$r->user_id] ?? null,
                     ])
                     ->values();
             }
+
+            // Weekly has one round; season several. The card shows the first
+            // round's category and maps and the detail page shows the rest.
+            $first = $comp->rounds->sortBy('index')->first();
 
             return [
                 'id' => $comp->id,
                 'title' => $comp->title,
                 'type' => $comp->type,
+                'starts_at' => $comp->starts_at,
                 'ends_at' => $comp->ends_at,
+                'category' => $first?->category,
+                'weapon' => $first?->weapon,
+                'prize_eur' => $first?->prize_eur,
+                'rounds' => $comp->rounds->count(),
+                'entrants' => CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))->count(),
+                'entrants_by_physics' => CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))
+                    ->selectRaw('physics, count(*) as n')->groupBy('physics')->pluck('n', 'physics'),
                 'maps' => $comp->rounds->flatMap(fn (CompRound $r) => $r->maps->pluck('map.name'))->unique()->values(),
+                'map_by_physics' => ($first?->maps ?? collect())->mapWithKeys(fn ($m) => [$m->physics => [
+                    'name' => $m->map?->name,
+                    'thumbnail' => $m->map?->thumbnail,
+                ]]),
                 'winners' => $winners,
             ];
         })->all();
+    }
+
+    /**
+     * Every counting demo of a finished round's physics, as one 7z.
+     *
+     * `anonymized` names the files by rank and time only, for anyone who
+     * wants to watch the week cold and guess who ran what. `revealed` puts
+     * the player's name in every file name.
+     */
+    public function downloadDemos(CompRound $round, string $physics, string $mode, RoundDemoArchive $archive)
+    {
+        abort_unless(in_array($physics, BallotResolver::PHYSICS, true), 404);
+        abort_unless(in_array($mode, RoundDemoArchive::MODES, true), 404);
+        abort_unless($round->demosVisible(), 404);
+
+        $path = $archive->path($round, $physics, $mode);
+
+        abort_if($path === null, 404, __('No demos to download for this physics.'));
+
+        return response()->download($path, $archive->downloadName($round, $physics, $mode), [
+            'Content-Type' => 'application/x-7z-compressed',
+        ]);
+    }
+
+    /**
+     * @return array<string, array{count: int, anonymized: string, revealed: string}>
+     */
+    private function demoArchivesFor(CompRound $round): array
+    {
+        if (! $round->demosVisible()) {
+            return [];
+        }
+
+        $archive = app(RoundDemoArchive::class);
+        $out = [];
+
+        foreach (BallotResolver::PHYSICS as $physics) {
+            $count = $archive->count($round, $physics);
+
+            if ($count === 0) {
+                continue;
+            }
+
+            $out[$physics] = [
+                'count' => $count,
+                'anonymized' => route('comps.demos', [$round->id, $physics, RoundDemoArchive::ANONYMIZED]),
+                'revealed' => route('comps.demos', [$round->id, $physics, RoundDemoArchive::REVEALED]),
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * The settled prizes of the given rounds, keyed by physics and winner.
+     *
+     * One row per physics per winner, so a tie has one each. The status is
+     * the thing shown; the amount comes with it because it was copied onto
+     * the row when the week ended, and an admin correcting the round's prize
+     * later must not make the page claim somebody was handed more or less
+     * than they were.
+     *
+     * @param  int[]  $roundIds
+     * @return array<string, array<int, array{status: string, label: string, amount: string, resolved_at: ?string}>>
+     */
+    private function payoutsFor(array $roundIds): array
+    {
+        $out = [];
+
+        foreach (CompPayout::whereIn('comp_round_id', $roundIds)->get() as $payout) {
+            $out[$payout->physics][$payout->user_id] = [
+                'status' => $payout->status,
+                'label' => $payout->label(),
+                'amount' => $this->money((float) $payout->amount),
+                // status => euro for each way the money went. One entry for
+                // a whole-amount settlement, two or three for a split.
+                'parts' => array_map(fn ($eur) => $this->money($eur), $payout->parts()),
+                'resolved_at' => $payout->resolved_at?->toIso8601String(),
+            ];
+        }
+
+        return $out;
     }
 
     /**
@@ -790,7 +980,7 @@ class CompsController extends Controller
         abort_unless(
             $request->user()->mdd_id,
             403,
-            __('Link your MDD profile to vote in comps.')
+            __('Link your mDd profile to vote in comps.')
         );
     }
 

@@ -1162,7 +1162,7 @@
                                 <img onerror="this.src='/images/flags/_404.png'" :src="`/images/flags/${user?.country ?? profile.country}.png`" :title="user?.country ?? profile.country" class="w-8 h-5">
                             </div>
                             <div :class="'name-effect-' + (user?.name_effect || 'none')" :style="`--effect-color: ${user?.color || '#ffffff'}`" class="text-4xl font-black text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-default truncate max-w-[600px]" style="text-shadow: 0 0 40px rgba(0,0,0,0.9), 0 4px 20px rgba(0,0,0,0.8);" :title="(user?.name ?? profile.name).replace(/\^\w/g, '')" v-html="q3tohtml(user?.name ?? profile.name)"></div>
-                            <div v-if="user?.mdd_name && user.mdd_name !== user.name" class="text-sm text-gray-300 px-2 py-0.5 rounded bg-black/40 backdrop-blur-sm" style="text-shadow: 0 2px 8px rgba(0,0,0,0.9);">{{ $t('MDD:') }} <span v-html="q3tohtml(user.mdd_name)"></span></div>
+                            <div v-if="user?.mdd_name && user.mdd_name !== user.name" class="text-sm text-gray-300 px-2 py-0.5 rounded bg-black/40 backdrop-blur-sm" style="text-shadow: 0 2px 8px rgba(0,0,0,0.9);">{{ $t('mDd:') }} <span v-html="q3tohtml(user.mdd_name)"></span></div>
                             <!-- LIVE Badge -->
                             <a v-if="user?.is_live && user?.twitch_id" :href="`https://twitch.tv/${user.twitch_name}`" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600/90 border-2 border-red-400 hover:bg-red-500/90 hover:border-red-300 transition-all hover:scale-105 shadow-xl animate-pulse">
                                 <div class="w-2 h-2 rounded-full bg-white animate-ping absolute"></div>
@@ -1753,7 +1753,7 @@
             <div class="relative z-20 mb-6">
                 <div class="bg-gradient-to-r from-yellow-500/10 via-yellow-500/20 to-yellow-500/10 border border-yellow-500/30 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
                     <div class="text-3xl font-black text-yellow-400 mb-2">{{ $t('Link Your Q3DF Profile') }}</div>
-                    <div class="text-lg font-semibold text-yellow-200/80 mb-2">{{ $t('Your account is not linked to a Q3DF/MDD profile yet.') }}</div>
+                    <div class="text-lg font-semibold text-yellow-200/80 mb-2">{{ $t('Your account is not linked to a Q3DF/mDd profile yet.') }}</div>
                     <div class="text-sm text-gray-400 mb-4">{{ $t('Link your profile to unlock records, rankings, stats, demo matching, and more.') }}</div>
                     <Link href="/link-account" class="inline-block px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded-lg transition-colors">
                         {{ $t('Link Account Now') }}
@@ -1773,7 +1773,7 @@
             <div class="relative z-20 mb-6">
                 <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
                     <div class="text-xl font-bold text-gray-200 mb-2">{{ $t('No Q3DF profile linked') }}</div>
-                    <div class="text-sm text-gray-400">{{ $t('This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.') }}</div>
+                    <div class="text-sm text-gray-400">{{ $t('This account is not linked to a Q3DF/mDd profile, so there are no records, rankings or stats to show.') }}</div>
                 </div>
             </div>
         </div>

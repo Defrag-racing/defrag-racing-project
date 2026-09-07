@@ -101,7 +101,7 @@ const cancelAddAlias = () => {
 
         <!-- MDD Imported Aliases (read-only) -->
         <div v-if="mddAliases.length > 0" class="mb-4">
-            <div class="text-[10px] text-blue-400 uppercase tracking-wider font-semibold mb-2">{{ $t('Imported from MDD') }} ({{ mddAliases.length }})</div>
+            <div class="text-[10px] text-blue-400 uppercase tracking-wider font-semibold mb-2">{{ $t('Imported from mDd') }} ({{ mddAliases.length }})</div>
             <div class="flex flex-wrap gap-1.5">
                 <div
                     v-for="alias in mddAliases"

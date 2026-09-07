@@ -98,7 +98,7 @@
         {
             method: 'GET',
             path: '/api/search-players',
-            description: t('Search MDD profiles by name / plain_name. Returns up to 10 matches.'),
+            description: t('Search mDd profiles by name / plain_name. Returns up to 10 matches.'),
             params: [
                 { name: 'q', required: true, desc: t('Search term (min 2 chars). LIKE match on name + plain_name.') },
             ],
@@ -117,7 +117,7 @@
             path: '/api/profile/{mddId}/extras',
             description: t('Similar-skill competitors + head-to-head rivals for a player. Mirrors the data shown on profile pages.'),
             params: [
-                { name: 'mddId', required: true, desc: t('Path parameter - the target player\'s MDD profile id.') },
+                { name: 'mddId', required: true, desc: t('Path parameter - the target player\'s mDd profile id.') },
             ],
             example: 'curl -H "Authorization: Bearer <token>" \\\n  "https://defrag.racing/api/profile/2640/extras"',
             response: `{

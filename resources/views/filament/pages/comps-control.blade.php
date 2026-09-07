@@ -58,11 +58,6 @@
                         <p class="text-xs text-gray-500 mt-1">Only the fallback for a week nobody has funded. What a funded week pays comes from the donations that cover it - see Donations.</p>
                     </div>
 
-                    <label class="flex items-center gap-2 pt-1 cursor-pointer">
-                        <input type="checkbox" wire:model="betaNotice" class="rounded border-gray-300 dark:border-gray-600" />
-                        <span class="text-sm font-semibold">Show the first-weeks warning</span>
-                    </label>
-                    <p class="text-xs text-gray-500 -mt-2">Tells people comps is new, things may go wrong, and to report it to neyo. Turn off once it has run clean.</p>
                 </div>
 
                 <button wire:click="saveSettings"

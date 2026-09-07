@@ -516,7 +516,7 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h3 class="text-base font-bold text-green-400">{{ $t('Profile Linked') }}</h3>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $t('Synced with MDD database') }}</p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ $t('Synced with mDd database') }}</p>
                             </div>
                         </div>
                     </div>

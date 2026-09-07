@@ -235,7 +235,7 @@ const submitAboutMeSettings = () => {
 const savedHidden = user.value.global_profile_preferences?.hidden_sections || [];
 const savedHiddenStatBoxes = user.value.global_profile_preferences?.hidden_stat_boxes || [];
 const savedDateFormat = user.value.global_profile_preferences?.date_format || 'dmY';
-const savedTimeFormat = user.value.global_profile_preferences?.time_format || 'colon';
+const savedTimeFormat = user.value.global_profile_preferences?.time_format || 'dot';
 const globalProfileForm = useForm({
     hidden_sections: [...savedHidden],
     hidden_stat_boxes: [...savedHiddenStatBoxes],
@@ -1048,7 +1048,7 @@ const filteredProfileSubTabs = computed(() => isVerified.value ? profileSubTabs.
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <p class="text-white font-bold text-lg">{{ $t('Link your MDD Account') }}</p>
+                        <p class="text-white font-bold text-lg">{{ $t('Link your mDd Account') }}</p>
                         <p class="text-gray-400 text-sm">{{ $t('Connect your Q3DF.org profile to unlock records, rankings, tournaments and more.') }}</p>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0">

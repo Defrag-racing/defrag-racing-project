@@ -164,7 +164,7 @@ class SettingsController extends Controller
         $user = User::where('mdd_id', $id)->first();
 
         if ($user) {
-            return 'There is another user who linked his account to this MDD Profile.';
+            return 'There is another user who linked his account to this mDd Profile.';
         }
 
         $client = new Client();
@@ -324,7 +324,7 @@ class SettingsController extends Controller
             'date_format' => $request->date_format ?? $user->global_profile_preferences['date_format'] ?? 'dmY',
             // Default is what the engine's own timer prints, so nobody who
             // never opens this page sees their times change.
-            'time_format' => $request->time_format ?? $user->global_profile_preferences['time_format'] ?? 'colon',
+            'time_format' => $request->time_format ?? $user->global_profile_preferences['time_format'] ?? 'dot',
         ];
         $user->save();
 

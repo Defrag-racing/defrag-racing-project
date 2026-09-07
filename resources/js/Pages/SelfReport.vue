@@ -250,7 +250,7 @@ const thumb = (path) => path ? `/storage/${path}` : '/images/unknown.jpg';
             <div class="rounded-2xl border border-amber-400/35 bg-amber-500/[0.08] p-5 mb-4">
                 <h2 class="text-amber-200 font-black text-lg mb-1">{{ $t('Nothing disappears the moment you send it') }}</h2>
                 <p class="text-gray-200 leading-relaxed">
-                    {{ $t('These requests are handled when the MDD databases are merged. That merge is planned but not done, and until it happens a run taken off this site still stands on q3df.org - I cannot reach that database yet. So you choose which you want: have it hidden here as soon as an admin approves it and accept that q3df still shows it for now, or leave it queued and have both handled together at the merge. Either way an admin approves the hide, and your run stays on the board until they do.') }}
+                    {{ $t('These requests are handled when the mDd databases are merged. That merge is planned but not done, and until it happens a run taken off this site still stands on q3df.org - I cannot reach that database yet. So you choose which you want: have it hidden here as soon as an admin approves it and accept that q3df still shows it for now, or leave it queued and have both handled together at the merge. Either way an admin approves the hide, and your run stays on the board until they do.') }}
                 </p>
             </div>
 
@@ -303,7 +303,7 @@ const thumb = (path) => path ? `/storage/${path}` : '/images/unknown.jpg';
             </div>
 
             <div v-if="!blocked && !hasMddAccount" class="bg-black/40 border border-yellow-400/30 rounded-2xl p-6 text-yellow-200">
-                {{ $t('Your account is not linked to an MDD profile, so there are no records tied to it here. Link it in your settings first.') }}
+                {{ $t('Your account is not linked to an mDd profile, so there are no records tied to it here. Link it in your settings first.') }}
             </div>
 
             <template v-else-if="!blocked">

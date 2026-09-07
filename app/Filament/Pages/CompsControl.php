@@ -51,8 +51,6 @@ class CompsControl extends Page
 
     public int $prizeEur = 5;
 
-    public bool $betaNotice = true;
-
     /** Candidate being swapped, and what it is being swapped for. */
     public ?int $swapCandidateId = null;
 
@@ -74,7 +72,6 @@ class CompsControl extends Page
         $this->votingLeadHours = $s->votingLeadHours();
         $this->poolSize = $s->poolSize();
         $this->prizeEur = $s->prizeEur();
-        $this->betaNotice = $s->betaNotice();
     }
 
     public function saveSettings(): void
@@ -95,7 +92,6 @@ class CompsControl extends Page
         SiteSetting::set(CompSettings::KEY_VOTING_LEAD_HOURS, (string) $this->votingLeadHours);
         SiteSetting::set(CompSettings::KEY_POOL_SIZE, (string) $this->poolSize);
         SiteSetting::set(CompSettings::KEY_PRIZE_EUR, (string) $this->prizeEur);
-        SiteSetting::set(CompSettings::KEY_BETA_NOTICE, $this->betaNotice ? '1' : '0');
 
         Notification::make()
             ->title('Saved')

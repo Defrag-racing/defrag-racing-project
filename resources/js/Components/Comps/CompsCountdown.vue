@@ -131,15 +131,15 @@
               : (end ? 'flex-col items-end text-right' : 'flex-col items-start')">
         <span class="inline-flex items-baseline gap-2">
             <span class="uppercase tracking-wider"
-                  :class="emphasis ? 'text-[10px] font-bold text-blue-300/70' : 'text-xs text-gray-500'"
+                  :class="emphasis ? 'text-[10px] font-bold text-blue-300/70' : 'text-xs text-gray-300'"
                   v-if="label">{{ label }}</span>
-            <span v-if="done" class="font-bold text-gray-400" :class="emphasis ? 'text-base' : 'text-sm'">{{ $t('Closed') }}</span>
+            <span v-if="done" class="font-bold text-gray-300" :class="emphasis ? 'text-base' : 'text-sm'">{{ $t('Closed') }}</span>
             <span v-else
                   class="tabular-nums"
                   :class="emphasis ? 'text-base font-black leading-tight text-blue-200' : 'text-sm font-bold text-white'">{{ parts }}</span>
         </span>
 
-        <span v-if="clock && !done" class="text-[11px] text-gray-500 tabular-nums">
+        <span v-if="clock && !done" class="text-[11px] text-gray-300 tabular-nums">
             {{ clock.site }}<template v-if="clock.local"> ({{ $t(':time your time', { time: clock.local }) }})</template><template v-else-if="clock.mine"> ({{ $t('your timezone') }})</template>
         </span>
     </span>

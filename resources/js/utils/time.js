@@ -4,21 +4,21 @@ import { t, currentLocale } from '@/utils/i18n';
 /**
  * How a run time is written, site-wide.
  *
- * Defrag's own timer prints MM:SS:mmm, and that is what the site has always
- * shown, but plenty of the community reads a colon before the milliseconds as
- * a third clock field and expects a decimal point there instead. It is a
- * preference rather than a correctness question, so it is one: `colon` keeps
- * the engine's own punctuation, `dot` writes minutes:seconds.milliseconds.
+ * Defrag's own timer prints MM:SS:mmm, but most of the community reads a
+ * colon before the milliseconds as a third clock field and expects a decimal
+ * point there instead: minutes:seconds.milliseconds. That is the default
+ * since 2026-09-07, when it was asked for as a wish; `colon` stays as a
+ * preference for anyone who wants the engine's own punctuation.
  *
  * A ref, not a plain variable, so a component that renders a time re-renders
  * when the preference changes rather than keeping the old punctuation until
  * the next full page load.
  */
-const separator = ref(':');
+const separator = ref('.');
 
-/** `colon` (default, what the engine prints) or `dot`. */
+/** `dot` (default) or `colon`, what the engine prints. */
 export const setTimeFormat = (format) => {
-    separator.value = format === 'dot' ? '.' : ':';
+    separator.value = format === 'colon' ? ':' : '.';
 };
 
 export const timeSeparator = () => separator.value;

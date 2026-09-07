@@ -722,7 +722,7 @@ const top200Share = computed(() => topNWeightShare(200));
                         </div>
                         <div>
                             <div class="text-sm font-bold text-white">{{ $t('Incremental (real-time)') }}</div>
-                            <div class="text-xs text-gray-400">{{ $t('Every time a new record is submitted to MDD, rankings for that specific map are instantly recalculated. This means your ranking updates within seconds of a new record.') }}</div>
+                            <div class="text-xs text-gray-400">{{ $t('Every time a new record is submitted to mDd, rankings for that specific map are instantly recalculated. This means your ranking updates within seconds of a new record.') }}</div>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">

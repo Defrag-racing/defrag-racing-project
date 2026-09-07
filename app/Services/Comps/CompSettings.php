@@ -25,7 +25,6 @@ class CompSettings
     public const KEY_POOL_SIZE = 'comps_pool_size';
     public const KEY_ENABLED = 'comps_weekly_enabled';
     public const KEY_PRIZE_EUR = 'comps_prize_eur';
-    public const KEY_BETA_NOTICE = 'comps_beta_notice';
     public const KEY_CONTACT_USER_ID = 'comps_contact_user_id';
 
     /** Prague, not UTC. In UTC the hour would drift by one across the year. */
@@ -80,16 +79,6 @@ class CompSettings
     public function prizeEur(): int
     {
         return (int) SiteSetting::get(self::KEY_PRIZE_EUR, '5');
-    }
-
-    /**
-     * The first weeks of anything new go wrong somewhere. On by default and
-     * turned off in admin once it has run clean, rather than left up forever
-     * telling people the site is unfinished.
-     */
-    public function betaNotice(): bool
-    {
-        return SiteSetting::getBool(self::KEY_BETA_NOTICE, true);
     }
 
     /**

@@ -199,17 +199,27 @@ class CompPayoutResource extends Resource
                                             }
                                         },
                                     ]),
+                                // Type what was given back; the paid-out part
+                                // fills itself with whatever is left of the
+                                // prize. Three free fields that had to add up
+                                // read as if the form could not split at all.
                                 Forms\Components\TextInput::make('split_site')
                                     ->label('To the website')
                                     ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
                                     ->default(0)
-                                    ->live(onBlur: true),
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (CompPayout $record, Forms\Get $get, Forms\Set $set) => self::fillPaidRemainder($record, $get, $set)),
                                 Forms\Components\TextInput::make('split_comps')
                                     ->label('To the next comps')
                                     ->numeric()->minValue(0)->step(0.01)->suffix('EUR')
                                     ->default(0)
-                                    ->live(onBlur: true),
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (CompPayout $record, Forms\Get $get, Forms\Set $set) => self::fillPaidRemainder($record, $get, $set)),
                             ]),
+                        Forms\Components\Placeholder::make('split_hint')
+                            ->hiddenLabel()
+                            ->visible(fn (Forms\Get $get) => $get('resolution') === CompPayout::STATUS_SPLIT)
+                            ->content('Type what was given back to the website or to comps. Paid out fills itself with the rest of the prize.'),
 
                         Forms\Components\TextInput::make('comps_start_comp')
                             ->label('Funds weekly number')
@@ -307,5 +317,12 @@ class CompPayoutResource extends Resource
         return [
             'index' => Pages\ListCompPayouts::route('/'),
         ];
+    }
+
+    /** Paid out = prize minus what was given back, never below zero. */
+    private static function fillPaidRemainder(CompPayout $record, Forms\Get $get, Forms\Set $set): void
+    {
+        $rest = (float) $record->amount - (float) $get('split_site') - (float) $get('split_comps');
+        $set('split_paid', number_format(max(0, $rest), 2, '.', ''));
     }
 }

@@ -4377,5 +4377,7 @@
     "Show less": "Mostrar menos",
     "Show all :count": "Mostrar los :count",
     "Winner gets :amount EUR": "El ganador se lleva :amount EUR",
-    ":count player entered|:count players entered": ":count jugador participó|:count jugadores participaron"
+    ":count player entered|:count players entered": ":count jugador participó|:count jugadores participaron",
+    "Your votes": "Tus votos",
+    "Show": "Mostrar"
 }

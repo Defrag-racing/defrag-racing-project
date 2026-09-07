@@ -4377,5 +4377,7 @@
     "Show less": "Zobrazit méně",
     "Show all :count": "Zobrazit všech :count",
     "Winner gets :amount EUR": "Vítěz získá :amount EUR",
-    ":count player entered|:count players entered": "zúčastnil se :count hráč|zúčastnili se :count hráči|zúčastnilo se :count hráčů"
+    ":count player entered|:count players entered": "zúčastnil se :count hráč|zúčastnili se :count hráči|zúčastnilo se :count hráčů",
+    "Your votes": "Tvoje hlasy",
+    "Show": "Zobrazit"
 }

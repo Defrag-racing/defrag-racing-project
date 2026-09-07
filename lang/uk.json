@@ -4377,5 +4377,7 @@
     "Show less": "Показати менше",
     "Show all :count": "Показати всіх :count",
     "Winner gets :amount EUR": "Переможець отримує :amount EUR",
-    ":count player entered|:count players entered": "брав участь :count гравець|брали участь :count гравці|брали участь :count гравців"
+    ":count player entered|:count players entered": "брав участь :count гравець|брали участь :count гравці|брали участь :count гравців",
+    "Your votes": "Твої голоси",
+    "Show": "Показати"
 }

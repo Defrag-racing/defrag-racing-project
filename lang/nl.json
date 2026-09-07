@@ -4377,5 +4377,7 @@
     "Show less": "Minder tonen",
     "Show all :count": "Alle :count tonen",
     "Winner gets :amount EUR": "De winnaar krijgt :amount EUR",
-    ":count player entered|:count players entered": ":count speler deed mee|:count spelers deden mee"
+    ":count player entered|:count players entered": ":count speler deed mee|:count spelers deden mee",
+    "Your votes": "Jouw stemmen",
+    "Show": "Tonen"
 }

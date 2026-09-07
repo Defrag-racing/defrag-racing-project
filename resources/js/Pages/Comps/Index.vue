@@ -12,7 +12,7 @@ export default {
     import moment from 'moment';
     import { t } from '@/utils/i18n';
     import { formatTime } from '@/utils/time';
-    import { physicsBadge } from '@/utils/physics';
+    import { physicsBadge, physicsText } from '@/utils/physics';
 
     import Popper from 'vue3-popper';
 
@@ -123,6 +123,7 @@ export default {
     // The ballot that chose the maps being played. One panel for the week
     // rather than one per physics: it is a single vote and it reads as one.
     const showBallot = ref(false);
+
 
     // Null when the round carries no ballot - an admin-made round, or one whose
     // candidates are gone - so the whole line stays off rather than printing
@@ -272,6 +273,30 @@ export default {
         const valid = myEntriesIn(physics).filter((e) => e.status === 'valid' && !e.is_highlight);
         return valid.length ? Math.min(...valid.map((e) => e.time)) : null;
     };
+
+    // The two panels fold up once you are done with them: the ballot when
+    // you have voted in both physics, the round when you have a run in both.
+    // What is left to do stays open; what is done becomes one line saying
+    // what you did, with a button to unfold it. A click is remembered per
+    // round in this browser, so the fold does not fight you every visit.
+    const foldKey = (what, id) => `comps.fold.${what}.${id}`;
+    const storedFold = (what, id) => {
+        try { const v = localStorage.getItem(foldKey(what, id)); return v === null ? null : v === '1'; } catch { return null; }
+    };
+    const rememberFold = (what, id, folded) => {
+        try { localStorage.setItem(foldKey(what, id), folded ? '1' : '0'); } catch {}
+    };
+
+    const votedBoth = computed(() => !!props.voting?.is_open && PHYSICS.every((p) => props.voting?.my_votes?.[p]));
+    const ranBoth = computed(() => PHYSICS.every((p) => bestOf(p) !== null));
+
+    const votingFolded = ref(storedFold('vote', props.voting?.round_id) ?? votedBoth.value);
+    const playingFolded = ref(storedFold('play', props.playing?.round_id) ?? ranBoth.value);
+
+    const toggleVoting = () => { votingFolded.value = !votingFolded.value; rememberFold('vote', props.voting?.round_id, votingFolded.value); };
+    const togglePlaying = () => { playingFolded.value = !playingFolded.value; rememberFold('play', props.playing?.round_id, playingFolded.value); };
+
+    const candidateName = (id) => (props.voting?.candidates ?? []).find((c) => c.id === id)?.map ?? '?';
 
     // Withdrawing is not undoable: the entry goes, and the same file cannot be
     // uploaded again because the site already holds its hash. So it asks.
@@ -741,19 +766,33 @@ export default {
                                         :until="voting.closes_at" :label="$t('Voting closes in')" emphasis inline />
                         <CompsCountdown v-else
                                         :until="voting.starts_at" :label="$t('Starts in')" emphasis inline />
+                        <button type="button" @click="toggleVoting"
+                                class="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                                :title="votingFolded ? $t('Show') : $t('Hide')">
+                            <svg class="w-3.5 h-3.5 transition-transform" :class="votingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                            {{ votingFolded ? $t('Show') : $t('Hide') }}
+                        </button>
                     </div>
                 </div>
 
                 <!-- Belongs to the header, not to the cards. It explains the
                      panel as a whole, and sitting above the grid it read as a
-                     caption on the first row of maps. -->
-                <p class="mt-1.5 text-sm text-gray-400">
+                     caption on the first row of maps. Folded, the line says
+                     what you voted for instead. -->
+                <p v-if="votingFolded && voting.is_open" class="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-sm text-gray-300">
+                    <span class="text-gray-500">{{ $t('Your votes') }}:</span>
+                    <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-1.5 mr-3">
+                        <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
+                        <span class="font-bold text-white">{{ voting.my_votes?.[physics] ? candidateName(voting.my_votes[physics]) : '-' }}</span>
+                    </span>
+                </p>
+                <p v-else class="mt-1.5 text-sm text-gray-400">
                     <template v-if="voting.is_open">{{ $t('CPM and VQ3 vote separately, so each physics gets the map its own players picked. You have one vote in each and can move it until the deadline.') }}</template>
                     <template v-else>{{ $t('Voting is over. These are the maps, and the round starts when the countdown runs out.') }}</template>
                 </p>
             </div>
 
-            <div class="px-5 pt-4 pb-5">
+            <div v-show="!votingFolded" class="px-5 pt-4 pb-5">
 
             <div v-if="user && !voting.may_vote" class="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
                 {{ $t('Link your mDd profile to vote in comps.') }}
@@ -847,7 +886,23 @@ export default {
                     </span>
 
                     <CompsCountdown :until="playing.ends_at" :label="$t('Ends in')" inline />
+                    <button type="button" @click="togglePlaying"
+                            class="inline-flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-bold text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+                            :title="playingFolded ? $t('Show') : $t('Hide')">
+                        <svg class="w-3.5 h-3.5 transition-transform" :class="playingFolded ? '' : 'rotate-180'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" /></svg>
+                        {{ playingFolded ? $t('Show') : $t('Hide') }}
+                    </button>
                 </div>
+            </div>
+
+            <!-- Folded: one line with your best in each physics, and the maps
+                 by name so the fold still says what is being played. -->
+            <div v-if="playingFolded" class="px-5 py-3 text-sm text-gray-300 flex flex-wrap gap-x-6 gap-y-1">
+                <span v-for="physics in PHYSICS" :key="physics" class="inline-flex items-baseline gap-2">
+                    <span class="font-bold uppercase" :class="physicsText(physics)">{{ physics }}</span>
+                    <span class="font-bold text-white">{{ playing.maps?.[physics]?.name ?? '-' }}</span>
+                    <span v-if="bestOf(physics) !== null" class="text-gray-500">{{ $t('Your best') }} <span class="font-bold text-white tabular-nums">{{ formatTime(bestOf(physics)) }}</span></span>
+                </span>
             </div>
 
             <!-- One box, split down the middle, rather than two cards with
@@ -862,7 +917,7 @@ export default {
                  wide screen. Under each other the upload sat below the maps
                  and the two physics side by side left the maps half empty;
                  one above the other they fill their column. -->
-            <div class="grid lg:grid-cols-2">
+            <div v-show="!playingFolded" class="grid lg:grid-cols-2">
             <div class="p-5">
                 <div class="rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
                     <div class="divide-y divide-white/10">

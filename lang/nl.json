@@ -4376,5 +4376,6 @@
     "Wins": "Overwinningen",
     "Show less": "Minder tonen",
     "Show all :count": "Alle :count tonen",
-    "Winner gets :amount EUR": "De winnaar krijgt :amount EUR"
+    "Winner gets :amount EUR": "De winnaar krijgt :amount EUR",
+    ":count player entered|:count players entered": ":count speler deed mee|:count spelers deden mee"
 }

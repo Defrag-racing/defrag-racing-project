@@ -4376,5 +4376,6 @@
     "Wins": "Vinster",
     "Show less": "Visa färre",
     "Show all :count": "Visa alla :count",
-    "Winner gets :amount EUR": "Vinnaren får :amount EUR"
+    "Winner gets :amount EUR": "Vinnaren får :amount EUR",
+    ":count player entered|:count players entered": ":count spelare deltog|:count spelare deltog"
 }

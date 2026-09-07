@@ -4376,5 +4376,6 @@
     "Wins": "Victoires",
     "Show less": "Afficher moins",
     "Show all :count": "Afficher les :count",
-    "Winner gets :amount EUR": "Le gagnant remporte :amount EUR"
+    "Winner gets :amount EUR": "Le gagnant remporte :amount EUR",
+    ":count player entered|:count players entered": ":count joueur a participé|:count joueurs ont participé"
 }

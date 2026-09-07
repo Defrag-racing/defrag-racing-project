@@ -19,6 +19,7 @@ export default {
     import CompsCountdown from '@/Components/Comps/CompsCountdown.vue';
     import CompsDonors from '@/Components/Comps/CompsDonors.vue';
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
+    import CompsPayoutBadge from '@/Components/Comps/CompsPayoutBadge.vue';
     import DemoSettingsCheck from '@/Components/DemoSettingsCheck.vue';
     import ConfigModal from '@/Components/Comps/ConfigModal.vue';
 
@@ -1271,6 +1272,7 @@ export default {
                                     <div v-for="w in comp.winners[physics]" :key="w.id" class="flex items-center gap-2">
                                         <CompsPlayer :player="w" size="sm" />
                                         <span class="text-xs tabular-nums text-gray-500">{{ formatTime(w.time) }}</span>
+                                        <CompsPayoutBadge v-if="w.payout" :payout="w.payout" />
                                     </div>
                                 </div>
                                 <span v-else class="text-gray-600">-</span>

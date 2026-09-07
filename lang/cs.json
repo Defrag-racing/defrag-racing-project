@@ -4351,5 +4351,9 @@
     "See the contest": "Zobrazit contest",
     ":amount to the DefragLive contest prize pool": ":amount do prizepoolu DefragLive contestu",
     "No Q3DF profile linked": "Žádný propojený Q3DF profil",
-    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Tento účet není propojený s Q3DF/MDD profilem, takže tu nejsou žádné rekordy, žebříčky ani statistiky."
+    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Tento účet není propojený s Q3DF/MDD profilem, takže tu nejsou žádné rekordy, žebříčky ani statistiky.",
+    "Paid out": "Vyplaceno",
+    "Payout pending": "Výplata čeká",
+    "Donated to the website": "Věnováno webu",
+    "Donated to the next comps": "Věnováno dalším comps"
 }

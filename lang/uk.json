@@ -4351,5 +4351,9 @@
     "See the contest": "Дивитися конкурс",
     ":amount to the DefragLive contest prize pool": ":amount у призовий фонд конкурсу DefragLive",
     "No Q3DF profile linked": "Профіль Q3DF не прив’язано",
-    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Цей обліковий запис не прив’язано до профілю Q3DF/MDD, тому тут немає рекордів, рейтингів чи статистики."
+    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Цей обліковий запис не прив’язано до профілю Q3DF/MDD, тому тут немає рекордів, рейтингів чи статистики.",
+    "Paid out": "Виплачено",
+    "Payout pending": "Виплата очікує",
+    "Donated to the website": "Пожертвувано сайту",
+    "Donated to the next comps": "Пожертвувано на наступні comps"
 }

@@ -12,6 +12,7 @@ export default {
     import { formatTime } from '@/utils/time';
 
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
+    import CompsPayoutBadge from '@/Components/Comps/CompsPayoutBadge.vue';
 
     // A finished comp, opened from the history list. Standings only - the
     // ballot, the countdown and the upload form all belonged to a week that is
@@ -129,8 +130,13 @@ export default {
                                 </td>
                                 <td class="py-1.5"><CompsPlayer :player="row.user" size="sm" /></td>
                                 <td class="py-1.5 text-right font-bold tabular-nums text-white">{{ formatTime(row.time) }}</td>
-                                <td class="py-1.5 text-right tabular-nums w-16">
-                                    <span v-if="row.rank === 1 && round.prize_eur > 0" class="font-black text-emerald-300">{{ round.prize_eur }} EUR</span>
+                                <td class="py-1.5 text-right tabular-nums">
+                                    <!-- The prize and what became of it, in one
+                                         label. A bare "15 EUR" beside the winner
+                                         read as money still owed, whether it had
+                                         been paid weeks ago or given back. -->
+                                    <CompsPayoutBadge v-if="row.payout" :payout="row.payout" :amount="row.payout.amount" />
+                                    <span v-else-if="row.rank === 1 && round.prize_eur > 0" class="font-black text-emerald-300">{{ round.prize_eur }} EUR</span>
                                 </td>
                                 <td v-if="comp.type === 'season'" class="py-1.5 text-right tabular-nums text-gray-400">{{ row.points }}</td>
                             </tr>

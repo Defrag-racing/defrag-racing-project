@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comp;
 use App\Models\CompCandidate;
 use App\Models\CompDemoReport;
+use App\Models\CompPayout;
 use App\Models\CompResult;
 use App\Models\CompRound;
 use App\Models\CompSubmission;
@@ -706,6 +707,7 @@ class CompsController extends Controller
     private function resultsPayload(CompRound $round): array
     {
         $out = [];
+        $payouts = $this->payoutsFor([$round->id]);
 
         foreach (BallotResolver::PHYSICS as $physics) {
             $out[$physics] = CompResult::where('comp_round_id', $round->id)
@@ -718,6 +720,10 @@ class CompsController extends Controller
                     'rank' => $r->rank,
                     'time' => $r->time,
                     'points' => (float) $r->points,
+                    // What became of the prize. A finished week that shows
+                    // "15 EUR" beside the winner and nothing else reads as
+                    // money still owed, whether it was paid or given back.
+                    'payout' => $payouts[$physics][$r->user_id] ?? null,
                     'user' => [
                         'id' => $r->user?->id,
                         'name' => $r->user?->name,
@@ -744,6 +750,7 @@ class CompsController extends Controller
 
         return $comps->map(function (Comp $comp) {
             $winners = [];
+            $payouts = $this->payoutsFor($comp->rounds->pluck('id')->all());
 
             foreach (BallotResolver::PHYSICS as $physics) {
                 $winners[$physics] = CompResult::whereIn('comp_round_id', $comp->rounds->pluck('id'))
@@ -759,6 +766,7 @@ class CompsController extends Controller
                         'name_effect' => $r->user?->name_effect,
                         'color' => $r->user?->color,
                         'time' => $r->time,
+                        'payout' => $payouts[$physics][$r->user_id] ?? null,
                     ])
                     ->values();
             }
@@ -772,6 +780,34 @@ class CompsController extends Controller
                 'winners' => $winners,
             ];
         })->all();
+    }
+
+    /**
+     * The settled prizes of the given rounds, keyed by physics and winner.
+     *
+     * One row per physics per winner, so a tie has one each. The status is
+     * the thing shown; the amount comes with it because it was copied onto
+     * the row when the week ended, and an admin correcting the round's prize
+     * later must not make the page claim somebody was handed more or less
+     * than they were.
+     *
+     * @param  int[]  $roundIds
+     * @return array<string, array<int, array{status: string, label: string, amount: string, resolved_at: ?string}>>
+     */
+    private function payoutsFor(array $roundIds): array
+    {
+        $out = [];
+
+        foreach (CompPayout::whereIn('comp_round_id', $roundIds)->get() as $payout) {
+            $out[$payout->physics][$payout->user_id] = [
+                'status' => $payout->status,
+                'label' => $payout->label(),
+                'amount' => $this->money((float) $payout->amount),
+                'resolved_at' => $payout->resolved_at?->toIso8601String(),
+            ];
+        }
+
+        return $out;
     }
 
     /**

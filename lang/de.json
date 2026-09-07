@@ -4351,5 +4351,9 @@
     "See the contest": "Contest ansehen",
     ":amount to the DefragLive contest prize pool": ":amount in den Preispool des DefragLive-Contests",
     "No Q3DF profile linked": "Kein Q3DF-Profil verknüpft",
-    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Dieses Konto ist mit keinem Q3DF/MDD-Profil verknüpft. Deshalb gibt es hier keine Rekorde, Ranglisten oder Statistiken."
+    "This account is not linked to a Q3DF/MDD profile, so there are no records, rankings or stats to show.": "Dieses Konto ist mit keinem Q3DF/MDD-Profil verknüpft. Deshalb gibt es hier keine Rekorde, Ranglisten oder Statistiken.",
+    "Paid out": "Ausgezahlt",
+    "Payout pending": "Auszahlung ausstehend",
+    "Donated to the website": "An die Website gespendet",
+    "Donated to the next comps": "An die nächsten Comps gespendet"
 }

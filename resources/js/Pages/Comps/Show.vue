@@ -96,11 +96,6 @@ export default {
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" /></svg>
                     {{ $t('Back to comps') }}
                 </Link>
-                <div class="mt-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ comp.title }}</h1>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -118,6 +113,11 @@ export default {
                     <span v-if="comp.type === 'season'" class="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gray-300">
                         {{ $t('Round :n', { n: round.index }) }}
                     </span>
+                    <!-- The comp's name leads the row. It was a page title
+                         on its own above the panel, with nothing else on
+                         that line, and the panel header already held
+                         everything else that names the round. -->
+                    <h1 class="text-xl font-black text-white">{{ comp.title }}</h1>
                     <span class="text-lg font-black uppercase tracking-wider text-blue-300/90 self-center">
                         {{ categoryLabel(round.category) }}<template v-if="round.weapon"> · {{ round.weapon }}</template>
                     </span>
@@ -239,12 +239,12 @@ export default {
                                 <div v-for="w in winners(round, physics)" :key="w.user.id" class="space-y-1">
                                     <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
                                         <div class="flex items-center gap-3 min-w-0">
-                                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-black text-sm">1</span>
-                                            <CompsPlayer :player="w.user" />
+                                            <span class="flex-shrink-0 w-9 h-9 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-black text-base">1</span>
+                                            <CompsPlayer :player="w.user" size="lg" />
                                         </div>
-                                        <span class="text-2xl font-black tabular-nums text-white">{{ formatTime(w.time) }}</span>
+                                        <span class="text-3xl font-black tabular-nums text-white">{{ formatTime(w.time) }}</span>
                                     </div>
-                                    <div class="pl-11 text-xs">
+                                    <div class="pl-12 text-sm">
                                         <CompsPayoutText v-if="w.payout" :payout="w.payout" />
                                         <span v-else-if="round.prize_eur > 0" class="font-bold text-emerald-300">{{ round.prize_eur }} EUR</span>
                                     </div>
@@ -252,19 +252,19 @@ export default {
                             </div>
 
                             <!-- ---------------- Standings ---------------- -->
-                            <table v-if="rest(round, physics).length" class="w-full text-sm">
+                            <table v-if="rest(round, physics).length" class="w-full text-base">
                                 <tbody class="divide-y divide-white/5">
                                     <tr v-for="row in rest(round, physics)" :key="row.user.id" class="hover:bg-white/[0.03] transition-colors">
-                                        <td class="py-1.5 pr-3 w-10">
-                                            <span class="inline-flex w-7 h-7 items-center justify-center rounded-full border text-xs font-black tabular-nums"
+                                        <td class="py-2 pr-3 w-12">
+                                            <span class="inline-flex w-8 h-8 items-center justify-center rounded-full border text-sm font-black tabular-nums"
                                                   :class="rankStyle(row.rank)">{{ row.rank }}</span>
                                         </td>
-                                        <td class="py-1.5"><CompsPlayer :player="row.user" size="sm" /></td>
-                                        <td class="py-1.5 text-right tabular-nums">
-                                            <span class="font-bold text-white">{{ formatTime(row.time) }}</span>
-                                            <span v-if="gap(round, physics, row)" class="ml-2 text-[11px] text-gray-300">{{ gap(round, physics, row) }}</span>
+                                        <td class="py-2"><CompsPlayer :player="row.user" /></td>
+                                        <td class="py-2 text-right tabular-nums">
+                                            <span class="text-lg font-black text-white">{{ formatTime(row.time) }}</span>
+                                            <span v-if="gap(round, physics, row)" class="ml-2 text-xs text-gray-300">{{ gap(round, physics, row) }}</span>
                                         </td>
-                                        <td v-if="comp.type === 'season'" class="py-1.5 pl-3 text-right tabular-nums text-gray-300 w-14">{{ row.points }}</td>
+                                        <td v-if="comp.type === 'season'" class="py-2 pl-3 text-right tabular-nums text-gray-300 w-14">{{ row.points }}</td>
                                     </tr>
                                 </tbody>
                             </table>

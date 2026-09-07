@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref } from 'vue';
+    import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
     import CompsPlayer from '@/Components/Comps/CompsPlayer.vue';
     import { physicsText } from '@/utils/physics';
 
@@ -11,12 +11,34 @@
         rows: { type: Object, required: true },
     });
 
-    const SHOWN = 10;
     const period = ref(props.periods[0]?.key);
     const expanded = ref(false);
 
+    // As many rows as the screen has room for, measured, not a fixed ten:
+    // the box sticks beside the history and should use the height it has.
+    // Show all appears only when there are more rows than fit. Below the
+    // lg breakpoint nothing sticks and every row is shown.
+    const root = ref(null);
+    const firstRow = ref(null);
+    const fit = ref(10);
+
+    const measure = () => {
+        if (typeof window === 'undefined') return;
+        if (window.innerWidth < 1024) { fit.value = Infinity; return; }
+        const rowHeight = firstRow.value?.getBoundingClientRect().height || 44;
+        const box = root.value?.getBoundingClientRect();
+        const chrome = (box?.height ?? 0) - (firstRow.value ? visible.value.length * rowHeight : 0);
+        const room = window.innerHeight - 32 - chrome;
+        fit.value = Math.max(5, Math.floor(room / rowHeight));
+    };
+
     const all = computed(() => props.rows[period.value] ?? []);
-    const visible = computed(() => expanded.value ? all.value : all.value.slice(0, SHOWN));
+    const visible = computed(() => expanded.value ? all.value : all.value.slice(0, fit.value));
+    const overflows = computed(() => all.value.length > fit.value);
+
+    onMounted(() => { nextTick(measure); window.addEventListener('resize', measure); });
+    onBeforeUnmount(() => window.removeEventListener('resize', measure));
+    watch(period, () => nextTick(measure));
 
     const RANK_STYLE = {
         1: 'bg-amber-400/20 border-amber-400/40 text-amber-300',
@@ -32,7 +54,7 @@
          them scrolls. Unfolded it stops sticking and stands on the page like
          the history does: a sticky box taller than the screen cannot be
          scrolled to its own bottom, and a scrollbar inside it is worse. -->
-    <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden"
+    <section ref="root" class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden"
              :class="expanded ? '' : 'lg:sticky lg:top-4'">
         <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/10 bg-white/[0.04] px-4 py-3">
             <div>
@@ -62,7 +84,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
-                    <tr v-for="row in visible" :key="row.id" class="hover:bg-white/[0.03]" :class="row.rank > 3 && 'text-gray-300'">
+                    <tr v-for="(row, i) in visible" :key="row.id" :ref="(el) => { if (i === 0) firstRow = el; }" class="hover:bg-white/[0.03]" :class="row.rank > 3 && 'text-gray-300'">
                         <td class="px-3 py-2.5">
                             <span class="inline-flex w-6 h-6 items-center justify-center rounded-full border text-[11px] font-black"
                                   :class="RANK_STYLE[row.rank] ?? 'border-white/10 bg-white/5 text-gray-400'">{{ row.rank }}</span>
@@ -78,7 +100,7 @@
             </table>
         </div>
 
-        <div v-if="all.length > SHOWN" class="border-t border-white/10 px-4 py-2 text-center">
+        <div v-if="overflows" class="border-t border-white/10 px-4 py-2 text-center">
             <button type="button" @click="expanded = !expanded" class="text-xs font-bold text-blue-300/80 hover:text-blue-300">
                 {{ expanded ? $t('Show less') : $tc('Show all :count', all.length) }}
             </button>

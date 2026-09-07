@@ -1280,7 +1280,7 @@ export default {
              leaderboard sat below twelve weeks of history and nobody found
              it. A week is one row of the left column, its two physics one
              above the other, which is what leaves room on the right. -->
-        <div v-if="history.length" class="grid gap-6 items-start lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+        <div v-if="history.length" class="grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <section class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm overflow-hidden min-w-0">
             <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-white/10 bg-white/[0.04] px-5 py-3">
                 <h2 class="text-lg font-black text-white">{{ $t('Past comps') }}</h2>
@@ -1307,7 +1307,7 @@ export default {
 
                     <div class="divide-y divide-white/10">
                         <div v-for="physics in PHYSICS" :key="physics" class="flex gap-4 p-4 min-w-0">
-                            <div class="relative w-28 h-28 shrink-0 rounded-lg overflow-hidden border border-white/10 bg-white/[0.03]">
+                            <div class="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-lg overflow-hidden border border-white/10 bg-white/[0.03]">
                                 <img v-if="comp.map_by_physics?.[physics]?.thumbnail"
                                      :src="`/storage/${comp.map_by_physics[physics].thumbnail}`"
                                      :alt="comp.map_by_physics[physics].name"

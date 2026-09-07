@@ -1256,65 +1256,52 @@ export default {
                 <span class="text-xs text-gray-500">{{ $tc(':count comp|:count comps', history.length) }}</span>
             </div>
 
-            <!-- Two columns, one per physics, and one row per week. A week
-                 is two races on two maps, so the map's picture is the card
-                 and the winner sits under it. The table this replaced had
-                 the comp name, two map names and two nicks in a row and
-                 read like a spreadsheet of something that had been a
-                 competition. -->
-            <div class="p-4 md:p-5 space-y-5">
-                <div class="hidden md:grid md:grid-cols-2 gap-4">
-                    <div v-for="physics in PHYSICS" :key="physics"
-                         class="rounded-lg border px-3 py-1.5 text-center text-sm font-black uppercase tracking-[0.25em]"
-                         :class="physicsBadge(physics)">{{ physics }}</div>
-                </div>
-
-                <div v-for="comp in history" :key="comp.id" class="space-y-2">
-                    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-1">
-                        <Link :href="route('comps.show', comp.id)" class="text-base font-black text-white hover:text-blue-300 transition-colors">{{ comp.title }}</Link>
+            <!-- One card per week, two to a row, both physics inside it: a
+                 week is one competition on two maps, and a card per physics
+                 pulled the two halves of it apart. The map's picture is the
+                 top of each half and the winner sits under it. -->
+            <div class="p-4 md:p-5 grid gap-4 md:grid-cols-2">
+                <Link v-for="comp in history" :key="comp.id" :href="route('comps.show', comp.id)"
+                      class="group flex flex-col rounded-xl border border-white/10 bg-black/30 overflow-hidden transition-all hover:border-blue-400/40 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.5)]">
+                    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-white/10 bg-white/[0.04] px-4 py-2.5">
+                        <span class="text-base font-black text-white group-hover:text-blue-300 transition-colors">{{ comp.title }}</span>
                         <span v-if="comp.category" class="text-[10px] font-black uppercase tracking-wider text-blue-300/80">
                             {{ categoryLabel(comp.category) }}<template v-if="comp.weapon"> · {{ comp.weapon }}</template>
                         </span>
-                        <span class="text-[11px] tabular-nums text-gray-500">{{ historyDates(comp) }}</span>
-                        <span class="ml-auto flex items-baseline gap-3 text-[11px] text-gray-500">
-                            <span>{{ $tc(':count player|:count players', comp.entrants) }}</span>
-                            <span v-if="comp.prize_eur > 0" class="font-bold text-emerald-300/80">{{ comp.prize_eur * 2 }} EUR</span>
-                            <Link :href="route('comps.show', comp.id)" class="font-bold text-blue-300 hover:text-blue-200 transition-colors">{{ $t('Details') }} &rarr;</Link>
-                        </span>
+                        <span class="ml-auto text-[11px] tabular-nums text-gray-500">{{ historyDates(comp) }}</span>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <Link v-for="physics in PHYSICS" :key="physics" :href="route('comps.show', comp.id)"
-                              class="group relative flex flex-col rounded-xl border border-white/10 bg-black/30 overflow-hidden transition-all hover:border-white/25 hover:shadow-[0_0_30px_-12px_rgba(59,130,246,0.5)]">
-                            <!-- The picture is the card. Name and physics
-                                 sit on it, over a fade, so the card reads
-                                 as the map first and a label second. -->
-                            <div class="relative h-32 bg-white/[0.03]">
+                    <div class="grid grid-cols-2 divide-x divide-white/10 flex-1">
+                        <div v-for="physics in PHYSICS" :key="physics" class="flex flex-col min-w-0">
+                            <div class="relative h-24 bg-white/[0.03]">
                                 <img v-if="comp.map_by_physics?.[physics]?.thumbnail"
                                      :src="`/storage/${comp.map_by_physics[physics].thumbnail}`"
                                      :alt="comp.map_by_physics[physics].name"
                                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                                <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 px-3 pb-2">
-                                    <span class="text-lg font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,1)] truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
-                                    <span class="md:hidden rounded-md border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">{{ physics }}</span>
-                                </div>
+                                <span class="absolute left-2 top-2 rounded-md border px-1.5 py-0.5 text-[10px] font-black uppercase tracking-widest" :class="physicsBadge(physics)">{{ physics }}</span>
+                                <span class="absolute inset-x-0 bottom-0 px-3 pb-1.5 text-sm font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,1)] truncate">{{ comp.map_by_physics?.[physics]?.name ?? '-' }}</span>
                             </div>
 
                             <div class="flex-1 px-3 py-2.5">
                                 <div v-if="comp.winners?.[physics]?.length" class="space-y-1.5">
                                     <div v-for="w in comp.winners[physics]" :key="w.id" class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <span class="inline-flex w-6 h-6 shrink-0 items-center justify-center rounded-full bg-amber-400/20 border border-amber-400/40 text-[11px] font-black text-amber-300">1</span>
+                                        <span class="inline-flex w-5 h-5 shrink-0 items-center justify-center rounded-full bg-amber-400/20 border border-amber-400/40 text-[10px] font-black text-amber-300">1</span>
                                         <CompsPlayer :player="w" size="sm" />
-                                        <span class="ml-auto text-base font-black tabular-nums text-white">{{ formatTime(w.time) }}</span>
+                                        <span class="ml-auto text-sm font-black tabular-nums text-white">{{ formatTime(w.time) }}</span>
                                         <CompsPayoutBadge v-if="w.payout" :payout="w.payout" class="w-full justify-center" />
                                     </div>
                                 </div>
-                                <div v-else class="py-1 text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
+                                <div v-else class="text-xs text-gray-600">{{ $t('Nobody entered.') }}</div>
                             </div>
-                        </Link>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="flex items-center justify-between border-t border-white/10 px-4 py-2 text-[11px] text-gray-500">
+                        <span>{{ $tc(':count player|:count players', comp.entrants) }}</span>
+                        <span v-if="comp.prize_eur > 0" class="font-bold text-emerald-300/80">{{ comp.prize_eur * 2 }} EUR</span>
+                    </div>
+                </Link>
             </div>
         </section>
 

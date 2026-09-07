@@ -4375,5 +4375,6 @@
     "All time": "Histórico",
     "Wins": "Victorias",
     "Show less": "Mostrar menos",
-    "Show all :count": "Mostrar los :count"
+    "Show all :count": "Mostrar los :count",
+    "Winner gets :amount EUR": "El ganador se lleva :amount EUR"
 }

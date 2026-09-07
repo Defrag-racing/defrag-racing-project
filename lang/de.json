@@ -4375,5 +4375,6 @@
     "All time": "Gesamt",
     "Wins": "Siege",
     "Show less": "Weniger anzeigen",
-    "Show all :count": "Alle :count anzeigen"
+    "Show all :count": "Alle :count anzeigen",
+    "Winner gets :amount EUR": "Der Sieger bekommt :amount EUR"
 }

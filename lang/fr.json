@@ -4375,5 +4375,6 @@
     "All time": "Depuis toujours",
     "Wins": "Victoires",
     "Show less": "Afficher moins",
-    "Show all :count": "Afficher les :count"
+    "Show all :count": "Afficher les :count",
+    "Winner gets :amount EUR": "Le gagnant remporte :amount EUR"
 }

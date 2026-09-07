@@ -176,7 +176,17 @@ export default {
                                     </div>
                                     <div v-if="round.maps?.[physics]?.author" class="mt-0.5 text-xs text-gray-500 truncate">{{ round.maps[physics].author }}</div>
 
-                                    <div v-if="round.maps?.[physics]" class="mt-2 text-[11px] text-gray-500">
+                                    <!-- Who ran and what the winner took, per
+                                         physics, right here where the map is.
+                                         The header says both for the whole
+                                         round; this is the half that matters
+                                         under this picture. -->
+                                    <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs">
+                                        <span class="font-bold text-gray-300">{{ $tc(':count player|:count players', round.results?.[physics]?.length ?? 0) }}</span>
+                                        <span v-if="round.prize_eur > 0" class="font-black text-emerald-300">{{ $t('Winner gets :amount EUR', { amount: round.prize_eur }) }}</span>
+                                    </div>
+
+                                    <div v-if="round.maps?.[physics]" class="mt-1.5 text-[11px] text-gray-500">
                                         <template v-if="round.wildcards?.[physics]">
                                             <span class="inline-flex flex-wrap items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
                                                 <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.6-6.2 4.6 2.4-7.4L2 9.4h7.6z" /></svg>

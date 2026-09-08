@@ -854,7 +854,19 @@ const closeServerDropdown = () => {
                     @dragover="onDragOver($event, index)"
                     @dragend="onDragEnd"
                     :class="{ 'cursor-move': isReordering, 'opacity-50': draggedIndex === index }">
-                    <MapCard :map="map" />
+                    <MapCard :map="map">
+                        <!-- Queue position. Play Later is an ordered list you can
+                             drag around, so the order is worth showing. It goes
+                             through the card's bottom-right slot, under the item
+                             rows, clear of the physics badge in the top corner. -->
+                        <template #bottom-right>
+                            <div
+                                v-if="isPlayLater"
+                                class="min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center rounded-md bg-black/70 border border-white/15 text-white text-xs font-black backdrop-blur-sm">
+                                {{ index + 1 }}
+                            </div>
+                        </template>
+                    </MapCard>
 
                     <!-- Play Button (for Play Later with server selected) -->
                     <button
@@ -876,14 +888,6 @@ const closeServerDropdown = () => {
                             {{ selectedServer.defrag?.toLowerCase().includes('cpm') ? 'CPM' : 'VQ3' }}
                         </span>
                     </button>
-
-                    <!-- Queue position. Play Later is an ordered list you can
-                         drag around, so the order is worth showing. -->
-                    <div
-                        v-if="isPlayLater"
-                        class="absolute top-2 right-2 z-10 min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center rounded-md bg-black/70 border border-white/15 text-white text-xs font-black backdrop-blur-sm">
-                        {{ index + 1 }}
-                    </div>
 
                     <!-- Remove Button (for owner) -->
                     <button

@@ -14,6 +14,7 @@
     import CopyButton from '@/Components/Basic/CopyButton.vue';
     import DemoRenderButton from '@/Components/DemoRenderButton.vue';
     import DemoFlagModal from '@/Components/DemoFlagModal.vue';
+    import RecordTimeHistory from '@/Components/RecordTimeHistory.vue';
     import FreestyleDemosTable from '@/Components/FreestyleDemosTable.vue';
     import axios from 'axios';
 
@@ -427,6 +428,16 @@
         const updated = [...new Set([...dismissedSections, ...newSections.value])];
         localStorage.setItem('dismissed_new_sections', JSON.stringify(updated));
     }
+    // Which record rows have their time-history drawer open. Keyed by the
+    // record id, so a VQ3 row and a CPM row on the same map stay apart.
+    const openHistoryIds = ref(new Set());
+    const isHistoryOpen = (record) => openHistoryIds.value.has(record.id);
+    const toggleHistory = (record) => {
+        const next = new Set(openHistoryIds.value);
+        if (next.has(record.id)) next.delete(record.id); else next.add(record.id);
+        openHistoryIds.value = next;
+    };
+
     const fmtDate = (dateStr) => {
         const d = new Date(dateStr);
         const dd = String(d.getDate()).padStart(2, '0');
@@ -2605,7 +2616,8 @@
                                         <div :class="[dateColWidth, 'flex-shrink-0 text-[10px] text-gray-400 uppercase tracking-wider font-semibold text-right']">{{ $t('Date') }}</div>
                                     </div>
                                 </div>
-                                <Link v-for="record in vq3Records.data" :key="record.id" :href="`/maps/${encodeURIComponent(record.mapname)}`" class="group relative flex items-center gap-3 py-2 px-4 -mx-4 -my-2 transition-all duration-300 border-b border-white/[0.02] last:border-0 overflow-hidden first:rounded-t-[10px] last:rounded-b-[10px]">
+                                <template v-for="record in vq3Records.data" :key="record.id">
+                                <Link :href="`/maps/${encodeURIComponent(record.mapname)}`" class="group relative flex items-center gap-3 py-2 px-4 -mx-4 -my-2 transition-all duration-300 border-b border-white/[0.02] last:border-0 overflow-hidden first:rounded-t-[10px] last:rounded-b-[10px]">
                                     <!-- Background Map Thumbnail -->
                                     <div v-if="record.map" class="absolute inset-0 transition-all duration-500 first:rounded-t-[10px] last:rounded-b-[10px]">
                                         <img
@@ -2675,6 +2687,24 @@
 
                                         <!-- Time + Score + Date -->
                                         <div class="flex items-center gap-0.5 ml-auto mr-1">
+                                        <!-- Time history toggle: only for a record the player improved
+                                             on, since that is the only kind with a road behind it. -->
+                                        <button
+                                            v-if="record.history_count"
+                                            type="button"
+                                            @click.stop.prevent="toggleHistory(record)"
+                                            :title="isHistoryOpen(record) ? $t('Hide time history') : $t('Show time history')"
+                                            :class="[
+                                                'flex-shrink-0 inline-flex items-center gap-0.5 px-1 py-0.5 mr-1 rounded text-[9px] font-bold tabular-nums border transition-colors',
+                                                isHistoryOpen(record)
+                                                    ? 'bg-blue-500/30 text-blue-200 border-blue-400/60'
+                                                    : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white'
+                                            ]">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            {{ record.history_count }}
+                                        </button>
                                         <div class="w-12 sm:w-20 flex-shrink-0 text-right">
                                             <div class="text-[10px] sm:text-sm font-bold tabular-nums text-white transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ formatTime(record.time) }}</div>
                                         </div>
@@ -2700,6 +2730,14 @@
                                     </div>
 
                                 </Link>
+                                <RecordTimeHistory
+                                    v-if="isHistoryOpen(record)"
+                                    :mdd-id="record.mdd_id"
+                                    :mapname="record.mapname"
+                                    :gametype="record.gametype"
+                                    :current="record"
+                                    :format-date="fmtDate" />
+                                </template>
                             </div>
 
                             <div v-else class="text-center py-10 flex-1 flex items-center justify-center">
@@ -2734,7 +2772,8 @@
                                         <div :class="[dateColWidth, 'flex-shrink-0 text-[10px] text-gray-400 uppercase tracking-wider font-semibold text-right']">{{ $t('Date') }}</div>
                                     </div>
                                 </div>
-                                <Link v-for="record in cpmRecords.data" :key="record.id" :href="`/maps/${encodeURIComponent(record.mapname)}`" class="group relative flex items-center gap-3 py-2 px-4 -mx-4 -my-2 transition-all duration-300 border-b border-white/[0.02] last:border-0 overflow-hidden first:rounded-t-[10px] last:rounded-b-[10px]">
+                                <template v-for="record in cpmRecords.data" :key="record.id">
+                                <Link :href="`/maps/${encodeURIComponent(record.mapname)}`" class="group relative flex items-center gap-3 py-2 px-4 -mx-4 -my-2 transition-all duration-300 border-b border-white/[0.02] last:border-0 overflow-hidden first:rounded-t-[10px] last:rounded-b-[10px]">
                                     <!-- Background Map Thumbnail -->
                                     <div v-if="record.map" class="absolute inset-0 transition-all duration-500 first:rounded-t-[10px] last:rounded-b-[10px]">
                                         <img
@@ -2804,6 +2843,24 @@
 
                                         <!-- Time + Score + Date -->
                                         <div class="flex items-center gap-0.5 ml-auto mr-1">
+                                        <!-- Time history toggle: only for a record the player improved
+                                             on, since that is the only kind with a road behind it. -->
+                                        <button
+                                            v-if="record.history_count"
+                                            type="button"
+                                            @click.stop.prevent="toggleHistory(record)"
+                                            :title="isHistoryOpen(record) ? $t('Hide time history') : $t('Show time history')"
+                                            :class="[
+                                                'flex-shrink-0 inline-flex items-center gap-0.5 px-1 py-0.5 mr-1 rounded text-[9px] font-bold tabular-nums border transition-colors',
+                                                isHistoryOpen(record)
+                                                    ? 'bg-blue-500/30 text-blue-200 border-blue-400/60'
+                                                    : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white'
+                                            ]">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                            {{ record.history_count }}
+                                        </button>
                                         <div class="w-12 sm:w-20 flex-shrink-0 text-right">
                                             <div class="text-[10px] sm:text-sm font-bold tabular-nums text-white transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">{{ formatTime(record.time) }}</div>
                                         </div>
@@ -2829,6 +2886,14 @@
                                     </div>
 
                                 </Link>
+                                <RecordTimeHistory
+                                    v-if="isHistoryOpen(record)"
+                                    :mdd-id="record.mdd_id"
+                                    :mapname="record.mapname"
+                                    :gametype="record.gametype"
+                                    :current="record"
+                                    :format-date="fmtDate" />
+                                </template>
                             </div>
 
                             <div v-else class="text-center py-10 flex-1 flex items-center justify-center">

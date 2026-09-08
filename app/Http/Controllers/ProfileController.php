@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 use App\Models\User;
 use App\Models\Record;
+use App\Models\RecordHistory;
 use App\Models\Map;
 use App\Models\MddProfile;
 use App\Models\RenderedVideo;
@@ -150,6 +151,8 @@ class ProfileController extends Controller {
             // Attach map scores to records
             $this->attachProfileMapScores($vq3Records, $mddId, 'vq3');
             $this->attachProfileMapScores($cpmRecords, $mddId, 'cpm');
+            $this->attachRecordHistoryCounts($vq3Records, $mddId);
+            $this->attachRecordHistoryCounts($cpmRecords, $mddId);
         }
 
         // --- Profile stats (cached + consolidated: ~25 queries → 6) ---
@@ -419,6 +422,8 @@ class ProfileController extends Controller {
         // Attach map scores to records (same as linked profiles)
         $this->attachProfileMapScores($vq3Records, $user->id, 'vq3');
         $this->attachProfileMapScores($cpmRecords, $user->id, 'cpm');
+        $this->attachRecordHistoryCounts($vq3Records, $user->id);
+        $this->attachRecordHistoryCounts($cpmRecords, $user->id);
 
         // Add cached stats to profile data
         foreach ($stats as $key => $value) {
@@ -1222,6 +1227,58 @@ class ProfileController extends Controller {
             ->orderBy('created_at', 'desc')
             ->limit(6)
             ->get(['id', 'map_name', 'player_name', 'physics', 'time_ms', 'youtube_url', 'youtube_video_id', 'created_at']);
+    }
+
+    /**
+     * How many earlier times the player set on each record's map, so the
+     * row can offer its time history without asking the server first. One
+     * grouped query for the page: the scrape moves a beaten time into
+     * record_histories every time a player improves, so this is the count
+     * of improvements the current record stands on.
+     */
+    private function attachRecordHistoryCounts($records, int $mddId): void
+    {
+        if (!$records || !method_exists($records, 'getCollection') || $records->isEmpty()) return;
+
+        $mapnames = $records->getCollection()->pluck('mapname')->filter()->unique()->toArray();
+        if (empty($mapnames)) return;
+
+        $counts = RecordHistory::where('mdd_id', $mddId)
+            ->whereIn('mapname', $mapnames)
+            ->groupBy('mapname', 'gametype')
+            ->selectRaw('mapname, gametype, COUNT(*) AS n')
+            ->get()
+            ->keyBy(fn ($row) => mb_strtolower($row->mapname) . '|' . $row->gametype);
+
+        $records->getCollection()->transform(function ($record) use ($counts) {
+            $record->history_count = (int) ($counts->get(mb_strtolower($record->mapname) . '|' . $record->gametype)?->n ?? 0);
+            return $record;
+        });
+    }
+
+    /**
+     * The earlier times a player set on one map, oldest first: every time
+     * the scrape saw them beat their own record it kept the beaten one in
+     * record_histories. Only the times themselves are shared, nothing about
+     * who is looking.
+     */
+    public function recordHistory(Request $request, $mddId)
+    {
+        $mapname = trim((string) $request->input('mapname'));
+        $gametype = trim((string) $request->input('gametype'));
+
+        if ($mapname === '' || $gametype === '') {
+            return response()->json(['error' => 'Invalid parameters'], 422);
+        }
+
+        $history = RecordHistory::where('mdd_id', (int) $mddId)
+            ->where('mapname', $mapname)
+            ->where('gametype', $gametype)
+            ->orderBy('date_set')
+            ->orderBy('time', 'desc')
+            ->get(['id', 'time', 'date_set', 'rank']);
+
+        return response()->json(['history' => $history]);
     }
 
     private function attachProfileMapScores($records, int $mddId, string $physics): void

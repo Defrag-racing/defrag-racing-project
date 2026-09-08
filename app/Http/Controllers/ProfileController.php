@@ -1166,6 +1166,73 @@ class ProfileController extends Controller {
         ]);
     }
 
+    /**
+     * How a player's level moved over time, month by month: the average and
+     * best score and rank of the records they set each month, and how many.
+     * A record's score and rank are what they are today, so a month reads
+     * as "how good were the runs set back then, by today's field" - the
+     * curve rising means the player has been setting records that stand
+     * higher than their old ones. Months without a record are kept as gaps
+     * so the line does not bridge a year away from the game.
+     */
+    public function progressionData(Request $request, $mddId)
+    {
+        $physics = strtolower((string) $request->input('physics', 'vq3'));
+        if (! in_array($physics, ['vq3', 'cpm'], true)) {
+            $physics = 'vq3';
+        }
+
+        return response()->json([
+            'physics' => $physics,
+            'months' => $this->getProgressionData((int) $mddId, $physics),
+        ]);
+    }
+
+    private function getProgressionData(int $mddId, string $physics): array
+    {
+        return Cache::remember("progression:{$mddId}:{$physics}:v2", 3600, function () use ($mddId, $physics) {
+            $rows = Record::query()
+                ->join('player_map_scores AS pms', function ($join) {
+                    $join->on('pms.mdd_id', '=', 'records.mdd_id')
+                         ->on('pms.mapname', '=', 'records.mapname')
+                         ->on('pms.physics', '=', 'records.physics')
+                         ->on('pms.mode', '=', 'records.mode');
+                })
+                ->where('records.mdd_id', $mddId)
+                ->where('records.physics', $physics)
+                ->where('pms.map_score', '>', 0)
+                ->selectRaw("DATE_FORMAT(records.date_set, '%Y-%m') AS month, COUNT(*) AS records, AVG(pms.map_score) AS avg_score, MAX(pms.map_score) AS best_score, AVG(records.rank) AS avg_rank, MIN(records.rank) AS best_rank")
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get()
+                ->keyBy('month');
+
+            if ($rows->isEmpty()) {
+                return [];
+            }
+
+            $months = [];
+            $cursor = \Carbon\Carbon::createFromFormat('Y-m-d', $rows->keys()->first() . '-01')->startOfMonth();
+            $last = \Carbon\Carbon::createFromFormat('Y-m-d', $rows->keys()->last() . '-01')->startOfMonth();
+
+            while ($cursor <= $last) {
+                $key = $cursor->format('Y-m');
+                $row = $rows->get($key);
+                $months[] = [
+                    'month' => $key,
+                    'records' => $row ? (int) $row->records : 0,
+                    'avg_score' => $row ? round((float) $row->avg_score, 1) : null,
+                    'best_score' => $row ? round((float) $row->best_score, 1) : null,
+                    'avg_rank' => $row ? round((float) $row->avg_rank, 1) : null,
+                    'best_rank' => $row ? (int) $row->best_rank : null,
+                ];
+                $cursor->addMonth();
+            }
+
+            return $months;
+        });
+    }
+
     private function getActivityData($mddId, $year)
     {
         return Cache::remember("activity:{$mddId}:{$year}:v2", 3600, function () use ($mddId, $year) {

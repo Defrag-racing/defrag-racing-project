@@ -431,6 +431,7 @@ Route::post('/settings/model-group-order', [\App\Http\Controllers\MapperProfileC
 
 Route::get('/profile/{userId}/progress-bar', [ProfileController::class, 'progressBar'])->name('profile.progressbar');
 Route::get('/api/profile/{mddId}/activity', [ProfileController::class, 'activityData'])->name('profile.activity');
+Route::get('/api/profile/{mddId}/progression', [ProfileController::class, 'progressionData'])->name('profile.progression');
 Route::get('/api/profile/{mddId}/rating-breakdown/{physics}', [ProfileController::class, 'ratingBreakdown'])->middleware(['auth'])->name('profile.rating-breakdown');
 Route::post('/profile/{userId}/about-me', [AboutMeController::class, 'submit'])->middleware(['auth', 'verified'])->name('profile.about-me.submit');
 Route::post('/profile/{userId}/about-me/delete', [AboutMeController::class, 'requestDelete'])->middleware(['auth', 'verified'])->name('profile.about-me.delete');

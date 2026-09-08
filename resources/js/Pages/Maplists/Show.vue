@@ -185,15 +185,36 @@ const deleteMaplist = async () => {
     }
 };
 
-const removeMap = async (mapId) => {
-    if (!confirm(t('Remove this map from the maplist?'))) return;
+// Taking a map off the list asks first, in the same modal the rest of the
+// page uses rather than the browser's confirm() box. The map being asked
+// about is the modal's state: set, the modal is open; null, it is closed.
+const mapToRemove = ref(null);
+const removing = ref(false);
+const removeError = ref('');
+
+const askRemoveMap = (map) => {
+    removeError.value = '';
+    mapToRemove.value = map;
+};
+
+const cancelRemoveMap = () => {
+    if (removing.value) return;
+    mapToRemove.value = null;
+};
+
+const removeMap = async () => {
+    if (!mapToRemove.value || removing.value) return;
 
     try {
-        await axios.delete(`/api/maplists/${props.maplist.id}/maps/${mapId}`);
+        removing.value = true;
+        await axios.delete(`/api/maplists/${props.maplist.id}/maps/${mapToRemove.value.id}`);
+        mapToRemove.value = null;
         router.reload();
     } catch (error) {
         console.error('Error removing map:', error);
-        alert(t('Failed to remove map'));
+        removeError.value = error.response?.data?.error || t('Failed to remove map');
+    } finally {
+        removing.value = false;
     }
 };
 
@@ -892,7 +913,7 @@ const closeServerDropdown = () => {
                     <!-- Remove Button (for owner) -->
                     <button
                         v-if="is_owner"
-                        @click="removeMap(map.id)"
+                        @click="askRemoveMap(map)"
                         class="absolute top-2 left-2 bg-red-600/90 hover:bg-red-700 text-white p-2 rounded-lg shadow-lg transition z-10">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -1005,6 +1026,41 @@ const closeServerDropdown = () => {
                     :disabled="deleting || deleteConfirmPhrase !== $t('delete my maplist')"
                     class="px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition">
                     {{ deleting ? $t('Deleting...') : $t('Delete Maplist') }}
+                </button>
+            </template>
+        </DialogModal>
+
+        <!-- Remove Map Confirmation Modal -->
+        <DialogModal :show="mapToRemove !== null" max-width="md" @close="cancelRemoveMap">
+            <template #title>
+                {{ $t('Remove map') }}
+            </template>
+
+            <template #content>
+                <div class="space-y-3">
+                    <p class="text-gray-300">
+                        {{ $t('Remove ":map" from ":name"?', { map: mapToRemove?.name, name: maplist.name }) }}
+                    </p>
+
+                    <p v-if="removeError" class="text-sm text-red-300 bg-red-600/20 border border-red-500/50 rounded-lg px-3 py-2">
+                        {{ removeError }}
+                    </p>
+                </div>
+            </template>
+
+            <template #footer>
+                <button
+                    @click="cancelRemoveMap"
+                    :disabled="removing"
+                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition">
+                    {{ $t('Cancel') }}
+                </button>
+
+                <button
+                    @click="removeMap"
+                    :disabled="removing"
+                    class="ml-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition">
+                    {{ removing ? $t('Removing...') : $t('Remove') }}
                 </button>
             </template>
         </DialogModal>

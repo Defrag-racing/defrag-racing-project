@@ -23,6 +23,27 @@ class Server extends Model
         'cheats' => 'boolean',
     ];
 
+    protected $appends = ['besttime_profile_url'];
+
+    /**
+     * Where the holder of the best time lives on the site: their account's
+     * profile when they linked one, their q3df profile otherwise, nothing
+     * when the map has no time yet. Built here once so every card links the
+     * same way instead of each guessing what kind of id it holds.
+     */
+    public function getBesttimeProfileUrlAttribute(): ?string
+    {
+        if ($this->besttime_url) {
+            return route('profile.index', $this->besttime_url);
+        }
+
+        if ($this->besttime_mdd_id) {
+            return route('profile.mdd', $this->besttime_mdd_id);
+        }
+
+        return null;
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -47,6 +68,7 @@ class Server extends Model
         'besttime_country',
         'besttime_name',
         'besttime_url',
+        'besttime_mdd_id',
         'besttime_time',
         'plain_name',
         'sftp_credential_id',

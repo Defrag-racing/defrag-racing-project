@@ -93,7 +93,7 @@
                     <div class="text-md" v-if="server.besttime_name">
                         <div class="flex justify-between items-center">
                             <div>
-                                <Link class="hover:underline font-bold " :href="server.besttime_url ? route('profile.index', server.besttime_url) : '#'" v-html="q3tohtml(server.besttime_name)"></Link>
+                                <Link class="hover:underline font-bold " :href="server.besttime_profile_url || '#'" v-html="q3tohtml(server.besttime_name)"></Link>
                             </div>
                             <div class="font-bold">
                                 {{  formatTime(server.besttime_time) }}

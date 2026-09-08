@@ -8,6 +8,7 @@ use App\Models\MaplistMap;
 use App\Models\MaplistLike;
 use App\Models\MaplistFavorite;
 use App\Models\Map;
+use App\Models\Record;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -239,6 +240,8 @@ class MaplistController extends Controller
             $playLater->load(['user', 'maps', 'tags']);
         }
 
+        $this->attachPlayed($playLater->maps);
+
         $isLiked = false;
         $isFavorited = false;
 
@@ -286,6 +289,8 @@ class MaplistController extends Controller
         $isLiked = Auth::check() ? $maplist->isLikedBy(Auth::id()) : false;
         $isFavorited = Auth::check() ? $maplist->isFavoritedBy(Auth::id()) : false;
 
+        $this->attachPlayed($maplist->maps);
+
         // Fetch servers for Play Later functionality (only on full load)
         $servers = [];
         if (!$isPartial && $maplist->is_play_later && Auth::check() && Auth::id() === $maplist->user_id) {
@@ -314,6 +319,41 @@ class MaplistController extends Controller
             'is_owner' => Auth::check() && Auth::id() === $maplist->user_id,
             'servers' => $servers,
         ]);
+    }
+
+    /**
+     * Flag the maps the viewer already has a record on, the way the maps
+     * listing does, so MapCard shows its "Played" badge on a maplist too.
+     * Only for a viewer paired to an MDD id - it is their own records the
+     * badge is built from - and it counts any physics and any mode.
+     */
+    private function attachPlayed($maps)
+    {
+        $mddId = Auth::user()?->mdd_id;
+
+        if (! $mddId || $maps->isEmpty()) {
+            return $maps;
+        }
+
+        $played = Record::where('mdd_id', $mddId)
+            ->whereIn('mapname', $maps->pluck('name')->filter())
+            ->select('mapname', 'physics')
+            ->distinct()
+            ->get()
+            // Keyed lowercase on both sides: MySQL matches map names
+            // case-insensitively, PHP does not.
+            ->groupBy(fn ($record) => mb_strtolower($record->mapname));
+
+        return $maps->each(function ($map) use ($played) {
+            $found = $played->get(mb_strtolower($map->name))?->pluck('physics')->unique();
+
+            $map->played = $found !== null;
+            $map->played_physics = match (true) {
+                $found === null => null,
+                $found->count() > 1 => 'both',
+                default => $found->first(),
+            };
+        });
     }
 
     /**

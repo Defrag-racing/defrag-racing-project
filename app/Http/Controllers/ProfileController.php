@@ -88,7 +88,7 @@ class ProfileController extends Controller {
 
         // --- Records (needed for records pagination or full load) ---
         if ($needs('vq3Records') || $needs('cpmRecords')) {
-            $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes', 'untouchable', 'bestscore'];
+            $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes', 'untouchable', 'bestscore', 'worstscore'];
             if (!in_array($type, $types)) {
                 $type = 'latest';
             }
@@ -102,6 +102,7 @@ class ProfileController extends Controller {
                 'worsttimes'        => $this->worstTimes($mddId),
                 'untouchable'       => $this->untouchableWRs($mddId),
                 'bestscore'         => $this->bestScores($mddId),
+                'worstscore'        => $this->worstScores($mddId),
                 default             => $this->latestRecords($mddId),
             };
 
@@ -349,7 +350,7 @@ class ProfileController extends Controller {
         $mode = $request->input('mode', 'all');
         $search = trim((string) $request->input('search', ''));
 
-        $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes', 'untouchable', 'bestscore'];
+        $types = ['recentlybeaten', 'tiedranks', 'bestranks', 'besttimes', 'worstranks', 'worsttimes', 'untouchable', 'bestscore', 'worstscore'];
 
         if (!in_array($type, $types)) {
             $type = 'latest';
@@ -364,6 +365,7 @@ class ProfileController extends Controller {
             'worsttimes'        => $this->worstTimes($user->id),
             'untouchable'       => $this->untouchableWRs($user->id),
             'bestscore'         => $this->bestScores($user->id),
+            'worstscore'        => $this->worstScores($user->id),
             default             => $this->latestRecords($user->id),
         };
 
@@ -609,9 +611,19 @@ class ProfileController extends Controller {
     }
 
     public function bestScores($mddId) {
-        // Sort the player's records by their computed map_score (rating),
-        // descending. INNER JOIN drops records that have no map_score yet
-        // (banned maps, freshly scraped maps before the rating job runs).
+        return $this->scoredRecords($mddId, 'desc');
+    }
+
+    public function worstScores($mddId) {
+        return $this->scoredRecords($mddId, 'asc');
+    }
+
+    /**
+     * The player's records sorted by their computed map_score (rating).
+     * INNER JOIN drops records that have no map_score yet (banned maps,
+     * freshly scraped maps before the rating job runs).
+     */
+    private function scoredRecords($mddId, string $direction) {
         $records = Record::selectRaw('records.*, pms.map_score AS player_map_score')
             ->join('player_map_scores AS pms', function ($join) {
                 $join->on('pms.mdd_id', '=', 'records.mdd_id')
@@ -621,7 +633,7 @@ class ProfileController extends Controller {
             })
             ->where('records.mdd_id', $mddId)
             ->where('pms.map_score', '>', 0)
-            ->orderByDesc('pms.map_score');
+            ->orderBy('pms.map_score', $direction);
 
         return $records;
     }

@@ -35,6 +35,16 @@
     <div>
         <Popper arrow hover :disabled="player.profile == null" style="z-index: 100;">
             <span class="inline-flex items-center gap-1.5">
+            <!-- A spectator is drawn under the player they are watching, but
+                 an indent alone reads as a layout quirk. The eye is the one
+                 the in-game scoreboard puts beside a spectator, so anyone
+                 who plays reads it without a tooltip. -->
+            <svg v-if="spectator" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 14" class="w-4 h-[10px] flex-shrink-0 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" role="img">
+                <title>{{ $t('Spectating') }}</title>
+                <path d="M1 7C4 2.2 7.7 0 12 0s8 2.2 11 7c-3 4.8-6.7 7-11 7S4 11.8 1 7Z" fill="#fff" />
+                <circle cx="12" cy="7" r="4.6" fill="#111" />
+                <circle cx="12" cy="7" r="2.4" fill="#fff" />
+            </svg>
             <Link :href="getProfile" v-if="player.mdd_id" class="inline-flex items-center gap-1.5">
                 <img v-if="player.country && player.country !== 'XX'" :src="`/images/flags/${player.country}.png`" class="w-4 h-3 rounded shadow-md flex-shrink-0" :title="player.country" onerror="this.src='/images/flags/_404.png'" />
                 <div class="font-bold inline online-player-name-text" v-html="q3tohtml(player.name)"></div>

@@ -621,6 +621,13 @@
             icon: 'bolt',
             color: 'text-green-400'
         },
+        'worstscore': {
+            label: 'Worst Score',
+            // Same line graph as Best Score, mirrored so it heads down.
+            icon: 'linegraph',
+            flip: true,
+            color: 'text-orange-400'
+        },
         'worstranks': {
             label: 'Worst Ranks',
             icon: 'trending-down',
@@ -2563,7 +2570,7 @@
                                         ? 'bg-white/10 text-white shadow-lg border border-white/20'
                                         : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border border-white/10'"
                                      class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold">
-                                    <svg v-if="loading !== option" :class="selectedOption === option ? 'text-white' : data.color"
+                                    <svg v-if="loading !== option" :class="[selectedOption === option ? 'text-white' : data.color, data.flip ? '-scale-x-100' : '']"
                                          class="w-6 h-6 fill-current stroke-current transition-transform">
                                         <use :href="`/images/svg/icons.svg#icon-` + data.icon"></use>
                                     </svg>

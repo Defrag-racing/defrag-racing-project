@@ -520,28 +520,30 @@
     // browser, so nothing is there to read out of the page.
     const lockedAsGuest = computed(() => props.profileLocked && !page.props.auth?.user);
     const lockedUnverified = computed(() => props.profileLocked && !!page.props.auth?.user);
+    // No number in the stand-in: through the blur a "58.5%" reads as a
+    // real figure, dots read as a placeholder.
+    const D = '···';
     const fakeStats = {
-        cpm_top3: 42, vq3_top3: 72, cpm_top10: 319, vq3_top10: 268,
-        cpm_unique_maps: 1174, vq3_unique_maps: 457, cpm_avg_rank: 29.4, vq3_avg_rank: 12.9,
-        cpm_slick: 323, vq3_slick: 183, cpm_jumppad: 284, vq3_jumppad: 94, cpm_teleporter: 463, vq3_teleporter: 159,
-        cpm_dominance: 27.1, vq3_dominance: 58.5, longest_streak: 19,
-        first_record_date: '2019-09-14', most_active_month: { month: '2020-03' }, weapon_specialist: 'rocket',
-        cpm_strafe: 899, vq3_strafe: 359, cpm_fastcaps: 5, vq3_fastcaps: 4, cpm_grenade: 70, vq3_grenade: 34,
-        cpm_rocket: 173, vq3_rocket: 61, cpm_plasma: 143, vq3_plasma: 62, cpm_bfg: 52, vq3_bfg: 10,
-        cpm_records: 1177, vq3_records: 458,
+        cpm_top3: D, vq3_top3: D, cpm_top10: D, vq3_top10: D,
+        cpm_unique_maps: D, vq3_unique_maps: D, cpm_avg_rank: D, vq3_avg_rank: D,
+        cpm_slick: D, vq3_slick: D, cpm_jumppad: D, vq3_jumppad: D, cpm_teleporter: D, vq3_teleporter: D,
+        cpm_dominance: D, vq3_dominance: D, longest_streak: D,
+        first_record_date: null, most_active_month: { month: D }, weapon_specialist: D,
+        cpm_strafe: D, vq3_strafe: D, cpm_fastcaps: D, vq3_fastcaps: D, cpm_grenade: D, vq3_grenade: D,
+        cpm_rocket: D, vq3_rocket: D, cpm_plasma: D, vq3_plasma: D, cpm_bfg: D, vq3_bfg: D,
+        cpm_records: D, vq3_records: D,
     };
     const fakeAliases = [
-        { alias: 'lex', alias_colored: '^7>>^3/^7lex', usage_count: 812, source: 'mdd_import' },
-        { alias: 'lex.th', alias_colored: '^7lex^3.th', usage_count: 233, source: 'mdd_import' },
-        { alias: '[wwo]lex', alias_colored: '^4[wwo]^7lex', usage_count: 97, source: 'mdd_import' },
-        { alias: 'lexx', alias_colored: '^7lexx', usage_count: 41, source: 'mdd_import' },
-        { alias: 'l3x', alias_colored: '^2l3x', usage_count: 12, source: 'mdd_import' },
+        { alias: '······', alias_colored: '^7······', usage_count: null, source: 'mdd_import' },
+        { alias: '········', alias_colored: '^7········', usage_count: null, source: 'mdd_import' },
+        { alias: '····', alias_colored: '^7····', usage_count: null, source: 'mdd_import' },
+        { alias: '·······', alias_colored: '^7·······', usage_count: null, source: 'mdd_import' },
+        { alias: '·····', alias_colored: '^7·····', usage_count: null, source: 'mdd_import' },
     ];
     const shownAliases = computed(() => props.profileLocked ? fakeAliases : props.aliases);
     const fakeUnplayed = {
-        total: 812, current_page: 1, last_page: 82,
-        data: ['bdfcomp031', 'pornstar-nyx', 'cityrocket', 'r7-wild', 'runkill', 'kool_slick', 'nemix-run3', 'bdfcomp029', 'ghost-town2', 'wcp-tower']
-            .map((name) => ({ name, author: 'unknown', thumbnail: null })),
+        total: '···', current_page: 1, last_page: 1,
+        data: Array.from({ length: 10 }, (_, k) => ({ name: '·'.repeat(6 + (k % 4)), author: '···', thumbnail: null })),
     };
     const shownProfile = computed(() => props.profileLocked && props.profile ? { ...props.profile, ...fakeStats } : props.profile);
     const fakeActivity = computed(() => {
@@ -919,15 +921,16 @@
     const localPlayedCount = ref(null);
 
     const currentUnplayedMaps = computed(() => props.profileLocked ? fakeUnplayed : (localUnplayedMaps.value ?? props.unplayed_maps));
-    const currentTotalMaps = computed(() => props.profileLocked ? 1986 : (localTotalMaps.value ?? props.total_maps));
+    const currentTotalMaps = computed(() => props.profileLocked ? 0 : (localTotalMaps.value ?? props.total_maps));
 
     const playedMapsCount = computed(() => {
-        if (props.profileLocked) return 1174;
+        if (props.profileLocked) return '···';
         if (localPlayedCount.value !== null) return localPlayedCount.value;
         return props.played_maps_count || (props.total_maps - (props.unplayed_maps?.total || 0));
     });
 
     const completionPercentage = computed(() => {
+        if (props.profileLocked) return '··';
         if (currentTotalMaps.value === 0) return 0;
         return ((playedMapsCount.value / currentTotalMaps.value) * 100).toFixed(3);
     });
@@ -2013,7 +2016,7 @@
             <div v-if="hasProfile && profile" class="relative z-[1] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" :class="profileLocked ? 'select-none' : ''">
                 <!-- Locked: one overlay over the whole grid, blurring what is
                      under it (stand-in numbers, see shownProfile). -->
-                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4 pointer-events-auto">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4 pointer-events-auto">
                     <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
                         <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
                         <div class="text-xs text-gray-400 mt-0.5">
@@ -2158,7 +2161,7 @@
                 </div>
 
                 <!-- Record Types -->
-                <div v-if="showStatBox('record_types') && stats.filter(s => s.value !== 'world_records').some(s => (shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0)" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5" :style="{ order: statBoxOrder('record_types') }">
+                <div v-if="showStatBox('record_types') && (profileLocked || stats.filter(s => s.value !== 'world_records').some(s => (shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0))" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5" :style="{ order: statBoxOrder('record_types') }">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wide">{{ $t('Record Types') }}</h3>
                         <div class="flex items-center gap-0">
@@ -2167,7 +2170,7 @@
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <div v-for="stat in stats.filter(s => s.value !== 'world_records' && ((shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0))" :key="stat.value" class="flex justify-between items-center group relative">
+                        <div v-for="stat in stats.filter(s => s.value !== 'world_records' && (profileLocked || (shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0))" :key="stat.value" class="flex justify-between items-center group relative">
                             <span class="text-xs text-gray-400 cursor-help">{{ stat.label.replace(' Records', '') }}</span>
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 Records set on {{ stat.label.toLowerCase() }} maps or with specific game modes
@@ -2344,7 +2347,7 @@
 
             <!-- Activity History Heatmap -->
             <div v-if="hasProfile && showSection('activity_history') && activity_years && activity_years.length > 0" class="mb-6 relative" :style="{ order: sectionOrder('activity_history') }">
-                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
                     <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
                         <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
                         <div class="text-xs text-gray-400 mt-0.5">
@@ -2408,7 +2411,7 @@
 
             <!-- Known Aliases -->
             <div v-if="showSection('known_aliases') && (profileLocked || (shownAliases && shownAliases.length > 0) || can_suggest_alias || (alias_suggestions && alias_suggestions.length > 0))" class="mb-6 relative" :style="{ order: sectionOrder('known_aliases') }">
-                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
                     <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
                         <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
                         <div class="text-xs text-gray-400 mt-0.5">
@@ -2594,7 +2597,7 @@
                 <div v-show="recordsTab === 'records'" class="grid grid-cols-1 lg:grid-cols-10 gap-6">
                 <!-- Sidebar Tabs -->
                 <div class="lg:col-span-2 flex relative">
-                    <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[4px] bg-black/20 flex items-center justify-center p-4">
+                    <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
                         <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
                             <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
                             <div class="text-xs text-gray-400 mt-0.5">{{ $t('Filters, sorting and pages past the first open with a verified account.') }}</div>
@@ -3371,8 +3374,8 @@
             </div>
 
             <!-- Map Completionist List -->
-            <div v-if="showSection('map_completionist') && currentUnplayedMaps && currentUnplayedMaps.total > 0" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6 relative" :style="{ order: sectionOrder('map_completionist') }">
-                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4">
+            <div v-if="showSection('map_completionist') && (profileLocked || (currentUnplayedMaps && currentUnplayedMaps.total > 0))" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6 relative" :style="{ order: sectionOrder('map_completionist') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
                     <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
                         <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
                         <div class="text-xs text-gray-400 mt-0.5">
@@ -3422,7 +3425,7 @@
                             <!-- Animated progress fill -->
                             <div
                                 class="h-full relative overflow-hidden transition-all duration-1000 ease-out bg-blue-600"
-                                :style="`width: ${completionPercentage}%`">
+                                :style="`width: ${profileLocked ? 50 : completionPercentage}%`">
 
                                 <!-- Animated moving stripes -->
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite]"></div>

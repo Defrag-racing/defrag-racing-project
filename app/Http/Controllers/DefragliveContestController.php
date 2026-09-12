@@ -115,6 +115,15 @@ class DefragliveContestController extends Controller
                     'winner_seconds' => (int) $c->winner_seconds,
                     'winner_tickets' => (int) $c->winner_tickets,
                     'total_tickets' => (int) $c->total_tickets,
+                    // Best-of-three picks (null before 2026-09-12: one ticket).
+                    'picks' => $c->draw_picks
+                        ? array_map(fn ($p) => [
+                            'ticket' => (int) $p['ticket'],
+                            'name' => $p['name'],
+                            'tickets' => (int) $p['tickets'],
+                            'winner' => (int) $p['ticket'] === (int) $c->winning_ticket,
+                        ], $c->draw_picks)
+                        : null,
                 ]),
             'hallOfFame' => $this->hallOfFame($service),
             // Loaded on demand (Inertia lazy prop): the page requests it via a

@@ -86,6 +86,14 @@ class DefragliveContestResource extends Resource
                     Forms\Components\TextInput::make('winner_tickets')->disabled()->dehydrated(false),
                     Forms\Components\TextInput::make('total_tickets')->disabled()->dehydrated(false),
                     Forms\Components\TextInput::make('winning_ticket')->disabled()->dehydrated(false),
+                    Forms\Components\Placeholder::make('draw_picks_text')
+                        ->label('Drawn tickets (best of three)')
+                        ->content(fn (?DefragliveContest $record) => $record?->draw_picks
+                            ? implode(' | ', array_map(
+                                fn ($p) => '#' . $p['ticket'] . ' ' . preg_replace('/\^[0-9A-Za-z]/', '', $p['name']) . ' (' . $p['tickets'] . ' tickets)',
+                                $record->draw_picks
+                            ))
+                            : '-'),
                     Forms\Components\DateTimePicker::make('drawn_at')->disabled()->dehydrated(false),
                 ])
                 ->columns(2)
@@ -121,14 +129,15 @@ class DefragliveContestResource extends Resource
                         : '-'),
             ])
             ->actions([
-                // Run the watch-time-weighted raffle. Available once a period is
-                // closed (or active, e.g. an early draw) and not yet drawn.
+                // Run the watch-time-weighted raffle (best of three). Available
+                // once a period is closed (or active, e.g. an early draw) and
+                // not yet drawn.
                 Tables\Actions\Action::make('draw')
                     ->label('Draw winner')
                     ->icon('heroicon-o-sparkles')
                     ->color('warning')
                     ->requiresConfirmation()
-                    ->modalDescription('Draw the raffle winner now? More watch time = more tickets, but any entrant can win. This sets the winner and closes the contest.')
+                    ->modalDescription('Draw the raffle winner now? Three tickets are drawn and the holder with the most watch time wins. This sets the winner and closes the contest.')
                     ->visible(fn (DefragliveContest $r) => $r->winner_name === null)
                     ->action(function (DefragliveContest $record) {
                         $winner = app(DefragliveWatchService::class)->draw($record);
@@ -139,8 +148,13 @@ class DefragliveContestResource extends Resource
 
                             return;
                         }
+                        $fresh = $record->fresh();
+                        $picks = implode(', ', array_map(
+                            fn ($p) => '#' . $p['ticket'] . ' ' . preg_replace('/\^[0-9A-Za-z]/', '', $p['name']),
+                            $fresh->draw_picks ?? []
+                        ));
                         Notification::make()->title('Winner drawn')
-                            ->body(preg_replace('/\^[0-9A-Za-z]/', '', $winner['name']) . " - {$winner['tickets']} tickets, won ticket {$record->fresh()->winning_ticket} of {$record->fresh()->total_tickets}.")
+                            ->body(preg_replace('/\^[0-9A-Za-z]/', '', $winner['name']) . " - {$winner['tickets']} tickets, won with ticket {$fresh->winning_ticket} of {$fresh->total_tickets}. Drawn: {$picks}.")
                             ->success()->send();
                     }),
 

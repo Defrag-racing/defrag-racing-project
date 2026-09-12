@@ -7,7 +7,7 @@ use App\Services\DefragliveWatchService;
 use Illuminate\Console\Command;
 
 /**
- * Draw the watch-time-weighted raffle winner for a contest. Normally triggered
+ * Draw the watch-time-weighted raffle winner (best of three) for a contest. Normally triggered
  * from the Filament admin, but exposed as a command for scripting / re-runs.
  */
 class DefragliveDrawContest extends Command
@@ -32,6 +32,10 @@ class DefragliveDrawContest extends Command
             return self::SUCCESS;
         }
 
+        $contest->refresh();
+        foreach ($contest->draw_picks ?? [] as $p) {
+            $this->line(sprintf('Drawn ticket %d: %s (%d tickets, %d s watched)', $p['ticket'], $p['name'], $p['tickets'], $p['seconds']));
+        }
         $this->info(sprintf(
             'Winner: %s (%d s watched, %d/%d tickets, winning ticket %d).',
             $contest->winner_name,

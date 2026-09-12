@@ -59,6 +59,7 @@ class DefragliveContest extends Model
         'winner_tickets',
         'total_tickets',
         'winning_ticket',
+        'draw_picks',
         'drawn_at',
         'notes',
     ];
@@ -77,6 +78,7 @@ class DefragliveContest extends Model
         'winner_tickets' => 'integer',
         'total_tickets' => 'integer',
         'winning_ticket' => 'integer',
+        'draw_picks' => 'array',
     ];
 
     /**

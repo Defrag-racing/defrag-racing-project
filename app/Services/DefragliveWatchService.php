@@ -421,9 +421,19 @@ class DefragliveWatchService
         return $entries;
     }
 
+    /** Tickets drawn per contest ("best of three"). */
+    public const DRAW_PICKS = 3;
+
     /**
-     * Draw the contest winner via a watch-time-weighted raffle (1 ticket per
-     * full minute watched). Persists winner + ticket transparency fields and
+     * Draw the contest winner: a watch-time-weighted raffle (1 ticket per full
+     * minute watched), best of three. Three distinct ticket numbers are drawn
+     * from the pool; of the people holding them, the one with the most watch
+     * time wins (a tie goes to the one drawn first). One ticket still has the
+     * textbook odds of being drawn, but a big watcher gets three chances of
+     * being in the final three and then beats whoever else is there.
+     *
+     * Persists winner + ticket transparency fields (winning_ticket is the
+     * winner's drawn number, draw_picks the three picks in draw order) and
      * marks the contest closed. Returns the winning entry, or null if nobody
      * accrued at least one ticket.
      */
@@ -439,17 +449,34 @@ class DefragliveWatchService
             return null;
         }
 
-        $winning = random_int(1, $total);
-        $cursor = 0;
-        $winner = null;
-        foreach ($entries as $e) {
-            $cursor += $e['tickets'];
-            if ($winning <= $cursor) {
-                $winner = $e;
-                break;
+        // Distinct numbers, so a pool of one or two tickets still terminates.
+        $numbers = [];
+        $want = min(self::DRAW_PICKS, $total);
+        while (count($numbers) < $want) {
+            $n = random_int(1, $total);
+            if (! in_array($n, $numbers, true)) {
+                $numbers[] = $n;
             }
         }
-        $winner = $winner ?? $entries[array_key_last($entries)];
+
+        $picks = [];
+        foreach ($numbers as $n) {
+            $holder = $this->holderOf($entries, $n);
+            $picks[] = [
+                'ticket' => $n,
+                'mdd_id' => $holder['mdd_id'],
+                'user_id' => $holder['user_id'],
+                'name' => $holder['name'],
+                'seconds' => $holder['seconds'],
+                'tickets' => $holder['tickets'],
+            ];
+        }
+
+        // Most watch time wins; on a tie the earlier pick stays (stable sort).
+        $ranked = $picks;
+        usort($ranked, fn ($a, $b) => $b['seconds'] <=> $a['seconds']);
+        $winning = $ranked[0]['ticket'];
+        $winner = $this->holderOf($entries, $winning);
 
         $contest->update([
             'winner_mdd_id' => $winner['mdd_id'],
@@ -459,11 +486,29 @@ class DefragliveWatchService
             'winner_tickets' => $winner['tickets'],
             'total_tickets' => $total,
             'winning_ticket' => $winning,
+            'draw_picks' => $picks,
             'drawn_at' => now(),
             'status' => DefragliveContest::STATUS_CLOSED,
         ]);
 
         return $winner;
+    }
+
+    /**
+     * The entry holding ticket number $n when the entries' tickets are laid
+     * end to end in leaderboard order and numbered from 1.
+     */
+    private function holderOf(array $entries, int $n): array
+    {
+        $cursor = 0;
+        foreach ($entries as $e) {
+            $cursor += $e['tickets'];
+            if ($n <= $cursor) {
+                return $e;
+            }
+        }
+
+        return $entries[array_key_last($entries)];
     }
 
     /**

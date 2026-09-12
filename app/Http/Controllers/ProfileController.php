@@ -82,6 +82,10 @@ class ProfileController extends Controller {
         };
 
         $mddId = $user->mdd_id;
+        $locked = $this->profileLocked();
+        if ($locked) {
+            $this->lockRecordInputs($request);
+        }
         $type = $request->input('type', 'latest');
         $mode = $request->input('mode', 'all');
         $search = trim((string) $request->input('search', ''));
@@ -158,14 +162,15 @@ class ProfileController extends Controller {
 
             $profileData = $user->mdd_profile;
             if ($profileData) {
-                foreach ($stats as $key => $value) {
+                foreach ($this->visibleStats($stats, $locked) as $key => $value) {
                     $profileData->$key = $value;
                 }
             }
 
-            // Activity heatmap
+            // Activity heatmap. Locked viewers get the years (so the block
+            // renders, blurred) and no data.
             $activityYear = (int) $request->input('activity_year', date('Y'));
-            $activityData = $this->getActivityData($mddId, $activityYear);
+            $activityData = $locked ? [] : $this->getActivityData($mddId, $activityYear);
             $activityYears = $this->getActivityYears($mddId);
 
             // Maplists
@@ -240,6 +245,7 @@ class ProfileController extends Controller {
             ->with('type', $type)
             ->with('search', $search)
             ->with('hasProfile', true)
+            ->with('profileLocked', $locked)
             ->with('visitorGlobalPreferences', $visitorGlobalPrefs)
             ->with('hasMapperProfile', $user->hasMapperProfile())
             ->with('hasModelerProfile', $user->hasModelerProfile())
@@ -342,6 +348,11 @@ class ProfileController extends Controller {
             return redirect()->route('home');
         }
 
+        $locked = $this->profileLocked();
+        if ($locked) {
+            $this->lockRecordInputs($request);
+        }
+
         // Profile stats (cached + consolidated)
         $stats = $this->getProfileStats($user->id);
 
@@ -421,13 +432,13 @@ class ProfileController extends Controller {
         $this->attachProfileMapScores($cpmRecords, $user->id, 'cpm');
 
         // Add cached stats to profile data
-        foreach ($stats as $key => $value) {
+        foreach ($this->visibleStats($stats, $locked) as $key => $value) {
             $user->$key = $value;
         }
 
-        // Get activity heatmap data
+        // Get activity heatmap data (none for locked viewers, see index())
         $activityYear = (int) $request->input('activity_year', date('Y'));
-        $activityData = $this->getActivityData($user->id, $activityYear);
+        $activityData = $locked ? [] : $this->getActivityData($user->id, $activityYear);
         $activityYears = $this->getActivityYears($user->id);
 
         // Get unplayed maps for completionist list
@@ -472,6 +483,7 @@ class ProfileController extends Controller {
             ->with('total_maps', $totalMaps)
             ->with('played_maps_count', $playedMapsCount)
             ->with('hasProfile', true)
+            ->with('profileLocked', $locked)
             ->with('aliases', \App\Models\UserAlias::where('mdd_id', $userId)->where('is_approved', true)->orderBy('usage_count', 'desc')->get(['alias', 'alias_colored', 'usage_count', 'source']))
             ->with('alias_suggestions', [])
             ->with('can_suggest_alias', false)
@@ -973,6 +985,44 @@ class ProfileController extends Controller {
      * Get consolidated profile stats (cached for 1 hour)
      * Replaces ~25 individual queries with 6 consolidated ones
      */
+    /**
+     * The detailed profile (stat panels, activity calendar, record filters,
+     * sorting and pages past the first) is for verified accounts. A guest and
+     * an unverified login get the same reduced profile, on every profile
+     * including their own: the header, the badges and the first page of
+     * records. The locked numbers are never sent, the page blurs a stand-in.
+     */
+    protected function profileLocked(): bool
+    {
+        $viewer = auth()->user();
+
+        return ! $viewer || $viewer->email_verified_at === null;
+    }
+
+    /** Locked viewers see the default list: latest, all modes, page one. */
+    protected function lockRecordInputs(Request $request): void
+    {
+        $request->merge([
+            'type' => 'latest',
+            'mode' => 'all',
+            'search' => '',
+            'vq3_page' => 1,
+            'cpm_page' => 1,
+        ]);
+    }
+
+    /** What of getProfileStats() a locked viewer may see: the header counts only. */
+    protected function visibleStats(array $stats, bool $locked): array
+    {
+        if (! $locked) {
+            return $stats;
+        }
+
+        return array_intersect_key($stats, array_flip([
+            'cpm_records', 'vq3_records', 'cpm_world_records', 'vq3_world_records',
+        ]));
+    }
+
     protected function getProfileStats($mddId)
     {
         return Cache::remember("profile:stats:{$mddId}", 3600, function () use ($mddId) {
@@ -1159,6 +1209,9 @@ class ProfileController extends Controller {
 
     public function activityData(Request $request, $mddId)
     {
+        if ($this->profileLocked()) {
+            abort(403, 'Verified accounts only.');
+        }
         $year = (int) $request->input('year', date('Y'));
         return response()->json([
             'activity_data' => $this->getActivityData($mddId, $year),

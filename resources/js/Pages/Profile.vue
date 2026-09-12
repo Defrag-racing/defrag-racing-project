@@ -1337,7 +1337,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">
@@ -1475,7 +1475,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">
@@ -1640,7 +1640,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">

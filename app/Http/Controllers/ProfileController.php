@@ -264,10 +264,10 @@ class ProfileController extends Controller {
                     ]);
                 })())
             ->with('playerRankings', $user->mdd_id
-                ? PlayerRating::where('mdd_id', $user->mdd_id)
+                ? $this->visibleRankings(PlayerRating::where('mdd_id', $user->mdd_id)
                     ->select('physics', 'mode', 'category', 'all_players_rank', 'active_players_rank', 'player_rating')
                     ->get()
-                    ->toArray()
+                    ->toArray(), $locked)
                 : [])
             ->with('aboutMePending', $visitor
                 ? \App\Models\AboutMeSubmission::where('user_id', $user->id)
@@ -505,10 +505,10 @@ class ProfileController extends Controller {
             ->with('donationTotal', [])
             ->with('tagCount', 0)
             ->with('communityTier', null)
-            ->with('playerRankings', PlayerRating::where('mdd_id', $user->id)
+            ->with('playerRankings', $this->visibleRankings(PlayerRating::where('mdd_id', $user->id)
                 ->select('physics', 'mode', 'category', 'all_players_rank', 'active_players_rank', 'player_rating')
                 ->get()
-                ->toArray());
+                ->toArray(), $locked));
     }
 
     public function latestRecords($mddId) {
@@ -1012,6 +1012,23 @@ class ProfileController extends Controller {
             'vq3_page' => 1,
             'cpm_page' => 1,
         ]);
+    }
+
+    /**
+     * Locked viewers get the two numbers the rank badge prints (run / overall
+     * per physics) and nothing of the per-mode, per-category breakdown the
+     * badge shows on hover.
+     */
+    protected function visibleRankings(array $rankings, bool $locked): array
+    {
+        if (! $locked) {
+            return $rankings;
+        }
+
+        return array_values(array_filter(
+            $rankings,
+            fn ($r) => $r['mode'] === 'run' && $r['category'] === 'overall'
+        ));
     }
 
     /** What of getProfileStats() a locked viewer may see: the header counts only. */

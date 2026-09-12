@@ -303,7 +303,11 @@ const statusColor = (s) => ({
                 </div>
             </div>
 
-            <div class="mt-3 flex flex-col lg:flex-row lg:items-center gap-3">
+            <!-- Wraps: collapsed, the details sits beside the note at
+                 320px; open, it takes the whole row and drops under the
+                 note, so the text is not squeezed into a narrow column
+                 with the note floating vertically centered beside it. -->
+            <div class="mt-3 flex flex-col lg:flex-row lg:flex-wrap lg:items-start gap-3">
                 <p class="flex-1 text-sm text-amber-200 bg-amber-500/10 border border-amber-400/30 rounded-lg px-4 py-2.5">
                     <!-- One sentence, not three fragments. Split around the
                          word "not" it could not survive translation: the
@@ -316,11 +320,11 @@ const statusColor = (s) => ({
                 <!-- "It is random" is exactly the claim somebody who has just
                      lost has no reason to take on trust, so the method is
                      written out and the drawn number is stored, not promised. -->
-                <details class="lg:w-80 shrink-0 rounded-lg border border-white/10 bg-black/30 px-4 py-2.5">
+                <details class="lg:w-80 open:lg:w-full shrink-0 rounded-lg border border-white/10 bg-black/30 px-4 py-2.5">
                     <summary class="cursor-pointer select-none text-sm text-purple-300 hover:text-purple-200 transition">
                         {{ $t('How the draw works, exactly') }}
                     </summary>
-                    <div class="mt-2.5 pt-2.5 border-t border-white/10 text-sm text-gray-400 space-y-2">
+                    <div class="mt-2.5 pt-2.5 border-t border-white/10 text-sm text-gray-400 space-y-2 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-6 leading-relaxed">
                         <p>
                             {{ $t("Everyone with at least one ticket goes in. The tickets are laid end to end and numbered from 1 to the size of the pool, so 300 tickets is 300 consecutive numbers. Three different numbers are drawn with the operating system's cryptographic random generator. Of the people holding them, the one with the most watch time wins; a tie goes to the number drawn first. It is the textbook weighted raffle, run three times: no seed anyone can guess, nothing that favours a name.") }}
                         </p>

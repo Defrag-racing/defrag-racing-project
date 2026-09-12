@@ -1779,12 +1779,12 @@
 
         <!-- Mapper Tab -->
         <div v-if="hasMapperProfile && activeTab === 'mapper'" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <ProfileCreatorTab :userId="user?.id" />
+            <ProfileCreatorTab :userId="user?.id" :locked="profileLocked" />
         </div>
 
         <!-- Modeler Tab -->
         <div v-if="hasModelerProfile && activeTab === 'modeler'" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <ProfileModelerTab :userId="user?.id" />
+            <ProfileModelerTab :userId="user?.id" :locked="profileLocked" />
         </div>
 
         <!-- Locked profile: the same reduced view for a guest and for an

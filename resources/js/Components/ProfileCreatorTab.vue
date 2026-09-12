@@ -1,10 +1,24 @@
 <script setup>
     import { ref, onMounted, computed, watch } from 'vue';
     import { Link } from '@inertiajs/vue3';
+    import LockedOverlay from '@/Components/LockedOverlay.vue';
 
     const props = defineProps({
         userId: [Number, String],
+        // Guest or unverified viewer: the stats endpoint sends only the
+        // header counts, the other endpoints answer 403. The tab shows the
+        // maps grid and dotted stand-ins under a veil for the rest.
+        locked: { type: Boolean, default: false },
     });
+
+    const D = '···';
+    const lockedStats = {
+        total_records: D, world_records: D, avg_records_per_map: D, unique_players: D,
+        oldest_map: null, newest_map: null,
+        gametype_distribution: { run: D, ctf: D },
+        physics_breakdown: { vq3: { maps: D, records: D, players: D }, cpm: { maps: D, records: D, players: D } },
+        weapon_breakdown: {},
+    };
 
     // Data refs
     const stats = ref(null);
@@ -42,7 +56,8 @@
         loadingStats.value = true;
         try {
             const res = await fetch(`/api/profile/${props.userId}/mapper/stats`);
-            stats.value = await res.json();
+            const data = await res.json();
+            stats.value = data?.locked ? { ...data, ...lockedStats } : data;
             sectionsLoaded.value.stats = true;
         } catch (e) {
             console.error('Error loading mapper stats:', e);
@@ -125,7 +140,7 @@
         await fetchStats();
         // Load everything else in parallel after stats
         if (stats.value?.has_maps) {
-            Promise.all([
+            Promise.all(props.locked ? [fetchMaps()] : [
                 fetchMaps(),
                 fetchTopPlayers(),
                 fetchRecentActivity(),
@@ -205,8 +220,14 @@
         <!-- Main Content -->
         <div v-else>
 
+            <!-- Locked: stand-in for the two most popular maps -->
+            <div v-if="locked" class="relative grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <LockedOverlay />
+                <div v-for="k in 2" :key="k" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 h-28 flex items-center text-gray-500 text-sm">··········</div>
+            </div>
+
             <!-- Most Popular Maps - VQ3 / CPM -->
-            <div v-if="highlightedMapData.vq3 || highlightedMapData.cpm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div v-if="!locked && (highlightedMapData.vq3 || highlightedMapData.cpm)" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <!-- VQ3 Most Popular -->
                 <div v-if="highlightedMapData.vq3" class="bg-gradient-to-br from-blue-500/5 via-blue-500/10 to-blue-500/5 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4 relative overflow-hidden">
                     <div class="absolute top-3 right-3">
@@ -266,8 +287,9 @@
                 </div>
             </div>
 
-            <!-- Stats Overview -->
-            <div class="bg-black/40 backdrop-blur-sm rounded-xl border border-white/5 mb-6 overflow-hidden">
+            <!-- Stats Overview (dotted stand-in under a veil when locked) -->
+            <div class="bg-black/40 backdrop-blur-sm rounded-xl border border-white/5 mb-6 overflow-hidden relative">
+                <LockedOverlay v-if="locked" />
                 <!-- Top row (maps left, records right) -->
                 <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/5 border-b border-white/5">
                     <div v-if="stats.oldest_map" class="p-4">
@@ -486,6 +508,7 @@
                 </div>
             </div>
 
+            <template v-if="!locked">
             <!-- Hall of Fame + Closest to 100% - VQ3 / CPM -->
             <div v-if="topPlayersData.completionists_by_physics && Object.keys(topPlayersData.completionists_by_physics).length"
                 class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -691,6 +714,27 @@
 
                 <div v-else class="text-center py-6 text-gray-500 text-sm">{{ $t('No recent records') }}</div>
             </div>
+            </template>
+            <template v-else>
+            <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 mb-6 relative">
+                <LockedOverlay />
+                <h3 class="text-sm font-black text-white uppercase tracking-wider mb-4">{{ $t('Top Players on These Maps') }}</h3>
+                <div class="space-y-2">
+                    <div v-for="k in 5" :key="k" class="flex items-center justify-between text-sm text-gray-400">
+                        <span>{{ '·'.repeat(8 + (k % 3) * 3) }}</span><span>···</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 mb-6 relative">
+                <LockedOverlay />
+                <h3 class="text-sm font-black text-white uppercase tracking-wider mb-4">{{ $t('Recent Activity on These Maps') }}</h3>
+                <div class="space-y-2">
+                    <div v-for="k in 5" :key="k" class="flex items-center justify-between text-sm text-gray-400">
+                        <span>{{ '·'.repeat(8 + (k % 3) * 3) }}</span><span>···</span>
+                    </div>
+                </div>
+            </div>
+            </template>
         </div>
     </div>
 </template>

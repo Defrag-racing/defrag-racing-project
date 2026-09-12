@@ -530,6 +530,19 @@
         cpm_rocket: 173, vq3_rocket: 61, cpm_plasma: 143, vq3_plasma: 62, cpm_bfg: 52, vq3_bfg: 10,
         cpm_records: 1177, vq3_records: 458,
     };
+    const fakeAliases = [
+        { alias: 'lex', alias_colored: '^7>>^3/^7lex', usage_count: 812, source: 'mdd_import' },
+        { alias: 'lex.th', alias_colored: '^7lex^3.th', usage_count: 233, source: 'mdd_import' },
+        { alias: '[wwo]lex', alias_colored: '^4[wwo]^7lex', usage_count: 97, source: 'mdd_import' },
+        { alias: 'lexx', alias_colored: '^7lexx', usage_count: 41, source: 'mdd_import' },
+        { alias: 'l3x', alias_colored: '^2l3x', usage_count: 12, source: 'mdd_import' },
+    ];
+    const shownAliases = computed(() => props.profileLocked ? fakeAliases : props.aliases);
+    const fakeUnplayed = {
+        total: 812, current_page: 1, last_page: 82,
+        data: ['bdfcomp031', 'pornstar-nyx', 'cityrocket', 'r7-wild', 'runkill', 'kool_slick', 'nemix-run3', 'bdfcomp029', 'ghost-town2', 'wcp-tower']
+            .map((name) => ({ name, author: 'unknown', thumbnail: null })),
+    };
     const shownProfile = computed(() => props.profileLocked && props.profile ? { ...props.profile, ...fakeStats } : props.profile);
     const fakeActivity = computed(() => {
         const out = {};
@@ -905,10 +918,11 @@
     const localTotalMaps = ref(null);
     const localPlayedCount = ref(null);
 
-    const currentUnplayedMaps = computed(() => localUnplayedMaps.value ?? props.unplayed_maps);
-    const currentTotalMaps = computed(() => localTotalMaps.value ?? props.total_maps);
+    const currentUnplayedMaps = computed(() => props.profileLocked ? fakeUnplayed : (localUnplayedMaps.value ?? props.unplayed_maps));
+    const currentTotalMaps = computed(() => props.profileLocked ? 1986 : (localTotalMaps.value ?? props.total_maps));
 
     const playedMapsCount = computed(() => {
+        if (props.profileLocked) return 1174;
         if (localPlayedCount.value !== null) return localPlayedCount.value;
         return props.played_maps_count || (props.total_maps - (props.unplayed_maps?.total || 0));
     });
@@ -2393,7 +2407,16 @@
             </div>
 
             <!-- Known Aliases -->
-            <div v-if="showSection('known_aliases') && ((aliases && aliases.length > 0) || can_suggest_alias || (alias_suggestions && alias_suggestions.length > 0))" class="mb-6" :style="{ order: sectionOrder('known_aliases') }">
+            <div v-if="showSection('known_aliases') && (profileLocked || (shownAliases && shownAliases.length > 0) || can_suggest_alias || (alias_suggestions && alias_suggestions.length > 0))" class="mb-6 relative" :style="{ order: sectionOrder('known_aliases') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5">
                         <div class="flex items-center justify-between" :class="aliasesExpanded ? 'mb-3' : ''">
@@ -2402,7 +2425,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                                 </svg>
                                 {{ $t('Known Aliases') }}
-                                <span class="text-sm font-normal text-gray-500">({{ aliases?.length || 0 }})</span>
+                                <span class="text-sm font-normal text-gray-500">({{ shownAliases?.length || 0 }})</span>
                             </h3>
                             <div class="flex items-center gap-2">
                                 <!-- Edit button (own profile) -->
@@ -2410,7 +2433,7 @@
                                     v-if="can_manage_aliases"
                                     :href="route('settings.show')"
                                     class="p-1.5 rounded-lg text-gray-500 hover:text-indigo-400 hover:bg-white/5 transition-all"
-                                    :title="$t('Edit aliases')"
+                                    :title="$t('Edit shownAliases')"
                                 >
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -2429,7 +2452,7 @@
                                 </button>
                                 <!-- Expand/Collapse button -->
                                 <button
-                                    v-if="aliases && aliases.length > 5"
+                                    v-if="shownAliases && shownAliases.length > 5"
                                     @click="aliasesExpanded = !aliasesExpanded"
                                     class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                                     :class="aliasesExpanded ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-400/40 animate-pulse'"
@@ -2482,12 +2505,12 @@
                         </div>
 
                         <!-- Approved Aliases -->
-                        <div v-if="aliases && aliases.length > 0" class="relative" :class="!aliasesExpanded ? 'mt-3' : ''">
+                        <div v-if="shownAliases && shownAliases.length > 0" class="relative" :class="!aliasesExpanded ? 'mt-3' : ''">
                         <!-- Fade overlay when collapsed -->
-                        <div v-if="!aliasesExpanded && aliases.length > 5" class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none rounded-b-lg"></div>
+                        <div v-if="!aliasesExpanded && shownAliases.length > 5" class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none rounded-b-lg"></div>
                         <div class="flex flex-wrap gap-2 overflow-hidden transition-all duration-300" :style="aliasesExpanded ? '' : 'max-height: 38px'">
                             <div
-                                v-for="alias in aliases"
+                                v-for="alias in shownAliases"
                                 :key="alias.alias_colored || alias.alias"
                                 class="px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-[4px] text-sm flex items-center gap-2"
                                 style="background: rgba(71,85,105,0.55);"
@@ -2509,9 +2532,9 @@
                         </div>
                         </div>
 
-                        <!-- No aliases message -->
-                        <div v-else-if="!aliases || aliases.length === 0" class="text-center py-4">
-                            <p class="text-gray-500 text-sm">{{ $t('No aliases yet') }}</p>
+                        <!-- No shownAliases message -->
+                        <div v-else-if="!shownAliases || shownAliases.length === 0" class="text-center py-4">
+                            <p class="text-gray-500 text-sm">{{ $t('No shownAliases yet') }}</p>
                         </div>
                     </div>
                 </div>
@@ -3348,7 +3371,16 @@
             </div>
 
             <!-- Map Completionist List -->
-            <div v-if="showSection('map_completionist') && currentUnplayedMaps && currentUnplayedMaps.total > 0" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6" :style="{ order: sectionOrder('map_completionist') }">
+            <div v-if="showSection('map_completionist') && currentUnplayedMaps && currentUnplayedMaps.total > 0" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6 relative" :style="{ order: sectionOrder('map_completionist') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[6px] bg-black/20 flex items-center justify-center p-4">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">

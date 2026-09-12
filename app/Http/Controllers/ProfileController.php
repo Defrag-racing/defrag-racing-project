@@ -228,7 +228,7 @@ class ProfileController extends Controller {
         }
 
         // --- Unplayed maps (partial or full) ---
-        if ($needs('unplayed_maps')) {
+        if ($needs('unplayed_maps') && ! $locked) {
             $completionistMode = $request->input('completionist_mode', 'all');
             $unplayedResult = $this->getUnplayedMaps($mddId, $request->input('unplayed_page', 1), $completionistMode);
             $unplayedMaps = $unplayedResult['paginator'];
@@ -279,6 +279,7 @@ class ProfileController extends Controller {
         if ($needs('vq3Records')) $response->with('vq3Records', $vq3Records ?? (object)['total' => 0, 'data' => [], 'per_page' => 20]);
         if ($needs('cpmRecords')) $response->with('cpmRecords', $cpmRecords ?? (object)['total' => 0, 'data' => [], 'per_page' => 20]);
         if ($needs('unplayed_maps')) {
+            // Locked: nothing, the page shows a blurred stand-in.
             $response->with('unplayed_maps', $unplayedMaps ?? collect());
             $response->with('total_maps', $totalMaps ?? 0);
             $response->with('played_maps_count', $playedMapsCount ?? 0);
@@ -294,7 +295,7 @@ class ProfileController extends Controller {
                 ->with('vq3_world_records', $stats['vq3_world_records'])
                 ->with('profile', $profileData)
                 ->with('user_maplists', $userMaplists)
-                ->with('aliases', $aliases)
+                ->with('aliases', $locked ? [] : $aliases)
                 ->with('can_manage_aliases', $canManageAliases)
                 ->with('alias_suggestions', $aliasSuggestions)
                 ->with('can_suggest_alias', $canSuggestAlias)
@@ -443,7 +444,9 @@ class ProfileController extends Controller {
 
         // Get unplayed maps for completionist list
         $completionistMode = $request->input('completionist_mode', 'all');
-        $unplayedResult = $this->getUnplayedMaps($user->id, $request->input('unplayed_page', 1), $completionistMode);
+        $unplayedResult = $locked
+            ? ['paginator' => collect(), 'total_maps' => 0, 'played_count' => 0]
+            : $this->getUnplayedMaps($user->id, $request->input('unplayed_page', 1), $completionistMode);
         $unplayedMaps = $unplayedResult['paginator'];
         $totalMaps = $unplayedResult['total_maps'];
         $playedMapsCount = $unplayedResult['played_count'];
@@ -484,7 +487,7 @@ class ProfileController extends Controller {
             ->with('played_maps_count', $playedMapsCount)
             ->with('hasProfile', true)
             ->with('profileLocked', $locked)
-            ->with('aliases', \App\Models\UserAlias::where('mdd_id', $userId)->where('is_approved', true)->orderBy('usage_count', 'desc')->get(['alias', 'alias_colored', 'usage_count', 'source']))
+            ->with('aliases', $locked ? [] : \App\Models\UserAlias::where('mdd_id', $userId)->where('is_approved', true)->orderBy('usage_count', 'desc')->get(['alias', 'alias_colored', 'usage_count', 'source']))
             ->with('alias_suggestions', [])
             ->with('can_suggest_alias', false)
             ->with('can_manage_aliases', false)

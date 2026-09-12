@@ -502,11 +502,20 @@ const statusColor = (s) => ({
                             <!-- Best-of-three draws (since Sept 2026): the three
                                  picks in draw order, the winner marked. Older
                                  draws have no picks and show the line above only. -->
-                            <div v-if="w.picks" class="text-[11px] text-gray-500 truncate" :title="$t('Three tickets drawn, most watch time wins')">
-                                {{ $t('Drawn:') }}
+                            <div v-if="w.picks" class="mt-1 flex flex-wrap items-baseline gap-x-2 text-xs text-gray-300" :title="$t('Three tickets drawn, most watch time wins')">
+                                <!-- Flex with gaps, not spaces: the template
+                                     compiler condenses whitespace between tags
+                                     and the words ran together. Coloured nicks,
+                                     no ticket numbers (they mean nothing to a
+                                     reader). -->
+                                <span class="text-gray-400">{{ $t('Drawn:') }}</span>
                                 <template v-for="(p, pi) in w.picks" :key="pi">
-                                    <span v-if="pi > 0">, </span>
-                                    <span :class="p.winner ? 'text-emerald-400 font-semibold' : ''">#{{ p.ticket }} <span v-html="q3tohtml(p.name)"></span> ({{ p.tickets }})</span>
+                                    <span v-if="pi > 0" class="text-gray-500">·</span>
+                                    <span class="inline-flex items-baseline gap-x-1.5">
+                                        <span v-html="q3tohtml(p.name)"></span>
+                                        <span>{{ $tc(':count ticket|:count tickets', p.tickets) }}</span>
+                                        <span v-if="p.winner" class="text-emerald-400 font-semibold">{{ $t('Winner') }}</span>
+                                    </span>
                                 </template>
                             </div>
                         </div>

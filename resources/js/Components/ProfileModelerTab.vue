@@ -3,9 +3,13 @@
     import { currentLocale } from '@/utils/i18n';
     import { Link } from '@inertiajs/vue3';
     import { markRaw } from 'vue';
+    import LockedOverlay from '@/Components/LockedOverlay.vue';
 
     const props = defineProps({
         userId: [Number, String],
+        // Guest or unverified viewer: the server sends the models without
+        // downloads, views, the highlighted model or the timeline.
+        locked: { type: Boolean, default: false },
     });
 
     const modelsData = ref({
@@ -227,17 +231,18 @@
             </div>
 
             <!-- Stats Row -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 relative">
+                <LockedOverlay v-if="locked" />
                 <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 text-center">
                     <div class="text-2xl font-black text-blue-400">{{ modelsData.total }}</div>
                     <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">{{ $t('Models') }}</div>
                 </div>
                 <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 text-center">
-                    <div class="text-2xl font-black text-purple-400">{{ formatNumber(modelsData.total_downloads) }}</div>
+                    <div class="text-2xl font-black text-purple-400">{{ locked ? '···' : formatNumber(modelsData.total_downloads) }}</div>
                     <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">{{ $t('Downloads') }}</div>
                 </div>
                 <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 text-center">
-                    <div class="text-2xl font-black text-cyan-400">{{ formatNumber(modelsData.total_views) }}</div>
+                    <div class="text-2xl font-black text-cyan-400">{{ locked ? '···' : formatNumber(modelsData.total_views) }}</div>
                     <div class="text-xs text-gray-500 uppercase tracking-wider mt-1">{{ $t('Views') }}</div>
                 </div>
                 <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/5 text-center">
@@ -251,7 +256,8 @@
             </div>
 
             <!-- Highlighted Model + Timeline -->
-            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+            <div v-if="locked" class="relative bg-black/40 backdrop-blur-sm rounded-xl border border-white/5 mb-6 h-40 flex items-center justify-center text-gray-500"><LockedOverlay />··········</div>
+            <div v-else class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
                 <!-- Most Popular Model (3/5) -->
                 <div v-if="modelsData.highlighted" class="lg:col-span-3 bg-gradient-to-br from-blue-500/5 via-purple-500/10 to-blue-500/5 backdrop-blur-sm border border-blue-500/20 rounded-xl p-4 relative overflow-hidden">
                     <div class="absolute top-3 right-3">

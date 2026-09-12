@@ -48,7 +48,34 @@ class MapperProfileController extends Controller
     /**
      * Main stats for the creator tab
      */
+    /**
+     * The mapper and modeler tabs follow the profile rule: a guest or an
+     * unverified login gets the header counts and the public lists (maps,
+     * models), not the stats, the top players, the activity or the timeline.
+     * Same test as ProfileController::profileLocked().
+     */
+    private function locked(): bool
+    {
+        $viewer = auth()->user();
+
+        return ! $viewer || $viewer->email_verified_at === null;
+    }
+
     public function stats(Request $request, $userId)
+    {
+        $full = $this->fullStats($userId);
+        if (! $this->locked() || $full instanceof \Illuminate\Http\JsonResponse || ! is_array($full)) {
+            return $full;
+        }
+
+        return [
+            'has_maps' => $full['has_maps'] ?? false,
+            'total_maps' => $full['total_maps'] ?? 0,
+            'locked' => true,
+        ];
+    }
+
+    private function fullStats($userId)
     {
         $user = User::findOrFail($userId);
 
@@ -321,6 +348,7 @@ class MapperProfileController extends Controller
      */
     public function topPlayers(Request $request, $userId)
     {
+        abort_if($this->locked(), 403, 'Verified accounts only.');
         $user = User::findOrFail($userId);
 
         return Cache::remember("mapper_top_players_{$userId}", 3600, function () use ($user) {
@@ -435,6 +463,7 @@ class MapperProfileController extends Controller
      */
     public function recentActivity(Request $request, $userId)
     {
+        abort_if($this->locked(), 403, 'Verified accounts only.');
         $user = User::findOrFail($userId);
         $data = $this->getClaimedMapNames($user);
 
@@ -457,6 +486,7 @@ class MapperProfileController extends Controller
      */
     public function heatmap(Request $request, $userId)
     {
+        abort_if($this->locked(), 403, 'Verified accounts only.');
         $user = User::findOrFail($userId);
 
         return Cache::remember("mapper_heatmap_{$userId}_v2", 3600, function () use ($user) {
@@ -516,6 +546,7 @@ class MapperProfileController extends Controller
      */
     public function highlightedMap(Request $request, $userId)
     {
+        abort_if($this->locked(), 403, 'Verified accounts only.');
         $user = User::findOrFail($userId);
 
         return Cache::remember("mapper_highlighted_{$userId}_v2", 3600, function () use ($user) {
@@ -643,15 +674,18 @@ class MapperProfileController extends Controller
             }
         }
 
+        $locked = $this->locked();
+
         return [
             'models' => $models,
             'total' => $total,
-            'total_downloads' => $totalDownloads,
-            'total_views' => $totalViews,
-            'highlighted' => $highlighted,
-            'timeline' => $timeline,
+            'total_downloads' => $locked ? null : $totalDownloads,
+            'total_views' => $locked ? null : $totalViews,
+            'highlighted' => $locked ? null : $highlighted,
+            'timeline' => $locked ? [] : $timeline,
             'pinned' => $pinnedModels,
             'group_order' => $user->model_group_order,
+            'locked' => $locked,
         ];
     }
 

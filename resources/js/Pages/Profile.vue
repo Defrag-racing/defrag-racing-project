@@ -99,6 +99,13 @@
             type: Array,
             default: () => []
         },
+        // Guest or unverified login: the server sent no stat numbers, no
+        // activity data and only page one of the records. The page blurs a
+        // made-up stand-in over each locked block (see ProfileController).
+        profileLocked: {
+            type: Boolean,
+            default: false
+        },
         hasProfile: Boolean,
         hasMapperProfile: {
             type: Boolean,
@@ -506,8 +513,52 @@
     }
 
     const isOwnProfile = computed(() => page.props.auth?.user?.id === props.user?.id);
-    const ownProfileNotVerified = computed(() => isOwnProfile.value && !page.props.auth?.user?.email_verified_at);
     const ownProfileNotLinked = computed(() => isOwnProfile.value && !props.hasProfile);
+
+    // Locked profile (guest / unverified). The stat panels render a stand-in
+    // with made-up numbers under a blur; the real ones never reached the
+    // browser, so nothing is there to read out of the page.
+    const lockedAsGuest = computed(() => props.profileLocked && !page.props.auth?.user);
+    const lockedUnverified = computed(() => props.profileLocked && !!page.props.auth?.user);
+    // No number in the stand-in: through the blur a "58.5%" reads as a
+    // real figure, dots read as a placeholder.
+    const D = '···';
+    const fakeStats = {
+        cpm_top3: D, vq3_top3: D, cpm_top10: D, vq3_top10: D,
+        cpm_unique_maps: D, vq3_unique_maps: D, cpm_avg_rank: D, vq3_avg_rank: D,
+        cpm_slick: D, vq3_slick: D, cpm_jumppad: D, vq3_jumppad: D, cpm_teleporter: D, vq3_teleporter: D,
+        cpm_dominance: D, vq3_dominance: D, longest_streak: D,
+        first_record_date: null, most_active_month: { month: D }, weapon_specialist: D,
+        cpm_strafe: D, vq3_strafe: D, cpm_fastcaps: D, vq3_fastcaps: D, cpm_grenade: D, vq3_grenade: D,
+        cpm_rocket: D, vq3_rocket: D, cpm_plasma: D, vq3_plasma: D, cpm_bfg: D, vq3_bfg: D,
+        cpm_records: D, vq3_records: D,
+    };
+    const fakeAliases = [
+        { alias: '······', alias_colored: '^7······', usage_count: null, source: 'mdd_import' },
+        { alias: '········', alias_colored: '^7········', usage_count: null, source: 'mdd_import' },
+        { alias: '····', alias_colored: '^7····', usage_count: null, source: 'mdd_import' },
+        { alias: '·······', alias_colored: '^7·······', usage_count: null, source: 'mdd_import' },
+        { alias: '·····', alias_colored: '^7·····', usage_count: null, source: 'mdd_import' },
+    ];
+    const shownAliases = computed(() => props.profileLocked ? fakeAliases : props.aliases);
+    const fakeUnplayed = {
+        total: '···', current_page: 1, last_page: 1,
+        data: Array.from({ length: 10 }, (_, k) => ({ name: '·'.repeat(6 + (k % 4)), author: '···', thumbnail: null })),
+    };
+    const shownProfile = computed(() => props.profileLocked && props.profile ? { ...props.profile, ...fakeStats } : props.profile);
+    const fakeActivity = computed(() => {
+        const out = {};
+        const year = props.activity_year || new Date().getFullYear();
+        let seed = 7;
+        for (let d = 0; d < 365; d += 1) {
+            seed = (seed * 9301 + 49297) % 233280;
+            if (seed / 233280 < 0.12) {
+                const day = new Date(Date.UTC(year, 0, 1 + d));
+                out[day.toISOString().slice(0, 10)] = { vq3: 1 + (seed % 3), cpm: seed % 2 };
+            }
+        }
+        return out;
+    });
 
     const sectionLabels = {
         activity_history: 'Activity History',
@@ -869,15 +920,17 @@
     const localTotalMaps = ref(null);
     const localPlayedCount = ref(null);
 
-    const currentUnplayedMaps = computed(() => localUnplayedMaps.value ?? props.unplayed_maps);
-    const currentTotalMaps = computed(() => localTotalMaps.value ?? props.total_maps);
+    const currentUnplayedMaps = computed(() => props.profileLocked ? fakeUnplayed : (localUnplayedMaps.value ?? props.unplayed_maps));
+    const currentTotalMaps = computed(() => props.profileLocked ? 0 : (localTotalMaps.value ?? props.total_maps));
 
     const playedMapsCount = computed(() => {
+        if (props.profileLocked) return '···';
         if (localPlayedCount.value !== null) return localPlayedCount.value;
         return props.played_maps_count || (props.total_maps - (props.unplayed_maps?.total || 0));
     });
 
     const completionPercentage = computed(() => {
+        if (props.profileLocked) return '··';
         if (currentTotalMaps.value === 0) return 0;
         return ((playedMapsCount.value / currentTotalMaps.value) * 100).toFixed(3);
     });
@@ -1109,7 +1162,7 @@
             </div>
 
             <!-- Customize button (top-right, aligned to content max-width) -->
-            <div v-if="isOwnProfile && !ownProfileNotVerified && !ownProfileNotLinked" class="absolute top-4 right-0 left-0 z-20 pointer-events-none">
+            <div v-if="isOwnProfile && !ownProfileNotLinked" class="absolute top-4 right-0 left-0 z-20 pointer-events-none">
             <div class="max-w-8xl mx-auto px-4 lg:px-8 flex justify-end">
             <div class="flex items-center shadow-xl pointer-events-auto">
                 <button @click="showQuickSettings = !showQuickSettings" :class="showQuickSettings ? 'bg-blue-600/50 border-blue-400/50 text-white' : 'bg-black/50 border-white/20 hover:border-white/30 hover:bg-black/60 text-gray-400 hover:text-white'" class="px-3 py-1.5 rounded-l-lg transition-all backdrop-blur-sm flex items-center gap-1.5 border border-r-0">
@@ -1284,7 +1337,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">
@@ -1422,7 +1475,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">
@@ -1587,7 +1640,7 @@
                                 <span v-if="cpmRunRank && vq3RunRank" class="text-gray-600">|</span>
                                 <span v-if="cpmRunRank" class="text-xs font-semibold text-purple-300 uppercase tracking-wider">CPM</span>
                                 <span v-if="cpmRunRank" class="text-sm font-black text-orange-400">#{{ cpmRunRank }}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
+                                <div v-if="!profileLocked" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-4 py-3 rounded-lg bg-black/95 border border-white/10 text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition pointer-events-none shadow-2xl z-[100] min-w-[340px]">
                                     <template v-for="mode in activeModes" :key="mode">
                                         <div class="font-bold text-white mb-1.5" :class="mode !== activeModes[0] ? 'mt-3 pt-2 border-t border-white/10' : ''">{{ mode.toUpperCase() }}</div>
                                         <div class="grid grid-cols-[1fr_auto_auto_auto_auto] gap-x-3 gap-y-0.5">
@@ -1686,7 +1739,7 @@
         </transition>
 
         <!-- Profile Tabs -->
-        <div v-if="hasCreatorTabs && !ownProfileNotVerified && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-4 relative z-20">
+        <div v-if="hasCreatorTabs && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-4 relative z-20">
             <div class="flex items-center gap-3 flex-wrap">
                 <div class="flex items-center gap-1 bg-black/40 backdrop-blur-sm rounded-xl p-1 border border-white/10 w-fit">
                     <button @click="switchTab('records')"
@@ -1734,13 +1787,27 @@
             <ProfileModelerTab :userId="user?.id" />
         </div>
 
-        <!-- Own profile but email not verified (shown outside records tab) -->
-        <div v-if="ownProfileNotVerified" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+        <!-- Locked profile: the same reduced view for a guest and for an
+             unverified login, on every profile. Guest gets the login box,
+             the unverified login gets the verify box. -->
+        <div v-if="lockedAsGuest" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+            <div class="relative z-20 mb-6">
+                <div class="bg-gradient-to-r from-blue-500/10 via-blue-500/20 to-blue-500/10 border border-blue-500/30 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
+                    <div class="text-3xl font-black text-blue-300 mb-2">{{ $t('See the full profile') }}</div>
+                    <div class="text-sm text-gray-400 mb-4">{{ $t('Performance, activity, record types, map features, the activity calendar and every page of records open with a verified account.') }}</div>
+                    <div class="flex justify-center gap-4">
+                        <a href="/login" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg transition-colors">{{ $t('Login') }}</a>
+                        <a href="/register" class="px-6 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-lg transition-colors">{{ $t('Register') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="lockedUnverified" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
             <div class="relative z-20 mb-6">
                 <div class="bg-gradient-to-r from-red-500/10 via-red-500/20 to-red-500/10 border border-red-500/30 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
                     <div class="text-3xl font-black text-red-400 mb-2">{{ $t('Verify Your Email') }}</div>
                     <div class="text-lg font-semibold text-red-200/80 mb-2">{{ $t('Your email address is not verified yet.') }}</div>
-                    <div class="text-sm text-gray-400 mb-4">{{ $t('Verify your email to unlock account linking, demo uploads, map tagging, and more.') }}</div>
+                    <div class="text-sm text-gray-400 mb-4">{{ $t('One click on the link in the mail opens the full profile, demo uploads, account linking and map tagging.') }}</div>
                     <Link href="/email/verify" class="inline-block px-6 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg transition-colors">
                         {{ $t('Verify Email') }}
                     </Link>
@@ -1749,7 +1816,7 @@
         </div>
 
         <!-- Own profile, verified but not linked -->
-        <div v-if="ownProfileNotLinked && !ownProfileNotVerified" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+        <div v-if="ownProfileNotLinked && !profileLocked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
             <div class="relative z-20 mb-6">
                 <div class="bg-gradient-to-r from-yellow-500/10 via-yellow-500/20 to-yellow-500/10 border border-yellow-500/30 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
                     <div class="text-3xl font-black text-yellow-400 mb-2">{{ $t('Link Your Q3DF Profile') }}</div>
@@ -1779,7 +1846,7 @@
         </div>
 
         <!-- Admin: Rating Breakdown -->
-        <div v-if="canViewBreakdown && hasPlayerRank && activeTab === 'records' && !ownProfileNotVerified && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-2 relative z-10">
+        <div v-if="canViewBreakdown && hasPlayerRank && activeTab === 'records' && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-2 relative z-10">
             <div>
                 <button @click="toggleRatingBreakdown"
                     class="flex items-center gap-2 px-4 py-2.5 bg-orange-950/50 border border-orange-500/30 rounded-xl text-sm font-bold text-orange-400 hover:bg-orange-950/70 transition-all w-full">
@@ -1929,7 +1996,7 @@
         </div>
 
         <!-- EPIC REDESIGN - Main Content (Records Tab) -->
-        <div v-show="activeTab === 'records' && !ownProfileNotVerified && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div v-show="activeTab === 'records' && !ownProfileNotLinked" class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div v-if="!user?.id && !$page.props.auth?.user?.mdd_id" class="relative z-20 mb-6">
                 <div class="bg-gradient-to-r from-orange-500/10 via-orange-500/20 to-orange-500/10 border border-orange-500/30 rounded-2xl px-8 py-6 text-center backdrop-blur-sm">
                     <div class="text-3xl font-black text-orange-400 mb-2">{{ $t('Not Linked Account') }}</div>
@@ -1946,7 +2013,18 @@
             </div>
 
             <!-- Stats Grid - Clean Text Layout -->
-            <div v-if="hasProfile && profile" class="relative z-[1] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div v-if="hasProfile && profile" class="relative z-[1] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6" :class="profileLocked ? 'select-none' : ''">
+                <!-- Locked: one overlay over the whole grid, blurring what is
+                     under it (stand-in numbers, see shownProfile). -->
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4 pointer-events-auto">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <div v-if="showStatBox('performance')" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5" :style="{ order: statBoxOrder('performance') }">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wide">{{ $t('Performance') }}</h3>
@@ -1962,9 +2040,9 @@
                                 {{ $t('Total number of records you have set across all maps') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_records || 0) : (profile.vq3_records || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_records || 0) : (shownProfile.vq3_records || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_records || 0) : (profile.cpm_records || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_records || 0) : (shownProfile.cpm_records || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -1984,9 +2062,9 @@
                                 {{ $t('Records ranked between 1st and 3rd place') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_top3 || 0) : (profile.vq3_top3 || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_top3 || 0) : (shownProfile.vq3_top3 || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_top3 || 0) : (profile.cpm_top3 || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_top3 || 0) : (shownProfile.cpm_top3 || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -1995,9 +2073,9 @@
                                 {{ $t('Records ranked between 1st and 10th place') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_top10 || 0) : (profile.vq3_top10 || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_top10 || 0) : (shownProfile.vq3_top10 || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_top10 || 0) : (profile.cpm_top10 || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_top10 || 0) : (shownProfile.cpm_top10 || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -2006,9 +2084,9 @@
                                 {{ $t('Your average ranking position across all records (lower is better)') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_avg_rank || 0) : (profile.vq3_avg_rank || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_avg_rank || 0) : (shownProfile.vq3_avg_rank || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_avg_rank || 0) : (profile.cpm_avg_rank || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_avg_rank || 0) : (shownProfile.cpm_avg_rank || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -2017,9 +2095,9 @@
                                 {{ $t('Percentage of your records that are in top 10 positions') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_dominance || 0) : (profile.vq3_dominance || 0) }}%</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_dominance || 0) : (shownProfile.vq3_dominance || 0) }}%</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_dominance || 0) : (profile.cpm_dominance || 0) }}%</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_dominance || 0) : (shownProfile.cpm_dominance || 0) }}%</span>
                             </div>
                         </div>
                     </div>
@@ -2041,9 +2119,9 @@
                                 {{ $t('Number of different maps you have set records on') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_unique_maps || 0) : (profile.vq3_unique_maps || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_unique_maps || 0) : (shownProfile.vq3_unique_maps || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_unique_maps || 0) : (profile.cpm_unique_maps || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_unique_maps || 0) : (shownProfile.cpm_unique_maps || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -2052,9 +2130,9 @@
                                 {{ $t('Records on maps with slick (low friction) surfaces') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_slick || 0) : (profile.vq3_slick || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_slick || 0) : (shownProfile.vq3_slick || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_slick || 0) : (profile.cpm_slick || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_slick || 0) : (shownProfile.cpm_slick || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -2063,9 +2141,9 @@
                                 {{ $t('Records on maps featuring jump pads') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_jumppad || 0) : (profile.vq3_jumppad || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_jumppad || 0) : (shownProfile.vq3_jumppad || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_jumppad || 0) : (profile.cpm_jumppad || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_jumppad || 0) : (shownProfile.cpm_jumppad || 0) }}</span>
                             </div>
                         </div>
                         <div class="flex justify-between items-center group relative">
@@ -2074,16 +2152,16 @@
                                 {{ $t('Records on maps featuring teleporters') }}
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (profile.cpm_teleporter || 0) : (profile.vq3_teleporter || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ cpmFirst ? (shownProfile.cpm_teleporter || 0) : (shownProfile.vq3_teleporter || 0) }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (profile.vq3_teleporter || 0) : (profile.cpm_teleporter || 0) }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ cpmFirst ? (shownProfile.vq3_teleporter || 0) : (shownProfile.cpm_teleporter || 0) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Record Types -->
-                <div v-if="showStatBox('record_types') && stats.filter(s => s.value !== 'world_records').some(s => (profile?.hasOwnProperty('cpm_' + s.value) ? profile['cpm_' + s.value] : 0) > 0 || (profile?.hasOwnProperty('vq3_' + s.value) ? profile['vq3_' + s.value] : 0) > 0)" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5" :style="{ order: statBoxOrder('record_types') }">
+                <div v-if="showStatBox('record_types') && (profileLocked || stats.filter(s => s.value !== 'world_records').some(s => (shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0))" class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5" :style="{ order: statBoxOrder('record_types') }">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-sm font-bold text-white uppercase tracking-wide">{{ $t('Record Types') }}</h3>
                         <div class="flex items-center gap-0">
@@ -2092,15 +2170,15 @@
                         </div>
                     </div>
                     <div class="space-y-2">
-                        <div v-for="stat in stats.filter(s => s.value !== 'world_records' && ((profile?.hasOwnProperty('cpm_' + s.value) ? profile['cpm_' + s.value] : 0) > 0 || (profile?.hasOwnProperty('vq3_' + s.value) ? profile['vq3_' + s.value] : 0) > 0))" :key="stat.value" class="flex justify-between items-center group relative">
+                        <div v-for="stat in stats.filter(s => s.value !== 'world_records' && (profileLocked || (shownProfile?.hasOwnProperty('cpm_' + s.value) ? shownProfile['cpm_' + s.value] : 0) > 0 || (shownProfile?.hasOwnProperty('vq3_' + s.value) ? shownProfile['vq3_' + s.value] : 0) > 0))" :key="stat.value" class="flex justify-between items-center group relative">
                             <span class="text-xs text-gray-400 cursor-help">{{ stat.label.replace(' Records', '') }}</span>
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 Records set on {{ stat.label.toLowerCase() }} maps or with specific game modes
                             </div>
                             <div class="flex items-center">
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ profile?.hasOwnProperty((cpmFirst ? 'cpm_' : 'vq3_') + stat.value) ? profile[(cpmFirst ? 'cpm_' : 'vq3_') + stat.value] : 0 }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-purple-400' : 'text-blue-400']">{{ shownProfile?.hasOwnProperty((cpmFirst ? 'cpm_' : 'vq3_') + stat.value) ? shownProfile[(cpmFirst ? 'cpm_' : 'vq3_') + stat.value] : 0 }}</span>
                                 <span class="text-xs text-gray-600 w-4 text-center">/</span>
-                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ profile?.hasOwnProperty((cpmFirst ? 'vq3_' : 'cpm_') + stat.value) ? profile[(cpmFirst ? 'vq3_' : 'cpm_') + stat.value] : 0 }}</span>
+                                <span :class="['text-sm font-bold tabular-nums w-10 text-right', cpmFirst ? 'text-blue-400' : 'text-purple-400']">{{ shownProfile?.hasOwnProperty((cpmFirst ? 'vq3_' : 'cpm_') + stat.value) ? shownProfile[(cpmFirst ? 'vq3_' : 'cpm_') + stat.value] : 0 }}</span>
                             </div>
                         </div>
                     </div>
@@ -2115,28 +2193,28 @@
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 {{ $t('Your longest consecutive days of setting records') }}
                             </div>
-                            <span class="text-sm font-bold text-white">{{ profile.longest_streak || 0 }} days</span>
+                            <span class="text-sm font-bold text-white">{{ shownProfile.longest_streak || 0 }} days</span>
                         </div>
-                        <div v-if="profile.most_active_month" class="flex justify-between items-center group relative">
+                        <div v-if="shownProfile.most_active_month" class="flex justify-between items-center group relative">
                             <span class="text-xs text-gray-400 cursor-help">{{ $t('Most Active') }}</span>
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 {{ $t('The month when you set the most records') }}
                             </div>
-                            <span class="text-sm font-bold text-white">{{ profile.most_active_month.month }}</span>
+                            <span class="text-sm font-bold text-white">{{ shownProfile.most_active_month.month }}</span>
                         </div>
-                        <div v-if="profile.first_record_date" class="flex justify-between items-center group relative">
+                        <div v-if="shownProfile.first_record_date" class="flex justify-between items-center group relative">
                             <span class="text-xs text-gray-400 cursor-help">{{ $t('First Record') }}</span>
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 {{ $t('When you set your very first record') }}
                             </div>
-                            <span class="text-sm font-bold text-white">{{ new Date(profile.first_record_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) }}</span>
+                            <span class="text-sm font-bold text-white">{{ new Date(shownProfile.first_record_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) }}</span>
                         </div>
-                        <div v-if="profile.weapon_specialist" class="flex justify-between items-center group relative">
+                        <div v-if="shownProfile.weapon_specialist" class="flex justify-between items-center group relative">
                             <span class="text-xs text-gray-400 cursor-help">{{ $t('Best Weapon') }}</span>
                             <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-black/90 border border-white/20 rounded-lg text-xs text-gray-300">
                                 {{ $t('The weapon category where you have the most records') }}
                             </div>
-                            <span class="text-sm font-bold text-white capitalize">{{ profile.weapon_specialist }}</span>
+                            <span class="text-sm font-bold text-white capitalize">{{ shownProfile.weapon_specialist }}</span>
                         </div>
                     </div>
                 </div>
@@ -2268,9 +2346,18 @@
             <div class="flex flex-col">
 
             <!-- Activity History Heatmap -->
-            <div v-if="hasProfile && showSection('activity_history') && activity_years && activity_years.length > 0" class="mb-6" :style="{ order: sectionOrder('activity_history') }">
+            <div v-if="hasProfile && showSection('activity_history') && activity_years && activity_years.length > 0" class="mb-6 relative" :style="{ order: sectionOrder('activity_history') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <ActivityHeatmap
-                    :activityData="activity_data"
+                    :activityData="profileLocked ? fakeActivity : activity_data"
                     :activityYear="activity_year"
                     :activityYears="activity_years"
                     :mddId="profile?.id || profile?.mdd_id"
@@ -2323,7 +2410,16 @@
             </div>
 
             <!-- Known Aliases -->
-            <div v-if="showSection('known_aliases') && ((aliases && aliases.length > 0) || can_suggest_alias || (alias_suggestions && alias_suggestions.length > 0))" class="mb-6" :style="{ order: sectionOrder('known_aliases') }">
+            <div v-if="showSection('known_aliases') && (profileLocked || (shownAliases && shownAliases.length > 0) || can_suggest_alias || (alias_suggestions && alias_suggestions.length > 0))" class="mb-6 relative" :style="{ order: sectionOrder('known_aliases') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <div class="bg-black/40 backdrop-blur-sm rounded-xl p-4 shadow-2xl border border-white/5">
                         <div class="flex items-center justify-between" :class="aliasesExpanded ? 'mb-3' : ''">
@@ -2332,7 +2428,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                                 </svg>
                                 {{ $t('Known Aliases') }}
-                                <span class="text-sm font-normal text-gray-500">({{ aliases?.length || 0 }})</span>
+                                <span class="text-sm font-normal text-gray-500">({{ shownAliases?.length || 0 }})</span>
                             </h3>
                             <div class="flex items-center gap-2">
                                 <!-- Edit button (own profile) -->
@@ -2359,7 +2455,7 @@
                                 </button>
                                 <!-- Expand/Collapse button -->
                                 <button
-                                    v-if="aliases && aliases.length > 5"
+                                    v-if="shownAliases && shownAliases.length > 5"
                                     @click="aliasesExpanded = !aliasesExpanded"
                                     class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all"
                                     :class="aliasesExpanded ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30' : 'bg-indigo-500/20 text-indigo-300 border border-indigo-400/40 animate-pulse'"
@@ -2412,12 +2508,12 @@
                         </div>
 
                         <!-- Approved Aliases -->
-                        <div v-if="aliases && aliases.length > 0" class="relative" :class="!aliasesExpanded ? 'mt-3' : ''">
+                        <div v-if="shownAliases && shownAliases.length > 0" class="relative" :class="!aliasesExpanded ? 'mt-3' : ''">
                         <!-- Fade overlay when collapsed -->
-                        <div v-if="!aliasesExpanded && aliases.length > 5" class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none rounded-b-lg"></div>
+                        <div v-if="!aliasesExpanded && shownAliases.length > 5" class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none rounded-b-lg"></div>
                         <div class="flex flex-wrap gap-2 overflow-hidden transition-all duration-300" :style="aliasesExpanded ? '' : 'max-height: 38px'">
                             <div
-                                v-for="alias in aliases"
+                                v-for="alias in shownAliases"
                                 :key="alias.alias_colored || alias.alias"
                                 class="px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-[4px] text-sm flex items-center gap-2"
                                 style="background: rgba(71,85,105,0.55);"
@@ -2439,8 +2535,8 @@
                         </div>
                         </div>
 
-                        <!-- No aliases message -->
-                        <div v-else-if="!aliases || aliases.length === 0" class="text-center py-4">
+                        <!-- No shownAliases message -->
+                        <div v-else-if="!shownAliases || shownAliases.length === 0" class="text-center py-4">
                             <p class="text-gray-500 text-sm">{{ $t('No aliases yet') }}</p>
                         </div>
                     </div>
@@ -2500,8 +2596,18 @@
 
                 <div v-show="recordsTab === 'records'" class="grid grid-cols-1 lg:grid-cols-10 gap-6">
                 <!-- Sidebar Tabs -->
-                <div class="lg:col-span-2 flex">
-                    <div class="bg-black/40 backdrop-blur-sm rounded-xl p-3 shadow-2xl border border-white/5 w-full flex flex-col">
+                <div class="lg:col-span-2 flex relative">
+                    <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
+                        <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                            <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">{{ $t('Filters, sorting and pages past the first open with a verified account.') }}</div>
+                            <div class="text-xs mt-1">
+                                <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Login') }}</a>
+                                <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify Email') }}</Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-black/40 backdrop-blur-sm rounded-xl p-3 shadow-2xl border border-white/5 w-full flex flex-col" :class="profileLocked ? 'select-none' : ''">
                         <!-- Search (map name or author) -->
                         <div class="mb-4">
                             <h3 class="text-xs font-bold text-gray-400 uppercase mb-3 px-1">{{ $t('Search') }}</h3>
@@ -2707,7 +2813,12 @@
                             </div>
 
                             <!-- Pagination -->
-                            <div v-if="vq3Records.total > vq3Records.per_page" class="border-t border-blue-500/20 bg-transparent p-4 mt-auto">
+                            <div v-if="profileLocked && vq3Records.total > vq3Records.per_page" class="border-t border-blue-500/20 bg-transparent p-4 mt-auto text-center text-xs text-gray-400">
+                                {{ $tc(':count more page for verified accounts.|:count more pages for verified accounts.', vq3Records.last_page - 1) }}
+                                <a v-if="lockedAsGuest" href="/login" class="ml-1 text-blue-400 font-bold hover:text-blue-300">{{ $t('Login') }}</a>
+                                <Link v-else href="/email/verify" class="ml-1 text-red-400 font-bold hover:text-red-300">{{ $t('Verify Email') }}</Link>
+                            </div>
+                            <div v-else-if="vq3Records.total > vq3Records.per_page" class="border-t border-blue-500/20 bg-transparent p-4 mt-auto">
                                 <Pagination :last_page="vq3Records.last_page" :current_page="vq3Records.current_page" :link="vq3Records.first_page_url" pageName="vq3_page" :only="['vq3Records', 'cpmRecords']" />
                             </div>
                         </div>
@@ -2836,7 +2947,12 @@
                             </div>
 
                             <!-- Pagination -->
-                            <div v-if="cpmRecords.total > cpmRecords.per_page" class="border-t border-purple-500/20 bg-transparent p-4 mt-auto">
+                            <div v-if="profileLocked && cpmRecords.total > cpmRecords.per_page" class="border-t border-purple-500/20 bg-transparent p-4 mt-auto text-center text-xs text-gray-400">
+                                {{ $tc(':count more page for verified accounts.|:count more pages for verified accounts.', cpmRecords.last_page - 1) }}
+                                <a v-if="lockedAsGuest" href="/login" class="ml-1 text-blue-400 font-bold hover:text-blue-300">{{ $t('Login') }}</a>
+                                <Link v-else href="/email/verify" class="ml-1 text-red-400 font-bold hover:text-red-300">{{ $t('Verify Email') }}</Link>
+                            </div>
+                            <div v-else-if="cpmRecords.total > cpmRecords.per_page" class="border-t border-purple-500/20 bg-transparent p-4 mt-auto">
                                 <Pagination :last_page="cpmRecords.last_page" :current_page="cpmRecords.current_page" :link="cpmRecords.first_page_url" pageName="cpm_page" :only="['vq3Records', 'cpmRecords']" />
                             </div>
                         </div>
@@ -3258,7 +3374,16 @@
             </div>
 
             <!-- Map Completionist List -->
-            <div v-if="showSection('map_completionist') && currentUnplayedMaps && currentUnplayedMaps.total > 0" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6" :style="{ order: sectionOrder('map_completionist') }">
+            <div v-if="showSection('map_completionist') && (profileLocked || (currentUnplayedMaps && currentUnplayedMaps.total > 0))" class="bg-black/40 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/5 mb-6 relative" :style="{ order: sectionOrder('map_completionist') }">
+                <div v-if="profileLocked" class="absolute inset-0 z-10 rounded-xl backdrop-blur-[10px] bg-black/30 flex items-center justify-center p-4">
+                    <div class="bg-[#0a0e19]/95 border border-white/10 rounded-lg px-5 py-3 text-center max-w-xs">
+                        <div class="text-sm font-bold text-white">{{ $t('Verified accounts only') }}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">
+                            <a v-if="lockedAsGuest" href="/login" class="text-blue-400 font-bold hover:text-blue-300">{{ $t('Log in and verify to see this') }}</a>
+                            <Link v-else href="/email/verify" class="text-red-400 font-bold hover:text-red-300">{{ $t('Verify your email to see this') }}</Link>
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-6">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-xl font-bold text-white flex items-center gap-2">
@@ -3300,7 +3425,7 @@
                             <!-- Animated progress fill -->
                             <div
                                 class="h-full relative overflow-hidden transition-all duration-1000 ease-out bg-blue-600"
-                                :style="`width: ${completionPercentage}%`">
+                                :style="`width: ${profileLocked ? 50 : completionPercentage}%`">
 
                                 <!-- Animated moving stripes -->
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/40 to-transparent bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite]"></div>

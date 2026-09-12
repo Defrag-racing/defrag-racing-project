@@ -225,7 +225,7 @@ const statusColor = (s) => ({
                          leave a hole the height of the difference. -->
                     <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                         <h2 class="text-lg font-bold text-white">{{ $t('How the winner is picked') }}</h2>
-                        <p class="text-sm text-gray-500">{{ $t('Watch time buys tickets, then one ticket is drawn. That is the whole of it.') }}</p>
+                        <p class="text-sm text-gray-500">{{ $t('Watch time buys tickets, three tickets are drawn, and the drawn person who watched the most wins.') }}</p>
                     </div>
                 </div>
 
@@ -292,8 +292,8 @@ const statusColor = (s) => ({
             <div class="grid gap-3 md:grid-cols-3">
                 <div v-for="(step, i) in [
                     { head: $t('1 minute watched = 1 ticket'), body: $t('Whole minutes, and nothing else earns any. Under a minute across the entire period is no ticket and no entry.') },
-                    { head: $t('One ticket is drawn at random'), body: $t('At the end of the period, from every ticket in the pool. Whoever is holding it takes the prize.') },
-                    { head: $t('Most tickets is best odds, not a win'), body: $t('Hold 5% of the pool and you win one time in twenty. Hold 40% and you lose three times out of five.') },
+                    { head: $t('Three tickets are drawn at random'), body: $t('At the end of the period, from every ticket in the pool. Three different numbers, so up to three different people make the final.') },
+                    { head: $t('Of those three, the most watch time wins'), body: $t('The prize goes to whichever drawn person watched the most. A big watcher is likely to be among the three and then wins it; a small one needs to be drawn alone.') },
                 ]" :key="i" class="rounded-xl border border-white/10 bg-black/30 p-4">
                     <div class="flex items-center gap-2.5 mb-1.5">
                         <span class="shrink-0 w-6 h-6 rounded-full bg-purple-500/25 border border-purple-400/40 text-purple-200 text-xs font-black flex items-center justify-center">{{ i + 1 }}</span>
@@ -303,29 +303,33 @@ const statusColor = (s) => ({
                 </div>
             </div>
 
-            <div class="mt-3 flex flex-col lg:flex-row lg:items-center gap-3">
+            <!-- Wraps: collapsed, the details sits beside the note at
+                 320px; open, it takes the whole row and drops under the
+                 note, so the text is not squeezed into a narrow column
+                 with the note floating vertically centered beside it. -->
+            <div class="mt-3 flex flex-col lg:flex-row lg:flex-wrap lg:items-start gap-3">
                 <p class="flex-1 text-sm text-amber-200 bg-amber-500/10 border border-amber-400/30 rounded-lg px-4 py-2.5">
                     <!-- One sentence, not three fragments. Split around the
                          word "not" it could not survive translation: the
                          negation attaches to the verb in most languages, so
                          the pieces produced "niže ne neznamena" in Czech and
                          "no no significa" in Spanish. -->
-                    <span v-html="$t('Being first on the list below does <strong>not</strong> mean you win. It means the draw is most likely to go your way. Weight it any harder and whoever is watched most would take every period, leaving nobody else a reason to play.')"></span>
+                    <span v-html="$t('Being first on the list below does <strong>not</strong> mean you win. It means the draw is most likely to go your way: about a third of the periods for someone holding a tenth of the pool. The rest of the time somebody with less watch time gets drawn without you and takes it.')"></span>
                 </p>
 
                 <!-- "It is random" is exactly the claim somebody who has just
                      lost has no reason to take on trust, so the method is
                      written out and the drawn number is stored, not promised. -->
-                <details class="lg:w-80 shrink-0 rounded-lg border border-white/10 bg-black/30 px-4 py-2.5">
+                <details class="lg:w-80 open:lg:w-full shrink-0 rounded-lg border border-white/10 bg-black/30 px-4 py-2.5">
                     <summary class="cursor-pointer select-none text-sm text-purple-300 hover:text-purple-200 transition">
                         {{ $t('How the draw works, exactly') }}
                     </summary>
-                    <div class="mt-2.5 pt-2.5 border-t border-white/10 text-sm text-gray-400 space-y-2">
+                    <div class="mt-2.5 pt-2.5 border-t border-white/10 text-sm text-gray-400 space-y-2 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-6 leading-relaxed">
                         <p>
-                            {{ $t("Everyone with at least one ticket goes in. The tickets are laid end to end and numbered from 1 to the size of the pool, so 300 tickets is 300 consecutive numbers. One number is drawn with the operating system's cryptographic random generator and whoever holds it wins. It is the textbook weighted raffle, sometimes called roulette wheel selection: no seed anyone can guess, nothing that favours a name.") }}
+                            {{ $t("Everyone with at least one ticket goes in. The tickets are laid end to end and numbered from 1 to the size of the pool, so 300 tickets is 300 consecutive numbers. Three different numbers are drawn with the operating system's cryptographic random generator. Of the people holding them, the one with the most watch time wins; a tie goes to the number drawn first. It is the textbook weighted raffle, run three times: no seed anyone can guess, nothing that favours a name.") }}
                         </p>
                         <p>
-                            {{ $t("The drawn number, the winner's tickets and the size of the pool are recorded at the moment of the draw and shown under past winners, so a result can be checked instead of taken on trust.") }}
+                            {{ $t("The three drawn numbers, who held each, the winner's tickets and the size of the pool are recorded at the moment of the draw and shown under past winners, so a result can be checked instead of taken on trust.") }}
                         </p>
                     </div>
                 </details>
@@ -492,8 +496,27 @@ const statusColor = (s) => ({
                             </component>
                             <div class="text-xs text-gray-500 truncate">{{ w.title }}</div>
                             <div v-if="w.winner_seconds" class="text-xs text-purple-300/80 truncate">
-                                {{ fmtWatch(w.winner_seconds) }} watched
-                                <template v-if="w.total_tickets"> · {{ w.winner_tickets }}/{{ w.total_tickets }} tickets ({{ (w.winner_tickets / w.total_tickets * 100).toFixed(1) }}% odds)</template>
+                                {{ $t('Watched for :time', { time: fmtWatch(w.winner_seconds) }) }}
+                                <template v-if="w.total_tickets"> · {{ w.winner_tickets }}/{{ w.total_tickets }} {{ $t('tickets') }} ({{ (w.winner_tickets / w.total_tickets * 100).toFixed(1) }}%)</template>
+                            </div>
+                            <!-- Best-of-three draws (since Sept 2026): the three
+                                 picks in draw order, the winner marked. Older
+                                 draws have no picks and show the line above only. -->
+                            <div v-if="w.picks" class="mt-1 flex flex-wrap items-baseline gap-x-2 text-xs text-gray-300" :title="$t('Three tickets drawn, most watch time wins')">
+                                <!-- Flex with gaps, not spaces: the template
+                                     compiler condenses whitespace between tags
+                                     and the words ran together. Coloured nicks,
+                                     no ticket numbers (they mean nothing to a
+                                     reader). -->
+                                <span class="text-gray-400">{{ $t('Drawn:') }}</span>
+                                <template v-for="(p, pi) in w.picks" :key="pi">
+                                    <span v-if="pi > 0" class="text-gray-500">·</span>
+                                    <span class="inline-flex items-baseline gap-x-1.5">
+                                        <span v-html="q3tohtml(p.name)"></span>
+                                        <span>{{ $tc(':count ticket|:count tickets', p.tickets) }}</span>
+                                        <span v-if="p.winner" class="text-emerald-400 font-semibold">{{ $t('Winner') }}</span>
+                                    </span>
+                                </template>
                             </div>
                         </div>
                         <div class="text-right shrink-0">

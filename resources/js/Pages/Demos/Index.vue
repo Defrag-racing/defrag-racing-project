@@ -1151,7 +1151,8 @@ const openAssignModal = (demo) => {
 
     // Pre-fill physics from demo metadata
     if (demo.physics) {
-        selectedPhysics.value = demo.physics;
+        // `VQ3.TR` is a run with a timereset, the records are plain VQ3.
+        selectedPhysics.value = String(demo.physics || 'VQ3').split('.')[0].toUpperCase();
     }
 
     // Pre-fill map from demo metadata and auto-select + load records

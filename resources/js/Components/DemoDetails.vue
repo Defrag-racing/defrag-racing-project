@@ -47,8 +47,8 @@
         if (physics.value) {
             rows.push({ label: t('Physics'), value: physics.value.base });
 
-            if (physics.value.teamrun) {
-                rows.push({ label: t('Type'), value: t('Teamrun - more than one player in the run') });
+            if (physics.value.timereset) {
+                rows.push({ label: t('Type'), value: t('Timereset - the timer was reset during the demo, the run itself is a normal run') });
             }
 
             if (physics.value.ctf !== null) {

@@ -1779,8 +1779,11 @@ class DemosController extends Controller
      */
     public function getRecords(Request $request, $mapname)
     {
-        $physics = $request->get('physics', 'VQ3');
-        $gametype = 'run_' . strtolower($physics);
+        // uploaded_demos.physics carries a mode suffix (`VQ3.TR` is a run
+        // with a timereset, `CPM.2` a fastcap). records.gametype does not, so
+        // a demo sent here as `VQ3.TR` found nothing and could not be assigned.
+        $physics = strtolower((string) $request->get('physics', 'VQ3'));
+        $gametype = 'run_' . preg_replace('/\..*$/', '', $physics);
 
         $records = \App\Models\Record::where('mapname', $mapname)
             ->where('gametype', $gametype)

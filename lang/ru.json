@@ -3785,6 +3785,7 @@
     "Time matches exactly.": "Время совпадает точно.",
     "Time:": "Время:",
     "Timer": "Таймер",
+    "Timereset - the timer was reset during the demo, the run itself is a normal run": "Timereset - во время демки таймер был сброшен, сам забег обычный",
     "Times stay hidden until the round closes, so nobody can be handed the time to beat.": "Времена скрыты до конца раунда, чтобы никому не выдать время, которое нужно побить.",
     "Timescale modified": "Изменён timescale",
     "Title": "Название",

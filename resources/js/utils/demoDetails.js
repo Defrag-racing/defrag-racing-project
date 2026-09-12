@@ -56,7 +56,8 @@ export const describeGametype = (gametype) => {
 /**
  * `physics` carries more than the physics. The parser writes the demo's
  * `<mode>.<physics>[.<variant>]` string and we keep it from the physics
- * onwards, so `CPM.TR` is a teamrun and `VQ3.2` is capture mode 2.
+ * onwards, so `CPM.TR` is a run with a timereset (the defrag demo namer's
+ * `.tr` flag, as DemoCleaner writes it) and `VQ3.2` is capture mode 2.
  */
 export const describePhysics = (physics) => {
     if (!physics) {
@@ -69,7 +70,7 @@ export const describePhysics = (physics) => {
 
     return {
         base: base.toUpperCase(),
-        teamrun: variant === 'TR',
+        timereset: variant === 'TR',
         ctf,
         raw: physics,
     };

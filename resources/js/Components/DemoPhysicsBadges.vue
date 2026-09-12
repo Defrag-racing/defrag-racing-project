@@ -24,9 +24,9 @@
         </span>
 
         <span
-            v-if="parsed.teamrun"
+            v-if="parsed.timereset"
             class="inline-flex items-center px-1 py-0.5 rounded text-[10px] font-medium bg-amber-900/50 text-amber-200"
-            :title="$t('Teamrun - more than one player in the run')"
+            :title="$t('Timereset - the timer was reset during the demo, the run itself is a normal run')"
         >
             TR
         </span>

@@ -82,7 +82,8 @@ class DemoAssignmentContext
             return $demo->gametype;
         }
 
-        return 'run_' . strtolower($demo->physics ?? 'vq3');
+        // `VQ3.TR` (a timereset run) is still a run_vq3 record; drop the suffix.
+        return 'run_' . preg_replace('/\..*$/', '', strtolower($demo->physics ?? 'vq3'));
     }
 
     public function stripQ3Colors(string $text): string

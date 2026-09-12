@@ -3785,6 +3785,7 @@
     "Time matches exactly.": "Час точно збігається.",
     "Time:": "Час:",
     "Timer": "Таймер",
+    "Timereset - the timer was reset during the demo, the run itself is a normal run": "Timereset - під час демки таймер було скинуто, сам забіг звичайний",
     "Times stay hidden until the round closes, so nobody can be handed the time to beat.": "Часи приховані до кінця раунду, щоб нікому не видати час, який треба побити.",
     "Timescale modified": "Timescale змінено",
     "Title": "Заголовок",

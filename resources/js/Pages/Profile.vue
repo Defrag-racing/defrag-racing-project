@@ -2715,7 +2715,7 @@
                                     <!-- Background Map Thumbnail -->
                                     <div v-if="record.map" class="absolute inset-0 transition-all duration-500 first:rounded-t-[10px] last:rounded-b-[10px]">
                                         <img
-                                            :src="`/storage/${record.map.thumbnail}`"
+                                            :src="record.map.thumbnail ? `/storage/${record.map.thumbnail}` : '/images/unknown.jpg'"
                                             class="w-full h-full object-cover scale-110 blur-xl group-hover:blur-none group-hover:scale-105 opacity-0 group-hover:opacity-100 transition-all duration-500"
                                             :alt="record.mapname"
                                             onerror="this.src='/images/unknown.jpg'"
@@ -2849,7 +2849,7 @@
                                     <!-- Background Map Thumbnail -->
                                     <div v-if="record.map" class="absolute inset-0 transition-all duration-500 first:rounded-t-[10px] last:rounded-b-[10px]">
                                         <img
-                                            :src="`/storage/${record.map.thumbnail}`"
+                                            :src="record.map.thumbnail ? `/storage/${record.map.thumbnail}` : '/images/unknown.jpg'"
                                             class="w-full h-full object-cover scale-110 blur-xl group-hover:blur-none group-hover:scale-105 opacity-0 group-hover:opacity-100 transition-all duration-500"
                                             :alt="record.mapname"
                                             onerror="this.src='/images/unknown.jpg'"
@@ -3459,7 +3459,7 @@
                           :href="`/maps/${encodeURIComponent(map.name)}`"
                           class="group relative bg-white/5 rounded-lg p-3 shadow-lg border border-white/10 hover:border-yellow-500/50 transition-all hover:bg-yellow-500/10">
                         <div class="relative overflow-hidden rounded-md mb-2">
-                            <img :src="`/storage/${map.thumbnail}`"
+                            <img :src="map.thumbnail ? `/storage/${map.thumbnail}` : '/images/unknown.jpg'"
                                  onerror="this.src='/images/unknown.jpg'"
                                  class="w-full h-24 object-cover group-hover:scale-110 transition-transform duration-300"
                                  :alt="map.name" />

@@ -376,7 +376,7 @@
                         <!-- Latest Model -->
                         <Link v-if="latestModel" :href="`/models/${latestModel.id}`" class="block group">
                             <div class="relative rounded-lg overflow-hidden aspect-[16/9] bg-gray-900">
-                                <img :src="`/storage/${latestModel.gesture_gif || latestModel.idle_gif || latestModel.thumbnail}`" :alt="latestModel.name" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                                <img :src="(latestModel.gesture_gif || latestModel.idle_gif || latestModel.thumbnail) ? `/storage/${latestModel.gesture_gif || latestModel.idle_gif || latestModel.thumbnail}` : '/images/unknown.jpg'" :alt="latestModel.name" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                                 <div class="absolute bottom-0 left-0 right-0 p-2">
                                     <div class="text-[10px] text-purple-400 font-bold uppercase">{{ $t('Latest Model') }}</div>

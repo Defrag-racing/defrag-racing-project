@@ -14,7 +14,7 @@
                 <div>
                     <div class="w-full flex items-center flex-nowrap">
                         <div class="mr-4 flex items-center">
-                            <img class="h-10 w-10 rounded-full object-cover" :src="'/storage/' + item.clan.image">
+                            <img class="h-10 w-10 rounded-full object-cover" :src="item.clan.image ? '/storage/' + item.clan.image : '/images/null.jpg'">
                             
                             <div class="ml-4">
                                 <Link class="flex rounded-md" :href="route('clans.show', item.clan.id)">

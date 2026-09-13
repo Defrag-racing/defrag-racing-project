@@ -38,6 +38,27 @@ class RememberIntendedUrl
         'email/verify',
     ];
 
+    /**
+     * Path prefixes that are not pages at all. They matter because Laravel
+     * records the previous URL for every non-ajax GET that reaches it, an
+     * `<img>` whose src came out `/storage/null` included - and the browser
+     * sends no Referer when a link is opened from an email client, so that
+     * asset 404 is what `url()->previous()` then answers with. A new player
+     * verified his address on 13 Sep 2026 and landed on `/storage/null`.
+     */
+    private const NOT_A_PAGE = [
+        'storage',
+        'build',
+        'images',
+        'img',
+        'fonts',
+        'css',
+        'js',
+        'api',
+        'livewire',
+        'vendor',
+    ];
+
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->isMethod('GET') && ! $request->session()->has('url.intended')) {
@@ -52,9 +73,10 @@ class RememberIntendedUrl
     }
 
     /**
-     * Only same-host pages, and never an auth page. `url()->previous()` falls
-     * back to the app root when there is no referrer at all, which is what we
-     * would have done anyway - so storing it costs nothing and saves a branch.
+     * Only same-host pages: not an auth page, not an asset, not a file.
+     * `url()->previous()` falls back to the app root when there is no referrer
+     * at all, which is what we would have done anyway - so storing it costs
+     * nothing and saves a branch.
      */
     private function isWorthReturningTo(Request $request, string $previous): bool
     {
@@ -70,6 +92,17 @@ class RememberIntendedUrl
             if ($path === $skip || str_starts_with($path, $skip . '/')) {
                 return false;
             }
+        }
+
+        foreach (self::NOT_A_PAGE as $prefix) {
+            if ($path === $prefix || str_starts_with($path, $prefix . '/')) {
+                return false;
+            }
+        }
+
+        // A file, not a page: a thumbnail, a stylesheet, a favicon.
+        if (preg_match('/\.[A-Za-z0-9]{1,5}$/', $path)) {
+            return false;
         }
 
         return true;

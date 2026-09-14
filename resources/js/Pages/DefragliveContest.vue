@@ -512,6 +512,9 @@ const statusColor = (s) => ({
                                 <template v-for="(p, pi) in w.picks" :key="pi">
                                     <span v-if="pi > 0" class="text-gray-500">·</span>
                                     <span class="inline-flex items-baseline gap-x-1.5">
+                                        <!-- One row per person: two of the three
+                                             tickets can be the same holder's. -->
+                                        <span v-if="p.count > 1" class="text-purple-300 font-semibold" :title="$t('This player was drawn :count times', { count: p.count })">{{ p.count }}×</span>
                                         <span v-html="q3tohtml(p.name)"></span>
                                         <span>{{ $tc(':count ticket|:count tickets', p.tickets) }}</span>
                                         <span v-if="p.winner" class="text-emerald-400 font-semibold">{{ $t('Winner') }}</span>

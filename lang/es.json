@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Wireframe DESACTIVADO",
     "📐 Wireframe ON": "📐 Wireframe ACTIVADO",
     "🔄 Auto-Rotate OFF": "🔄 Rotación automática DESACTIVADA",
-    "🔄 Auto-Rotate ON": "🔄 Rotación automática ACTIVADA"
+    "🔄 Auto-Rotate ON": "🔄 Rotación automática ACTIVADA",
+    "This player was drawn :count times": "Este jugador salió :count veces"
 }

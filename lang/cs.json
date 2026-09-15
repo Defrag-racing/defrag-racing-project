@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Drátěný model VYP",
     "📐 Wireframe ON": "📐 Drátěný model ZAP",
     "🔄 Auto-Rotate OFF": "🔄 Automatické otáčení VYP",
-    "🔄 Auto-Rotate ON": "🔄 Automatické otáčení ZAP"
+    "🔄 Auto-Rotate ON": "🔄 Automatické otáčení ZAP",
+    "This player was drawn :count times": "Tento hráč má :count vytažené losy"
 }

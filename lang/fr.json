@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Filaire DÉSACTIVÉ",
     "📐 Wireframe ON": "📐 Filaire ACTIVÉ",
     "🔄 Auto-Rotate OFF": "🔄 Auto-rotation DÉSACTIVÉE",
-    "🔄 Auto-Rotate ON": "🔄 Auto-rotation ACTIVÉE"
+    "🔄 Auto-Rotate ON": "🔄 Auto-rotation ACTIVÉE",
+    "This player was drawn :count times": "Ce joueur a été tiré :count fois"
 }

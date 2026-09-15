@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Drahtmodell AUS",
     "📐 Wireframe ON": "📐 Drahtmodell EIN",
     "🔄 Auto-Rotate OFF": "🔄 Auto-Rotation AUS",
-    "🔄 Auto-Rotate ON": "🔄 Auto-Rotation EIN"
+    "🔄 Auto-Rotate ON": "🔄 Auto-Rotation EIN",
+    "This player was drawn :count times": "Dieser Spieler wurde :count-mal gezogen"
 }

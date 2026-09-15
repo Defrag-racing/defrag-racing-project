@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Каркас ВИМК",
     "📐 Wireframe ON": "📐 Каркас УВІМК",
     "🔄 Auto-Rotate OFF": "🔄 Автообертання ВИМК",
-    "🔄 Auto-Rotate ON": "🔄 Автообертання УВІМК"
+    "🔄 Auto-Rotate ON": "🔄 Автообертання УВІМК",
+    "This player was drawn :count times": "У цього гравця витягнуто :count квитки"
 }

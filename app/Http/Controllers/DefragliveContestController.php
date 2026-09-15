@@ -116,14 +116,7 @@ class DefragliveContestController extends Controller
                     'winner_tickets' => (int) $c->winner_tickets,
                     'total_tickets' => (int) $c->total_tickets,
                     // Best-of-three picks (null before 2026-09-12: one ticket).
-                    'picks' => $c->draw_picks
-                        ? array_map(fn ($p) => [
-                            'ticket' => (int) $p['ticket'],
-                            'name' => $p['name'],
-                            'tickets' => (int) $p['tickets'],
-                            'winner' => (int) $p['ticket'] === (int) $c->winning_ticket,
-                        ], $c->draw_picks)
-                        : null,
+                    'picks' => $c->draw_picks ? $this->groupPicks($c) : null,
                 ]),
             'hallOfFame' => $this->hallOfFame($service),
             // Loaded on demand (Inertia lazy prop): the page requests it via a
@@ -184,6 +177,31 @@ class DefragliveContestController extends Controller
         });
 
         return response()->json($data)->header('Cache-Control', 'no-store');
+    }
+
+    /**
+     * The drawn picks with one row per person, in draw order. Three distinct
+     * tickets can belong to the same holder, and the same name listed twice
+     * read like a bug; `count` says how many of the tickets were theirs.
+     */
+    private function groupPicks(DefragliveContest $c): array
+    {
+        $rows = [];
+        foreach ($c->draw_picks as $p) {
+            $key = ($p['mdd_id'] ?? '') . '|' . ($p['user_id'] ?? '') . '|' . $p['name'];
+            $rows[$key] ??= [
+                'name' => $p['name'],
+                'tickets' => (int) $p['tickets'],
+                'count' => 0,
+                'winner' => false,
+            ];
+            $rows[$key]['count']++;
+            if ((int) $p['ticket'] === (int) $c->winning_ticket) {
+                $rows[$key]['winner'] = true;
+            }
+        }
+
+        return array_values($rows);
     }
 
     /**

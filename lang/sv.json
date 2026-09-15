@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Wireframe AV",
     "📐 Wireframe ON": "📐 Wireframe PÅ",
     "🔄 Auto-Rotate OFF": "🔄 Automatisk rotation AV",
-    "🔄 Auto-Rotate ON": "🔄 Automatisk rotation PÅ"
+    "🔄 Auto-Rotate ON": "🔄 Automatisk rotation PÅ",
+    "This player was drawn :count times": "Den här spelaren drogs :count gånger"
 }

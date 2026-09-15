@@ -4400,5 +4400,6 @@
     "📐 Wireframe OFF": "📐 Каркас ВЫКЛ",
     "📐 Wireframe ON": "📐 Каркас ВКЛ",
     "🔄 Auto-Rotate OFF": "🔄 Автовращение ВЫКЛ",
-    "🔄 Auto-Rotate ON": "🔄 Автовращение ВКЛ"
+    "🔄 Auto-Rotate ON": "🔄 Автовращение ВКЛ",
+    "This player was drawn :count times": "У этого игрока вытянуто :count билета"
 }

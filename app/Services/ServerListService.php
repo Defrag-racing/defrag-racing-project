@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\MddProfile;
 use App\Models\Record;
 use App\Models\Server;
 use App\Models\User;
@@ -132,30 +133,30 @@ class ServerListService
 
         $servers = $this->sortServers($servers);
 
-        // Prefer linked user's profile country over whatever country was
+        // Prefer the holder's profile country over whatever country was
         // stamped on the underlying record (which can be stale after a
-        // location change).
-        $besttimeUrls = $servers->pluck('besttime_url')->filter()->unique()->values()->all();
-        if (! empty($besttimeUrls)) {
-            $userCountries = User::whereIn('id', $besttimeUrls)
-                ->pluck('country', 'id')
-                ->toArray();
+        // location change): the linked account's if there is one, else the
+        // account that carries that q3df id, else the q3df profile's. The
+        // account id and the q3df id are looked up in their own columns -
+        // they used to share one, and an unlinked holder's q3df id borrowed
+        // the flag of whichever account had that number.
+        $userIds = $servers->pluck('besttime_url')->filter()->unique()->values()->all();
+        $mddIds = $servers->pluck('besttime_mdd_id')->filter()->unique()->values()->all();
 
-            $mddCountries = User::whereIn('mdd_id', $besttimeUrls)
-                ->pluck('country', 'mdd_id')
-                ->toArray();
+        $userCountries = empty($userIds) ? [] : User::whereIn('id', $userIds)->pluck('country', 'id')->toArray();
+        $mddUserCountries = empty($mddIds) ? [] : User::whereIn('mdd_id', $mddIds)->pluck('country', 'mdd_id')->toArray();
+        $mddCountries = empty($mddIds) ? [] : MddProfile::whereIn('id', $mddIds)->pluck('country', 'id')->toArray();
 
-            $servers->each(function ($server) use ($userCountries, $mddCountries) {
-                if (! $server->besttime_url) {
-                    return;
-                }
+        $servers->each(function ($server) use ($userCountries, $mddUserCountries, $mddCountries) {
+            $country = $userCountries[$server->besttime_url] ?? null;
+            if ($server->besttime_mdd_id) {
+                $country ??= $mddUserCountries[$server->besttime_mdd_id] ?? $mddCountries[$server->besttime_mdd_id] ?? null;
+            }
 
-                $userCountry = $userCountries[$server->besttime_url] ?? $mddCountries[$server->besttime_url] ?? null;
-                if ($userCountry && $userCountry !== '_404' && $userCountry !== 'XX') {
-                    $server->besttime_country = $userCountry;
-                }
-            });
-        }
+            if ($country && $country !== '_404' && $country !== 'XX') {
+                $server->besttime_country = $country;
+            }
+        });
 
         // Visitor location (Cloudflare headers) for the per-server ping
         // estimate. Resolved once; null when the request didn't pass through

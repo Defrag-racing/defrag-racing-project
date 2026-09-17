@@ -9,6 +9,7 @@ use App\External\Q3DFServers;
 use App\Models\Server;
 use App\Models\OnlinePlayer;
 use App\Models\Record;
+use App\Models\MddProfile;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -138,6 +139,15 @@ class ScrapeServers extends Command
     }
 
 
+    /**
+     * A country worth showing a flag for, or null for the placeholders the
+     * scrape leaves behind when it does not know.
+     */
+    private static function validCountry(?string $country): ?string
+    {
+        return ($country && $country !== '_404' && $country !== 'XX') ? $country : null;
+    }
+
     function get_gametype($physics) {
         if ($physics == 'cpm' || $physics == 'vq3') {
             return 'run_' . $physics;
@@ -182,16 +192,21 @@ class ScrapeServers extends Command
 
         if ($bestTime) {
             $server->besttime_name = $bestTime->user ? $bestTime->user->name : $bestTime->name;
-            $server->besttime_country = ($bestTime->user && $bestTime->user->country && $bestTime->user->country !== '_404' && $bestTime->user->country !== 'XX')
-                ? $bestTime->user->country
-                : $bestTime->country;
+            $server->besttime_country = self::validCountry($bestTime->user?->country)
+                ?? self::validCountry(MddProfile::find($bestTime->mdd_id)?->country)
+                ?? $bestTime->country;
             $server->besttime_time = $bestTime->time;
-            $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;
+            // The account id and the q3df id are two different numbers and
+            // used to share this one column, so an unlinked holder's q3df
+            // id was read as somebody else's account. Each has its own now.
+            $server->besttime_url = $bestTime->user?->id;
+            $server->besttime_mdd_id = $bestTime->mdd_id;
         } else {
             $server->besttime_name = NULL;
             $server->besttime_country = '_404';
             $server->besttime_time = 0;
             $server->besttime_url = '';
+            $server->besttime_mdd_id = null;
         }
 
         $server->save();
@@ -267,16 +282,21 @@ class ScrapeServers extends Command
 
         if ($bestTime) {
             $server->besttime_name = $bestTime->user ? $bestTime->user->name : $bestTime->name;
-            $server->besttime_country = ($bestTime->user && $bestTime->user->country && $bestTime->user->country !== '_404' && $bestTime->user->country !== 'XX')
-                ? $bestTime->user->country
-                : $bestTime->country;
+            $server->besttime_country = self::validCountry($bestTime->user?->country)
+                ?? self::validCountry(MddProfile::find($bestTime->mdd_id)?->country)
+                ?? $bestTime->country;
             $server->besttime_time = $bestTime->time;
-            $server->besttime_url = $bestTime->user_id ?? $bestTime->mdd_id;
+            // The account id and the q3df id are two different numbers and
+            // used to share this one column, so an unlinked holder's q3df
+            // id was read as somebody else's account. Each has its own now.
+            $server->besttime_url = $bestTime->user?->id;
+            $server->besttime_mdd_id = $bestTime->mdd_id;
         } else {
             $server->besttime_name = NULL;
             $server->besttime_country = '_404';
             $server->besttime_time = 0;
             $server->besttime_url = '';
+            $server->besttime_mdd_id = null;
         }
 
         $server->save();

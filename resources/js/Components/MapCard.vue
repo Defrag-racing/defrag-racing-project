@@ -161,8 +161,11 @@
                     </div>
                 </div>
 
-                <!-- Items Overlay - Bottom Right -->
-                <div class="absolute bottom-2 right-2 flex flex-col gap-0.5">
+                <!-- Items Overlay - Bottom Right. Pages that need a badge of
+                     their own on the card (a queue number, say) drop it in
+                     the slot so it stacks with the item rows instead of
+                     sitting on top of them or of the physics badge. -->
+                <div class="absolute bottom-2 right-2 flex flex-col gap-0.5 items-end">
                     <div v-if="weaponsList.length > 0" class="flex flex-wrap justify-end gap-0.5 bg-black/70 rounded px-1 py-0.5">
                         <div v-for="weapon in weaponsList" :key="weapon" :title="getWeaponName(weapon)" :class="`sprite-items sprite-${weapon} w-3 h-3`"></div>
                     </div>
@@ -172,6 +175,7 @@
                     <div v-if="functionsList.length > 0" class="flex flex-wrap justify-end gap-0.5 bg-black/70 rounded px-1 py-0.5">
                         <div v-for="func in functionsList" :key="func" :title="getFunctionName(func)" :class="`sprite-items sprite-${func} w-3 h-3`"></div>
                     </div>
+                    <slot name="bottom-right" />
                 </div>
             </div>
 

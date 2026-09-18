@@ -78,7 +78,7 @@ class CompsRoundReview extends Page
     public function round(): ?CompRound
     {
         return $this->roundId
-            ? CompRound::with(['comp', 'maps.map'])->find($this->roundId)
+            ? CompRound::with(['comp', 'maps.map', 'candidates.map'])->find($this->roundId)
             : null;
     }
 
@@ -226,7 +226,12 @@ class CompsRoundReview extends Page
      */
     private function demosOfTheRoundsMaps(CompRound $round): Collection
     {
-        $maps = $round->maps
+        // A round still being voted on has no winning map yet, only its
+        // candidates. The guard already holds demos on every candidate, so
+        // those are the maps to look at until the ballot closes.
+        $source = $round->maps->isNotEmpty() ? $round->maps : $round->candidates;
+
+        $maps = $source
             ->map(fn ($m) => mb_strtolower(trim((string) $m->map?->name)))
             ->filter()
             ->unique()
@@ -268,7 +273,10 @@ class CompsRoundReview extends Page
             return 'unreadable';
         }
 
-        return $round->status === 'active' ? $guard->noticeKind($demo) : 'not_entered';
+        // Voting, locked and active are all rounds of right now, so the
+        // guard's answer is still true for them. Only a finished round gets
+        // the plain "not entered".
+        return $round->status === 'finished' ? 'not_entered' : $guard->noticeKind($demo);
     }
 
     /**

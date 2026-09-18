@@ -37,6 +37,10 @@
                                 {{ $roundMap->map?->name ?? '-' }}
                             </span>
                         @endforeach
+                        @if($round->maps->isEmpty() && $round->candidates->isNotEmpty())
+                            <span class="font-bold uppercase">Candidates</span>
+                            {{ $round->candidates->map(fn ($c) => $c->map?->name)->filter()->implode(', ') }}
+                        @endif
                     </div>
                 @endif
             </div>

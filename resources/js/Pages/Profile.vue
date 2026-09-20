@@ -4,6 +4,7 @@
     import { Head, router, Link, usePage } from '@inertiajs/vue3';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import ActivityHeatmap from '@/Components/ActivityHeatmap.vue';
+    import ProgressionChart from '@/Components/ProgressionChart.vue';
     import ProfileCreatorTab from '@/Components/ProfileCreatorTab.vue';
     import ProfileModelerTab from '@/Components/ProfileModelerTab.vue';
     import ProfileLayoutForm from '@/Pages/Profile/Partials/ProfileLayoutForm.vue';
@@ -2382,6 +2383,13 @@
                     :isNew="isOwnProfile && isNewSection('activity_history')"
                     :customizeUrl="route('settings.show') + '?tab=customize'"
                 />
+                <!-- Rides with the activity history: same data, records by
+                     date, read for level rather than for volume. Not even
+                     mounted for a locked viewer - the endpoint answers 403
+                     and there is no stand-in data to draw. -->
+                <div v-if="!profileLocked" class="mt-6">
+                    <ProgressionChart :mddId="profile?.id || profile?.mdd_id" />
+                </div>
             </div>
 
             <!-- Rendered Videos -->

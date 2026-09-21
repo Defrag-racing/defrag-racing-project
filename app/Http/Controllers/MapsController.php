@@ -15,6 +15,7 @@ use App\Models\MddProfile;
 use App\Models\RecordFlag;
 use App\Models\PlayerMapScore;
 use App\Models\MapDifficultyRating;
+use App\Models\RecordHistory;
 
 use App\Filters\MapFilters;
 use App\Services\NameMatcher;
@@ -1134,6 +1135,11 @@ class MapsController extends Controller
         $this->attachMapScores($cpmRecords, $map->name, 'cpm', $gametype);
         $this->attachMapScores($vq3Records, $map->name, 'vq3', $gametype);
 
+        // How many times each player improved on this map, so a row can offer
+        // its own history the way the profile does.
+        $this->attachRecordHistoryCounts($cpmRecords, $map->name, $cpmGametype);
+        $this->attachRecordHistoryCounts($vq3Records, $map->name, $vq3Gametype);
+
         // Redirect clamps must respect every source that shares the page
         // parameter - main records, oldtop, and Demos Top (grouped offline).
         // Old logic compared against $cpmRecords->lastPage() only, so a map
@@ -1879,6 +1885,40 @@ class MapsController extends Controller
                 return $group->sortByDesc('flag_count')->first();
             })->values()->toArray();
         }
+    }
+
+    /**
+     * The number of earlier times each player on this leaderboard set here -
+     * the scrape moves a beaten time into record_histories every time they
+     * improve. One grouped query for the page, and the row asks for the
+     * times themselves only when somebody opens it.
+     */
+    private function attachRecordHistoryCounts($records, string $mapname, string $gametype): void
+    {
+        if (!$records || $records->isEmpty()) return;
+
+        // Unified-leaderboard mode mixes plain stdClass rows in, and those
+        // carry no mdd_id; they simply get no count.
+        $mddIds = $records->getCollection()
+            ->map(fn ($r) => $r->mdd_id ?? null)
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+        if (empty($mddIds)) return;
+
+        $counts = RecordHistory::where('mapname', $mapname)
+            ->where('gametype', $gametype)
+            ->whereIn('mdd_id', $mddIds)
+            ->groupBy('mdd_id')
+            ->selectRaw('mdd_id, COUNT(*) AS n')
+            ->pluck('n', 'mdd_id');
+
+        $records->getCollection()->transform(function ($record) use ($counts) {
+            $mddId = $record->mdd_id ?? null;
+            $record->history_count = $mddId ? (int) ($counts[$mddId] ?? 0) : 0;
+            return $record;
+        });
     }
 
     private function attachMapScores($records, string $mapname, string $physics, string $mode): void

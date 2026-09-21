@@ -3,6 +3,7 @@
     import { Head, Link, router } from '@inertiajs/vue3';
     import Pagination from '@/Components/Basic/Pagination.vue';
     import { t } from '@/utils/i18n';
+    import { useDeferredProps } from '@/utils/deferredProps';
 
     const props = defineProps({
         stats: Object,
@@ -32,29 +33,29 @@
         }, 300);
     };
 
-    const videosLoaded = ref(false);
+    const videosLoaded = ref(!!props.videos);
+
+    // The list arrives in a second request, and comes again whenever the
+    // page is re-rendered without it - a language switch, say.
+    useDeferredProps(() => !props.videos, (done) => {
+        const start = Date.now();
+        router.reload({
+            only: ['videos', 'currentlyRendering', 'pendingQueue', 'pendingTotal'],
+            onFinish: () => {
+                done();
+                const remaining = 400 - (Date.now() - start);
+                if (remaining > 0) {
+                    setTimeout(() => { videosLoaded.value = true; }, remaining);
+                } else {
+                    videosLoaded.value = true;
+                }
+            }
+        });
+    });
 
     // Auto-refresh live status every 15 seconds
     let refreshInterval = null;
     onMounted(() => {
-        // Lazy load video data
-        if (!props.videos) {
-            const start = Date.now();
-            router.reload({
-                only: ['videos', 'currentlyRendering', 'pendingQueue', 'pendingTotal'],
-                onFinish: () => {
-                    const remaining = 400 - (Date.now() - start);
-                    if (remaining > 0) {
-                        setTimeout(() => { videosLoaded.value = true; }, remaining);
-                    } else {
-                        videosLoaded.value = true;
-                    }
-                }
-            });
-        } else {
-            videosLoaded.value = true;
-        }
-
         if (props.currentlyRendering || (props.pendingQueue && props.pendingQueue.length > 0)) {
             refreshInterval = setInterval(() => {
                 router.reload({ only: ['currentlyRendering', 'pendingQueue', 'pendingTotal', 'demomeOnline', 'videos', 'stats'] });

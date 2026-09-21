@@ -50,21 +50,24 @@
 
     const recordsLoaded = ref(!!props.vq3Records || !!props.cpmRecords);
 
-    onMounted(() => {
-        if (!props.vq3Records && !props.cpmRecords) {
-            const start = Date.now();
-            router.reload({
-                only: ['vq3Records', 'cpmRecords'],
-                onFinish: () => {
-                    const remaining = 400 - (Date.now() - start);
-                    if (remaining > 0) {
-                        setTimeout(() => { recordsLoaded.value = true; }, remaining);
-                    } else {
-                        recordsLoaded.value = true;
-                    }
+    // The lists arrive in a second request, and come again whenever the page
+    // is re-rendered without them - a language switch, say.
+    useDeferredProps(() => !props.vq3Records && !props.cpmRecords, (done) => {
+        const start = Date.now();
+        recordsLoaded.value = false;
+
+        router.reload({
+            only: ['vq3Records', 'cpmRecords'],
+            onFinish: () => {
+                done();
+                const remaining = 400 - (Date.now() - start);
+                if (remaining > 0) {
+                    setTimeout(() => { recordsLoaded.value = true; }, remaining);
+                } else {
+                    recordsLoaded.value = true;
                 }
-            });
-        }
+            }
+        });
     });
 
     const physics = ref('all');

@@ -15,6 +15,7 @@ import LauncherBanner from '@/Components/LauncherBanner.vue';
 import DemoDetails from '@/Components/DemoDetails.vue';
 import DemoPhysicsBadges from '@/Components/DemoPhysicsBadges.vue';
 import { t } from '@/utils/i18n';
+import { useDeferredProps } from '@/utils/deferredProps';
 
 const $page = usePage();
 
@@ -1107,7 +1108,7 @@ const checkForProcessingDemos = async () => {
 
 // Lifecycle hooks
 // Lifecycle hooks are imported at the top of this <script setup>
-const demosLoading = ref(true);
+const demosLoading = ref(!props.userDemos && !props.publicDemos);
 
 onMounted(() => {
     checkForProcessingDemos();
@@ -1117,26 +1118,29 @@ onMounted(() => {
     }
     document.addEventListener('dragover', openUploadOnDrag);
 
-    if (!props.userDemos && !props.publicDemos) {
-        const start = Date.now();
-        // Both counts, because both sit on the tab buttons. Only one list,
-        // because only one list is on screen.
-        router.reload({
-            only: activeList.value === 'mine'
-                ? ['userDemos', 'demoCounts', 'browseCounts']
-                : ['publicDemos', 'demoCounts', 'browseCounts'],
-            onFinish: () => {
-                const remaining = 400 - (Date.now() - start);
-                if (remaining > 0) {
-                    setTimeout(() => { demosLoading.value = false; }, remaining);
-                } else {
-                    demosLoading.value = false;
-                }
+});
+
+// The list arrives in a second request, and comes again whenever the page
+// is re-rendered without it - a language switch, say.
+useDeferredProps(() => !props.userDemos && !props.publicDemos, (done) => {
+    const start = Date.now();
+    demosLoading.value = true;
+    // Both counts, because both sit on the tab buttons. Only one list,
+    // because only one list is on screen.
+    router.reload({
+        only: activeList.value === 'mine'
+            ? ['userDemos', 'demoCounts', 'browseCounts']
+            : ['publicDemos', 'demoCounts', 'browseCounts'],
+        onFinish: () => {
+            done();
+            const remaining = 400 - (Date.now() - start);
+            if (remaining > 0) {
+                setTimeout(() => { demosLoading.value = false; }, remaining);
+            } else {
+                demosLoading.value = false;
             }
-        });
-    } else {
-        demosLoading.value = false;
-    }
+        }
+    });
 });
 
 onUnmounted(() => {

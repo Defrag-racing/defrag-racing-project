@@ -15,6 +15,7 @@
     import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 import { t } from '@/utils/i18n';
+import { useDeferredProps } from '@/utils/deferredProps';
 import PlayerSelectDefrag from '@/Components/Basic/PlayerSelectDefrag2.vue';
     import { usePage } from '@inertiajs/vue3';
     import { router } from '@inertiajs/vue3';
@@ -38,25 +39,24 @@ import PlayerSelectDefrag from '@/Components/Basic/PlayerSelectDefrag2.vue';
         currentDir: String
     });
 
-    const clansLoaded = ref(false);
+    const clansLoaded = ref(!!props.clans);
 
-    onMounted(() => {
-        if (!props.clans) {
-            const start = Date.now();
-            router.reload({
-                only: ['clans'],
-                onFinish: () => {
-                    const remaining = 600 - (Date.now() - start);
-                    if (remaining > 0) {
-                        setTimeout(() => { clansLoaded.value = true; }, remaining);
-                    } else {
-                        clansLoaded.value = true;
-                    }
+    // The list arrives in a second request, and comes again whenever the
+    // page is re-rendered without it - a language switch, say.
+    useDeferredProps(() => !props.clans, (done) => {
+        const start = Date.now();
+        router.reload({
+            only: ['clans'],
+            onFinish: () => {
+                done();
+                const remaining = 600 - (Date.now() - start);
+                if (remaining > 0) {
+                    setTimeout(() => { clansLoaded.value = true; }, remaining);
+                } else {
+                    clansLoaded.value = true;
                 }
-            });
-        } else {
-            clansLoaded.value = true;
-        }
+            }
+        });
     });
 
     const sortLoading = ref(false);

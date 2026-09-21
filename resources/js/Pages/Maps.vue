@@ -6,6 +6,7 @@
     import MapFiltersSidebar from '@/Components/MapFiltersSidebar.vue';
     import axios from 'axios';
     import { t } from '@/utils/i18n';
+    import { useDeferredProps } from '@/utils/deferredProps';
 
     const props = defineProps({
         maps: Object,
@@ -146,7 +147,7 @@
         });
     };
 
-    const mapsLoaded = ref(false);
+    const mapsLoaded = ref(!!props.maps);
 
     const onSidebarSearch = (filters) => {
         // Clean empty values
@@ -229,18 +230,20 @@
         }
     };
 
+    // The list arrives in a second request, and comes again whenever the
+    // page is re-rendered without it - a language switch, say.
+    useDeferredProps(() => !props.maps, (done) => {
+        router.reload({
+            only: ['maps'],
+            onFinish: () => {
+                mapsLoaded.value = true;
+                done();
+            },
+        });
+    });
+
     onMounted(() => {
         fetchTags();
-
-        // Lazy load maps data
-        if (!props.maps) {
-            router.reload({
-                only: ['maps'],
-                onFinish: () => { mapsLoaded.value = true; }
-            });
-        } else {
-            mapsLoaded.value = true;
-        }
 
         // Initialize selected tags from query params
         if (props.queries?.tags) {

@@ -95,7 +95,7 @@ class RankingController extends Controller
         }
 
         $paginator = $query
-            ->with('user')
+            ->with(['user', 'mddProfile'])
             ->where('physics', $physics)
             ->where('mode', $gametype)
             ->where('category', $category)
@@ -130,7 +130,7 @@ class RankingController extends Controller
             ->where('physics', $physics)
             ->where('mode', $gametype)
             ->where('category', $category)
-            ->with('user')
+            ->with(['user', 'mddProfile'])
             ->first();
     }
 

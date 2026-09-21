@@ -3,6 +3,7 @@
     import Rating from '@/Components/Rating.vue';
     import AmnestyBanner from '@/Components/AmnestyBanner.vue';
     import Pagination from '@/Components/Basic/Pagination.vue';
+    import IconSelect from '@/Components/Basic/IconSelect.vue';
     import { watchEffect, ref, computed, onMounted, onUnmounted } from 'vue';
     import { t } from '@/utils/i18n';
 
@@ -11,6 +12,10 @@
         cpmRatings: Object,
         myVq3Rating: Object,
         myCpmRating: Object,
+        countries: {
+            type: Array,
+            default: () => [],
+        },
         lastRecalculation: String,
     });
 
@@ -55,6 +60,32 @@
         { value: 'bfg', label: 'BFG', icon: '💥', image: '/images/weapons/iconw_bfg.svg', color: 'blue' },
     ]);
 
+    // One country at a time, or the whole board. Read from the address so a
+    // filtered ranking can be linked to.
+    const country = ref(new URLSearchParams(window.location.search).get('country')?.toUpperCase() || '');
+
+    const countryName = (code) => {
+        try {
+            return new Intl.DisplayNames([document.documentElement.lang || 'en'], { type: 'region' }).of(code) || code;
+        } catch (e) {
+            return code;
+        }
+    };
+
+    // By name in the reader's language, not by code: "Germany" and
+    // "Allemagne" do not sort the same way, and the list is read, not typed.
+    const countryOptions = computed(() => [
+        { value: '', label: t('All countries') },
+        ...[...props.countries]
+            .map((c) => ({ value: c.code, label: countryName(c.code), flag: c.code, count: c.players }))
+            .sort((a, b) => a.label.localeCompare(b.label, document.documentElement.lang || 'en')),
+    ]);
+
+    const selectCountry = (code) => {
+        country.value = code || '';
+        reloadRankings();
+    };
+
     const reloadRankings = () => {
         ratingsLoaded.value = false;
         router.reload({
@@ -63,6 +94,7 @@
                 gametype: gametype.value,
                 rankingtype: rankingtype.value,
                 category: category.value,
+                country: country.value,
             },
             onFinish: () => {
                 ratingsLoaded.value = true;
@@ -129,6 +161,7 @@
                 gametype: gametype.value,
                 rankingtype: rankingtype.value,
                 category: category.value,
+                country: country.value,
             },
         })
 
@@ -259,6 +292,18 @@
                                     {{ rankingtype === 'active_players' ? $t('Players who set a record in this physics within the last 3 calendar months') : $t('All players who have ever set a record in this physics') }}
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Country. A select rather than a row of chips:
+                             there are over a hundred of them, and each one
+                             wants its flag beside the name. -->
+                        <div v-if="countries.length" class="bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-2.5 w-full sm:w-auto">
+                            <IconSelect
+                                :model-value="country"
+                                :options="countryOptions"
+                                :label="$t('Country')"
+                                width-class="w-48"
+                                @change="selectCountry" />
                         </div>
 
                         <!-- Categories & Gametypes -->

@@ -33,10 +33,15 @@
     const onDateMove = (e) => { dateTooltipPos.value = { x: e.clientX, y: e.clientY }; };
     const onDateLeave = () => { showDateTooltip.value = false; };
 
+    // The linked account first, then the q3df profile: a player who never
+    // linked an account here still has a country there, and the row used to
+    // fall through to the placeholder flag for all of them.
     const bestratingCountry = computed(() => {
-        let country = props.rating.user?.country ?? props.rating.country;
+        const country = props.rating.user?.country
+            || props.rating.mdd_profile?.country
+            || props.rating.country;
 
-        return (country == 'XX') ? '_404' : country;
+        return (!country || country === 'XX') ? '_404' : country;
     });
 
     const getRoute = computed(() => {

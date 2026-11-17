@@ -60,6 +60,10 @@ return [
         'api_token' => env('DEMOME_API_TOKEN'),
     ],
 
+    'q3df' => [
+        'key' => env('Q3DF_API_KEY'),
+    ],
+
     'defraglive' => [
         // Shared bearer token the DefragLive WebSocket bridge uses to POST
         // chat / serverstate into the web (DefragliveIngestController).

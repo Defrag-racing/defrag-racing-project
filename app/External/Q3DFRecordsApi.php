@@ -5,31 +5,45 @@ namespace App\External;
 use Carbon\Carbon;
 
 class Q3DFRecordsApi {
-    protected $url = "https://q3df.org/api/getLastRecords";
+    public $url = "https://q3df.org/api/getRecords";
 
-    public function getMddRecords() {
-        $ch = curl_init($this->url);
-        
+    public $timeout = 3;
+
+    public function getMddRecords($page = 0, $per_page = 100, $api_key = null) {
+        $params = [
+            'page' => intval($page),
+            'per_page' => intval($per_page),
+        ];
+
+        if ($api_key) {
+            $params['key'] = $api_key;
+        }
+
+        $ch = curl_init($this->url . '?' . http_build_query($params));
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         $response = curl_exec($ch);
+        $response_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $info = curl_getinfo($ch);
 
         curl_close($ch);
 
-        if ($response === false) {
-            return [];
+        // null is a failed request. An empty data list is a real last page.
+        if ($response === false || $response_status !== 200) {
+            return null;
         }
 
-        $data = json_decode($response, true);
-        if (!$data || !isset($data['data'])) {
-            return [];
+        $json = json_decode($response, true);
+        if (!$json || !isset($json['data']) || !is_array($json['data'])) {
+            return null;
         }
 
-        return $this->mapRecords($data);
+        return [$info['starttransfer_time'], $json['count'] ?? 0, $this->mapRecords($json)];
     }
 
-    private function mapRecords($records) {
+    protected function mapRecords($records) {
         $mappedRecords = [];
 
         foreach($records['data'] as $record) {
@@ -39,7 +53,7 @@ class Q3DFRecordsApi {
         return $mappedRecords;
     }
 
-    private function getRecord($recordPart) {
+    protected function getRecord($recordPart) {
         $date = Carbon::createFromTimestamp($recordPart['UnixTimestamp'], 'Europe/Berlin');
         $player = $this->get_player_from_mdduser($recordPart['User']);
         $time = $recordPart['MsTime'];
@@ -51,13 +65,13 @@ class Q3DFRecordsApi {
         $player['time'] = $time;
         $player['map'] = $map;
         $player['physics'] = $physicsParts[0];
-        $player['mode'] = $physicsParts[1];
+        $player['mode'] = $physicsParts[1] ?? '';
         $player['date'] = $date->toDateTimeString();
 
         return $player;
     }
 
-    private function get_player_from_mdduser($mdduser) {
+    protected function get_player_from_mdduser($mdduser) {
         $country = $mdduser['Country'] ?? '_404';
 
         if ($country === 'nocountry' || !$country) {

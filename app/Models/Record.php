@@ -119,4 +119,7 @@ class Record extends Model
         \Log::info("Profile cache cleared for player {$mddId}");
     }
 
+    public function uniqueIds() {
+        return ['mapname', 'mode', 'gametype', 'user_id'];
+    }
 }

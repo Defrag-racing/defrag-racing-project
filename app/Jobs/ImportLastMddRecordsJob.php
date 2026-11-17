@@ -8,7 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use App\External\Q3DFRecordsApi;
+use App\External\Q3DFLastRecordsApi;
 use App\Models\User;
 use App\Models\Map;
 use App\Models\Record;
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
-class GetLastMddRecords implements ShouldQueue
+class ImportLastMddRecordsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -36,29 +36,63 @@ class GetLastMddRecords implements ShouldQueue
     public function __construct() {}
 
     public function handle(): void{
-        $api = new Q3DFRecordsApi();
-
-        $records = $api->getMddRecords();
-
-        if (count($records) === 0) {
-            echo ('No records found !') . PHP_EOL;
-            return;
-        }
+        $api = new Q3DFLastRecordsApi();
+        $key = config('services.q3df.key');
+        $perPage = $key ? 1000 : 100;
+        $page = 0;
+        $fetchedCount = 0;
+        $reachedExisting = false;
 
         $this->duplicateCount = 0;
         $this->insertedCount = 0;
         $this->updatedCount = 0;
         $this->failedCount = 0;
 
-        $this->logApiRecords($records);
-        $this->processRecords($records);
+        while (true) {
+            $fetched = $api->getMddRecords($page, $perPage, $key ?: null);
 
-        echo ("Finished. Total: " . count($records) . ", New: {$this->insertedCount}, Updated: {$this->updatedCount}, Duplicates: {$this->duplicateCount}, Skipped: {$this->failedCount}") . PHP_EOL;
+            if ($fetched === null) {
+                echo ("Fetching page $page failed.") . PHP_EOL;
+                Log::warning('ImportLastMddRecordsJob: page fetch failed', ['page' => $page]);
+                break;
+            }
 
-        // Anomaly detection: if we got a large batch with 0 duplicates, records were likely missed
-        $totalRecords = count($records);
-        if ($totalRecords >= 20 && $this->duplicateCount === 0) {
-            $this->sendGapAlert($totalRecords);
+            list(, , $records) = $fetched;
+            $pageCount = count($records);
+            $fetchedCount += $pageCount;
+
+            if ($pageCount === 0) {
+                $reachedExisting = true;
+                break;
+            }
+
+            $insertedBefore = $this->insertedCount;
+            $updatedBefore = $this->updatedCount;
+
+            $this->logApiRecords($records);
+            $this->processRecords($records);
+
+            $newOnPage = ($this->insertedCount - $insertedBefore) + ($this->updatedCount - $updatedBefore);
+            echo ("Page $page: $pageCount records, $newOnPage new or updated") . PHP_EOL;
+
+            if ($newOnPage === 0 || $pageCount < $perPage) {
+                $reachedExisting = true;
+                break;
+            }
+
+            $page++;
+        }
+
+        if ($fetchedCount === 0) {
+            echo ('No records found !') . PHP_EOL;
+            return;
+        }
+
+        echo ("Finished. Total: {$fetchedCount}, New: {$this->insertedCount}, Updated: {$this->updatedCount}, Duplicates: {$this->duplicateCount}, Skipped: {$this->failedCount}") . PHP_EOL;
+
+        // A full page of only new records, and no later page reached rows we already have.
+        if (!$reachedExisting && $fetchedCount >= 20 && $this->duplicateCount === 0) {
+            $this->sendGapAlert($fetchedCount);
         }
     }
 
@@ -78,7 +112,7 @@ class GetLastMddRecords implements ShouldQueue
             . "New records inserted: {$this->insertedCount}\n"
             . "Updated records: {$this->updatedCount}\n"
             . "Last known record before gap: {$lastRecordInfo}\n\n"
-            . "Action needed: Run the HTML scraper for the missing period to fill the gap.\n"
+            . "Action needed: Check Q3DF_API_KEY and run php artisan scrape:records again.\n"
             . "Time: " . now()->toDateTimeString();
 
         Log::warning('Record scraper gap detected', [
@@ -141,7 +175,7 @@ class GetLastMddRecords implements ShouldQueue
                 $this->processOneRecord($record);
             } catch (\Throwable $e) {
                 $this->failedCount++;
-                Log::warning('GetLastMddRecords: skipped a record after an error', [
+                Log::warning('ImportLastMddRecordsJob: skipped a record after an error', [
                     'mdd_id'  => $record['mdd_id'] ?? null,
                     'map'     => $record['map'] ?? null,
                     'physics' => $record['physics'] ?? null,

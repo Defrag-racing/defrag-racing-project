@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\Jobs\ScrapeRecords as ScrapeRecordsJob;
+use App\Jobs\ImportLastMddRecordsJob;
 
 class ScrapeRecords extends Command
 {
@@ -13,22 +13,19 @@ class ScrapeRecords extends Command
      *
      * @var string
      */
-    protected $signature = 'scrape:records {start=1} {pages=0}';
+    protected $signature = 'scrape:records';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Scrape records data';
+    protected $description = 'Import recent q3df records from the API until they overlap the database';
 
     /**
      * Execute the console command.
      */
     public function handle() {
-        $start = $this->argument('start');
-        $pages = $this->argument('pages');
-
-        dispatch(new ScrapeRecordsJob());
+        dispatch(new ImportLastMddRecordsJob());
     }
 }

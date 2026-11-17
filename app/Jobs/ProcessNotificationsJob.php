@@ -59,7 +59,7 @@ class ProcessNotificationsJob implements ShouldQueue
 
     public function sendNotification ($currentRecord, User $user = null) {
         // WR-beaten = the *recipient* held rank 1 and the new record took it.
-        // processRanks() ran in ScrapeRecords before this job dispatched, so
+        // processRanks() ran in the record import before this job dispatched, so
         // these ranks reflect the post-beat state: beater is now 1, recipient
         // dropped to 2.
         $worldrecord = ($this->record->rank == 1) && ($currentRecord->rank == 2);

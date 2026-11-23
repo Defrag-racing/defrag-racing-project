@@ -26,10 +26,10 @@ use Illuminate\Support\Facades\Log;
  * Backfill (the records check in the admin): the records are old. Telling a
  * player today that somebody beat him in 2019 is wrong, and putting a 2019 run
  * at the top of the latest records is wrong too. So a backfill only writes the
- * rows, and finish() updates each touched map and profile one time at the end.
- * Ratings are left to the nightly ratings:calculate. One recalc job per touched
- * leaderboard was 7,600 jobs for a 10,000 record import, and every new record
- * waited behind them in the same queue.
+ * rows. ImportQ3dfCheckRowsJob updates each touched map and profile one time
+ * afterwards. Ratings are left to the nightly ratings:calculate. One recalc
+ * job per touched leaderboard was 7,600 jobs for a 10,000 record import, and
+ * every new record waited behind them in the same queue.
  */
 class Q3dfRecordImporter
 {
@@ -40,12 +40,6 @@ class Q3dfRecordImporter
     public int $duplicates = 0;
 
     public int $failed = 0;
-
-    /** @var array<string, true> map names touched by a backfill */
-    private array $maps = [];
-
-    /** @var array<int, true> mdd ids touched by a backfill */
-    private array $profiles = [];
 
     public function __construct(private bool $live = true)
     {
@@ -110,41 +104,6 @@ class Q3dfRecordImporter
         return 'updated';
     }
 
-    /**
-     * Backfill only: update every map and profile the import touched, once each.
-     */
-    public function finish(): void
-    {
-        if ($this->live) {
-            return;
-        }
-
-        foreach (array_keys($this->maps) as $name) {
-            $map = Map::where('name', $name)->first();
-
-            if (! $map) {
-                continue;
-            }
-
-            $map->processRanks();
-            $map->processAverageTime();
-            RebuildDemosTopRanksJob::dispatch($map->name);
-        }
-
-        foreach (array_keys($this->profiles) as $mddId) {
-            $profile = MddProfile::where('id', $mddId)->first();
-
-            if ($profile) {
-                $profile->processStats();
-            } else {
-                ScrapeProfile::dispatch($mddId);
-            }
-        }
-
-        $this->maps = [];
-        $this->profiles = [];
-    }
-
     private function insertRecord(array $record): void
     {
         $newrecord = new Record();
@@ -170,9 +129,6 @@ class Q3dfRecordImporter
         $newrecord->save();
 
         if (! $this->live) {
-            $this->maps[$newrecord->mapname] = true;
-            $this->profiles[(int) $newrecord->mdd_id] = true;
-
             return;
         }
 

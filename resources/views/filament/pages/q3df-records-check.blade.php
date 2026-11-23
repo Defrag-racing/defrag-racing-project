@@ -137,7 +137,7 @@
                                 <td class="qrc-num">
                                     @if($c->isBusy())
                                         <x-filament::button size="xs" color="danger" icon="heroicon-o-stop"
-                                            wire:click="stop({{ $c->id }})" wire:confirm="Stop this {{ $c->status === 'importing' ? 'import' : 'check' }}?">
+                                            wire:click="stop({{ $c->id }})" wire:confirm="Stop this {{ in_array($c->status, ['importing', 'updating']) ? 'import' : 'check' }}?">
                                             Stop
                                         </x-filament::button>
                                     @else
@@ -192,6 +192,8 @@
                 @endif
                 @if($check->status === 'importing')
                     <span class="qrc-text">Importing: {{ number_format($check->imported) }} so far.</span>
+                @elseif($check->status === 'updating')
+                    <span class="qrc-text">{{ number_format($check->imported) }} imported. Now updating the ranks of each touched map and the stats of each touched player.</span>
                 @endif
             </div>
             <p class="qrc-hint" style="margin-bottom: 1rem;">

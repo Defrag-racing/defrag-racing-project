@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Q3dfRecordCheck extends Model
 {
+    /** A check or import of this status still has a job working on it. */
+    public const BUSY = ['queued', 'running', 'importing', 'updating'];
+
     protected $guarded = [];
 
     protected $casts = [
@@ -23,6 +26,6 @@ class Q3dfRecordCheck extends Model
 
     public function isBusy(): bool
     {
-        return in_array($this->status, ['queued', 'running', 'importing'], true);
+        return in_array($this->status, self::BUSY, true);
     }
 }

@@ -18,6 +18,10 @@ class RankingController extends Controller
     const PREBUILT_PAGES = 3;
     const CACHE_TTL = 43200; // 12 hours
     const CACHE_TTL_RECALCULATION = 300;
+    // A recalculation refreshes the pages of the whole board by key. Pages
+    // filtered by country cannot be listed that way, so they and the country
+    // counts live only 10 minutes and a new recalculation shows up soon.
+    const CACHE_TTL_FILTERED = 600;
 
     public function index(Request $request) {
         $isPartial = $request->header('X-Inertia-Partial-Data') !== null;
@@ -128,7 +132,7 @@ class RankingController extends Controller
     {
         $generation = Cache::rememberForever('ranking:generation', fn () => 1);
 
-        return Cache::remember("ranking:countries:g{$generation}:{$gametype}:{$rankingtype}:{$category}", self::CACHE_TTL, function () use ($gametype, $rankingtype, $category) {
+        return Cache::remember("ranking:countries:g{$generation}:{$gametype}:{$rankingtype}:{$category}", self::CACHE_TTL_FILTERED, function () use ($gametype, $rankingtype, $category) {
             $query = DB::table('player_ratings')
                 ->leftJoin('users', 'users.mdd_id', '=', 'player_ratings.mdd_id')
                 ->leftJoin('mdd_profiles', 'mdd_profiles.id', '=', 'player_ratings.mdd_id')
@@ -177,7 +181,7 @@ class RankingController extends Controller
     {
         $cacheKey = self::pageCacheKey($physics, $gametype, $rankingtype, $category, $page, $country);
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($physics, $gametype, $rankingtype, $category, $page, $country) {
+        return Cache::remember($cacheKey, $country ? self::CACHE_TTL_FILTERED : self::CACHE_TTL, function () use ($physics, $gametype, $rankingtype, $category, $page, $country) {
             return $this->fetchPageFromDb($physics, $gametype, $rankingtype, $category, $page, $country);
         });
     }

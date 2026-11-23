@@ -114,7 +114,7 @@ class CalculateRatingsRust extends Command
 
         foreach (self::RANKING_TYPES as $rankingtype) {
             for ($page = 1; $page <= 50; $page++) {
-                $key = "ranking:{$physics}:{$mode}:{$rankingtype}:{$category}:{$page}";
+                $key = RankingController::pageCacheKey($physics, $mode, $rankingtype, $category, $page);
                 Cache::forget($key);
                 $flushed++;
             }
@@ -128,7 +128,7 @@ class CalculateRatingsRust extends Command
         $controller = new RankingController();
         foreach (self::RANKING_TYPES as $rankingtype) {
             for ($page = 1; $page <= RankingController::PREBUILT_PAGES; $page++) {
-                $cacheKey = "ranking:{$physics}:{$mode}:{$rankingtype}:{$category}:{$page}";
+                $cacheKey = RankingController::pageCacheKey($physics, $mode, $rankingtype, $category, $page);
                 $data = $controller->fetchPageFromDb($physics, $mode, $rankingtype, $category, $page);
                 Cache::put($cacheKey, $data, RankingController::CACHE_TTL);
             }

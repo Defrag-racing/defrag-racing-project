@@ -75,7 +75,7 @@ class RecalcMapRatings extends Command
 
         foreach ($rankingTypes as $rankingtype) {
             for ($page = 1; $page <= 50; $page++) {
-                Cache::forget("ranking:{$physics}:{$mode}:{$rankingtype}:{$category}:{$page}");
+                Cache::forget(RankingController::pageCacheKey($physics, $mode, $rankingtype, $category, $page));
             }
         }
 

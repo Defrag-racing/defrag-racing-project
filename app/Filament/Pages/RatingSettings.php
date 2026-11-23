@@ -143,7 +143,7 @@ class RatingSettings extends Page
             foreach ($categories as $category) {
                 foreach ($rankingTypes as $rankingtype) {
                     for ($page = 1; $page <= 50; $page++) {
-                        Cache::forget("ranking:{$physics}:run:{$rankingtype}:{$category}:{$page}");
+                        Cache::forget(RankingController::pageCacheKey($physics, 'run', $rankingtype, $category, $page));
                         $flushed++;
                     }
                 }
@@ -159,7 +159,7 @@ class RatingSettings extends Page
             foreach ($categories as $category) {
                 foreach ($rankingTypes as $rankingtype) {
                     for ($page = 1; $page <= RankingController::PREBUILT_PAGES; $page++) {
-                        $cacheKey = "ranking:{$physics}:run:{$rankingtype}:{$category}:{$page}";
+                        $cacheKey = RankingController::pageCacheKey($physics, 'run', $rankingtype, $category, $page);
                         $data = $controller->fetchPageFromDb($physics, 'run', $rankingtype, $category, $page);
                         Cache::put($cacheKey, $data, RankingController::CACHE_TTL);
                         $rebuilt++;

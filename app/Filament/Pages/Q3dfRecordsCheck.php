@@ -66,6 +66,8 @@ class Q3dfRecordsCheck extends Page
         $rows = collect();
         $rowsTotal = 0;
         $importable = 0;
+        $deletedHere = 0;
+        $failedRows = 0;
 
         if ($check) {
             $months = Q3dfRecordCheckRow::where('check_id', $check->id)
@@ -86,6 +88,8 @@ class Q3dfRecordsCheck extends Page
                 ->get();
 
             $importable = ImportQ3dfCheckRowsJob::importable($check->id)->count();
+            $deletedHere = Q3dfRecordCheckRow::where('check_id', $check->id)->where('skipped_reason', 'deleted here')->count();
+            $failedRows = Q3dfRecordCheckRow::where('check_id', $check->id)->where('skipped_reason', 'like', 'error:%')->count();
         }
 
         return [
@@ -96,6 +100,8 @@ class Q3dfRecordsCheck extends Page
             'rowsTotal' => $rowsTotal,
             'pages' => max(1, (int) ceil($rowsTotal / $this->perPage)),
             'importable' => $importable,
+            'deletedHere' => $deletedHere,
+            'failedRows' => $failedRows,
             'busy' => $checks->contains(fn ($c) => $c->isBusy()),
             'q3dfTotal' => $this->q3dfTotal(),
             'ourTotal' => Cache::remember('q3df_check:our_total', 600, fn () => Record::count()),

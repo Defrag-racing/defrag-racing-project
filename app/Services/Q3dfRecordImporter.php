@@ -12,6 +12,7 @@ use App\Models\MddProfile;
 use App\Models\Record;
 use App\Models\RecordHistory;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -41,6 +42,9 @@ class Q3dfRecordImporter
 
     public int $failed = 0;
 
+    /** Why the last record failed, or null when it did not. */
+    public ?string $lastError = null;
+
     public function __construct(private bool $live = true)
     {
     }
@@ -51,10 +55,13 @@ class Q3dfRecordImporter
     public function import(array $records): void
     {
         foreach ($records as $record) {
+            $this->lastError = null;
+
             try {
                 $this->importOne($record);
             } catch (\Throwable $e) {
                 $this->failed++;
+                $this->lastError = $e->getMessage();
                 Log::warning('Q3dfRecordImporter: skipped a record after an error', [
                     'mdd_id' => $record['mdd_id'] ?? null,
                     'map' => $record['map'] ?? null,
@@ -80,7 +87,7 @@ class Q3dfRecordImporter
             ->first();
 
         if (! $find) {
-            $this->insertRecord($record);
+            $this->afterInsert($this->writeRecord($record));
             $this->inserted++;
 
             return 'inserted';
@@ -92,19 +99,25 @@ class Q3dfRecordImporter
             return 'duplicate';
         }
 
-        $historic = new RecordHistory();
-        $historic->fill($find->toArray());
-        $historic->save();
+        // One transaction: when the new row cannot be written, the old one must
+        // stay. Without it a failed insert left the player with no record at all.
+        $newrecord = DB::transaction(function () use ($find, $record) {
+            $historic = new RecordHistory();
+            $historic->fill($find->toArray());
+            $historic->save();
 
-        $find->delete();
+            $find->delete();
 
-        $this->insertRecord($record);
+            return $this->writeRecord($record);
+        });
+
+        $this->afterInsert($newrecord);
         $this->updated++;
 
         return 'updated';
     }
 
-    private function insertRecord(array $record): void
+    private function writeRecord(array $record): Record
     {
         $newrecord = new Record();
 
@@ -128,11 +141,16 @@ class Q3dfRecordImporter
 
         $newrecord->save();
 
+        return $newrecord;
+    }
+
+    private function afterInsert(Record $newrecord): void
+    {
         if (! $this->live) {
             return;
         }
 
-        $serverMap = Map::where('name', $record['map'])->first();
+        $serverMap = Map::where('name', $newrecord->mapname)->first();
 
         if ($serverMap) {
             $serverMap->processRanks();

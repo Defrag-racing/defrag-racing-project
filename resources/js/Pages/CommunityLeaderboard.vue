@@ -3,6 +3,7 @@
     import Pagination from '@/Components/Basic/Pagination.vue';
     import { ref, computed, onMounted, getCurrentInstance } from 'vue';
     import { t } from '@/utils/i18n';
+    import { useDeferredProps } from '@/utils/deferredProps';
 
     const props = defineProps({
         scores: Object,
@@ -129,21 +130,22 @@
         });
     };
 
-    onMounted(() => {
-        if (!props.scores) {
-            const start = Date.now();
-            router.reload({
-                only: ['scores'],
-                onFinish: () => {
-                    const remaining = 350 - (Date.now() - start);
-                    if (remaining > 0) {
-                        setTimeout(() => { loaded.value = true; }, remaining);
-                    } else {
-                        loaded.value = true;
-                    }
+    // The list arrives in a second request, and comes again whenever the
+    // page is re-rendered without it - a language switch, say.
+    useDeferredProps(() => !props.scores, (done) => {
+        const start = Date.now();
+        router.reload({
+            only: ['scores'],
+            onFinish: () => {
+                done();
+                const remaining = 350 - (Date.now() - start);
+                if (remaining > 0) {
+                    setTimeout(() => { loaded.value = true; }, remaining);
+                } else {
+                    loaded.value = true;
                 }
-            });
-        }
+            }
+        });
     });
 </script>
 

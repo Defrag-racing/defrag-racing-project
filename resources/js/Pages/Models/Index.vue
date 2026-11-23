@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import Pagination from '@/Components/Basic/Pagination.vue';
 import { t } from '@/utils/i18n';
+import { useDeferredProps } from '@/utils/deferredProps';
 
 const props = defineProps({
     models: Object,
@@ -42,26 +43,24 @@ const frontendTimings = ref({
     dom_content_loaded: 0,
 });
 
-const modelsLoaded = ref(false);
+const modelsLoaded = ref(!!props.models);
 
-// Lazy load model data
-onMounted(() => {
-    if (!props.models) {
-        const start = Date.now();
-        router.reload({
-            only: ['models', 'availableBaseModels', 'availableAuthors'],
-            onFinish: () => {
-                const remaining = 400 - (Date.now() - start);
-                if (remaining > 0) {
-                    setTimeout(() => { modelsLoaded.value = true; }, remaining);
-                } else {
-                    modelsLoaded.value = true;
-                }
+// The list arrives in a second request, and comes again whenever the page
+// is re-rendered without it - a language switch, say.
+useDeferredProps(() => !props.models, (done) => {
+    const start = Date.now();
+    router.reload({
+        only: ['models', 'availableBaseModels', 'availableAuthors'],
+        onFinish: () => {
+            done();
+            const remaining = 400 - (Date.now() - start);
+            if (remaining > 0) {
+                setTimeout(() => { modelsLoaded.value = true; }, remaining);
+            } else {
+                modelsLoaded.value = true;
             }
-        });
-    } else {
-        modelsLoaded.value = true;
-    }
+        }
+    });
 });
 
 // Calculate frontend load times

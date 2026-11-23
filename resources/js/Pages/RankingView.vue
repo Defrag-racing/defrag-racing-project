@@ -6,6 +6,7 @@
     import IconSelect from '@/Components/Basic/IconSelect.vue';
     import { watchEffect, ref, computed, onMounted, onUnmounted } from 'vue';
     import { t } from '@/utils/i18n';
+    import { useDeferredProps } from '@/utils/deferredProps';
 
     const props = defineProps({
         vq3Ratings: Object,
@@ -205,27 +206,30 @@
 
     const ratingsLoaded = ref(false);
 
+    // The board arrives in a second request, and comes again whenever the
+    // page is re-rendered without it - a language switch, say.
+    useDeferredProps(() => !props.vq3Ratings && !props.cpmRatings, (done) => {
+        const start = Date.now();
+        ratingsLoaded.value = false;
+
+        router.reload({
+            only: ['vq3Ratings', 'cpmRatings', 'myVq3Rating', 'myCpmRating'],
+            onFinish: () => {
+                done();
+                const remaining = 400 - (Date.now() - start);
+                if (remaining > 0) {
+                    setTimeout(() => { ratingsLoaded.value = true; }, remaining);
+                } else {
+                    ratingsLoaded.value = true;
+                }
+            }
+        });
+    });
+
     onMounted(() => {
         window.addEventListener("resize", resizeScreen);
         startInterval();
 
-        // Lazy-load rating data (page renders immediately with header/filters)
-        if (!props.vq3Ratings && !props.cpmRatings) {
-            const start = Date.now();
-            router.reload({
-                only: ['vq3Ratings', 'cpmRatings', 'myVq3Rating', 'myCpmRating'],
-                onFinish: () => {
-                    const remaining = 400 - (Date.now() - start);
-                    if (remaining > 0) {
-                        setTimeout(() => { ratingsLoaded.value = true; }, remaining);
-                    } else {
-                        ratingsLoaded.value = true;
-                    }
-                }
-            });
-        } else {
-            ratingsLoaded.value = true;
-        }
     });
 
     onUnmounted(() => {

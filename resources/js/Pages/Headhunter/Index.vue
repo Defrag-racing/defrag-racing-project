@@ -3,31 +3,31 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import Pagination from '@/Components/Basic/Pagination.vue';
 import { t } from '@/utils/i18n';
+import { useDeferredProps } from '@/utils/deferredProps';
 
 const props = defineProps({
     challenges: Object,
     filters: Object,
 });
 
-const challengesLoaded = ref(false);
+const challengesLoaded = ref(!!props.challenges);
 
-onMounted(() => {
-    if (!props.challenges) {
-        const start = Date.now();
-        router.reload({
-            only: ['challenges'],
-            onFinish: () => {
-                const remaining = 400 - (Date.now() - start);
-                if (remaining > 0) {
-                    setTimeout(() => { challengesLoaded.value = true; }, remaining);
-                } else {
-                    challengesLoaded.value = true;
-                }
+// The list arrives in a second request, and comes again whenever the page
+// is re-rendered without it - a language switch, say.
+useDeferredProps(() => !props.challenges, (done) => {
+    const start = Date.now();
+    router.reload({
+        only: ['challenges'],
+        onFinish: () => {
+            done();
+            const remaining = 400 - (Date.now() - start);
+            if (remaining > 0) {
+                setTimeout(() => { challengesLoaded.value = true; }, remaining);
+            } else {
+                challengesLoaded.value = true;
             }
-        });
-    } else {
-        challengesLoaded.value = true;
-    }
+        }
+    });
 });
 
 const search = ref(props.filters?.search || '');

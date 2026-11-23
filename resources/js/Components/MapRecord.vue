@@ -49,6 +49,13 @@
             type: Boolean,
             default: false,
         },
+        // Parent-controlled open/close state for the drawer of this player's
+        // own older times on the map. Separate from the demo history above:
+        // one answers "who else ran this", the other "how did they get here".
+        improvementsExpanded: {
+            type: Boolean,
+            default: false,
+        },
         // Inside a freestyle group the player is named once, on the group
         // header, so the rows underneath drop the avatar, flag and nick and
         // give the space to what the demo actually is.
@@ -66,7 +73,7 @@
         },
     });
 
-    const emit = defineEmits(['assign', 'assign-from-record', 'reassign-record', 'scoreHover', 'toggle-history', 'assign-user']);
+    const emit = defineEmits(['assign', 'assign-from-record', 'reassign-record', 'scoreHover', 'toggle-history', 'toggle-improvements', 'assign-user']);
 
     const page = usePage();
     const showReportModal = ref(false);
@@ -962,6 +969,24 @@
         <!-- Time - MASSIVE and eye-catching. History trigger sits next to the
              time stack, vertically centered across both rows (time + diff). -->
         <div class="flex items-center justify-end gap-1 flex-shrink-0 ml-0.5">
+            <!-- The road to this record: every time this player beat their own
+                 time here, which the site kept and never showed on a map. -->
+            <button
+                v-if="record.history_count"
+                type="button"
+                @click.prevent.stop="emit('toggle-improvements')"
+                :title="improvementsExpanded ? $t('Hide time history') : $t('Show time history')"
+                :class="[
+                    'inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[10px] font-bold tabular-nums border transition-colors',
+                    improvementsExpanded
+                        ? 'bg-blue-500/30 text-blue-200 border-blue-400/60'
+                        : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white'
+                ]">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {{ record.history_count }}
+            </button>
             <button
                 v-if="timeHistory && timeHistory.count"
                 type="button"

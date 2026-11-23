@@ -3,6 +3,7 @@
     import { formatTime } from '@/utils/time';
     import MapRecord from '@/Components/MapRecord.vue';
     import TimeHistoryExpand from '@/Components/TimeHistoryExpand.vue';
+    import RecordTimeHistory from '@/Components/RecordTimeHistory.vue';
     // import MapRecordSmall from '@/Components/MapRecordSmall.vue'; // Obsolete - using MapRecord for all screen sizes now
     import Pagination from '@/Components/Basic/Pagination.vue';
     import AssignDemoToUserModal from '@/Components/AssignDemoToUserModal.vue';
@@ -343,6 +344,31 @@
         instantPlayServer.value = server;
         instantPlayOpen.value = false;
         instantPlayConfirm.value = true;
+    };
+
+    // Which rows have their own-times drawer open, keyed the same way the
+    // demo history is: the physics plus the row, so VQ3 and CPM stay apart.
+    const expandedImprovementKeys = ref(new Set());
+    const improvementsKey = (record, physics) => `${physics}:${record.id}`;
+    const isImprovementsExpanded = (record, physics) => expandedImprovementKeys.value.has(improvementsKey(record, physics));
+    const toggleImprovements = (record, physics) => {
+        const key = improvementsKey(record, physics);
+        const next = new Set(expandedImprovementKeys.value);
+        if (next.has(key)) next.delete(key); else next.add(key);
+        expandedImprovementKeys.value = next;
+    };
+
+    const fmtDate = (dateStr) => {
+        const d = new Date(dateStr);
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yy = String(d.getFullYear()).slice(-2);
+        const yyyy = String(d.getFullYear());
+        const fmt = page.props.dateFormat;
+        if (fmt === 'dmY') return `${dd}/${mm}/${yyyy}`;
+        if (fmt === 'Ymd') return `${yyyy}/${mm}/${dd}`;
+        if (fmt === 'dmy') return `${dd}/${mm}/${yy}`;
+        return `${yy}/${mm}/${dd}`;
     };
 
     const dateColWidth = computed(() => {
@@ -1822,12 +1848,21 @@
                                         :demoMatches="demoMatchesMap[record.id] || []"
                                         :timeHistory="timeHistorySeed(record, 'vq3')"
                                         :historyExpanded="isHistoryExpanded(record, 'vq3')"
+                                        :improvementsExpanded="isImprovementsExpanded(record, 'vq3')"
                                         @assign="openAssignModal($event, 'VQ3')"
                                         @assign-from-record="(rec) => openReverseAssignModal(rec, demoMatchesMap[rec.id] || [])"
                                         @reassign-record="(rec) => openReassignModal(rec)"
                                         @scoreHover="scoreTooltip = $event"
                                         @toggle-history="toggleHistory(record, 'vq3')"
+                                        @toggle-improvements="toggleImprovements(record, 'vq3')"
                                     />
+                                    <RecordTimeHistory
+                                        v-if="record.history_count && isImprovementsExpanded(record, 'vq3')"
+                                        :mdd-id="record.mdd_id"
+                                        :mapname="record.mapname"
+                                        :gametype="record.gametype"
+                                        :current="record"
+                                        :format-date="fmtDate" />
                                     <TimeHistoryExpand
                                         v-if="timeHistorySeed(record, 'vq3') && isHistoryExpanded(record, 'vq3')"
                                         :mapname="map.name"
@@ -1906,12 +1941,21 @@
                                         :demoMatches="demoMatchesMap[record.id] || []"
                                         :timeHistory="timeHistorySeed(record, 'cpm')"
                                         :historyExpanded="isHistoryExpanded(record, 'cpm')"
+                                        :improvementsExpanded="isImprovementsExpanded(record, 'cpm')"
                                         @assign="openAssignModal($event, 'CPM')"
                                         @assign-from-record="(rec) => openReverseAssignModal(rec, demoMatchesMap[rec.id] || [])"
                                         @reassign-record="(rec) => openReassignModal(rec)"
                                         @scoreHover="scoreTooltip = $event"
                                         @toggle-history="toggleHistory(record, 'cpm')"
+                                        @toggle-improvements="toggleImprovements(record, 'cpm')"
                                     />
+                                    <RecordTimeHistory
+                                        v-if="record.history_count && isImprovementsExpanded(record, 'cpm')"
+                                        :mdd-id="record.mdd_id"
+                                        :mapname="record.mapname"
+                                        :gametype="record.gametype"
+                                        :current="record"
+                                        :format-date="fmtDate" />
                                     <TimeHistoryExpand
                                         v-if="timeHistorySeed(record, 'cpm') && isHistoryExpanded(record, 'cpm')"
                                         :mapname="map.name"

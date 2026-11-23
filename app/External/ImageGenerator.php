@@ -3,8 +3,6 @@
 namespace App\External;
 
 use Illuminate\Support\Facades\Storage;
-use DOMDocument;
-use DOMXPath;
 use GuzzleHttp\Client;
 
 class ImageGenerator {
@@ -97,26 +95,12 @@ class ImageGenerator {
     }
 
     public function get_mdd_image($id) {
-        $url = 'https://q3df.org/profil?id=' . $id;
-
-        $response = $this->fetchUrl($url);
-
-        if ($response === null) {
+        $profile = $this->get_profile($id);
+        if ($profile === null || empty($profile['avatar'])) {
             return null;
         }
 
-        libxml_use_internal_errors(true);
-
-        $dom = new DOMDocument();
-        $dom->loadHTML($response);
-
-        libxml_clear_errors();
-
-        $this->xpath = new DOMXPath($dom);
-
-        $image = $this->xpath->query('//img[contains(@class, "profil_avatar")]')->item(0);
-
-        return 'https://q3df.org' . $image->getAttribute('src');
+        return $this->absoluteUrl($profile['avatar']);
     }
 
     private function fetchUrl($url) {
@@ -141,80 +125,40 @@ class ImageGenerator {
 
 
     public function get_name ($id) {
-        $url = 'https://q3df.org/profil?id=' . $id;
+        $profile = $this->get_profile($id);
+        if ($profile === null || !isset($profile['visname']) || $profile['visname'] === '') {
+            return null;
+        }
 
-        $response = $this->fetchUrl($url);
+        return $profile['visname'];
+    }
+
+    private function get_profile($id) {
+        $response = $this->fetchUrl('https://q3df.org/api/getUser?' . http_build_query([
+            'id' => $id,
+        ]));
 
         if ($response === null) {
             return null;
         }
 
-        libxml_use_internal_errors(true);
-
-        $dom = new DOMDocument();
-        $dom->loadHTML($response);
-
-        libxml_clear_errors();
-
-        $this->xpath = new DOMXPath($dom);
-
-        $visname = $this->xpath->query('//div[contains(@class, "full-width")]')->item(0);
-
-        $visname = $this->xpath->query('//span[contains(@class, "visname")]', $visname)->item(0);
-
-        return $this->get_q3_string($visname);
-    }
-
-    private function get_q3_string($node) {
-        $parts = $this->html_to_q3($node);
-
-        $result = '';
-
-        foreach($parts as $part) {
-            $result .= $part['style'] . $part['text'];
+        $profile = json_decode($response, true);
+        if (!is_array($profile) || !isset($profile['visname'])) {
+            return null;
         }
 
-        return $result;
+        return $profile;
     }
 
-    private function html_to_q3($node) {
-        $result = [];
-
-        foreach($node->childNodes as $child) {
-            if ($child->nodeName === '#text') {
-                $result[] = [
-                    'style' =>  $this->get_q3_color($node->getAttribute('style')),
-                    'text'  =>  $child->textContent,
-                ];
-            } else {
-                $result = array_merge($result, $this->html_to_q3($child));
-            }
+    private function absoluteUrl($path) {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
         }
 
-        return $result;
-    }
-
-    private function get_q3_color($style) {
-        $colors = [
-            'yellow'        =>      '^3',
-            'red'           =>      '^1',
-            '#B5B5B5'       =>      '^9',
-            '#4D87AB'       =>      '^4',
-            'cyan'          =>      '^5',
-            'green'         =>      '^2',
-            'purple'        =>      '^6',
-            'white'         =>      '^7',
-            'rgb(181, 181, 181)' => '^9'
-        ];
-
-        $parts = explode('color:', $style);
-
-        $color = trim($parts[1]);
-
-        if (! array_key_exists($color, $colors)) {
-            return '^7';
+        if (!str_starts_with($path, '/')) {
+            $path = '/' . $path;
         }
 
-        return $colors[$color];
+        return 'https://q3df.org' . $path;
     }
 }

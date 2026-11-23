@@ -172,10 +172,14 @@ class SettingsController extends Controller
         $found = false;
 
         try {
-            $response = $client->head($profile_link, ['allow_redirects' => true, 'verify' => false]);
-            $statusCode = $response->getStatusCode();
+            $response = $client->get('https://q3df.org/api/getUser?' . http_build_query([
+                'id' => $id,
+            ]), ['http_errors' => false, 'verify' => false]);
 
-            $found = $statusCode === 200;
+            $profile = json_decode((string) $response->getBody(), true);
+            $found = $response->getStatusCode() === 200
+                && is_array($profile)
+                && empty($profile['deleted']);
         } catch (RequestException $e) {
             $found = false;
         }

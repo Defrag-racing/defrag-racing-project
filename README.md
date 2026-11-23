@@ -36,6 +36,7 @@ The goal of [defrag.racing](https://defrag.racing) is to refresh the game by add
 > - **Deployment Guide**: See [PRODUCTION_DEPLOYMENT.md](PRODUCTION_DEPLOYMENT.md) for complete setup
 > - **Credentials**: See `PRODUCTION_CREDENTIALS.md` (local file, not in git) for Backblaze B2 keys, DB passwords
 > - **Storage Options**: [PRODUCTION_STORAGE.md](PRODUCTION_STORAGE.md) | [PRODUCTION_STORAGE_CONTABO.md](PRODUCTION_STORAGE_CONTABO.md)
+> - **q3df records**: [Q3DF_RECORD_IMPORT.md](Q3DF_RECORD_IMPORT.md) for the API import commands and catch-up
 
 > :warning: **SECURITY**: `.env` and `PRODUCTION_CREDENTIALS.md` contain secrets and are in `.gitignore`. Never commit them to GitHub!
 

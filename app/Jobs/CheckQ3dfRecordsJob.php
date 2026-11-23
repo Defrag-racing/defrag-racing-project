@@ -28,19 +28,24 @@ use Illuminate\Support\Facades\DB;
  * Not ShouldBeUnique. The page refuses a second start while one runs, and a
  * unique lock left behind by a lost job made the next start vanish without a
  * word for two hours.
+ *
+ * One job reads pages for at most BUDGET_SECONDS, then queues the next job,
+ * which goes on from pages_read. Production runs the database queue with a
+ * 1200 second retry_after: a single job that ran for the whole history (about
+ * 25 minutes) was taken a second time, failed as "attempted too many times",
+ * and showed failed on the page while it was still working.
  */
 class CheckQ3dfRecordsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
-    public $timeout = 7200;
+    public $timeout = 600;
 
     public $tries = 1;
 
     private const PER_PAGE = 1000;
 
-    /** @var array<string, true> keys q3df listed inside the range */
-    private array $seen = [];
+    private const BUDGET_SECONDS = 240;
 
     public function __construct(public int $checkId)
     {
@@ -50,18 +55,34 @@ class CheckQ3dfRecordsJob implements ShouldQueue
     {
         $check = Q3dfRecordCheck::find($this->checkId);
 
-        if (! $check) {
+        if (! $check || ! in_array($check->status, ['queued', 'running'], true)) {
             return;
         }
 
-        $check->update(['status' => 'running', 'started_at' => now(), 'error' => null]);
+        if ($check->status === 'queued') {
+            $check->update(['status' => 'running', 'started_at' => now(), 'error' => null]);
+        }
 
         try {
-            $this->run($check);
+            $finished = $this->run($check);
 
-            if (! self::stopped($check->id)) {
-                $check->update(['status' => 'done', 'finished_at' => now()]);
+            if (self::stopped($check->id)) {
+                return;
             }
+
+            if (! $finished) {
+                self::dispatch($check->id);
+
+                return;
+            }
+
+            $check->refresh();
+            $check->update([
+                'only_here' => $this->countOnlyHere($check),
+                'status' => 'done',
+                'finished_at' => now(),
+                'error' => null,
+            ]);
         } catch (\Throwable $e) {
             $check->update(['status' => 'failed', 'error' => $e->getMessage(), 'finished_at' => now()]);
         }
@@ -82,7 +103,10 @@ class CheckQ3dfRecordsJob implements ShouldQueue
         ]);
     }
 
-    private function run(Q3dfRecordCheck $check): void
+    /**
+     * @return bool true when every page is read, false when the time ran out
+     */
+    private function run(Q3dfRecordCheck $check): bool
     {
         $key = config('services.q3df.key');
 
@@ -97,9 +121,15 @@ class CheckQ3dfRecordsJob implements ShouldQueue
         $from = $range ? $check->date_from->format('Y-m-d') . ' 00:00:00' : null;
         $to = $range ? $check->date_to->format('Y-m-d') . ' 23:59:59' : null;
 
-        for ($page = 0; ; $page++) {
+        $deadline = microtime(true) + self::BUDGET_SECONDS;
+
+        for ($page = (int) $check->pages_read; ; $page++) {
             if (self::stopped($check->id)) {
-                return;
+                return true;
+            }
+
+            if (microtime(true) > $deadline) {
+                return false;
             }
 
             [$count, $records] = $this->fetch($api, $page, $key);
@@ -109,32 +139,30 @@ class CheckQ3dfRecordsJob implements ShouldQueue
             }
 
             if (count($records) === 0) {
-                break;
+                return true;
             }
 
             $wanted = $range
                 ? array_filter($records, fn ($r) => $r['date'] >= $from && $r['date'] <= $to)
                 : $records;
 
-            $this->compare($check, array_values($wanted), $range);
-
-            Q3dfRecordCheck::whereKey($check->id)->update(['pages_read' => DB::raw('pages_read + 1')]);
+            // The rows and the page counter go in together, so a job killed
+            // between the two cannot write a page twice.
+            DB::transaction(function () use ($check, $wanted) {
+                $this->compare($check, array_values($wanted));
+                Q3dfRecordCheck::whereKey($check->id)->update(['pages_read' => DB::raw('pages_read + 1')]);
+            });
 
             // Newest first: once the last row of a page is older than the
             // range, every later page is too.
             if ($range && end($records)['date'] < $from) {
-                break;
+                return true;
             }
 
             if (count($records) < self::PER_PAGE) {
-                break;
+                return true;
             }
         }
-
-        $check->refresh();
-        $check->update(['only_here' => $range
-            ? $this->countOnlyHere($from, $to)
-            : max(0, Record::count() - $check->matching - $check->different)]);
     }
 
     /**
@@ -160,7 +188,7 @@ class CheckQ3dfRecordsJob implements ShouldQueue
         return $mddId . '|' . strtolower($map) . '|' . $physics . '|' . $mode;
     }
 
-    private function compare(Q3dfRecordCheck $check, array $records, bool $range): void
+    private function compare(Q3dfRecordCheck $check, array $records): void
     {
         if (count($records) === 0) {
             return;
@@ -189,10 +217,6 @@ class CheckQ3dfRecordsJob implements ShouldQueue
 
         foreach ($records as $r) {
             $key = self::key($r['mdd_id'], $r['map'], $r['physics'], $r['mode']);
-
-            if ($range) {
-                $this->seen[$key] = true;
-            }
 
             $ourTime = $ours[$key] ?? null;
 
@@ -234,26 +258,19 @@ class CheckQ3dfRecordsJob implements ShouldQueue
     }
 
     /**
-     * Our rows dated inside the range that q3df did not list there. Usually a
-     * record deleted on q3df, or one whose date differs between the two sides.
+     * Rows we hold that q3df does not list: usually records deleted on q3df.
+     * For a date range it counts our rows dated in the range less the ones q3df
+     * listed there, so a record dated differently on the two sides shifts it.
      */
-    private function countOnlyHere(string $from, string $to): int
+    private function countOnlyHere(Q3dfRecordCheck $check): int
     {
-        $count = 0;
+        $ours = $check->scope === 'range'
+            ? Record::whereBetween('date_set', [
+                $check->date_from->format('Y-m-d') . ' 00:00:00',
+                $check->date_to->format('Y-m-d') . ' 23:59:59',
+            ])->count()
+            : Record::count();
 
-        DB::table('records')
-            ->whereNull('deleted_at')
-            ->whereBetween('date_set', [$from, $to])
-            ->select(['id', 'mdd_id', 'mapname', 'physics', 'mode'])
-            ->orderBy('id')
-            ->chunk(5000, function ($chunk) use (&$count) {
-                foreach ($chunk as $row) {
-                    if (! isset($this->seen[self::key($row->mdd_id, $row->mapname, $row->physics, $row->mode)])) {
-                        $count++;
-                    }
-                }
-            });
-
-        return $count;
+        return max(0, $ours - $check->matching - $check->different);
     }
 }

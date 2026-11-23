@@ -157,7 +157,7 @@ class Q3dfRecordsCheck extends Page
     public function stop(int $id): void
     {
         Q3dfRecordCheck::whereKey($id)
-            ->whereIn('status', ['queued', 'running', 'importing'])
+            ->whereIn('status', Q3dfRecordCheck::BUSY)
             ->update(['status' => 'stopped', 'finished_at' => now()]);
 
         Notification::make()->title('Stopped')->success()->send();
@@ -208,7 +208,7 @@ class Q3dfRecordsCheck extends Page
 
     private function refuseWhenBusy(): bool
     {
-        $busy = Q3dfRecordCheck::whereIn('status', ['queued', 'running', 'importing'])->exists();
+        $busy = Q3dfRecordCheck::whereIn('status', Q3dfRecordCheck::BUSY)->exists();
 
         if ($busy) {
             Notification::make()->title('Another check or import is still running')->warning()->send();

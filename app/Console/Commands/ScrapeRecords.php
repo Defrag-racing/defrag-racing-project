@@ -29,6 +29,6 @@ class ScrapeRecords extends Command
         $start = $this->argument('start');
         $pages = $this->argument('pages');
 
-        dispatch(new ScrapeRecordsJob());
+        dispatch(new ScrapeRecordsJob($start, $pages));
     }
 }

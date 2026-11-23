@@ -196,6 +196,20 @@
                     <span class="qrc-text">{{ number_format($check->imported) }} imported. Now updating the ranks of each touched map and the stats of each touched player.</span>
                 @endif
             </div>
+            @if($deletedHere > 0)
+                <p class="qrc-text">
+                    <span class="qrc-strong">{{ number_format($deletedHere) }}</span>
+                    {{ $deletedHere === 1 ? 'record was' : 'records were' }} not imported: we hold that exact time
+                    as a deleted record, maybe removed by an admin. To bring one back, restore it in Records.
+                </p>
+            @endif
+            @if($failedRows > 0)
+                <p class="qrc-text qrc-bad">
+                    {{ number_format($failedRows) }} {{ $failedRows === 1 ? 'record' : 'records' }} failed with an error.
+                    The reason is in the list below.
+                </p>
+            @endif
+
             <p class="qrc-hint" style="margin-bottom: 1rem;">
                 Import takes every missing record, and every record where q3df holds a faster time than we do.
                 Where we hold the faster time, nothing changes. No player is notified about an imported record,
@@ -260,7 +274,13 @@
                                     <td class="qrc-num {{ $r->our_time === null ? 'qrc-bad' : '' }}">
                                         {{ $r->our_time === null ? 'missing' : number_format($r->our_time / 1000, 3) }}
                                     </td>
-                                    <td class="qrc-dim">{{ $r->imported_at ? $r->imported_at->format('Y-m-d H:i') : '' }}</td>
+                                    <td class="qrc-dim">
+                                        @if($r->imported_at)
+                                            {{ $r->imported_at->format('Y-m-d H:i') }}
+                                        @elseif($r->skipped_reason)
+                                            <span class="{{ str_starts_with($r->skipped_reason, 'error:') ? 'qrc-bad' : '' }}">{{ $r->skipped_reason }}</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -6,6 +6,7 @@ use App\Models\Map;
 use App\Models\MddProfile;
 use App\Models\Q3dfRecordCheck;
 use App\Models\Q3dfRecordCheckRow;
+use App\Models\Record;
 use App\Services\Q3dfRecordImporter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,6 +48,7 @@ class ImportQ3dfCheckRowsJob implements ShouldQueue
     {
         return Q3dfRecordCheckRow::where('check_id', $checkId)
             ->whereNull('imported_at')
+            ->whereNull('skipped_reason')
             ->where(fn ($q) => $q->where('kind', 'missing')
                 ->orWhereColumn('q3df_time', '<', 'our_time'));
     }
@@ -125,6 +127,8 @@ class ImportQ3dfCheckRowsJob implements ShouldQueue
 
                 if ($importer->failed === $before) {
                     $done[] = $row->id;
+                } else {
+                    $row->update(['skipped_reason' => self::skipReason($row, $importer->lastError)]);
                 }
             }
 
@@ -133,6 +137,24 @@ class ImportQ3dfCheckRowsJob implements ShouldQueue
         });
 
         return ! $left;
+    }
+
+    /**
+     * We hold this exact time as a deleted record: the unique index counts
+     * deleted rows too, so it cannot go in again, and an admin may have removed
+     * it on purpose. Restoring it is a decision for a person, not for an import.
+     */
+    private static function skipReason(Q3dfRecordCheckRow $row, ?string $error): string
+    {
+        $deletedHere = Record::onlyTrashed()
+            ->where('mdd_id', $row->mdd_id)
+            ->where('mapname', $row->mapname)
+            ->where('physics', $row->physics)
+            ->where('mode', $row->mode)
+            ->where('time', $row->q3df_time)
+            ->exists();
+
+        return $deletedHere ? 'deleted here' : mb_substr('error: ' . $error, 0, 255);
     }
 
     /**

@@ -74,12 +74,41 @@
 
     // By name in the reader's language, not by code: "Germany" and
     // "Allemagne" do not sort the same way, and the list is read, not typed.
+    const sortedCountries = computed(() => [...props.countries]
+        .map((c) => ({ ...c, label: countryName(c.code) }))
+        .sort((a, b) => a.label.localeCompare(b.label, document.documentElement.lang || 'en')));
+
+    // The three filters as option lists, so one component draws them all
+    // and every choice can carry its picture.
+    const modeOptions = computed(() => gametypeGroups.value.flatMap((g) => g.types.map((t2) => ({ value: t2.value, label: t2.label }))));
+
+    const categoryOptions = computed(() => categories.value.map((c) => ({
+        value: c.value,
+        label: c.label,
+        image: c.image,
+        icon: c.image ? null : c.icon,
+        disabled: !isLoggedIn.value && guestLockedCategories.includes(c.value),
+    })));
+
     const countryOptions = computed(() => [
         { value: '', label: t('All countries') },
-        ...[...props.countries]
-            .map((c) => ({ value: c.code, label: countryName(c.code), flag: c.code, count: c.players }))
-            .sort((a, b) => a.label.localeCompare(b.label, document.documentElement.lang || 'en')),
+        ...sortedCountries.value.map((c) => ({ value: c.code, label: c.label, flag: c.code, count: c.players })),
     ]);
+
+    // Back to the board as it opens: active players, run, all categories,
+    // every country. Only offered once something is actually set.
+    const filtersTouched = computed(() => rankingtype.value !== 'active_players'
+        || gametype.value !== 'run'
+        || category.value !== 'overall'
+        || country.value !== '');
+
+    const resetFilters = () => {
+        rankingtype.value = 'active_players';
+        gametype.value = 'run';
+        category.value = 'overall';
+        country.value = '';
+        reloadRankings();
+    };
 
     const selectCountry = (code) => {
         country.value = code || '';
@@ -224,131 +253,113 @@
         <!-- Header Section -->
         <div class="relative z-10 bg-gradient-to-b from-black/25 via-black/10 to-transparent pt-6 pb-96 pointer-events-none">
             <div class="max-w-8xl mx-auto px-4 md:px-6 lg:px-8 pointer-events-auto">
-                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
-                    <!-- Left: Title + Info -->
-                    <div>
-                        <h1 class="text-2xl md:text-3xl font-black text-gray-300/90 mb-2">{{ $t('Player Rankings') }}</h1>
-                        <div class="flex items-center gap-3 text-gray-500">
-                            <div class="relative group">
-                                <Link href="/ranking/how-it-works" class="flex items-center gap-1.5 text-xs hover:text-gray-300 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                                    </svg>
-                                    <span class="text-[11px] font-semibold underline decoration-dotted decoration-gray-500 underline-offset-2">{{ $t('How it works') }}</span>
-                                </Link>
-                                <div class="absolute left-0 top-full mt-2 w-80 bg-gray-900/95 border border-white/10 rounded-xl px-4 py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-2xl">
-                                    <div class="text-xs text-gray-400 leading-relaxed space-y-1.5">
-                                        <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Each record is scored using a <span>logistic curve</span> based on how close the time is to the world record (reltime).')"></p>
-                                        <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Map scores are then multiplied by a <span>map multiplier</span> - maps with more active players count fully, maps with few players are penalized proportionally using a Hill function based on the category median.')"></p>
-                                        <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Your best maps are <span>weighted exponentially</span> - top scores count the most, weaker ones are diminished. The final rating is a weighted average.')"></p>
-                                        <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Players with fewer than <span>10 records</span> receive a proportional penalty. Maps with fewer than <span>5 players</span> or 4+ tied WR times are excluded.')"></p>
-                                        <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Rankings <span>update in real-time</span> with every new record, plus a full recalculation runs daily.')"></p>
-                                    </div>
-                                    <Link href="/ranking/how-it-works" class="block mt-2 pt-2 border-t border-white/10 text-blue-400 hover:text-blue-300 text-[11px] font-semibold">
-                                        {{ $t('Read full explanation with examples') }} &#x2192;
-                                    </Link>
-                                </div>
-                            </div>
-                            <div v-if="lastRecalculation" class="relative group/recalc">
-                                <div class="flex items-center gap-1.5 text-[11px] cursor-help">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
-                                    </svg>
-                                    <span class="text-green-400/80">{{ $t('Rankings update automatically with every new record') }}</span>
-                                </div>
-                                <div class="absolute top-full left-0 mt-1.5 w-72 p-2.5 bg-gray-900 border border-gray-700 rounded-lg text-[11px] text-gray-300 shadow-xl opacity-0 pointer-events-none group-hover/recalc:opacity-100 group-hover/recalc:pointer-events-auto transition-opacity z-50">
-                                    <p class="text-white font-medium mb-1">{{ $t('Always up-to-date') }}</p>
-                                    <p>{{ $t('Rankings are recalculated instantly every time a new record is submitted. A full recalculation across all maps also runs once daily.') }}</p>
-                                </div>
-                            </div>
-                        </div>
+                <!-- One line for what the page is, one line for what it
+                     shows. Every control the same height, every filter the
+                     same shape, so the eye reads a bar and not five widgets. -->
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <h1 class="text-2xl md:text-3xl font-black text-gray-300/90">{{ $t('Player Rankings') }}</h1>
 
-                        <div class="mt-3">
-                            <AmnestyBanner />
+                    <div class="relative group">
+                        <Link href="/ranking/how-it-works" class="flex items-center gap-1.5 text-gray-500 hover:text-gray-300 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                            </svg>
+                            <span class="text-[11px] font-semibold underline decoration-dotted decoration-gray-500 underline-offset-2">{{ $t('How it works') }}</span>
+                        </Link>
+                        <div class="absolute left-0 top-full mt-2 w-80 bg-gray-900/95 border border-white/10 rounded-xl px-4 py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-2xl">
+                            <div class="text-xs text-gray-400 leading-relaxed space-y-1.5">
+                                <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Each record is scored using a <span>logistic curve</span> based on how close the time is to the world record (reltime).')"></p>
+                                <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Map scores are then multiplied by a <span>map multiplier</span> - maps with more active players count fully, maps with few players are penalized proportionally using a Hill function based on the category median.')"></p>
+                                <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Your best maps are <span>weighted exponentially</span> - top scores count the most, weaker ones are diminished. The final rating is a weighted average.')"></p>
+                                <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Players with fewer than <span>10 records</span> receive a proportional penalty. Maps with fewer than <span>5 players</span> or 4+ tied WR times are excluded.')"></p>
+                                <p class="[&_span]:text-gray-300 [&_span]:font-semibold" v-html="$t('Rankings <span>update in real-time</span> with every new record, plus a full recalculation runs daily.')"></p>
+                            </div>
+                            <Link href="/ranking/how-it-works" class="block mt-2 pt-2 border-t border-white/10 text-blue-400 hover:text-blue-300 text-[11px] font-semibold">
+                                {{ $t('Read full explanation with examples') }} &#x2192;
+                            </Link>
                         </div>
                     </div>
 
-                    <!-- Right: Filters -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full lg:w-auto">
-                        <!-- Ranking Type Toggle (Separate Block) -->
-                        <div class="bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-2.5 w-full sm:w-auto sm:min-w-[270px]">
-                            <div class="flex sm:flex-col gap-2">
-                                <button
-                                    v-for="rt in rankingtypes"
-                                    :key="rt"
-                                    @click="selectRankingType(rt)"
-                                    :class="rankingtype === rt ? 'bg-blue-500/30 border-blue-400/50 text-white' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'"
-                                    class="px-4 py-2 rounded-lg border text-sm font-semibold uppercase transition-all whitespace-nowrap flex-1 sm:flex-none"
-                                    :title="rt === 'active_players' ? $t('Players who set a record in this physics within the last 3 calendar months') : $t('All players who have ever set a record')">
-                                    {{ rt === 'active_players' ? $t('Active players') : $t('All players') }}
-                                </button>
-                            </div>
-                            <div class="text-xs mt-2 text-gray-400 relative group/hint cursor-help flex items-center justify-center gap-1">
-                                <svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="underline decoration-dotted decoration-gray-500 underline-offset-2">{{ rankingtype === 'active_players' ? $t('Recently active players only') : $t('All time rankings') }}</span>
-                                <div class="absolute top-full mt-1 left-1/2 -translate-x-1/2 hidden group-hover/hint:block z-50 w-56 p-2 bg-black/95 border border-white/20 rounded-lg text-xs text-gray-300 text-center shadow-lg">
-                                    {{ rankingtype === 'active_players' ? $t('Players who set a record in this physics within the last 3 calendar months') : $t('All players who have ever set a record in this physics') }}
-                                </div>
-                            </div>
+                    <div v-if="lastRecalculation" class="relative group/recalc">
+                        <div class="flex items-center gap-1.5 text-[11px] cursor-help">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-green-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                            </svg>
+                            <span class="text-green-400/80">{{ $t('Rankings update automatically with every new record') }}</span>
+                        </div>
+                        <div class="absolute top-full left-0 mt-1.5 w-72 p-2.5 bg-gray-900 border border-gray-700 rounded-lg text-[11px] text-gray-300 shadow-xl opacity-0 pointer-events-none group-hover/recalc:opacity-100 group-hover/recalc:pointer-events-auto transition-opacity z-50">
+                            <p class="text-white font-medium mb-1">{{ $t('Always up-to-date') }}</p>
+                            <p>{{ $t('Rankings are recalculated instantly every time a new record is submitted. A full recalculation across all maps also runs once daily.') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="ml-auto">
+                        <AmnestyBanner />
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="mt-3 bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-2.5">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex gap-1.5">
+                            <button
+                                v-for="rt in rankingtypes"
+                                :key="rt"
+                                @click="selectRankingType(rt)"
+                                :class="[
+                                    rankingtype === rt ? 'bg-blue-500/30 border-blue-400/50 text-white' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10',
+                                    rt === 'active_players' ? 'pr-2' : 'pr-3',
+                                ]"
+                                class="h-10 pl-3 rounded-lg border text-sm font-bold uppercase transition-all whitespace-nowrap flex items-center gap-2">
+                                {{ rt === 'active_players' ? $t('Active players') : $t('All players') }}
+
+                                <!-- The explanation rides on the choice it explains:
+                                     hovering the i opens it, clicking it does not
+                                     pick the button underneath. -->
+                                <span v-if="rt === 'active_players'" class="relative group/who flex items-center" @click.stop @mousedown.stop>
+                                    <svg class="w-4 h-4 text-gray-400 hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="absolute top-full mt-1.5 left-1/2 -translate-x-1/2 hidden group-hover/who:block z-50 w-64 p-2.5 bg-gray-900 border border-white/20 rounded-lg shadow-2xl normal-case text-left whitespace-normal break-words">
+                                        <span class="block text-[11px] font-bold text-white mb-1">{{ rt === 'active_players' ? $t('Recently active players only') : $t('All time rankings') }}</span>
+                                        <span class="block text-[11px] text-gray-300 font-medium leading-relaxed">
+                                            {{ rt === 'active_players' ? $t('Players who set a record in this physics within the last 3 calendar months') : $t('All players who have ever set a record in this physics') }}
+                                        </span>
+                                    </span>
+                                </span>
+                            </button>
+
                         </div>
 
-                        <!-- Country. A select rather than a row of chips:
-                             there are over a hundred of them, and each one
-                             wants its flag beside the name. -->
-                        <div v-if="countries.length" class="bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-2.5 w-full sm:w-auto">
-                            <IconSelect
-                                :model-value="country"
-                                :options="countryOptions"
-                                :label="$t('Country')"
-                                width-class="w-48"
-                                @change="selectCountry" />
-                        </div>
+                        <IconSelect
+                            :model-value="gametype"
+                            :options="modeOptions"
+                            width-class="w-32"
+                            @change="sortByGametype" />
 
-                        <!-- Categories & Gametypes -->
-                        <div class="space-y-2 w-full sm:w-auto bg-black/40 backdrop-blur-sm rounded-xl p-2.5">
-                            <!-- Row 1: Categories -->
-                            <div class="flex items-center gap-2 flex-wrap justify-start sm:justify-end">
-                                <button
-                                    v-for="cat in categories"
-                                    :key="cat.value"
-                                    @click="selectCategory(cat.value)"
-                                    :class="[
-                                        category === cat.value && cat.color === 'orange' ? 'bg-orange-500/30 border-orange-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'purple' ? 'bg-purple-500/30 border-purple-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'sky' ? 'bg-sky-500/30 border-sky-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'yellow' ? 'bg-yellow-500/30 border-yellow-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'cyan' ? 'bg-cyan-500/30 border-cyan-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'red' ? 'bg-red-500/30 border-red-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'blue' ? 'bg-blue-500/30 border-blue-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'green' ? 'bg-green-500/30 border-green-400/50 text-white' : '',
-                                        category === cat.value && cat.color === 'white' ? 'bg-white/30 border-white/50 text-white' : '',
-                                        category !== cat.value ? 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10' : '',
-                                        !isLoggedIn && guestLockedCategories.includes(cat.value) ? 'opacity-40' : '',
-                                        'px-2 py-1.5 rounded-lg border text-xs font-medium transition-all flex items-center gap-1.5'
-                                    ]"
-                                    :title="cat.label">
-                                    <img v-if="cat.image" :src="cat.image" class="w-4 h-4" :alt="cat.label" />
-                                    <span v-else class="text-sm">{{ cat.icon }}</span>
-                                    <span>{{ cat.label }}</span>
-                                </button>
-                            </div>
+                        <IconSelect
+                            :model-value="category"
+                            :options="categoryOptions"
+                            width-class="w-36"
+                            @change="selectCategory" />
 
-                            <!-- Row 2: Gametypes -->
-                            <div class="flex items-center gap-2 sm:gap-3 justify-start sm:justify-end flex-wrap">
-                                <div v-for="group in gametypeGroups" :key="group.label" class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl p-2">
-                                    <button
-                                        v-for="gt in group.types"
-                                        :key="gt.value"
-                                        @click="sortByGametype(gt.value)"
-                                        :class="gametype === gt.value ? 'bg-gray-500/30 border-gray-400/50 text-white' : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'"
-                                        class="px-3 py-1.5 rounded-lg border text-xs font-semibold uppercase transition-all">
-                                        {{ gt.label }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <IconSelect
+                            v-if="countries.length"
+                            :model-value="country"
+                            :options="countryOptions"
+                            width-class="w-52"
+                            @change="selectCountry" />
+
+                        <button
+                            v-if="filtersTouched"
+                            type="button"
+                            @click="resetFilters"
+                            class="ml-auto h-10 px-3 flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 text-sm font-bold text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.356m0 4.992-3.181-3.183a8.25 8.25 0 0 0-13.803 3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7M2.985 19.644v-4.992m0 0h4.993m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7" />
+                            </svg>
+                            {{ $t('Reset') }}
+                        </button>
                     </div>
                 </div>
             </div>

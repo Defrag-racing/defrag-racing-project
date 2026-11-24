@@ -75,7 +75,7 @@ class Q3dfRecordImporter
     }
 
     /**
-     * @return string inserted, updated or duplicate
+     * @return string inserted, updated, restored or duplicate
      */
     public function importOne(array $record): string
     {
@@ -86,17 +86,59 @@ class Q3dfRecordImporter
             ->where('mapname', $record['map'])
             ->first();
 
+        if ($find && $find->time === $record['time']) {
+            $this->duplicates++;
+
+            return 'duplicate';
+        }
+
+        // We may already hold this exact time as a deleted row. The unique
+        // index counts deleted rows too, so a new row with that time cannot be
+        // written. It came from the old import: it deleted the live row, then
+        // failed to write the new time for this reason, and the player was
+        // left with no record at all. That deleted row is the record q3df
+        // lists, so it comes back.
+        $deleted = Record::onlyTrashed()
+            ->where('physics', $record['physics'])
+            ->where('mode', $record['mode'])
+            ->where('mdd_id', $record['mdd_id'])
+            ->where('mapname', strtolower($record['map']))
+            ->where('time', $record['time'])
+            ->first();
+
+        if ($deleted) {
+            DB::transaction(function () use ($find, $deleted) {
+                if ($find) {
+                    $historic = new RecordHistory();
+                    $historic->fill($find->toArray());
+                    $historic->save();
+
+                    $find->delete();
+                }
+
+                // The row went into record_histories when it was replaced.
+                // It is the current time again, so it is not history now.
+                RecordHistory::where('mdd_id', $deleted->mdd_id)
+                    ->where('mapname', $deleted->mapname)
+                    ->where('physics', $deleted->physics)
+                    ->where('mode', $deleted->mode)
+                    ->where('time', $deleted->time)
+                    ->delete();
+
+                $deleted->restore();
+            });
+
+            $this->afterInsert($deleted);
+            $find ? $this->updated++ : $this->inserted++;
+
+            return 'restored';
+        }
+
         if (! $find) {
             $this->afterInsert($this->writeRecord($record));
             $this->inserted++;
 
             return 'inserted';
-        }
-
-        if ($find->time === $record['time']) {
-            $this->duplicates++;
-
-            return 'duplicate';
         }
 
         // One transaction: when the new row cannot be written, the old one must

@@ -104,6 +104,13 @@ class Record extends Model
             }
             RecordsController::removeFromCache($record);
         });
+
+        // A restored record counts on the profile again.
+        static::restored(function ($record) {
+            if ($record->mdd_id) {
+                self::clearProfileCache($record->mdd_id);
+            }
+        });
     }
 
     /**

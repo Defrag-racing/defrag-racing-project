@@ -48,7 +48,9 @@ class ImportQ3dfCheckRowsJob implements ShouldQueue
     {
         return Q3dfRecordCheckRow::where('check_id', $checkId)
             ->whereNull('imported_at')
-            ->whereNull('skipped_reason')
+            // "deleted here" rows were skipped before the importer could
+            // restore a deleted row. They are offered once more.
+            ->where(fn ($q) => $q->whereNull('skipped_reason')->orWhere('skipped_reason', 'deleted here'))
             ->where(fn ($q) => $q->where('kind', 'missing')
                 ->orWhereColumn('q3df_time', '<', 'our_time'));
     }
@@ -132,7 +134,7 @@ class ImportQ3dfCheckRowsJob implements ShouldQueue
                 }
             }
 
-            Q3dfRecordCheckRow::whereIn('id', $done)->update(['imported_at' => now()]);
+            Q3dfRecordCheckRow::whereIn('id', $done)->update(['imported_at' => now(), 'skipped_reason' => null]);
             Q3dfRecordCheck::whereKey($check->id)->update(['imported' => DB::raw('imported + ' . count($done))]);
         });
 
